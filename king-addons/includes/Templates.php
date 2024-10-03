@@ -123,7 +123,7 @@ final class Templates
                         <button id="reset-filters"><?php esc_html_e('Reset Filters', 'king-addons'); ?></button>
                         <?php if (!$is_premium_active): ?>
                             <div class="promo-wrapper">
-                                <div class="promo-txt"><?php esc_html_e('Get unlimited downloads for only $19/year', 'king-addons'); ?></div>
+                                <div class="promo-txt"><?php esc_html_e('Import premium templates for only $2.99/month', 'king-addons'); ?></div>
                                 <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
                                     <button class="promo-btn purchase-btn"><?php esc_html_e('Learn More', 'king-addons'); ?></button>
                                 </a>
@@ -190,7 +190,7 @@ final class Templates
             <div id="premium-promo-popup" style="display:none;">
                 <div class="premium-promo-popup-content">
                     <div class="premium-promo-popup-wrapper">
-                        <div class="premium-promo-popup-txt"><?php esc_html_e('Get unlimited downloads for only $19/year', 'king-addons'); ?></div>
+                        <div class="premium-promo-popup-txt"><?php esc_html_e('Import premium templates for only $2.99/month', 'king-addons'); ?></div>
                         <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
                             <button class="premium-promo-popup-purchase-btn purchase-btn"><?php esc_html_e('Learn More', 'king-addons'); ?></button>
                         </a>
