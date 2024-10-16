@@ -392,6 +392,10 @@ final class Templates
 
     function handle_filter_templates(): void
     {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
         if (!isset($_POST['action']) || $_POST['action'] !== 'filter_templates') {
             wp_send_json_error('Invalid request');
             return;
@@ -412,6 +416,10 @@ final class Templates
 
     public function import_elementor_page_with_images(): void
     {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
         $import_data = json_decode(stripslashes($_POST['data']), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -455,6 +463,10 @@ final class Templates
 
     public function process_import_images(): void
     {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
         $start_time = time();
         $timeout = 30;
 

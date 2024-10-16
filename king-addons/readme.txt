@@ -1,7 +1,7 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.8.83
+Stable tag: 24.8.84
 Tested up to: 6.6
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -99,6 +99,10 @@ Yes! We developed King Addons with a performance-first philosophy in mind.
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.8.84 - 2024-10-16 =
+* Improved: Lazy loading for carousel widgets.
+* Improved: Security.
 
 = King Addons for Elementor version 24.8.83 - 2024-10-03 =
 * New: Monthly plan for Premium Templates.

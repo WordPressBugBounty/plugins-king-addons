@@ -94,3 +94,8 @@
 .king-addons-blog-posts-image {
     display: flex;
 }
+
+.swiper-container:not(.swiper-container-initialized) > .swiper-wrapper,
+.swiper:not(.swiper-initialized) > .swiper-wrapper {
+    overflow: visible !important;
+}
