@@ -338,7 +338,7 @@ class Price_List extends Widget_Base
         $this->add_control(
             'kng_price_list_line_heading_1',
             [
-                'label' => esc_html__('Title --- Price', 'textdomain'),
+                'label' => esc_html__('Title --- Price', 'king-addons'),
                 'type' => Controls_Manager::HEADING,
             ]
         );
@@ -390,7 +390,7 @@ class Price_List extends Widget_Base
         $this->add_control(
             'kng_price_list_line_heading_2',
             [
-                'label' => esc_html__('Under Title', 'textdomain'),
+                'label' => esc_html__('Under Title', 'king-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -460,7 +460,7 @@ class Price_List extends Widget_Base
         $this->add_control(
             'kng_price_list_line_heading_3',
             [
-                'label' => esc_html__('Between Items', 'textdomain'),
+                'label' => esc_html__('Between Items', 'king-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]

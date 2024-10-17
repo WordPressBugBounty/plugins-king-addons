@@ -520,10 +520,10 @@ class Image_Hover_Box extends Widget_Base
         $this->add_control(
             'king_addons_image_hover_box_blend_mode',
             [
-                'label' => esc_html__('Blend Mode', 'elementor'),
+                'label' => esc_html__('Blend Mode', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
                 'options' => array(
-                    '' => esc_html__('Normal', 'elementor'),
+                    '' => esc_html__('Normal', 'king-addons'),
                     'multiply' => 'Multiply',
                     'screen' => 'Screen',
                     'overlay' => 'Overlay',

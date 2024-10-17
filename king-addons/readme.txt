@@ -1,7 +1,7 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.8.84
+Stable tag: 24.8.85
 Tested up to: 6.6
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -45,8 +45,8 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 - [**Creative Button**](https://kingaddons.com/elementor/creative-button/) - Add a touch of creativity to your website with the Creative Button widget. Perfect for unique and eye-catching call-to-actions. Customize shapes, colors, and effects to align with your brand and capture visitor attention. Ideal for enhancing user engagement and driving interactions.
 - [**Hovering Image Stack**](https://kingaddons.com/elementor/hovering-image-stack/) - Create visually appealing image stacks to showcase multiple images in a layered format. Perfect for portfolios, product displays, or galleries. Customize the stack style, spacing, and effects to match your website design and provide a unique visual experience for your visitors.
 - [**Content Hover & Flip Box**](https://kingaddons.com/elementor/content-hover-flip-box/) - Showcase interactive content with the Content Hover Box widget. This versatile tool includes various hover effects and also has the Flip Box effect for enhanced engagement. Perfect for highlighting features, services, or promotions in a visually appealing way. Customize the layout, colors, and effects to match your website design.
-- [**Flip Countdown & Timer**](https://kingaddons.com/) - Add dynamic urgency to your events or promotions with the Flip Countdown widget. This tool features a unique flipping animation, perfect for time-limited offers, upcoming launches, or important dates. Customize the design, format, and style to match your website, ensuring it captures visitors attention and encourages action.
-- [**Smooth Counter**](https://kingaddons.com/) - Showcase your statistics or milestones with the Smooth Counter widget. Featuring seamless animations, this tool is perfect for displaying numbers, achievements, or progress in an engaging way. Customize the design, animation speed, and style to match your website, ensuring it draws visitors attention and enhances your content.
+- [**Flip Countdown & Timer**](https://kingaddons.com/elementor/flip-countdown-timer/) - Add dynamic urgency to your events or promotions with the Flip Countdown widget. This tool features a unique flipping animation, perfect for time-limited offers, upcoming launches, or important dates. Customize the design, format, and style to match your website, ensuring it captures visitors attention and encourages action.
+- [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/) - Showcase your statistics or milestones with the Smooth Counter widget. Featuring seamless animations, this tool is perfect for displaying numbers, achievements, or progress in an engaging way. Customize the design, animation speed, and style to match your website, ensuring it draws visitors attention and enhances your content.
 - [**Testimonial & Review**](https://kingaddons.com/) - Build trust and credibility with the Testimonial widget. Perfect for showcasing customer reviews, feedback, or client success stories. Customize the layout, design, and style to fit your brand, ensuring that positive experiences stand out and resonate with your audience.
 - [**Testimonial & Review Carousel**](https://kingaddons.com/) - Display customer feedback and reviews dynamically with the Testimonial & Review Carousel widget. Ideal for showcasing client testimonials, ratings, or success stories in a sliding format. Customize the layout, transition effects, and style to match your brand, making positive experiences stand out and engage your audience effectively.
 
@@ -90,6 +90,10 @@ Absolutely! It will work with any theme where Elementor works.
 
 Yes! We developed King Addons with a performance-first philosophy in mind.
 
+= How can I report security bugs? =
+
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/king-addons)
+
 == Screenshots ==
 
 1. King Addons for Elementor - Dashboard
@@ -99,6 +103,12 @@ Yes! We developed King Addons with a performance-first philosophy in mind.
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.8.85 - 2024-10-18 =
+* New: Flip Countdown & Timer demo added.
+* New: Smooth Counter demo added.
+* Improved: Security.
+* Improved: Translation strings.
 
 = King Addons for Elementor version 24.8.84 - 2024-10-16 =
 * Improved: Lazy loading for carousel widgets.

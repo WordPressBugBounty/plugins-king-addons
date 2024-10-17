@@ -1200,6 +1200,7 @@ class Testimonial extends Widget_Base
             'itemprop' => 'ratingValue',
             'content' => $this->get_rating_value(),
             'role' => 'img',
+            /* translators: %1$s is rating value, %2$s is rating scale */
             'aria-label' => sprintf(esc_html__('Rated %1$s out of %2$s', 'king-addons'),
                 $this->get_rating_value(),
                 $this->get_rating_scale()

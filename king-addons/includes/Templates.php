@@ -74,7 +74,7 @@ final class Templates
                         <div class="kng-navigation">
                             <div class="kng-nav-item kng-nav-item-current">
                                 <a href="../wp-admin/admin.php?page=king-addons">
-                                    <img src="<?php echo KING_ADDONS_URL . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
                                          alt="<?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?>">
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?></div>
                                 </a>
@@ -82,14 +82,14 @@ final class Templates
                             <?php if (!$is_premium_active): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a id="activate-license-btn">
-                                        <img src="<?php echo KING_ADDONS_URL . 'includes/admin/img/up.svg'; ?>"
+                                        <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/up.svg'; ?>"
                                              alt="<?php echo esc_html__('Activate License', 'king-addons'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Activate License', 'king-addons'); ?></div>
                                     </a>
                                 </div>
                                 <div class="kng-nav-item">
                                     <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
-                                        <img src="<?php echo KING_ADDONS_URL . 'includes/admin/img/icon-for-templates.svg'; ?>"
+                                        <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
                                              alt="<?php echo esc_html__('Buy Premium', 'king-addons'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Buy Premium', 'king-addons'); ?></div>
                                     </a>
@@ -137,10 +137,10 @@ final class Templates
                                placeholder="<?php esc_attr_e('Search templates...', 'king-addons'); ?>">
                     </div>
                     <div class="templates-grid">
-                        <?php echo $result['grid_html']; ?>
+                        <?php echo $result['grid_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                     </div>
                     <div class="pagination">
-                        <?php echo $result['pagination_html']; ?>
+                        <?php echo $result['pagination_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                     </div>
                 </div>
             </div>
@@ -351,7 +351,7 @@ final class Templates
         ));
         if ($pages) {
             echo '<div id="king-addons-pagination-inner-wrap" class="pagination-inner-wrap"><div class="pagination-inner">';
-            echo $pages;
+            echo $pages; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo '</div></div>';
         }
 
