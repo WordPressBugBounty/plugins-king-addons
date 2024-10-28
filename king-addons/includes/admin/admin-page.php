@@ -24,6 +24,13 @@ $options = get_option('king_addons_options');
             </div>
             <div class="kng-intro-wrap-2">
                 <div class="kng-navigation">
+                    <div class="kng-nav-item kng-nav-item-current">
+                        <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
+                            <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                 alt="<?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?>">
+                            <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
+                        </a>
+                    </div>
                     <div class="kng-nav-item">
                         <a href="../wp-admin/admin.php?page=king-addons-templates">
                             <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"

@@ -1,7 +1,7 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.8.85
+Stable tag: 24.10.29
 Tested up to: 6.6
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -21,6 +21,10 @@ King Addons for [Elementor](https://wordpress.org/plugins/elementor/) is 200+ pr
 Discover the power of Image Hotspots to create engaging, interactive images, or use the Image Comparison widget for vivid before-and-after showcases. Our Vertical Scrollable Image widget enhances storytelling, while the Global Section Container simplifies design consistency across your site. Features like Particles Background, Parallax Background, Matte Glass Background, and various animations add a layer of sophistication and interactivity to your pages.
 
 With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking entire sections, and the Duplicator for effortless content replication, King Addons is the ultimate toolkit for web designers seeking to push the boundaries of creativity and efficiency. Designed with performance in mind, these addons utilize minimal resources, ensuring your website remains swift and seamless. Elevate your Elementor experience with King Addons, and bring your website design to life in ways you never imagined possible, because the plugin works perfectly in unyson with Elementor.
+
+### FREE Special Extensions
+
+- **Elementor Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -47,8 +51,8 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 - [**Content Hover & Flip Box**](https://kingaddons.com/elementor/content-hover-flip-box/) - Showcase interactive content with the Content Hover Box widget. This versatile tool includes various hover effects and also has the Flip Box effect for enhanced engagement. Perfect for highlighting features, services, or promotions in a visually appealing way. Customize the layout, colors, and effects to match your website design.
 - [**Flip Countdown & Timer**](https://kingaddons.com/elementor/flip-countdown-timer/) - Add dynamic urgency to your events or promotions with the Flip Countdown widget. This tool features a unique flipping animation, perfect for time-limited offers, upcoming launches, or important dates. Customize the design, format, and style to match your website, ensuring it captures visitors attention and encourages action.
 - [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/) - Showcase your statistics or milestones with the Smooth Counter widget. Featuring seamless animations, this tool is perfect for displaying numbers, achievements, or progress in an engaging way. Customize the design, animation speed, and style to match your website, ensuring it draws visitors attention and enhances your content.
-- [**Testimonial & Review**](https://kingaddons.com/) - Build trust and credibility with the Testimonial widget. Perfect for showcasing customer reviews, feedback, or client success stories. Customize the layout, design, and style to fit your brand, ensuring that positive experiences stand out and resonate with your audience.
-- [**Testimonial & Review Carousel**](https://kingaddons.com/) - Display customer feedback and reviews dynamically with the Testimonial & Review Carousel widget. Ideal for showcasing client testimonials, ratings, or success stories in a sliding format. Customize the layout, transition effects, and style to match your brand, making positive experiences stand out and engage your audience effectively.
+- [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/) - Build trust and credibility with the Testimonial widget. Perfect for showcasing customer reviews, feedback, or client success stories. Customize the layout, design, and style to fit your brand, ensuring that positive experiences stand out and resonate with your audience.
+- [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/) - Display customer feedback and reviews dynamically with the Testimonial & Review Carousel widget. Ideal for showcasing client testimonials, ratings, or success stories in a sliding format. Customize the layout, transition effects, and style to match your brand, making positive experiences stand out and engage your audience effectively.
 
 ### FREE Elementor features, extensions, tools
 
@@ -104,6 +108,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.10.29 - 2024-10-29 =
+* New: We are excited to introduce our brand-new functionality for creating custom headers and footers, available in the King Addons submenu as the Elementor Header & Footer Builder.
+* New: Templates Catalog - Added 8 premium templates.
+* New: Testimonial & Review Carousel demo added.
+* New: Testimonial & Review demo added.
+* Improved: Testimonial & Review Carousel widget.
+* Improved: Testimonial & Review widget.
+
 = King Addons for Elementor version 24.8.85 - 2024-10-18 =
 * New: Flip Countdown & Timer demo added.
 * New: Smooth Counter demo added.
@@ -148,7 +160,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * Improved: Templates Catalog - the search works better now.
 
 = King Addons for Elementor version 24.8.67 - 2024-08-21 =
-* New: We are excited to introduce our brand new premium template catalog, available in the menu as King Templates. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site.
+* New: We are excited to introduce our brand-new premium template catalog, available in the menu as King Templates. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site.
 
 = King Addons for Elementor version 24.8.39 - 2024-08-07 =
 * New: Content Hover & Flip Box widget and demo added.

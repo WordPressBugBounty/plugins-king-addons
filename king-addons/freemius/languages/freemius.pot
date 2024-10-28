@@ -2339,7 +2339,7 @@ msgid "Non-expiring"
 msgstr ""
 
 #: templates/forms/affiliation.php:89
-msgid "Apply to become an affiliate"
+msgid "Apply to become a partner"
 msgstr ""
 
 #: templates/forms/affiliation.php:137
@@ -2363,11 +2363,11 @@ msgid "Your affiliate application for %s has been accepted! Log in to your affil
 msgstr ""
 
 #: templates/forms/affiliation.php:150
-msgid "Like the %s? Become our ambassador and earn cash ;-)"
+msgid "Like the %s?"
 msgstr ""
 
 #: templates/forms/affiliation.php:151
-msgid "Refer new customers to our %s and earn %s commission on each successful sale you refer!"
+msgid "Refer new customers to our %s and earn %s commission on each successful sale you refer. Become a partner and have passive income!"
 msgstr ""
 
 #: templates/forms/affiliation.php:154
@@ -2399,7 +2399,7 @@ msgid "Payouts are in USD and processed monthly via PayPal."
 msgstr ""
 
 #: templates/forms/affiliation.php:168
-msgid "As we reserve 30 days for potential refunds, we only pay commissions that are older than 30 days."
+msgid "Trusted partner."
 msgstr ""
 
 #: templates/forms/affiliation.php:171
@@ -2471,7 +2471,7 @@ msgid "Cancel"
 msgstr ""
 
 #: templates/forms/affiliation.php:240
-msgid "Become an affiliate"
+msgid "Become a partner"
 msgstr ""
 
 #: templates/forms/data-debug-mode.php:25

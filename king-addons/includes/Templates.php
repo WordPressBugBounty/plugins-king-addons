@@ -79,6 +79,13 @@ final class Templates
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?></div>
                                 </a>
                             </div>
+                            <div class="kng-nav-item kng-nav-item-current">
+                                <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
+                                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                         alt="<?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?>">
+                                    <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
+                                </a>
+                            </div>
                             <?php if (!$is_premium_active): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a id="activate-license-btn">
@@ -423,7 +430,6 @@ final class Templates
         $import_data = json_decode(stripslashes($_POST['data']), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log('JSON decode error: ' . json_last_error_msg());
             wp_send_json_error('JSON decode error: ' . json_last_error_msg());
             return;
         }
@@ -456,7 +462,6 @@ final class Templates
                 'images' => $image_data
             ]);
         } else {
-            error_log('Invalid import data structure: ' . json_encode($import_data));
             wp_send_json_error('Invalid import data.');
         }
     }
@@ -617,7 +622,6 @@ final class Templates
 
             return $attach_id;
         } catch (Exception $e) {
-            error_log('Error downloading image: ' . $e->getMessage());
             return false;
         }
     }

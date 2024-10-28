@@ -272,7 +272,7 @@ html,
 
 .kng-intro {
     margin-bottom: 20px;
-    padding: 25px 15px 15px 30px;
+    padding: 20px 15px 20px 30px;
     background: #1a1b1b;
 }
 
@@ -295,6 +295,7 @@ html,
     font-weight: 300;
     letter-spacing: 0.25px;
     color: rgb(255 255 255 / 70%);
+    margin: 10px 20px;
 }
 
 /*noinspection SpellCheckingInspection*/
@@ -324,22 +325,26 @@ html,
 .kng-intro-wrap {
     display: flex;
     align-items: center;
-    flex-flow: row;
+    flex-flow: wrap;
 }
 
 .kng-intro-wrap-1 {
     flex-basis: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .kng-intro-wrap-2 {
     display: flex;
+    flex-basis: 100%;
+    margin-top: 15px;
 }
 
 .kng-navigation {
     display: flex;
     flex-flow: row;
     justify-content: end;
-    min-width: 600px;
+    min-width: 00px;
 }
 
 .kng-nav-item a {

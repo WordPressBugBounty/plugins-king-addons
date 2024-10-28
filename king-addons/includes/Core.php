@@ -58,9 +58,15 @@ final class Core
             // Freemius connect
             require_once(KING_ADDONS_PATH . 'includes/FreemiusInit.php');
 
-            // Screens
+            // Templates
             require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
             require_once(KING_ADDONS_PATH . 'includes/Templates.php');
+
+            // Extensions
+            require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/Header_Footer_Builder.php');
+            Header_Footer_Builder::instance();
+
+            // Admin
             require_once(KING_ADDONS_PATH . 'includes/Admin.php');
 
             // Additional

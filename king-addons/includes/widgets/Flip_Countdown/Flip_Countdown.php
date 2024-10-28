@@ -53,7 +53,7 @@ class Flip_Countdown extends Widget_Base
 
     public function get_custom_help_url(): string
     {
-        return 'https://kingaddons.com/elementor/flip-countdown/';
+        return 'https://kingaddons.com/elementor/flip-countdown-timer/';
     }
 
     protected function register_controls(): void

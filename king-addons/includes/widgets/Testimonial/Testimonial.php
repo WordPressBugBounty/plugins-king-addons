@@ -52,7 +52,7 @@ class Testimonial extends Widget_Base
 
     public function get_custom_help_url(): string
     {
-        return 'https://kingaddons.com/elementor/testimonial/';
+        return 'https://kingaddons.com/elementor/testimonial-review/';
     }
 
     protected function register_controls(): void

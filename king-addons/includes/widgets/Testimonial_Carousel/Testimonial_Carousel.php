@@ -23,7 +23,7 @@ class Testimonial_Carousel extends Widget_Base
 {
     public function get_name(): string
     {
-        return 'king-addons-testimonial';
+        return 'king-addons-testimonial-carousel';
     }
 
     public function get_title(): string
@@ -60,7 +60,7 @@ class Testimonial_Carousel extends Widget_Base
 
     public function get_custom_help_url(): string
     {
-        return 'https://kingaddons.com/elementor/testimonial-carousel-carousel/';
+        return 'https://kingaddons.com/elementor/testimonial-review-carousel/';
     }
 
     protected function register_controls(): void
