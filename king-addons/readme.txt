@@ -1,7 +1,7 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.10.29
+Stable tag: 24.10.31
 Tested up to: 6.6
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -22,9 +22,9 @@ Discover the power of Image Hotspots to create engaging, interactive images, or 
 
 With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking entire sections, and the Duplicator for effortless content replication, King Addons is the ultimate toolkit for web designers seeking to push the boundaries of creativity and efficiency. Designed with performance in mind, these addons utilize minimal resources, ensuring your website remains swift and seamless. Elevate your Elementor experience with King Addons, and bring your website design to life in ways you never imagined possible, because the plugin works perfectly in unyson with Elementor.
 
-### FREE Special Extensions
+### FREE Elementor special extensions
 
-- **Elementor Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
+- **Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -108,8 +108,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.10.31 - 2024-10-31 =
+* New: Templates Catalog - Added 16 premium templates.
+* Improved: The design of dashboard.
+
 = King Addons for Elementor version 24.10.29 - 2024-10-29 =
-* New: We are excited to introduce our brand-new functionality for creating custom headers and footers, available in the King Addons submenu as the Elementor Header & Footer Builder.
+* New: We are excited to introduce our brand-new functionality for creating custom headers and footers, available in the menu as the Header & Footer.
 * New: Templates Catalog - Added 8 premium templates.
 * New: Testimonial & Review Carousel demo added.
 * New: Testimonial & Review demo added.

@@ -4,7 +4,7 @@
  * Description: King Addons has 200+ premium templates, 30+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.10.29
+ * Version: 24.10.31
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-const KING_ADDONS_VERSION = '24.10.29';
+const KING_ADDONS_VERSION = '24.10.31';
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
 const KING_ADDONS_MINIMUM_ELEMENTOR_VERSION = '3.19.0';
 const KING_ADDONS__FILE__ = __FILE__;
@@ -90,7 +90,12 @@ if (!function_exists('king_addons_hideAnotherNotices')) {
     function king_addons_hideAnotherNotices()
     {
         $current_screen = get_current_screen()->id;
-        if ($current_screen == 'toplevel_page_king-addons' || $current_screen == 'toplevel_page_king-addons-templates') {
+        if (
+            $current_screen == 'toplevel_page_king-addons' ||
+            $current_screen == 'edit-king-addons-el-hf' ||
+            $current_screen == 'header-footer_page_king-addons-el-hf-settings' ||
+            $current_screen == 'toplevel_page_king-addons-templates'
+        ) {
             // Remove all notices
             remove_all_actions('user_admin_notices');
             remove_all_actions('admin_notices');

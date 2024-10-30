@@ -81,6 +81,8 @@ $options = get_option('king_addons_options');
                 ?>
                 <tr class="<?php echo esc_attr($class); ?>">
                     <td>
+                        <div class="kng-td-wrap-before-1"></div>
+                        <div class="kng-td-wrap-before-2"></div>
                         <div class="kng-td-wrap">
                             <div class="kng-td">
                                 <div class="kng-td-icon">

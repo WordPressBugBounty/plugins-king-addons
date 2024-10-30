@@ -64,7 +64,7 @@ html,
 }
 
 .kng-tr {
-    padding: 30px;
+    padding: 30px 50px;
     border-radius: 30px;
     background: #1a1b1b;
 }
@@ -76,7 +76,7 @@ html,
 /*noinspection CssNonIntegerLengthInPixels*/
 .kng-tr-parallax-background .kng-td-content h3:after,
 .kng-tr-testimonial .kng-td-content h3:after,
-.kng-tr-content-flip-box .kng-td-content h3:after,
+/*.kng-tr-content-flip-box .kng-td-content h3:after,*/
 .kng-tr-styled-text-builder .kng-td-content h3:after,
 .kng-tr-card-carousel .kng-td-content h3:after,
 .kng-tr-auto-scrolling-text .kng-td-content h3:after,
@@ -95,6 +95,51 @@ html,
     background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+tr {
+    position: relative;
+}
+
+.kng-tr .kng-td-wrap-before-1,
+.kng-tr .kng-td-wrap-before-2 {
+    opacity: 0;
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border: 0;
+    transition: all 600ms;
+}
+
+.kng-tr:hover .kng-td-wrap-before-1,
+.kng-tr:hover .kng-td-wrap-before-2 {
+    opacity: 1;
+}
+
+.kng-tr .kng-td-wrap-before-1::after,
+.kng-tr .kng-td-wrap-before-2::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    border: 3px solid rgba(0, 0, 0, 0);
+    --kng-addons-around-gradient: linear-gradient(to bottom right, transparent, transparent, transparent, transparent);
+    --kng-addons-around-bg-size: calc(100% + 14px);
+    background: var(--kng-addons-around-gradient) 50% / var(--kng-addons-around-bg-size) var(--kng-addons-around-bg-size);
+    mask: linear-gradient(hsla(0, 0%, 100%, 0), hsla(0, 0%, 100%, 0)), linear-gradient(hsl(0, 0%, 100%), hsl(0, 0%, 100%));
+    mask-clip: padding-box, border-box;
+    mask-composite: intersect;
+    transition: all 600ms;
+}
+
+.kng-tr:hover .kng-td-wrap-before-1::after,
+.kng-tr:hover .kng-td-wrap-before-2::after {
+    --kng-addons-around-gradient: linear-gradient(to bottom right, #0894FF 0%, #C959DD 34%, #FF2E54 68%, #FF9004);
+}
+
+.kng-tr:hover .kng-td-wrap-before-2 {
+    filter: blur(7px);
 }
 
 .kng-many-styles {

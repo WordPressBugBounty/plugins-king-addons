@@ -44,12 +44,14 @@ final class ELHF_Settings_Page
     function renderSettingsPage()
     {
         echo '<div class="wrap">';
+        echo '<div class="header-wrap">';
 
         echo '<h1 class="wp-heading-inline">';
         echo esc_html__('Elementor Header & Footer Builder ', 'king-addons');
         echo '</h1>';
 
         $this->renderTabs();
+        echo '</div>';
 
         if (isset($_GET['page'])) { // PHPCS:Ignore WordPress.Security.NonceVerification.Recommended
             switch ($_GET['page']) { // PHPCS:Ignore WordPress.Security.NonceVerification.Recommended
