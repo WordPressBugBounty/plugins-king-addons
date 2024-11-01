@@ -46,7 +46,7 @@ class Price_List extends Widget_Base
     public function get_keywords(): array
     {
         return ['rows', 'kingaddons', 'king-addons', 'king', 'addons', 'business price', 'opening', 'working', 'office',
-            'store', 'price of operation', 'schedule', 'time', 'availability', 'service', 'schedule', 'operating', 'shop',
+            'store', 'price of operation', 'schedule', 'time', 'availability', 'service', 'services', 'operating', 'shop',
             'list', 'business', 'price', 'times', 'operation', 'list', 'title', 'titles', 'description', 'row', 'column',
             'prices', 'columns', 'pricing', 'menu', 'store', 'cafe', 'restaurant', 'coffee', 'lunch', 'dish', 'dishes',
             'kitchen', 'cook', 'cooking', 'order', 'book', 'rate', 'sheet', 'catalog', 'guide', 'chart', 'schedule',

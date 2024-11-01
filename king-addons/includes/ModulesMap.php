@@ -237,6 +237,16 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                 ],
+                'feature-list' => [
+                    'title' => esc_html__('Feature List', 'king-addons'),
+                    'description' => esc_html__('Showcase key features or benefits with the Feature List widget. Perfect for highlighting product or service advantages in an organized and visually appealing format. Each list item can include icons, badges, and descriptions for added emphasis. Customize the layout, style, and icons to match your website design and engage your audience effectively.', 'king-addons'),
+                    'php-class' => 'Feature_List',
+                    'docs-link' => '',
+//                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                ],
 //                'test' => [
 //                    'title' => esc_html__('test', 'king-addons'),
 //                    'description' => esc_html__('', 'king-addons'),

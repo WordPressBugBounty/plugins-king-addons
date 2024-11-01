@@ -48,7 +48,7 @@ final class RegisterAssets
     {
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget_array) {
             foreach ($widget_array['js'] as $js) {
-                wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-' . $js, KING_ADDONS_URL . 'includes/widgets/' . $widget_array['php-class'] . '/' . $js . '.js', null, KING_ADDONS_VERSION);
+                wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-' . $js, KING_ADDONS_URL . 'includes/widgets/' . $widget_array['php-class'] . '/' . $js . '.js', array('jquery'), KING_ADDONS_VERSION);
             }
         }
         foreach (ModulesMap::getModulesMapArray()['features'] as $feature_id => $feature_array) {

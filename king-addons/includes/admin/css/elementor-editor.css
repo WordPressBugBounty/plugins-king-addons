@@ -62,10 +62,15 @@
     color: rgb(87, 79, 247);
 }
 
+.elementor-panel .elementor-element:has(.king-addons-icon) {
+    border: 1px solid rgb(87 79 247 / 100%);
+}
+
 .elementor-panel #elementor-panel-category-king-addons .elementor-element {
     border: 1px solid rgb(87 79 247 / 20%);
 }
 
+.elementor-panel .elementor-element:hover:has(.king-addons-icon),
 .elementor-panel #elementor-panel-category-king-addons .elementor-element:hover {
     background-color: rgb(87 79 247 / 5%);
 }
@@ -172,4 +177,8 @@
 
 .king-addons-icon.king-addons-testimonial-carousel {
     background-image: url(../img/testimonial-carousel.svg);
+}
+
+.king-addons-icon.king-addons-feature-list {
+    background-image: url(../img/feature-list.svg);
 }
