@@ -34,8 +34,8 @@ $options = get_option('king_addons_options');
                     <div class="kng-nav-item">
                         <a href="../wp-admin/admin.php?page=king-addons-templates">
                             <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
-                                 alt="<?php echo esc_html__('Premium Templates', 'king-addons'); ?>">
-                            <div class="kng-nav-item-txt"><?php echo esc_html__('Premium Templates', 'king-addons'); ?></div>
+                                 alt="<?php echo esc_html__('Free Templates', 'king-addons'); ?>">
+                            <div class="kng-nav-item-txt"><?php echo esc_html__('Free Templates', 'king-addons'); ?></div>
                         </a>
                     </div>
                 </div>

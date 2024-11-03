@@ -62,7 +62,7 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
             require_once(KING_ADDONS_PATH . 'includes/Templates.php');
 
-            // Extensions
+            // Header & Footer Builder
             require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/Header_Footer_Builder.php');
             Header_Footer_Builder::instance();
 

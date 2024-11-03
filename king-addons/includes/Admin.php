@@ -32,8 +32,6 @@ final class Admin
             58.7
         );
 
-        self::showHeaderFooterBuilder();
-
         add_menu_page(
             'King Templates',
             'King Templates',
@@ -43,11 +41,12 @@ final class Admin
             KING_ADDONS_URL . 'includes/admin/img/icon-for-templates.svg',
             58.71
         );
+
+        self::showHeaderFooterBuilder();
     }
 
     function showHeaderFooterBuilder(): void
     {
-//        add_action('admin_menu', function() {
             $post_type = 'king-addons-el-hf';
             $menu_slug = 'edit.php?post_type=' . $post_type;
 
@@ -62,17 +61,6 @@ final class Admin
                 58.72
             );
 
-            // Remove default 'All Items' submenu
-//            global $submenu;
-//            if (isset($submenu[$menu_slug])) {
-//                foreach ($submenu[$menu_slug] as $key => $item) {
-//                    if ($item[2] === $menu_slug) {
-//                        unset($submenu[$menu_slug][$key]);
-//                        break;
-//                    }
-//                }
-//            }
-
             // Add 'All Templates' Submenu - this will be the first submenu item
             add_submenu_page(
                 $menu_slug, // Parent slug matches the main menu slug
@@ -81,7 +69,6 @@ final class Admin
                 'edit_posts',
                 $menu_slug
             );
-//        }, 10);
     }
 
     function showAdminPage(): void

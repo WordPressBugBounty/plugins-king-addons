@@ -374,6 +374,10 @@ final class ModulesMap
                     'css' => [],
                     'js' => ['imagesloaded']
                 ],
+                'wpcolorpicker' => [
+                    'css' => [],
+                    'js' => ['wpcolorpicker']
+                ],
             ]
         ];
     }

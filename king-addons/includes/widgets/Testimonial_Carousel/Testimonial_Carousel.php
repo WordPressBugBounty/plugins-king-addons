@@ -2457,27 +2457,21 @@ class Testimonial_Carousel extends Widget_Base
         ob_start();
 
         for ($index = 1; $index <= $rating_scale; $index++) {
-            $this->add_render_attribute('icon_marked_' . $index, [
-                'class' => 'king-addons-testimonial-carousel-icon-wrapper king-addons-testimonial-carousel-icon-marked',
-            ]);
+            echo '<div class="king-addons-testimonial-carousel-icon">';
 
             $icon_marked_width = $this->get_icon_marked_width($settings_all, $settings, $index);
 
-            if ('100%' !== $icon_marked_width) {
-                $this->add_render_attribute('icon_marked_' . $index, [
-                    'style' => '--king-addons-testimonial-carousel-rating-icon-marked-width: ' . $icon_marked_width . ';',
-                ]);
-            }
-            ?>
-            <div class="king-addons-testimonial-carousel-icon">
-                <div <?php $this->print_render_attribute_string('icon_marked_' . $index); ?>>
-                    <?php echo Icons_Manager::try_get_icon_html($icon, ['aria-hidden' => 'true']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                </div>
-                <div class="king-addons-testimonial-carousel-icon-wrapper king-addons-testimonial-carousel-icon-unmarked">
-                    <?php echo Icons_Manager::try_get_icon_html($icon, ['aria-hidden' => 'true']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                </div>
-            </div>
-            <?php
+            $style_attribute = $icon_marked_width !== '100%' ? 'style="--king-addons-testimonial-carousel-rating-icon-marked-width: ' . esc_attr($icon_marked_width) . ';"' : '';
+
+            echo '<div class="king-addons-testimonial-carousel-icon-wrapper king-addons-testimonial-carousel-icon-marked" ' . $style_attribute . '>';
+            echo Icons_Manager::try_get_icon_html($icon, ['aria-hidden' => 'true']);
+            echo '</div>';
+
+            echo '<div class="king-addons-testimonial-carousel-icon-wrapper king-addons-testimonial-carousel-icon-unmarked">';
+            echo Icons_Manager::try_get_icon_html($icon, ['aria-hidden' => 'true']);
+            echo '</div>';
+
+            echo '</div>';
         }
 
         return ob_get_clean();
@@ -2485,35 +2479,27 @@ class Testimonial_Carousel extends Widget_Base
 
     protected function renderRating($settings_all, $settings): void
     {
-        $this->add_render_attribute('widget', [
-            'class' => 'king-addons-testimonial-carousel-rating',
-            'itemtype' => 'https://schema.org/Rating',
-            'itemscope' => '',
-            'itemprop' => 'reviewRating',
-        ]);
+        $rating_value = $this->get_rating_value($settings_all, $settings);
+        $rating_scale = $this->get_rating_scale($settings_all);
+        $aria_label = sprintf(
+            esc_html__('Rated %1$s out of %2$s', 'king-addons'),
+            $rating_value,
+            $rating_scale
+        );
 
-        $this->add_render_attribute('widget_wrapper', [
-            'class' => 'king-addons-testimonial-carousel-rating-wrapper',
-            'itemprop' => 'ratingValue',
-            'content' => $this->get_rating_value($settings_all, $settings),
-            'role' => 'img',
-            /* translators: %1$s is rating value, %2$s is rating scale */
-            'aria-label' => sprintf(esc_html__('Rated %1$s out of %2$s', 'king-addons'),
-                $this->get_rating_value($settings_all, $settings),
-                $this->get_rating_scale($settings_all)
-            ),
-        ]);
+        echo '<div class="king-addons-testimonial-carousel-rating" itemtype="https://schema.org/Rating" itemscope itemprop="reviewRating">';
         ?>
-        <div <?php $this->print_render_attribute_string('widget'); ?>>
-            <meta itemprop="worstRating" content="0">
-            <meta itemprop="bestRating"
-                  content="<?php echo $this->get_rating_scale($settings_all); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                  ?>">
-            <div <?php $this->print_render_attribute_string('widget_wrapper'); ?>>
-                <?php echo $this->get_icon_markup($settings_all, $settings); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                ?>
-            </div>
+        <meta itemprop="worstRating" content="0">
+        <meta itemprop="bestRating"
+              content="<?php echo esc_attr($rating_scale); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+              ?>">
+        <div class="king-addons-testimonial-carousel-rating-wrapper" itemprop="ratingValue"
+             content="<?php echo esc_attr($rating_value); ?>" role="img"
+             aria-label="<?php echo esc_attr($aria_label); ?>">
+            <?php echo $this->get_icon_markup($settings_all, $settings); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            ?>
         </div>
         <?php
+        echo '</div>';
     }
 }

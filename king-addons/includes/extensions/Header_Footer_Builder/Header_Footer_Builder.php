@@ -31,7 +31,6 @@ final class Header_Footer_Builder
         add_action('save_post', [$this, 'saveMetaboxData']);
         add_action('template_redirect', [$this, 'checkUserCanEdit']);
         add_filter('single_template', [$this, 'loadElementorCanvasTemplate']);
-//        add_action('init', [$this, 'setupSettingsPage']);
         self::setCompatibility();
         add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
 

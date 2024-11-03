@@ -94,13 +94,6 @@ final class Templates
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Activate License', 'king-addons'); ?></div>
                                     </a>
                                 </div>
-                                <div class="kng-nav-item">
-                                    <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
-                                        <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
-                                             alt="<?php echo esc_html__('Buy Premium', 'king-addons'); ?>">
-                                        <div class="kng-nav-item-txt"><?php echo esc_html__('Buy Premium', 'king-addons'); ?></div>
-                                    </a>
-                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -127,7 +120,7 @@ final class Templates
                             <?php endforeach; ?>
                         </div>
 
-                        <button id="reset-filters"><?php esc_html_e('Reset Filters', 'king-addons'); ?></button>
+                        <button id="reset-filters"><?php esc_html_e('Reset Search & Filters', 'king-addons'); ?></button>
                         <?php if (!$is_premium_active): ?>
                             <div class="promo-wrapper">
                                 <div class="promo-txt"><?php esc_html_e('Import premium templates for only $2.99/month', 'king-addons'); ?></div>
@@ -320,7 +313,7 @@ final class Templates
 
         ob_start();
         if (empty($paged_templates)) {
-            echo '<p>' . esc_html__('No templates found.', 'king-addons') . '</p>';
+            echo '<p class="templates-not-found">' . esc_html__('No templates found.', 'king-addons') . '</p>';
         } else {
             foreach ($paged_templates as $key => $template) {
                 $attr_key = ($has_search) ? $template['template_key'] : $key;

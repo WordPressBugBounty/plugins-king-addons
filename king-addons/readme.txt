@@ -1,7 +1,7 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.11.1
+Stable tag: 24.11.4
 Tested up to: 6.6
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -25,6 +25,7 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 ### FREE Elementor special extensions
 
 - **Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
+- **Template Catalog** - It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -53,7 +54,7 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 - [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/) - Showcase your statistics or milestones with the Smooth Counter widget. Featuring seamless animations, this tool is perfect for displaying numbers, achievements, or progress in an engaging way. Customize the design, animation speed, and style to match your website, ensuring it draws visitors attention and enhances your content.
 - [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/) - Build trust and credibility with the Testimonial widget. Perfect for showcasing customer reviews, feedback, or client success stories. Customize the layout, design, and style to fit your brand, ensuring that positive experiences stand out and resonate with your audience.
 - [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/) - Display customer feedback and reviews dynamically with the Testimonial & Review Carousel widget. Ideal for showcasing client testimonials, ratings, or success stories in a sliding format. Customize the layout, transition effects, and style to match your brand, making positive experiences stand out and engage your audience effectively.
-- [**Feature List**](https://kingaddons.com/) - Showcase key features or benefits with the Feature List widget. Perfect for highlighting product or service advantages in an organized and visually appealing format. Each list item can include icons, badges, and descriptions for added emphasis. Customize the layout, style, and icons to match your website design and engage your audience effectively.
+- [**Feature List**](https://kingaddons.com/elementor/feature-list/) - Showcase key features or benefits with the Feature List widget. Perfect for highlighting product or service advantages in an organized and visually appealing format. Each list item can include icons, badges, and descriptions for added emphasis. Customize the layout, style, and icons to match your website design and engage your audience effectively.
 
 ### FREE Elementor features, extensions, tools
 
@@ -109,10 +110,17 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.11.4 - 2024-11-04 =
+* New: Templates Catalog - Added 8 premium templates.
+* New: Feature List demo added.
+* Improved: Testimonial & Review Carousel widget.
+* Improved: UI of Templates Catalog.
+* Improved: UX of Elementor Addons dashboard.
+
 = King Addons for Elementor version 24.11.1 - 2024-11-01 =
 * New: Feature List widget added.
 * New: Templates Catalog - Added 15 premium templates.
-* Improved: UX of Templates Catalog
+* Improved: UX of Templates Catalog.
 
 = King Addons for Elementor version 24.10.31 - 2024-10-31 =
 * New: Templates Catalog - Added 16 premium templates.
