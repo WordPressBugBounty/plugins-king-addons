@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: King Addons
- * Description: King Addons has 200+ premium templates, 30+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
+ * Description: King Addons has 300+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.11.4
+ * Version: 24.11.13
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-const KING_ADDONS_VERSION = '24.11.4';
+const KING_ADDONS_VERSION = '24.11.13';
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
 const KING_ADDONS_MINIMUM_ELEMENTOR_VERSION = '3.19.0';
 const KING_ADDONS__FILE__ = __FILE__;
@@ -29,6 +29,10 @@ const KING_ADDONS_ASSETS_UNIQUE_KEY = 'king-addons';
 
 // Icon for Elementor editor with inline styles included
 const KING_ADDONS_ELEMENTOR_ICON = '<img src="' . KING_ADDONS_URL . 'includes/admin/img/icon-for-elementor.svg" alt="King Addons" style="width: 13px; margin-right: 5px; vertical-align: top;">';
+
+const KING_ADDONS_EXT_HEADER_FOOTER_BUILDER = true;
+//const KING_ADDONS_EXT_POPUP_BUILDER = true;
+const KING_ADDONS_EXT_POPUP_BUILDER = false;
 
 if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
 

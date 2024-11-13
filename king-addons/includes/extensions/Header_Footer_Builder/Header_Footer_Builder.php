@@ -52,7 +52,7 @@ final class Header_Footer_Builder
             'menu_name' => esc_html__('Elementor Header & Footer Builder', 'king-addons'),
             'name_admin_bar' => esc_html__('Elementor Header & Footer Builder', 'king-addons'),
             'add_new' => esc_html__('Add New', 'king-addons'),
-            'add_new_item' => esc_html__('Add New Header or Footer', 'king-addons'),
+            'add_new_item' => esc_html__('Add New', 'king-addons'),
             'new_item' => esc_html__('New Template', 'king-addons'),
             'edit_item' => esc_html__('Edit Template', 'king-addons'),
             'view_item' => esc_html__('View Template', 'king-addons'),
@@ -764,13 +764,16 @@ final class Header_Footer_Builder
     {
         $screen = get_current_screen();
         if ($screen->id === 'edit-king-addons-el-hf') {
-            wp_enqueue_style('king-addons-el-hf-style', KING_ADDONS_URL . 'includes/admin/css/header-footer-builder.css', '', KING_ADDONS_VERSION);
+            // todo - styles
+//            wp_enqueue_style('king-addons-el-hf-style', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/header-footer-builder.css', '', KING_ADDONS_VERSION);
+            wp_enqueue_style('king-addons-el-hf-style', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/admin.css', '', KING_ADDONS_VERSION);
         }
     }
 
     public static function columnHeadings($columns)
     {
         unset($columns['date']);
+        $columns['king_addons_el_hf_edit_template'] = esc_html__('Edit Template', 'king-addons');
         $columns['king_addons_el_hf_type_of_template'] = esc_html__('Type of Template', 'king-addons');
         $columns['king_addons_el_hf_display_rules'] = esc_html__('Display Rules', 'king-addons');
         $columns['date'] = esc_html__('Date', 'king-addons');
@@ -779,6 +782,13 @@ final class Header_Footer_Builder
 
     public static function columnContent($column, $post_id)
     {
+        // Edit Template
+        if ('king_addons_el_hf_edit_template' === $column) {
+            echo '<a class="king-addons-el-hf-edit-template-btn" href="';
+            echo './post.php?post=' . esc_attr($post_id) . '&action=edit';
+            echo '">' . esc_html__('Edit Template', 'king-addons') . '</a>';
+        }
+
         // Display Rules
         if ('king_addons_el_hf_display_rules' === $column) {
             $locations = get_post_meta($post_id, 'king_addons_el_hf_target_include_locations', true);

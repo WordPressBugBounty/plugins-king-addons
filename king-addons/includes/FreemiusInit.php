@@ -13,7 +13,6 @@ final class FreemiusInit
     public function __construct()
     {
         $this->freemius = $this->init_freemius();
-//        $this->freemius->add_filter('show_deactivation_feedback_form', '__return_false');
         add_action('admin_head', [$this, 'add_freemius_data_to_js']);
     }
 
@@ -32,17 +31,13 @@ final class FreemiusInit
                 'has_premium_version' => false,
                 'has_addons' => false,
                 'has_paid_plans' => true,
-//                'trial'               => array(
-//                    'days'               => 30,
-//                    'is_require_payment' => false,
-//                ),
                 'menu' => array(
                     'slug' => 'king-addons',
+                    // 'first-path' => 'admin.php?page=king-addons',
                     'pricing' => false,
                     'contact' => false,
                     'support' => false,
                 ),
-
             ]);
 
             // Signal that SDK was initiated.

@@ -28,7 +28,8 @@ html,
 .kng-intro {
     padding: 30px 30px 30px 30px;
     border-radius: 30px;
-    background: #1a1b1b;
+    background: rgb(26 27 27 / 90%);
+    backdrop-filter: saturate(180%) blur(20px);
 }
 
 .kng-intro-title {
@@ -64,7 +65,7 @@ html,
 }
 
 .kng-tr {
-    padding: 30px 50px;
+    padding: 30px 40px;
     border-radius: 30px;
     background: #1a1b1b;
 }
@@ -76,7 +77,7 @@ html,
 /*noinspection CssNonIntegerLengthInPixels*/
 .kng-tr-parallax-background .kng-td-content h3:after,
 .kng-tr-testimonial .kng-td-content h3:after,
-/*.kng-tr-content-flip-box .kng-td-content h3:after,*/
+    /*.kng-tr-content-flip-box .kng-td-content h3:after,*/
 .kng-tr-styled-text-builder .kng-td-content h3:after,
 .kng-tr-card-carousel .kng-td-content h3:after,
 .kng-tr-auto-scrolling-text .kng-td-content h3:after,
@@ -252,7 +253,7 @@ tr {
 .kng-td-content h3 {
     margin: 0 0 10px;
     color: white;
-    font-size: 23px;
+    font-size: 19px;
     line-height: 1.1428571429;
     font-weight: 600;
     letter-spacing: .007em;
@@ -439,7 +440,7 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
 
 .kng-navigation {
     border-radius: 30px;
-    background: #1a1b1b;
+    /* background: #1a1b1b; */
     /* margin-top: 20px; */
     display: flex;
     flex-flow: row;
@@ -479,7 +480,7 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
 }
 
 .kng-nav-item.kng-nav-item-current a {
-    background: #262829;
+    background: rgb(255 255 255 / 10%);
 }
 
 .kng-nav-item a:hover {
@@ -493,4 +494,169 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
 .kng-nav-activate-license img {
     width: 14px;
     height: 13px;
+}
+
+/* Special Effect */
+.kng-intro {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+    padding: 30px 45px;
+}
+
+.king-addons-special-animation {
+    height: 15px;
+}
+
+.king-addons-special-animation .king-addons-special-animation-container {
+    width: 100%;
+    height: 75px
+}
+
+.king-addons-special-animation .king-addons-special-animation-colors {
+    opacity: 1;
+    transform: translate3d(0,0,0)
+}
+
+@keyframes colorAnimation {
+    0% {
+        opacity: 1
+    }
+
+    100% {
+        opacity: 0
+    }
+}
+
+.king-addons-special-animation .king-addons-special-animation-color {
+    filter: blur(20px);
+    position: absolute;
+    border-radius: 50%
+}
+
+.king-addons-special-animation .king-addons-special-animation-yellow {
+    width: 40vw;
+    height: 50px;
+    background: #fd8c1f;
+    top: -75px;
+    right: 10vw;
+    animation: yellowAnimation 1.5s ease-out forwards .5s
+}
+
+@keyframes yellowAnimation {
+    0% {
+        top: -75px;
+        right: 10vw
+    }
+
+    50% {
+        top: -30px
+    }
+
+    100% {
+        top: -30px;
+        right: 0
+    }
+}
+
+.king-addons-special-animation .king-addons-special-animation-pink-one {
+    width: 40vw;
+    height: 150px;
+    background: #ff3f98;
+    top: -200px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    opacity: .5;
+    animation: pinkOneAnimation 2s ease-in-out forwards
+}
+
+@keyframes pinkOneAnimation {
+    0% {
+        top: -200px;
+        transform: scaleX(50%) translateX(0)
+    }
+
+    25% {
+        top: -110px;
+        transform: scaleX(50%) translateX(0)
+    }
+
+    50% {
+        top: -120px;
+        transform: scaleX(225%) translateX(10%)
+    }
+
+    100% {
+        top: -135px;
+        background: #e44cbb;
+        transform: scaleX(225%) translateX(0)
+    }
+}
+
+.king-addons-special-animation .king-addons-special-animation-pink-two {
+    width: 30vw;
+    height: 150px;
+    background: #e9a5ff;
+    top: -200px;
+    left: -25%;
+    right: 0;
+    margin: 0 auto;
+    animation: pinkTwoAnimation 1.2s ease-in-out forwards
+}
+
+@keyframes pinkTwoAnimation {
+    0% {
+        top: -200px;
+        transform: scaleX(50%) translateX(0)
+    }
+
+    25% {
+        top: -120px;
+        transform: scaleX(70%) translateX(-10%)
+    }
+
+    50% {
+        top: -130px;
+        transform: scaleX(225%) translateX(10%)
+    }
+
+    100% {
+        top: -135px;
+        background: #f55be4;
+        transform: scaleX(225%) translateX(0);
+        left: 0
+    }
+}
+
+.king-addons-special-animation .king-addons-special-animation-blue {
+    width: 60vw;
+    height: 75px;
+    top: -100px;
+    left: 0;
+    background: #4186fd;
+    opacity: .5;
+    animation: blueAnimation 1s ease .2s forwards
+}
+
+@keyframes blueAnimation {
+    0% {
+        top: -100px;
+        transform: translateX(0)
+    }
+
+    50% {
+        top: -50px;
+        transform: translateX(-15%)
+    }
+
+    100% {
+        top: -50px;
+        background: #019ffb;
+        transform: translateX(0)
+    }
+}
+
+a:focus {
+    box-shadow: none;
 }

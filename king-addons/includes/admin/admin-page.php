@@ -31,6 +31,15 @@ $options = get_option('king_addons_options');
                             <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
                         </a>
                     </div>
+                    <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
+                    <div class="kng-nav-item kng-nav-item-current">
+                        <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
+                            <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                 alt="<?php echo esc_html__('Popup Builder', 'king-addons'); ?>">
+                            <div class="kng-nav-item-txt"><?php echo esc_html__('Popup Builder', 'king-addons'); ?></div>
+                        </a>
+                    </div>
+                    <?php endif; ?>
                     <div class="kng-nav-item">
                         <a href="../wp-admin/admin.php?page=king-addons-templates">
                             <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
@@ -41,6 +50,16 @@ $options = get_option('king_addons_options');
                 </div>
             </div>
         </div>
+    </div>
+    <div class="king-addons-special-animation">
+    <div class="king-addons-special-animation-container">
+        <div class="king-addons-special-animation-colors">
+            <div class="king-addons-special-animation-yellow king-addons-special-animation-color"></div>
+            <div class="king-addons-special-animation-pink-one king-addons-special-animation-color"></div>
+            <div class="king-addons-special-animation-pink-two king-addons-special-animation-color"></div>
+            <div class="king-addons-special-animation-blue king-addons-special-animation-color"></div>
+        </div>
+    </div>
     </div>
     <!--suppress HtmlUnknownTarget -->
     <form action="options.php" method="post">

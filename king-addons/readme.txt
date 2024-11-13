@@ -1,18 +1,18 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.11.4
-Tested up to: 6.6
+Stable tag: 24.11.13
+Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-King Elementor Addons has 200+ templates, 30+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background, Global Section.
+King Elementor Addons has 300+ templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background, Global Section.
 
 == Description ==
 
-King Addons for [Elementor](https://wordpress.org/plugins/elementor/) is 200+ premium templates and 30+ FREE widgets. Transform your web creation process with our comprehensive suite of addons, designed to elevate the functionality and aesthetic appeal of your Elementor pages without affecting your site's speed or performance. King Addons unlocks a new realm of possibilities with widgets such as One Page Navigation for seamless site traversal, Off-Canvas Content for hidden yet accessible panels, and the Styled Text Builder for crafting dynamic, animated typography.
+King Addons for [Elementor](https://wordpress.org/plugins/elementor/) is 300+ premium templates and 40+ FREE widgets. Transform your web creation process with our comprehensive suite of addons, designed to elevate the functionality and aesthetic appeal of your Elementor pages without affecting your site's speed or performance. King Addons unlocks a new realm of possibilities with widgets such as One Page Navigation for seamless site traversal, Off-Canvas Content for hidden yet accessible panels, and the Styled Text Builder for crafting dynamic, animated typography.
 
 ### King Addons for Elementor - ⚡ Free, lightweight, super-fast Elementor addons that do not affect website performance
 
@@ -25,7 +25,7 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 ### FREE Elementor special extensions
 
 - **Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
-- **Template Catalog** - It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site.
+- **Template Catalog** - Access a wide selection of ready-made templates with the Elementor Template Catalog extension. Perfect for quickly building pages, sections, or entire layouts with professional designs. Browse, customize, and apply templates that fit your brand style and save time in the website creation process. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site. Ideal for creating a cohesive and visually appealing site with ease.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -75,7 +75,7 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 
 == Installation ==
 
-Note : This plugin works with Elementor. Make sure you have [Elementor](https://wordpress.org/plugins/elementor/) installed.
+Note: This plugin works with Elementor. Make sure you have [Elementor](https://wordpress.org/plugins/elementor/) installed.
 
 1. Upload the plugin folder to the "/wp-content/plugins/" directory, or install the plugin directly through the WordPress plugins screen.
 2. Activate the plugin through the "Plugins" screen in WordPress.
@@ -87,6 +87,10 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 = Can I use the plugin without Elementor Page Builder? =
 
 Unfortunately, no. You cannot use without Elementor since it's an addon for Elementor.
+
+= Do I need Elementor Pro? =
+
+King Addons works perfectly with the free version of Elementor, so you do not need the Pro version of Elementor.
 
 = Does it work with any theme? =
 
@@ -110,6 +114,13 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.11.13 - 2024-11-13 =
+* New: Templates Catalog - Added 39 premium templates.
+* Checked compatibility with WordPress 6.7. All is good.
+* Improved: UI of Elementor Addons dashboard.
+* Improved: UI of Header & Footer Builder extension dashboard.
+* Improved: UI of Templates Catalog.
+
 = King Addons for Elementor version 24.11.4 - 2024-11-04 =
 * New: Templates Catalog - Added 8 premium templates.
 * New: Feature List demo added.
@@ -127,7 +138,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * Improved: The design of dashboard.
 
 = King Addons for Elementor version 24.10.29 - 2024-10-29 =
-* New: We are excited to introduce our brand-new functionality for creating custom headers and footers, available in the menu as the Header & Footer.
+* New: Elementor Header & Footer Builder extension. We are excited to introduce our brand-new functionality for creating custom headers and footers, available in the menu as the Header & Footer.
 * New: Templates Catalog - Added 8 premium templates.
 * New: Testimonial & Review Carousel demo added.
 * New: Testimonial & Review demo added.

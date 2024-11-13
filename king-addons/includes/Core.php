@@ -63,8 +63,16 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/Templates.php');
 
             // Header & Footer Builder
-            require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/Header_Footer_Builder.php');
-            Header_Footer_Builder::instance();
+            if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/Header_Footer_Builder.php');
+                Header_Footer_Builder::instance();
+            }
+
+            // Popup Builder
+            if (KING_ADDONS_EXT_POPUP_BUILDER) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Popup_Builder/Popup_Builder.php');
+                Popup_Builder::instance();
+            }
 
             // Admin
             require_once(KING_ADDONS_PATH . 'includes/Admin.php');
@@ -103,13 +111,28 @@ final class Core
 
     function showAdminNotice_ElementorRequired(): void
     {
-        $message = sprintf(
-        /* translators: 1: Plugin name 2: Elementor */
-            esc_html__('%1$s plugin requires %2$s plugin to be installed and activated.', 'king-addons'),
-            esc_html__('King Addons', 'king-addons'),
-            esc_html__('Elementor', 'king-addons')
-        );
-        echo '<div class="notice notice-error"><p>' . esc_html($message) . '</p></div>';
+        $screen = get_current_screen();
+        if (isset($screen->parent_file) && 'plugins.php' === $screen->parent_file && 'update' === $screen->id) {
+            return;
+        }
+
+        if (isset(get_plugins()['elementor/elementor.php'])) {
+            if (!current_user_can('activate_plugins') || is_plugin_active('elementor/elementor.php')) {
+                return;
+            }
+            $plugin = 'elementor/elementor.php';
+            $activation_url = wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin);
+            $message = '<div class="error"><p>' . esc_html__('King Addons plugin is not working because you need to activate the Elementor plugin.', 'king-addons') . '</p>';
+            $message .= '<p>' . sprintf('<a href="%s" class="button-primary">%s</a>', $activation_url, esc_html__('Activate Elementor now', 'king-addons')) . '</p></div>';
+        } else {
+            if (!current_user_can('install_plugins')) {
+                return;
+            }
+            $install_url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=elementor'), 'install-plugin_elementor');
+            $message = '<div class="error"><p>' . esc_html__('King Addons plugin is not working because you need to install the Elementor plugin.', 'king-addons') . '</p>';
+            $message .= '<p>' . sprintf('<a href="%s" class="button-primary">%s</a>', $install_url, esc_html__('Install Elementor now', 'king-addons')) . '</p></div>';
+        }
+        echo $message;
     }
 
     function showAdminNotice_ElementorMinimumVersion(): void

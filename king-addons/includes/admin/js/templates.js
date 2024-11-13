@@ -5,7 +5,18 @@ jQuery(document).ready(function ($) {
         let templateBtn = $('#install-template');
         templateBtn.attr('data-template-key', templateKey);
         templateBtn.attr('data-template-plan', templatePlan);
-        templateBtn.text('Import ' + templatePlan + ' Template');
+        let planActive = templateBtn.attr('data-plan-active');
+
+        if(templatePlan === 'premium') {
+            if (planActive === 'premium') {
+                templateBtn.text('Import Premium Template');
+            } else {
+                templateBtn.text('Import Premium for $2.99/month');
+            }
+        } else {
+            templateBtn.text('Import Free Template');
+        }
+
         $('#template-preview-iframe').attr('src', 'https://demo.kingaddons.com/' + templateKey);
         $('#template-preview-link').attr('href', 'https://demo.kingaddons.com/' + templateKey);
         $('#template-preview-popup').fadeIn();
@@ -258,7 +269,14 @@ jQuery(document).ready(function ($) {
         filterTemplates();
     });
 
-    $('#template-tags input').on('change', filterTemplates);
+    // TODO: For now the tags feature works as selector of sub-subcategories.
+    // $('#template-tags input').on('change', filterTemplates);
+    $('#template-tags input').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#template-tags input').not(this).prop('checked', false);
+        }
+        filterTemplates();
+    });
 
     $('#reset-filters').on('click', function () {
         templateSearch.val('');

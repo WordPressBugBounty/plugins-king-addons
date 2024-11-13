@@ -23,7 +23,7 @@ final class Admin
     function addAdminMenu(): void
     {
         add_menu_page(
-            'King Addons',
+            'King Addons for Elementor',
             'King Addons',
             'manage_options',
             'king-addons',
@@ -33,8 +33,8 @@ final class Admin
         );
 
         add_menu_page(
-            'King Templates',
-            'King Templates',
+            'King Addons for Elementor',
+            'Free Templates',
             'manage_options',
             'king-addons-templates',
             [Templates::instance(), 'render_template_catalog_page'],
@@ -42,33 +42,52 @@ final class Admin
             58.71
         );
 
-        self::showHeaderFooterBuilder();
+        if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {
+            self::showHeaderFooterBuilder();
+        }
+
+        if (KING_ADDONS_EXT_POPUP_BUILDER) {
+            self::showPopupBuilder();
+        }
+    }
+
+    function showPopupBuilder(): void
+    {
+        add_menu_page(
+            'Popup Builder',
+            'Popup Builder',
+            'manage_options',
+            'king-addons-popup-builder',
+            [Popup_Builder::instance(), 'renderPopupBuilder'],
+            KING_ADDONS_URL . 'includes/admin/img/icon-for-popup-builder.svg',
+            58.73
+        );
     }
 
     function showHeaderFooterBuilder(): void
     {
-            $post_type = 'king-addons-el-hf';
-            $menu_slug = 'edit.php?post_type=' . $post_type;
+        $post_type = 'king-addons-el-hf';
+        $menu_slug = 'edit.php?post_type=' . $post_type;
 
-            // Add Main Menu
-            add_menu_page(
-                esc_html__('Elementor Header & Footer Builder', 'king-addons'),
-                esc_html__('Header & Footer', 'king-addons'),
-                'manage_options',
-                $menu_slug, // Menu slug points to the custom post type edit screen
-                '', // No callback function needed
-                KING_ADDONS_URL . 'includes/admin/img/icon-for-header-footer-builder.svg',
-                58.72
-            );
+        // Add Main Menu
+        add_menu_page(
+            esc_html__('Elementor Header & Footer Builder', 'king-addons'),
+            esc_html__('Header & Footer', 'king-addons'),
+            'manage_options',
+            $menu_slug, // Menu slug points to the custom post type edit screen
+            '', // No callback function needed
+            KING_ADDONS_URL . 'includes/admin/img/icon-for-header-footer-builder.svg',
+            58.72
+        );
 
-            // Add 'All Templates' Submenu - this will be the first submenu item
-            add_submenu_page(
-                $menu_slug, // Parent slug matches the main menu slug
-                esc_html__('All Templates', 'king-addons'),
-                esc_html__('All Templates', 'king-addons'),
-                'edit_posts',
-                $menu_slug
-            );
+        // Add 'All Templates' Submenu - this will be the first submenu item
+        add_submenu_page(
+            $menu_slug, // Parent slug matches the main menu slug
+            esc_html__('All Templates', 'king-addons'),
+            esc_html__('All Templates', 'king-addons'),
+            'edit_posts',
+            $menu_slug
+        );
     }
 
     function showAdminPage(): void

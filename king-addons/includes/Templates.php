@@ -64,7 +64,7 @@ final class Templates
             <div class="kng-intro">
                 <div class="kng-intro-wrap">
                     <div class="kng-intro-wrap-1">
-                        <h1 class="kng-intro-title"><?php echo esc_html__('King Templates', 'king-addons'); ?></h1>
+                        <h1 class="kng-intro-title"><?php echo esc_html__('King Addons for Elementor', 'king-addons'); ?></h1>
                         <?php if ($is_premium_active): ?>
                             <span class="premium-active-txt"><?php echo esc_html__('PREMIUM', 'king-addons'); ?></h1></span>
                         <?php endif; ?>
@@ -86,6 +86,15 @@ final class Templates
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
                                 </a>
                             </div>
+                            <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
+                            <div class="kng-nav-item kng-nav-item-current">
+                                <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
+                                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                         alt="<?php echo esc_html__('Popup Builder', 'king-addons'); ?>">
+                                    <div class="kng-nav-item-txt"><?php echo esc_html__('Popup Builder', 'king-addons'); ?></div>
+                                </a>
+                            </div>
+                            <?php endif; ?>
                             <?php if (!$is_premium_active): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a id="activate-license-btn">
@@ -155,7 +164,7 @@ final class Templates
                             <?php esc_html_e('Live Preview', 'king-addons'); ?>
                         </a>
                         <button id="close-popup">
-                            <?php esc_html_e('Close', 'king-addons'); ?>
+                            <?php esc_html_e('Close Preview X', 'king-addons'); ?>
                         </button>
                     </div>
                     <iframe id="template-preview-iframe" src="" frameborder="0"></iframe>
@@ -306,7 +315,7 @@ final class Templates
         }
 
         // Pagination setup
-        $items_per_page = 12;
+        $items_per_page = 18;
         $total_templates = count($filtered_templates);
         $offset = ($current_page - 1) * $items_per_page;
         $paged_templates = array_slice($filtered_templates, $offset, $items_per_page);
@@ -324,7 +333,7 @@ final class Templates
                      data-template-key="<?php echo esc_attr($attr_key); ?>"
                      data-template-plan="<?php echo esc_attr($template['plan']); ?>">
                     <img class="kng-addons-template-thumbnail"
-                         src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=3"); ?>"
+                         src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
                          alt="<?php echo esc_attr($template['title']); ?>">
                     <h3><?php echo esc_html($template['title']); ?></h3>
                     <div class="template-plan template-plan-<?php echo esc_html($template['plan']); ?>"><?php echo esc_html($template['plan']); ?></div>
