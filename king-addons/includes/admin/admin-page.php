@@ -24,6 +24,7 @@ $options = get_option('king_addons_options');
             </div>
             <div class="kng-intro-wrap-2">
                 <div class="kng-navigation">
+                    <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
                     <div class="kng-nav-item kng-nav-item-current">
                         <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
                             <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
@@ -31,6 +32,7 @@ $options = get_option('king_addons_options');
                             <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
                         </a>
                     </div>
+                    <?php endif; ?>
                     <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
                     <div class="kng-nav-item kng-nav-item-current">
                         <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
@@ -40,6 +42,7 @@ $options = get_option('king_addons_options');
                         </a>
                     </div>
                     <?php endif; ?>
+                    <?php if (KING_ADDONS_EXT_TEMPLATES_CATALOG): ?>
                     <div class="kng-nav-item">
                         <a href="../wp-admin/admin.php?page=king-addons-templates">
                             <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
@@ -47,6 +50,7 @@ $options = get_option('king_addons_options');
                             <div class="kng-nav-item-txt"><?php echo esc_html__('Free Templates', 'king-addons'); ?></div>
                         </a>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

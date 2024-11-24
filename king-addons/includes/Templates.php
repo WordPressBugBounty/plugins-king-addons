@@ -23,7 +23,7 @@ final class Templates
     public function render_template_catalog_page(): void
     {
         $templates = TemplatesMap::getTemplatesMapArray();
-        $is_premium_active = FreemiusInit::instance()->is_premium_active();
+        $is_premium_active = king_addons_freemius()->can_use_premium_code();
 
         // For UI testing, it doesn't enable the real premium
 //        $is_premium_active = true;
@@ -57,7 +57,18 @@ final class Templates
         if (isset($_GET['ajax']) && $_GET['ajax']) {
             wp_send_json_success(['grid_html' => $result['grid_html'], 'pagination_html' => $result['pagination_html']]);
         }
-
+        if ($is_premium_active) {
+            ?>
+            <script type="text/javascript">
+                (function () {
+                    window.kingAddons = window.kingAddons || {};
+                    window.kingAddons.installId = <?php
+                    echo json_encode(king_addons_freemius()->get_site()->id);
+                    ?>;
+                })();
+            </script>
+            <?php
+        }
         ?>
         <div id="king-addons-templates-top"></div>
         <div id="king-addons-templates" class="king-addons-templates">
@@ -79,6 +90,7 @@ final class Templates
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?></div>
                                 </a>
                             </div>
+                            <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
                             <div class="kng-nav-item kng-nav-item-current">
                                 <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
                                     <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
@@ -86,6 +98,7 @@ final class Templates
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
                                 </a>
                             </div>
+                            <?php endif; ?>
                             <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
                             <div class="kng-nav-item kng-nav-item-current">
                                 <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
@@ -95,7 +108,7 @@ final class Templates
                                 </a>
                             </div>
                             <?php endif; ?>
-                            <?php if (!$is_premium_active): ?>
+                            <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a id="activate-license-btn">
                                         <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/up.svg'; ?>"
@@ -188,11 +201,11 @@ final class Templates
             </div>
             <div id="license-activating-popup" style="display:none;">
                 <div class="license-activating-popup-content">
-                    <div class="license-activating-popup-txt"><?php esc_html_e('1. Go to the Plugins page.', 'king-addons'); ?></div>
-                    <div class="license-activating-popup-txt"><?php esc_html_e('2. Find the King Addons plugin.', 'king-addons'); ?></div>
-                    <div class="license-activating-popup-txt"><?php esc_html_e('3. Click on Activate License link.', 'king-addons'); ?></div>
-                    <div class="license-activating-popup-txt"><?php esc_html_e('4. Enter the License Key provided in the email received after the license purchase.', 'king-addons'); ?></div>
-                    <div class="license-activating-popup-txt"><?php esc_html_e('5. Done!', 'king-addons'); ?></div>
+                    <div class="license-activating-popup-txt"><?php esc_html_e('1. Download and install the premium version of the plugin - King Addons Pro. You can find the link in the email received after the license purchase', 'king-addons'); ?></div>
+                    <div class="license-activating-popup-txt"><?php esc_html_e('2. Go to the Plugins page.', 'king-addons'); ?></div>
+                    <div class="license-activating-popup-txt"><?php esc_html_e('3. Find the King Addons Pro plugin.', 'king-addons'); ?></div>
+                    <div class="license-activating-popup-txt"><?php esc_html_e('4. Click on Activate License link.', 'king-addons'); ?></div>
+                    <div class="license-activating-popup-txt"><?php esc_html_e('5. Enter the License Key provided in the email. Done!', 'king-addons'); ?></div>
                     <button id="close-license-activating-popup"><?php esc_html_e('Close', 'king-addons'); ?></button>
                 </div>
             </div>

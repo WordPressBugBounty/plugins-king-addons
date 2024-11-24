@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: King Addons
- * Description: King Addons has 300+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
+ * Description: King Addons has 500+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.11.13
+ * Version: 24.11.24
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -17,22 +17,19 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-const KING_ADDONS_VERSION = '24.11.13';
+/** PLUGIN VERSION */
+const KING_ADDONS_VERSION = '24.11.24';
+
+/** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
 const KING_ADDONS_MINIMUM_ELEMENTOR_VERSION = '3.19.0';
-const KING_ADDONS__FILE__ = __FILE__;
-define('KING_ADDONS_PATH', plugin_dir_path(KING_ADDONS__FILE__));
-define('KING_ADDONS_URL', plugins_url('/', KING_ADDONS__FILE__));
 
-// It's using to have the unique wp_register (style, script) handle
+/** DEFINES */
+define('KING_ADDONS_PATH', plugin_dir_path(__FILE__));
+define('KING_ADDONS_URL', plugins_url('/', __FILE__));
+
+/** ASSETS KEY - It's using to have the unique wp_register (style, script) handle */
 const KING_ADDONS_ASSETS_UNIQUE_KEY = 'king-addons';
-
-// Icon for Elementor editor with inline styles included
-const KING_ADDONS_ELEMENTOR_ICON = '<img src="' . KING_ADDONS_URL . 'includes/admin/img/icon-for-elementor.svg" alt="King Addons" style="width: 13px; margin-right: 5px; vertical-align: top;">';
-
-const KING_ADDONS_EXT_HEADER_FOOTER_BUILDER = true;
-//const KING_ADDONS_EXT_POPUP_BUILDER = true;
-const KING_ADDONS_EXT_POPUP_BUILDER = false;
 
 if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
 
@@ -46,6 +43,50 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
     echo '<div class="notice notice-error"><p>' . esc_html($message) . '</p></div>';
 
 } else {
+    if ( function_exists( 'king_addons_freemius' ) ) {
+        king_addons_freemius()->set_basename( true, __FILE__ );
+    } else {
+        if (!function_exists('king_addons_freemius')) {
+            // Create a helper function for easy SDK access.
+            function king_addons_freemius()
+            {
+                global $king_addons_freemius;
+
+                if (!isset($king_addons_freemius)) {
+                    // Include Freemius SDK.
+                    require_once dirname(__FILE__) . '/freemius/start.php';
+
+                    $king_addons_freemius = fs_dynamic_init(array(
+                        'id' => '16154',
+                        'slug' => 'king-addons',
+                        'premium_slug' => 'king-addons-pro',
+                        'type' => 'plugin',
+                        'public_key' => 'pk_eac3624cbc14c1846cf1ab9abbd68',
+                        'is_premium' => false, // temp
+                        'premium_suffix' => 'pro',
+                        // If your plugin is a serviceware, set this option to false.
+                        'has_premium_version' => true,
+                        'has_addons' => false,
+                        'has_paid_plans' => false, // temp
+                        'has_affiliation' => 'all',
+                        'menu' => array(
+                            'slug' => 'king-addons',
+                            'pricing' => false,
+                            'contact' => false,
+                            'support' => false,
+                        ),
+                    ));
+                }
+
+                return $king_addons_freemius;
+            }
+
+            // Init Freemius.
+            king_addons_freemius();
+            // Signal that SDK was initiated.
+            do_action('king_addons_freemius_loaded');
+        }
+    }
 
     /**
      * Main function

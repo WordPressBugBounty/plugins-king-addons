@@ -52,15 +52,16 @@ final class Core
 
         if ($this->hasElementorCompatibility()) {
 
+            require_once(KING_ADDONS_PATH . 'includes/elementor-constants.php');
+
             // Initial requirements check
             require_once(KING_ADDONS_PATH . 'includes/RequirementsCheck.php');
 
-            // Freemius connect
-            require_once(KING_ADDONS_PATH . 'includes/FreemiusInit.php');
-
-            // Templates
-            require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
-            require_once(KING_ADDONS_PATH . 'includes/Templates.php');
+            // Templates Catalog
+            if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
+                require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
+                require_once(KING_ADDONS_PATH . 'includes/Templates.php');
+            }
 
             // Header & Footer Builder
             if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {

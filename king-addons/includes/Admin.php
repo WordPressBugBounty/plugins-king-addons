@@ -32,15 +32,17 @@ final class Admin
             58.7
         );
 
-        add_menu_page(
-            'King Addons for Elementor',
-            'Free Templates',
-            'manage_options',
-            'king-addons-templates',
-            [Templates::instance(), 'render_template_catalog_page'],
-            KING_ADDONS_URL . 'includes/admin/img/icon-for-templates.svg',
-            58.71
-        );
+        if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
+            add_menu_page(
+                'King Addons for Elementor',
+                'Free Templates',
+                'manage_options',
+                'king-addons-templates',
+                [Templates::instance(), 'render_template_catalog_page'],
+                KING_ADDONS_URL . 'includes/admin/img/icon-for-templates.svg',
+                58.71
+            );
+        }
 
         if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {
             self::showHeaderFooterBuilder();

@@ -377,6 +377,10 @@ final class ModulesMap
                     'css' => [],
                     'js' => ['wpcolorpicker']
                 ],
+                'perfectscrollbar' => [
+                    'css' => [],
+                    'js' => ['perfectscrollbar']
+                ],
             ]
         ];
     }
