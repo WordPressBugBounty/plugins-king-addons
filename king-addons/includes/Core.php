@@ -184,11 +184,37 @@ final class Core
             if ($options[$widget_id] === 'enabled') {
                 $widget_class = $widget['php-class'];
                 $path_widget_class = "King_Addons\\" . $widget_class;
+
+                // Include the base widget class
                 require_once(KING_ADDONS_PATH . 'includes/widgets/' . $widget_class . '/' . $widget_class . '.php');
-                $widgets_manager->register(new $path_widget_class);
+
+                if (king_addons_freemius()->can_use_premium_code__premium_only() && defined('KING_ADDONS_PRO_PATH')) {
+                    if (isset($widget['has-pro'])) {
+                        $pro_file_path = KING_ADDONS_PRO_PATH . 'includes/widgets/' . $widget_class . '_Pro/' . $widget_class . '_Pro.php';
+
+                        if (file_exists($pro_file_path)) {
+                            // Include the Pro version class if the file exists
+                            require_once($pro_file_path);
+
+                            $path_widget_class_pro = "King_Addons\\" . $widget_class . '_Pro';
+                            $widgets_manager->register(new $path_widget_class_pro);
+
+                        } else {
+                            // error_log("Pro file not found: $pro_file_path. Registering base widget.");
+                            $widgets_manager->register(new $path_widget_class);
+                        }
+                    } else {
+                        // Register base widget if no 'has-pro' key
+                        $widgets_manager->register(new $path_widget_class);
+                    }
+                } else {
+                    // Register base widget if Freemius premium code not available
+                    $widgets_manager->register(new $path_widget_class);
+                }
             }
         }
     }
+
 
     function enableWidgetsByDefault(): void
     {
@@ -231,6 +257,34 @@ final class Core
     function enqueueEditorStyles(): void
     {
         wp_enqueue_style(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', KING_ADDONS_URL . 'includes/admin/css/elementor-editor.css', '', KING_ADDONS_VERSION);
+    }
+
+    public static function renderProFeaturesSection($module, $section, $type, $widget_name, $features)
+    {
+        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
+            return;
+        }
+
+        $module->start_controls_section(
+            'king_addons_pro_features_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON_PRO . '<span class="king-addons-pro-features-heading">' . esc_html__('Pro Features', 'king-addons') . '</span>',
+                'tab' => $section ?: null,
+            ]
+        );
+
+        $list_html = '<ul>' . implode('', array_map(fn($feature) => "<li>{$feature}</li>", $features)) . '</ul>';
+
+        $module->add_control(
+            'king_addons_pro_features_list',
+            [
+                'type' => $type,
+                'raw' => $list_html . '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?ref=kng-module-' . $widget_name . '-upgrade-pro" target="_blank">' . esc_html__('Learn More About Pro', 'king-addons') . '</a>',
+                'content_classes' => 'king-addons-pro-features-list',
+            ]
+        );
+
+        $module->end_controls_section();
     }
 
 }

@@ -1,14 +1,14 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.11.24
+Stable tag: 24.11.29
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-King Elementor Addons has 500+ templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background, Global Section.
+500+ Elementor templates and 40+ FREE addons Header & Footer, Popup Builder, Particles Background, One Page Nav, Off-Canvas, Image Hotspots, Global Sections.
 
 == Description ==
 
@@ -56,6 +56,7 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 - [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/) - Build trust and credibility with the Testimonial widget. Perfect for showcasing customer reviews, feedback, or client success stories. Customize the layout, design, and style to fit your brand, ensuring that positive experiences stand out and resonate with your audience.
 - [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/) - Display customer feedback and reviews dynamically with the Testimonial & Review Carousel widget. Ideal for showcasing client testimonials, ratings, or success stories in a sliding format. Customize the layout, transition effects, and style to match your brand, making positive experiences stand out and engage your audience effectively.
 - [**Feature List**](https://kingaddons.com/elementor/feature-list/) - Showcase key features or benefits with the Feature List widget. Perfect for highlighting product or service advantages in an organized and visually appealing format. Each list item can include icons, badges, and descriptions for added emphasis. Customize the layout, style, and icons to match your website design and engage your audience effectively.
+- [**Taxonomy List**](https://kingaddons.com/) - Display a structured list of taxonomies, such as categories or tags, with the Taxonomy List widget. Perfect for organizing content and improving navigation on your website. Customize the layout, style, and hierarchy to match your design and help visitors easily explore related topics or sections.
 
 ### FREE Elementor features, extensions, tools
 
@@ -115,36 +116,40 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= King Addons for Elementor version 24.11.24 - 2024-11-24 =
+= King Addons for Elementor version 24.11.29 - November 29, 2024 =
+* **New:** Taxonomy List widget added.
+* **New:** Templates Catalog - 26 premium templates added. Update the plugin to view them on last pages of the catalog.
+* **Improved:** King Addons Pro activation way improved.
+
+= King Addons for Elementor version 24.11.24 - November 24, 2024 =
 * **Big Update!** - There are many new templates, a new extension, and overall UI & UX improvements, update the plugin now to get all these fresh things!
 * **New:** Elementor Popup Builder extension. We are excited to introduce our brand-new functionality for creating popups, available in the menu as the Popup Builder.
-* **New:** Templates Catalog - 149 premium templates added. Update the plugin to view them on the last page of the catalog.
+* **New:** Templates Catalog - 149 premium templates added. Update the plugin to view them on last pages of the catalog.
 
-
-= King Addons for Elementor version 24.11.13 - 2024-11-13 =
+= King Addons for Elementor version 24.11.13 - November 13, 2024 =
 * **New:** Templates Catalog - Added 39 premium templates.
 * **QA:** Checked compatibility with WordPress 6.7. All is good.
 * **Improved:** UI of Elementor Addons dashboard.
 * **Improved:** UI of Header & Footer Builder extension dashboard.
 * **Improved:** UI of Templates Catalog.
 
-= King Addons for Elementor version 24.11.4 - 2024-11-04 =
+= King Addons for Elementor version 24.11.4 - November 4, 2024 =
 * **New:** Templates Catalog - Added 8 premium templates.
 * **New:** Feature List demo added.
 * **Improved:** Testimonial & Review Carousel widget.
 * **Improved:** UI of Templates Catalog.
 * **Improved:** UX of Elementor Addons dashboard.
 
-= King Addons for Elementor version 24.11.1 - 2024-11-01 =
+= King Addons for Elementor version 24.11.1 - November 1, 2024 =
 * **New:** Feature List widget added.
 * **New:** Templates Catalog - Added 15 premium templates.
 * **Improved:** UX of Templates Catalog.
 
-= King Addons for Elementor version 24.10.31 - 2024-10-31 =
+= King Addons for Elementor version 24.10.31 - October 31, 2024 =
 * **New:** Templates Catalog - Added 16 premium templates.
 * **Improved:** The design of dashboard.
 
-= King Addons for Elementor version 24.10.29 - 2024-10-29 =
+= King Addons for Elementor version 24.10.29 - October 29, 2024 =
 * **New:** Elementor Header & Footer Builder extension. We are excited to introduce our brand-new functionality for creating custom headers and footers, available in the menu as the Header & Footer.
 * **New:** Templates Catalog - Added 8 premium templates.
 * **New:** Testimonial & Review Carousel demo added.
@@ -152,153 +157,153 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * **Improved:** Testimonial & Review Carousel widget.
 * **Improved:** Testimonial & Review widget.
 
-= King Addons for Elementor version 24.8.85 - 2024-10-18 =
+= King Addons for Elementor version 24.8.85 - October 18, 2024 =
 * **New:** Flip Countdown & Timer demo added.
 * **New:** Smooth Counter demo added.
 * **Improved:** Security.
 * **Improved:** Translation strings.
 
-= King Addons for Elementor version 24.8.84 - 2024-10-16 =
+= King Addons for Elementor version 24.8.84 - October 16, 2024 =
 * **Improved:** Lazy loading for carousel widgets.
 * **Improved:** Security.
 
-= King Addons for Elementor version 24.8.83 - 2024-10-03 =
+= King Addons for Elementor version 24.8.83 - October 3, 2024 =
 * **New:** Monthly plan for Premium Templates.
 * **Improved:** Security.
 
-= King Addons for Elementor version 24.8.82 - 2024-09-16 =
+= King Addons for Elementor version 24.8.82 - September 16, 2024 =
 * **New:** Testimonial & Review Carousel widget added.
 * **New:** Templates Catalog - Added 32 premium templates.
 * **Improved:** Testimonial & Review widget - translation strings.
 
-= King Addons for Elementor version 24.8.81 - 2024-09-09 =
+= King Addons for Elementor version 24.8.81 - September 9, 2024 =
 * **New:** Smooth Counter widget - Added before/after texts and title.
 * **New:** Affiliate program added. Refer new customers to our plugin and earn 55% commission on each successful sale you refer.
 * **New:** Templates Catalog - Added 8 premium templates.
 * **Improved:** Templates Catalog - Created useful pricing page, added Frequently Asked Questions section.
 * **Improved:** Templates Catalog - Code.
 
-= King Addons for Elementor version 24.8.79 - 2024-09-03 =
+= King Addons for Elementor version 24.8.79 - September 3, 2024 =
 * **New:** Testimonial & Review widget - the show/hide image feature added.
 * **New:** Testimonial & Review widget - the new centered layout added.
 * **New:** Templates Catalog - Added 11 free templates.
 
-= King Addons for Elementor version 24.8.78 - 2024-09-01 =
+= King Addons for Elementor version 24.8.78 - September 1, 2024 =
 * **New:** Testimonial & Review widget added.
 * **New:** Templates Catalog - Added 24 free templates.
 
-= King Addons for Elementor version 24.8.71 - 2024-08-27 =
+= King Addons for Elementor version 24.8.71 - August 27, 2024 =
 * **New:** Smooth Counter widget added.
 
-= King Addons for Elementor version 24.8.70 - 2024-08-26 =
+= King Addons for Elementor version 24.8.70 - August 26, 2024 =
 * **New:** Flip Countdown & Timer widget added.
 * **New:** Templates Catalog - Added free template.
 * **Improved:** Templates Catalog - the search works better now.
 
-= King Addons for Elementor version 24.8.67 - 2024-08-21 =
+= King Addons for Elementor version 24.8.67 - August 21, 2024 =
 * **New:** We are excited to introduce our brand-new premium template catalog, available in the menu as King Templates. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site.
 
-= King Addons for Elementor version 24.8.39 - 2024-08-07 =
+= King Addons for Elementor version 24.8.39 - August 7, 2024 =
 * **New:** Content Hover & Flip Box widget and demo added.
 * **New:** Hovering Image Stack demo added.
 * **New:** Advanced Border Radius demo added.
 * **Improved:** Hovering Image Stack - the code.
 * **Improved:** The design of dashboard.
 
-= King Addons for Elementor version 24.8.36 - 2024-07-30 =
+= King Addons for Elementor version 24.8.36 - July 30, 2024 =
 * **New:** Advanced Border Radius feature added.
 * **Improved:** Parallax Background now works with the lazy loading.
 
-= King Addons for Elementor version 24.8.34 - 2024-07-29 =
+= King Addons for Elementor version 24.8.34 - July 29, 2024 =
 * **Improved:** Hovering Image Stack - Image Fit Position setting added.
 
-= King Addons for Elementor version 24.8.32 - 2024-07-29 =
+= King Addons for Elementor version 24.8.32 - July 29, 2024 =
 * **New:** Hovering Image Stack widget added.
 * **New:** The new design of dashboard.
 * **Improved:** Image Hover Box - Image Fit Position setting added.
 
-= King Addons for Elementor version 24.8.29 - 2024-07-20 =
+= King Addons for Elementor version 24.8.29 - July 20, 2024 =
 * **New:** Creative Button widget and demo added.
 * **New:** Image Hover Box demo added.
 * **New:** Pulsing Button demo added.
 * **New:** Reading Progress Bar demo added.
 * **Improved:** Performance.
 
-= King Addons for Elementor version 24.8.27 - 2024-07-16 =
+= King Addons for Elementor version 24.8.27 - July 16, 2024 =
 * **New:** Reading Progress Bar widget added.
 * **New:** Pulsing Button widget added, also known as CTA Animated Button.
 * **Improved:** Image Hotspots - the icon and title fits better now.
 * **Improved:** Video Popup - the button horizontal position is responsive now.
 
-= King Addons for Elementor version 24.8.25 - 2024-07-12 =
+= King Addons for Elementor version 24.8.25 - July 12, 2024 =
 * **New:** Image Hover Box widget added.
 * **Improved:** Blog Posts Carousel - the left sided image layout looks better now.
 * **Improved:** Card Carousel - the left sided image layout looks better now.
 * Compatibility: Tested on WordPress 6.6.
 
-= King Addons for Elementor version 24.8.21 - 2024-07-02 =
+= King Addons for Elementor version 24.8.21 - July 2, 2024 =
 * **New:** Blog Posts Carousel demo added.
 * **New:** Popup & Lightbox Modal demo added.
 * **Improved:** Blog Posts Carousel - the image position works better now.
 * **Improved:** Card Carousel - the image position works better now.
 * **Improved:** Popup & Lightbox Modal - the width and all default settings make popup looks better now.
 
-= King Addons for Elementor version 24.8.8 - 2024-07-01 =
+= King Addons for Elementor version 24.8.8 - July 1, 2024 =
 * **New:** Auto-Scrolling Text demo added.
 * **New:** Video Popup demo added.
 * **New:** Price List & Menu demo added.
 * **New:** Business Hours demo added.
 
-= King Addons for Elementor version 24.8.7 - 2024-06-30 =
+= King Addons for Elementor version 24.8.7 - June 30, 2024 =
 * **New:** Price List & Menu widget added.
 * **New:** Card Carousel demo added.
 * **New:** Image Grid demo added.
 * **New:** Image Grid - CSS filters, styled borders added.
 * **Improved:** Image Grid transition animation looks nicer now.
 
-= King Addons for Elementor version 24.8.2 - 2024-06-28 =
+= King Addons for Elementor version 24.8.2 - June 28, 2024 =
 * **New:** Business Hours widget added.
 * **New:** Image Grid widget added.
 
-= King Addons for Elementor version 24.7.7 - 2024-06-25 =
+= King Addons for Elementor version 24.7.7 - June 25, 2024 =
 * **New:** Blog Posts Carousel - the image fit position added.
 * **New:** Card Carousel - the image fit position added.
 * **Improved:** Card Carousel widget.
 
-= King Addons for Elementor version 24.7.6 - 2024-06-24 =
+= King Addons for Elementor version 24.7.6 - June 24, 2024 =
 * **New:** Blog Posts Carousel widget added.
 * **Improved:** Card Carousel widget.
 
-= King Addons for Elementor version 24.7.2 - 2024-06-19 =
+= King Addons for Elementor version 24.7.2 - June 19, 2024 =
 * **New:** Video Popup widget added.
 
-= King Addons for Elementor version 24.7.0 - 2024-06-16 =
+= King Addons for Elementor version 24.7.0 - June 16, 2024 =
 * **Improved:** Translation strings.
 
-= King Addons for Elementor version 24.6.15 - 2024-06-15 =
+= King Addons for Elementor version 24.6.15 - June 15, 2024 =
 * **New:** Popup & Lightbox Modal widget added.
 * **Improved:** Card Carousel widget.
 
-= King Addons for Elementor version 24.6.14.4 - 2024-06-14 =
+= King Addons for Elementor version 24.6.14.4 - June 14, 2024 =
 * **New:** Auto-Scrolling Text widget added.
 
-= King Addons for Elementor version 24.6.13 - 2024-06-13 =
+= King Addons for Elementor version 24.6.13 - June 13, 2024 =
 * **New:** Card Carousel widget added.
 
-= King Addons for Elementor version 24.6.9 - 2024-06-09 =
+= King Addons for Elementor version 24.6.9 - June 9, 2024 =
 * **New:** Styled Text Builder - added the Outline Stroke effect.
 
-= King Addons for Elementor version 24.6.7 - 2024-06-07 =
+= King Addons for Elementor version 24.6.7 - June 7, 2024 =
 * **Improved:** Code.
 
-= King Addons for Elementor version 24.6.3 - 2024-06-03 =
+= King Addons for Elementor version 24.6.3 - June 3, 2024 =
 * **Improved:** Performance.
 
-= King Addons for Elementor version 24.6.2 - 2024-06-02 =
+= King Addons for Elementor version 24.6.2 - June 2, 2024 =
 * **Improved:** Off-Canvas Content widget.
 
-= King Addons for Elementor version 24.6.1 - 2024-06-01 =
+= King Addons for Elementor version 24.6.1 - June 1, 2024 =
 * **Improved:** Performance, assets loading smarter.
 
-= King Addons for Elementor version 1.0.24 - 2024-06-01 =
+= King Addons for Elementor version 1.0.24 - June 1, 2024 =
 * Initial release.

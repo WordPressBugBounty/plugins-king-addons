@@ -246,6 +246,17 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                 ],
+                'taxonomy-list' => [
+                    'title' => esc_html__('Taxonomy List', 'king-addons'),
+                    'description' => esc_html__('Display a structured list of taxonomies, such as categories or tags, with the Taxonomy List widget. Perfect for organizing content and improving navigation on your website. Customize the layout, style, and hierarchy to match your design and help visitors easily explore related topics or sections.', 'king-addons'),
+                    'php-class' => 'Taxonomy_List',
+                    'has-pro' => true,
+                    'docs-link' => '',
+//                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => [],
+                ],
 //                'test' => [
 //                    'title' => esc_html__('test', 'king-addons'),
 //                    'description' => esc_html__('', 'king-addons'),

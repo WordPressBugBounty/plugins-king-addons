@@ -4,7 +4,7 @@
  * Description: King Addons has 500+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.11.24
+ * Version: 24.11.29
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.11.24';
+const KING_ADDONS_VERSION = '24.11.29';
 
 /** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
@@ -43,9 +43,9 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
     echo '<div class="notice notice-error"><p>' . esc_html($message) . '</p></div>';
 
 } else {
-    if ( function_exists( 'king_addons_freemius' ) ) {
-        king_addons_freemius()->set_basename( true, __FILE__ );
-    } else {
+//    if ( function_exists( 'king_addons_freemius' ) ) {
+//        king_addons_freemius()->set_basename( true, __FILE__ );
+//    } else {
         if (!function_exists('king_addons_freemius')) {
             // Create a helper function for easy SDK access.
             function king_addons_freemius()
@@ -85,8 +85,10 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
             king_addons_freemius();
             // Signal that SDK was initiated.
             do_action('king_addons_freemius_loaded');
+            king_addons_freemius()->add_filter('show_deactivation_subscription_cancellation', '__return_false');
+            king_addons_freemius()->add_filter('deactivate_on_activation', '__return_false');
         }
-    }
+//    }
 
     /**
      * Main function

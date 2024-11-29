@@ -622,7 +622,7 @@ class King_Addons_Popup_Module extends Document
 
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
             $this->start_controls_section(
-                'pro_features_section',
+                'king_addons_pro_features_section',
                 [
                     'label' => KING_ADDONS_ELEMENTOR_ICON_PRO . '<span class="king-addons-pro-features-heading">Pro Features</span>',
                     'tab' => Controls_Manager::TAB_SETTINGS,
@@ -630,7 +630,7 @@ class King_Addons_Popup_Module extends Document
             );
 
             $this->add_control(
-                'pro_features_list',
+                'king_addons_pro_features_list',
                 [
                     'type' => Controls_Manager::RAW_HTML,
                     'raw' => '<ul>
