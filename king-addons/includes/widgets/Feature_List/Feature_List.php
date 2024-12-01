@@ -378,7 +378,7 @@ class Feature_List extends Widget_Base
         $repeater->add_control(
             'king_addons_feature_list_image',
             [
-                'label' => esc_html__('Choose Image', 'plugin-name'),
+                'label' => esc_html__('Choose Image', 'king-addons'),
                 'type' => Controls_Manager::MEDIA,
                 'skin' => 'inline',
                 'dynamic' => [

@@ -70,6 +70,45 @@ class Ajax_Select2_API
 
         return ['results' => $options];
     }
+
+    public function getPostsByPostType($request): ?array
+    {
+        if (!current_user_can('edit_posts')) return null;
+
+        $post_type = $request['query_slug'] ?? '';
+
+        $args = [
+            'post_type'      => $post_type,
+            'post_status'    => $post_type === 'attachment' ? 'any' : 'publish',
+            'posts_per_page' => 15,
+        ];
+
+        if (isset($request['ids'])) {
+            $args['post__in'] = explode(',', $request['ids']);
+        }
+
+        if (isset($request['s'])) {
+            $args['s'] = $request['s'];
+        }
+
+        $query = new WP_Query($args);
+        $options = [];
+
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $options[] = [
+                    'id'   => get_the_ID(),
+                    'text' => html_entity_decode(get_the_title()),
+                ];
+            }
+        }
+
+        wp_reset_postdata();
+        return ['results' => $options];
+    }
+
+
 }
 
 new Ajax_Select2_API();

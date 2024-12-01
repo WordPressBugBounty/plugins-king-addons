@@ -4,7 +4,7 @@
  * Description: King Addons has 500+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.11.29
+ * Version: 24.12.1
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.11.29';
+const KING_ADDONS_VERSION = '24.12.1';
 
 /** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';

@@ -363,7 +363,7 @@ class Taxonomy_List extends Widget_Base
                 'type' => Controls_Manager::NUMBER,
                 'default' => 300,
                 'min' => 0,
-                'step' => 1000,
+                'step' => 10,
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-tax-list-taxonomy-list li a' => 'transition-duration: {{VALUE}}ms',
                     '{{WRAPPER}} .king-addons-tax-list-taxonomy-list li>span' => 'transition-duration: {{VALUE}}ms'

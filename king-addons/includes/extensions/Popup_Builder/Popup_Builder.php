@@ -278,7 +278,7 @@ final class Popup_Builder
     {
 
         $args = array(
-            'label' => esc_html__('King Addons Templates', 'king-addons-pb-addons'),
+            'label' => esc_html__('King Addons Templates', 'king-addons'),
             'public' => true,
             'rewrite' => false,
             'show_ui' => true,

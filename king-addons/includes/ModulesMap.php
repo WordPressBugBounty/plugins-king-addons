@@ -257,6 +257,17 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                 ],
+                'page-list' => [
+                    'title' => esc_html__('Page List', 'king-addons'),
+                    'description' => esc_html__('Display a structured list of website pages with the Page List widget. Perfect for creating sitemaps, navigation menus, or directories. Customize the layout, style, and order to match your website design, and make navigation simple and efficient for your visitors.', 'king-addons'),
+                    'php-class' => 'Page_List',
+                    'has-pro' => true,
+                    'docs-link' => '',
+//                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => [],
+                ],
 //                'test' => [
 //                    'title' => esc_html__('test', 'king-addons'),
 //                    'description' => esc_html__('', 'king-addons'),
