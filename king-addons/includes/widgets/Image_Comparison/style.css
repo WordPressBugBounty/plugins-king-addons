@@ -7,6 +7,10 @@
     --position: 50%;
 }
 
+.king-addons-image-comparison-container {
+    position: relative;
+}
+
 .king-addons-image-comparison-container img {
     width: 100%;
     height: 100%;

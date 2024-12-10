@@ -65,26 +65,13 @@ class Taxonomy_List extends Widget_Base
             'product_tag' => esc_html__('Product Tags', 'king-addons'),
         ];
 
-        foreach (self::get_custom_types_of('tax') as $slug => $title) {
+        foreach (Core::getCustomTypes('tax') as $slug => $title) {
             if (!in_array($slug, ['product_tag', 'product_cat'])) {
                 $post_taxonomies['pro-' . substr($slug, 0, 2)] = esc_html($title) . ' (Pro)';
             }
         }
 
         return $post_taxonomies;
-    }
-
-    public static function get_custom_types_of($query, $exclude_defaults = true): array
-    {
-        $custom_types = $query === 'tax'
-            ? get_taxonomies(['show_in_nav_menus' => true], 'objects')
-            : get_post_types(['show_in_nav_menus' => true], 'objects');
-
-        return array_filter(
-            array_map(fn($type) => $type->label, $custom_types),
-            fn($label, $key) => !$exclude_defaults || !in_array($key, ['post', 'page', 'category', 'post_tag']),
-            ARRAY_FILTER_USE_BOTH
-        );
     }
 
     public function add_controls_group_sub_category_filters()

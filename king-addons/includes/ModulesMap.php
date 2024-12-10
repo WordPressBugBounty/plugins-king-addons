@@ -268,6 +268,17 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                 ],
+                'search' => [
+                    'title' => esc_html__('Search (AJAX, live results, filters)', 'king-addons'),
+                    'description' => esc_html__('Enhance your website with the search widget for fast and dynamic search functionality. Display instant results as users type, improving user experience and navigation. Customize the layout, style, and filters to match your website design, making it easier for visitors to find content quickly and efficiently.', 'king-addons'),
+                    'php-class' => 'Search',
+                    'has-pro' => true,
+                    'docs-link' => '',
+//                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                ],
 //                'test' => [
 //                    'title' => esc_html__('test', 'king-addons'),
 //                    'description' => esc_html__('', 'king-addons'),

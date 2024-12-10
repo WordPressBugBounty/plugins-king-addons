@@ -410,7 +410,8 @@
     height: 100%;
     padding: 25px 80px;
     content: attr(data-text);
-    transform: translate3d(-100%, 0, 0);
+    --king-addons-creative-btn-effect-zephyr-width: calc(-100% - 1px);
+    transform: translate3d(var(--king-addons-creative-btn-effect-zephyr-width), 0, 0);
     background: var(--king-addons-creative-btn-bg-hover-color);
 }
 

@@ -83,7 +83,7 @@
 
 .king-addons-pl-page-list-item-badge {
     padding: 3px 5px;
-    background-color:rgb(255, 0, 179);
+    background-color: rgb(255, 0, 179);
 }
 
 .king-addons-pl-pl-badge-anim-yes .king-addons-pl-page-list-item-badge {
@@ -148,7 +148,7 @@
 .king-addons-pl-pointer-line-anim.king-addons-pl-pointer-anim-slide .king-addons-pl-pointer-item:before,
 .king-addons-pl-pointer-line-anim.king-addons-pl-pointer-anim-slide .king-addons-pl-pointer-item:after {
     width: 0;
-    transition: all 0.3s cubic-bezier(.175,.885,.32,1.075);
+    transition: all 0.3s cubic-bezier(.175, .885, .32, 1.075);
 }
 
 .king-addons-pl-pointer-line-anim.king-addons-pl-pointer-anim-slide .king-addons-pl-pointer-item:hover:before,

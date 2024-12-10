@@ -110,7 +110,7 @@ class Image_Comparison extends Widget_Base
                     'contain' => esc_html__('Contain', 'king-addons'),
                     'fill' => esc_html__('Fill', 'king-addons'),
                 ],
-                'default' => 'none',
+                'default' => 'cover',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-image-comparison-container .king-addons-image-comparison-image-before img' => 'object-fit: {{VALUE}};',
                 ],

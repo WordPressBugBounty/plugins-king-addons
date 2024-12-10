@@ -402,3 +402,7 @@
 .king-addons-icon.king-addons-page-list {
     background-image: url(../img/page-list.svg);
 }
+
+.king-addons-icon.king-addons-search {
+    background-image: url(../img/search.svg);
+}

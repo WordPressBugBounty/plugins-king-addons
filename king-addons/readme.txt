@@ -1,18 +1,18 @@
 === King Addons for Elementor - Free Templates, Widgets and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, widgets, templates
-Stable tag: 24.12.1
+Stable tag: 24.12.10
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-500+ Elementor templates and 40+ FREE addons Header & Footer, Popup Builder, Particles Background, One Page Nav, Off-Canvas, Image Hotspots, Global Sections.
+600+ Elementor templates and 40+ FREE addons Header & Footer, Popup Builder, Particles Background, One Page Nav, Off-Canvas, Image Hotspots, Global Sections.
 
 == Description ==
 
-King Addons for [Elementor](https://wordpress.org/plugins/elementor/) is 500+ premium templates and 40+ FREE widgets. Transform your web creation process with our comprehensive suite of addons, designed to elevate the functionality and aesthetic appeal of your Elementor pages without affecting your site's speed or performance. King Addons unlocks a new realm of possibilities with widgets such as One Page Navigation for seamless site traversal, Off-Canvas Content for hidden yet accessible panels, and the Styled Text Builder for crafting dynamic, animated typography.
+King Addons for [Elementor](https://wordpress.org/plugins/elementor/) is 600+ premium templates and 40+ FREE widgets. Transform your web creation process with our comprehensive suite of addons, designed to elevate the functionality and aesthetic appeal of your Elementor pages without affecting your site's speed or performance. King Addons unlocks a new realm of possibilities with widgets such as One Page Navigation for seamless site traversal, Off-Canvas Content for hidden yet accessible panels, and the Styled Text Builder for crafting dynamic, animated typography.
 
 ### King Addons for Elementor - ⚡ Free, lightweight, super-fast Elementor addons that do not affect website performance
 
@@ -21,6 +21,12 @@ King Addons for [Elementor](https://wordpress.org/plugins/elementor/) is 500+ pr
 Discover the power of Image Hotspots to create engaging, interactive images, or use the Image Comparison widget for vivid before-and-after showcases. Our Vertical Scrollable Image widget enhances storytelling, while the Global Section Container simplifies design consistency across your site. Features like Particles Background, Parallax Background, Matte Glass Background, and various animations add a layer of sophistication and interactivity to your pages.
 
 With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking entire sections, and the Duplicator for effortless content replication, King Addons is the ultimate toolkit for web designers seeking to push the boundaries of creativity and efficiency. Designed with performance in mind, these addons utilize minimal resources, ensuring your website remains swift and seamless. Elevate your Elementor experience with King Addons, and bring your website design to life in ways you never imagined possible, because the plugin works perfectly in unyson with Elementor.
+
+### FREE Elementor extensions & tools
+
+- **Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
+- **Template Catalog** - Access a wide selection of ready-made templates with the Elementor Template Catalog extension. Perfect for quickly building pages, sections, or entire layouts with professional designs. Browse, customize, and apply templates that fit your brand style and save time in the website creation process. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site. Ideal for creating a cohesive and visually appealing site with ease.
+- **Popup Builder** - Design and customize eye-catching popups with the Elementor Popup Builder extension. Ideal for creating promotional messages, announcements, or subscription forms that capture visitor attention. Customize the style, animations, and triggers to match your website design and ensure an engaging user experience. Perfect for boosting conversions, increasing sign-ups, or sharing important updates.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -52,6 +58,7 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 - [**Feature List**](https://kingaddons.com/elementor/feature-list/) - Showcase key features or benefits with the Feature List widget. Perfect for highlighting product or service advantages in an organized and visually appealing format. Each list item can include icons, badges, and descriptions for added emphasis. Customize the layout, style, and icons to match your website design and engage your audience effectively.
 - [**Taxonomy List**](https://kingaddons.com/) - Display a structured list of taxonomies, such as categories or tags, with the Taxonomy List widget. Perfect for organizing content and improving navigation on your website. Customize the layout, style, and hierarchy to match your design and help visitors easily explore related topics or sections.
 - [**Page List**](https://kingaddons.com/) - Display a structured list of website pages with the Page List widget. Perfect for creating sitemaps, navigation menus, or directories. Customize the layout, style, and order to match your website design, and make navigation simple and efficient for your visitors.
+- [**Search (AJAX, live results and filters)**](https://kingaddons.com/) - Enhance your website with the search widget for fast and dynamic search functionality. Display instant results as users type, improving user experience and navigation. Customize the layout, style, and filters to match your website design, making it easier for visitors to find content quickly and efficiently.
 
 ### FREE Elementor features
 
@@ -64,12 +71,6 @@ With the inclusion of Custom CSS for tailored styling, Wrapper Link for linking 
 - [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/) - Adds rotating animation setting. The feature does not use JS, only lightweight CSS animation.
 - [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/) - Wrap everything in link - section, container, column and common elements.
 - [**Duplicator**](https://kingaddons.com/elementor/duplicator/) - Adds feature to duplicate posts, pages, Elementor templates and etc.
-
-### FREE Elementor extensions & tools
-
-- **Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
-- **Template Catalog** - Access a wide selection of ready-made templates with the Elementor Template Catalog extension. Perfect for quickly building pages, sections, or entire layouts with professional designs. Browse, customize, and apply templates that fit your brand style and save time in the website creation process. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site. Ideal for creating a cohesive and visually appealing site with ease.
-- **Popup Builder** - Design and customize eye-catching popups with the Elementor Popup Builder extension. Ideal for creating promotional messages, announcements, or subscription forms that capture visitor attention. Customize the style, animations, and triggers to match your website design and ensure an engaging user experience. Perfect for boosting conversions, increasing sign-ups, or sharing important updates.
 
 ### Happy User of King Addons?
 
@@ -116,6 +117,13 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.10 - December 10, 2024 =
+* **New:** Search widget added, also known as Ajax Search. It has live results and filters.
+* **New:** Templates Catalog - 60 premium templates added. Update the plugin to view them on last pages of the catalog.
+* **Improved:** Page List widget.
+* **Improved:** Image Comparison widget.
+* **Improved:** Creative Button widget.
 
 = King Addons for Elementor version 24.12.1 - December 1, 2024 =
 * **New:** Page List widget added.

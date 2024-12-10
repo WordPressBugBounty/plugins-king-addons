@@ -81,6 +81,7 @@ final class Core
             // Additional
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2_API.php');
+            require_once(KING_ADDONS_PATH . 'includes/widgets/Search/Search_Ajax.php');
 
             self::enableWidgetsByDefault();
 
@@ -285,6 +286,38 @@ final class Core
         );
 
         $module->end_controls_section();
+    }
+
+    public static function renderUpgradeProNotice($module, $controls_manager, $widget_name, $option, $condition = [])
+    {
+        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
+            return;
+        }
+
+        $module->add_control(
+            $option . '_pro_notice',
+            [
+                'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-' . $widget_name . '-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                'type' => $controls_manager,
+                'content_classes' => 'king-addons-pro-notice',
+                'condition' => [
+                    $option => $condition,
+                ]
+            ]
+        );
+    }
+
+    public static function getCustomTypes($query, $exclude_defaults = true): array
+    {
+        $custom_types = $query === 'tax'
+            ? get_taxonomies(['show_in_nav_menus' => true], 'objects')
+            : get_post_types(['show_in_nav_menus' => true], 'objects');
+
+        return array_filter(
+            array_map(fn($type) => $type->label, $custom_types),
+            fn($label, $key) => !$exclude_defaults || !in_array($key, ['post', 'page', 'category', 'post_tag']),
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
 }

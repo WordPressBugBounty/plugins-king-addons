@@ -4,7 +4,7 @@
  * Description: King Addons has 500+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.12.1
+ * Version: 24.12.10
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.12.1';
+const KING_ADDONS_VERSION = '24.12.10';
 
 /** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
@@ -43,10 +43,20 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
     echo '<div class="notice notice-error"><p>' . esc_html($message) . '</p></div>';
 
 } else {
-//    if ( function_exists( 'king_addons_freemius' ) ) {
-//        king_addons_freemius()->set_basename( true, __FILE__ );
+
+    // TODO: Do it later
+//    if (function_exists('king_addons_freemius')) {
+//        king_addons_freemius()->set_basename(false, __FILE__);
 //    } else {
-        if (!function_exists('king_addons_freemius')) {
+
+//        $initFreemius = true;
+//
+//        if (get_option('king_addons_pro_optionActivationTime')) {
+//            $initFreemius = false;
+//        }
+
+//        if ($initFreemius) {
+    if (!function_exists('king_addons_freemius')) {
             // Create a helper function for easy SDK access.
             function king_addons_freemius()
             {
@@ -71,6 +81,7 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
                         'has_affiliation' => 'all',
                         'menu' => array(
                             'slug' => 'king-addons',
+                            'first-path' => 'plugins.php',
                             'pricing' => false,
                             'contact' => false,
                             'support' => false,

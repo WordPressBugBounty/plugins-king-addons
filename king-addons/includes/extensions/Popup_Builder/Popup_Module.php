@@ -116,7 +116,7 @@ class King_Addons_Popup_Module extends Document
 
         $this->add_control_popup_trigger();
 
-        self::upgrade_pro_notice($this, Controls_Manager::RAW_HTML, 'popup-builder', 'popup_trigger', [
+        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'popup-builder', 'popup_trigger', [
             'pro-sc',
             'pro-es',
             'pro-dt',
@@ -214,7 +214,7 @@ class King_Addons_Popup_Module extends Document
 
         $this->add_control_popup_show_again_delay();
 
-        self::upgrade_pro_notice($this, Controls_Manager::RAW_HTML, 'popup-builder', 'popup_show_again_delay', [
+        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'popup-builder', 'popup_show_again_delay', [
             'pro-60',
             'pro-180',
             'pro-360',
@@ -999,25 +999,6 @@ class King_Addons_Popup_Module extends Document
 
         $this->end_controls_section();
 
-    }
-
-    public static function upgrade_pro_notice($module, $controls_manager, $widget_name, $option, $condition = [])
-    {
-        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
-            return;
-        }
-
-        $module->add_control(
-            $option . '_pro_notice',
-            [
-                'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-' . $widget_name . '-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
-                'type' => $controls_manager,
-                'content_classes' => 'king-addons-pro-notice',
-                'condition' => [
-                    $option => $condition,
-                ]
-            ]
-        );
     }
 
     public static function getUpgradeProLink($widget_name): string

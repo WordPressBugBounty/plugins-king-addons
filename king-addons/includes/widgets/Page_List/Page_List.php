@@ -72,7 +72,7 @@ class Page_List extends Widget_Base
         $this->start_controls_section(
             'section_page_list_general',
             [
-                'label' => esc_html__('General', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('General', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -286,13 +286,13 @@ class Page_List extends Widget_Base
         $this->end_controls_section();
 
         Core::renderProFeaturesSection($this, '', Controls_Manager::RAW_HTML, 'page-list', [
-            'Custom Title Hover Animation',
+            'Underline Page Title on Hover Animations',
         ]);
 
         $this->start_controls_section(
             'section_style_page_list_general',
             [
-                'label' => esc_html__('List Items', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('List Items', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'show_label' => false,
             ]
@@ -402,7 +402,7 @@ class Page_List extends Widget_Base
         $this->start_controls_section(
             'section_style_page_list_title',
             [
-                'label' => esc_html__('Title', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Title', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'show_label' => false,
             ]
@@ -544,7 +544,7 @@ class Page_List extends Widget_Base
         $this->start_controls_section(
             'section_style_sub_title',
             [
-                'label' => esc_html__('Sub Title', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Sub Title', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE
             ]
         );
@@ -591,7 +591,7 @@ class Page_List extends Widget_Base
         $this->start_controls_section(
             'section_style_badge',
             [
-                'label' => esc_html__('Badge', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Badge', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE
             ]
         );
@@ -733,7 +733,7 @@ class Page_List extends Widget_Base
         $this->start_controls_section(
             'section_style_icon',
             [
-                'label' => esc_html__('Icon', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Icon', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE
             ]
         );
