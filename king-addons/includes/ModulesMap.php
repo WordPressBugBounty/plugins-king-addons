@@ -279,6 +279,47 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                 ],
+                'progress-bar' => [
+                    'title' => esc_html__('Progress Bar', 'king-addons'),
+                    'description' => esc_html__('Visualize progress or milestones with the Progress Bar widget. Perfect for showcasing goals, achievements, or completion statuses. Customize the style, colors, and animations to match your website design and engage your audience effectively. Ideal for portfolios, skill displays, or project tracking.', 'king-addons'),
+                    'php-class' => 'Progress_Bar',
+                    'has-pro' => true,
+                    'docs-link' => '',
+//                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                ],
+//                'team-member' => [
+//                    'title' => esc_html__('Team Member', 'king-addons'),
+//                    'description' => esc_html__('Lorem ipsum dolor set amet', 'king-addons'),
+//                    'php-class' => 'Test',
+//                    'docs-link' => '',
+////                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+//                    'demo-link' => '',
+//                    'css' => ['style'],
+//                    'js' => [],
+//                ],
+//                'charts' => [
+//                    'title' => esc_html__('Charts', 'king-addons'),
+//                    'description' => esc_html__('Lorem ipsum dolor set amet', 'king-addons'),
+//                    'php-class' => 'Test',
+//                    'docs-link' => '',
+////                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+//                    'demo-link' => '',
+//                    'css' => ['style'],
+//                    'js' => [],
+//                ],
+//                'pricing-table' => [
+//                    'title' => esc_html__('Pricing Table', 'king-addons'),
+//                    'description' => esc_html__('Lorem ipsum dolor set amet', 'king-addons'),
+//                    'php-class' => 'Test',
+//                    'docs-link' => '',
+////                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+//                    'demo-link' => '',
+//                    'css' => ['style'],
+//                    'js' => [],
+//                ],
 //                'test' => [
 //                    'title' => esc_html__('test', 'king-addons'),
 //                    'description' => esc_html__('', 'king-addons'),
@@ -374,6 +415,10 @@ final class ModulesMap
                 ],
             ],
             'libraries' => [
+                'animation' => [
+                    'css' => ['timing'],
+                    'js' => []
+                ],
                 'swiper' => [
                     'css' => ['swiper'],
                     'js' => ['swiper']
@@ -389,6 +434,10 @@ final class ModulesMap
                 'jquery' => [
                     'css' => [],
                     'js' => ['jquery']
+                ],
+                'jquerynumerator' => [
+                    'css' => [],
+                    'js' => ['jquerynumerator']
                 ],
                 'odometer' => [
                     'css' => ['minimal'],

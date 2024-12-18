@@ -405,3 +405,47 @@ input.king-addons-pb-condition-input-ids {
     color: white;
     background: #8a4fff;
 }
+
+.king-addons-pb-preview-buttons {
+    display: flex;
+}
+
+.kng-promo-btn-wrap a {
+    display: inline-flex;
+    justify-content: center;
+    margin-left: 30px;
+    padding: 17px 20px;
+    transition: all 300ms ease;
+    text-align: center;
+    text-decoration: underline;
+    border: 1px solid #ff4e5069;
+    border-radius: 5px;
+    background: linear-gradient(132.2deg, #F9D423 7.64%, #FF4E50 97.11%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.kng-promo-btn-wrap a:hover {
+    transform: scale(1.05);
+}
+
+.kng-promo-btn-wrap a:focus {
+    box-shadow: unset;
+    outline: unset;
+}
+
+.kng-promo-btn-wrap img {
+    margin-left: 8px;
+    width: 16px;
+    height: 16px;
+}
+
+/*noinspection CssNonIntegerLengthInPixels*/
+.kng-promo-btn-txt {
+    font-size: 16px;
+    font-weight: 500;
+    color: black;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+}

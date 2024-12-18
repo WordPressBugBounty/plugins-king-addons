@@ -11,7 +11,7 @@ jQuery(document).ready(function ($) {
             if (planActive === 'premium') {
                 templateBtn.text('Import Premium Template');
             } else {
-                templateBtn.text('Import Premium for $2.99/month');
+                templateBtn.html('Import Premium for $2<span class="promo-price-txt-small-x">99</span>/month');
             }
         } else {
             templateBtn.text('Import Free Template');

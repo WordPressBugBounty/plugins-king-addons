@@ -406,3 +406,19 @@
 .king-addons-icon.king-addons-search {
     background-image: url(../img/search.svg);
 }
+
+.king-addons-icon.king-addons-progress-bar {
+    background-image: url(../img/progress-bar.svg);
+}
+
+.king-addons-icon.king-addons-team-member {
+    background-image: url(../img/team-member.svg);
+}
+
+.king-addons-icon.king-addons-charts {
+    background-image: url(../img/charts.svg);
+}
+
+.king-addons-icon.king-addons-pricing-table {
+    background-image: url(../img/pricing-table.svg);
+}

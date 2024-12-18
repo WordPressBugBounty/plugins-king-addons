@@ -141,11 +141,14 @@ final class Templates
                                 </label>
                             <?php endforeach; ?>
                         </div>
-
                         <button id="reset-filters"><?php esc_html_e('Reset Search & Filters', 'king-addons'); ?></button>
                         <?php if (!$is_premium_active): ?>
                             <div class="promo-wrapper">
-                                <div class="promo-txt"><?php esc_html_e('Import premium templates for only $2.99/month', 'king-addons'); ?></div>
+                                <div class="promo-txt"><?php
+                                    esc_html_e('Import premium templates for only', 'king-addons');
+                                    echo ' $2<span class="promo-price-txt-small">99</span>/';
+                                    esc_html_e('month', 'king-addons');
+                                    ?></div>
                                 <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
                                     <button class="promo-btn purchase-btn"><?php esc_html_e('Learn More', 'king-addons'); ?></button>
                                 </a>
@@ -201,7 +204,7 @@ final class Templates
             </div>
             <div id="license-activating-popup" style="display:none;">
                 <div class="license-activating-popup-content">
-                    <div class="license-activating-popup-txt"><?php esc_html_e('1. Download and install the premium version of the plugin - King Addons Pro. You can find the link in the email received after the license purchase', 'king-addons'); ?></div>
+                    <div class="license-activating-popup-txt"><?php esc_html_e('1. Download and install the premium version of the plugin - King Addons Pro. You can find the link in the email received after the license purchase.', 'king-addons'); ?></div>
                     <div class="license-activating-popup-txt"><?php esc_html_e('2. Go to the Plugins page.', 'king-addons'); ?></div>
                     <div class="license-activating-popup-txt"><?php esc_html_e('3. Find the King Addons Pro plugin.', 'king-addons'); ?></div>
                     <div class="license-activating-popup-txt"><?php esc_html_e('4. Click on Activate License link.', 'king-addons'); ?></div>
@@ -212,7 +215,11 @@ final class Templates
             <div id="premium-promo-popup" style="display:none;">
                 <div class="premium-promo-popup-content">
                     <div class="premium-promo-popup-wrapper">
-                        <div class="premium-promo-popup-txt"><?php esc_html_e('Import premium templates for only $2.99/month', 'king-addons'); ?></div>
+                        <div class="premium-promo-popup-txt"><?php
+                            esc_html_e('Get 600+ professionally designed, attention-grabbing templates and premium extensions for only', 'king-addons');
+                            echo ' $2<span class="promo-price-txt-small">99</span>/';
+                            esc_html_e('month', 'king-addons');
+                            ?></div>
                         <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
                             <button class="premium-promo-popup-purchase-btn purchase-btn"><?php esc_html_e('Learn More', 'king-addons'); ?></button>
                         </a>

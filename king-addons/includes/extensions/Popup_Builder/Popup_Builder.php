@@ -415,6 +415,17 @@ final class Popup_Builder
                         <span><?php esc_html_e('Create Popup', 'king-addons'); ?></span>
                         <span class="plus-icon">+</span>
                     </div>
+                    <?php if (!king_addons_freemius()->can_use_premium_code__premium_only()): ?>
+                        <div class="kng-promo-btn-wrap">
+                            <a href="https://kingaddons.com/pricing/?rel=king-addons-popup-builder" target="_blank">
+                                <div class="kng-promo-btn-txt">
+                                    <?php esc_html_e('Unlock Premium Features & 600+ Templates Today!', 'king-addons'); ?>
+                                </div>
+                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share-v2.svg'; ?>"
+                                     alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="king-addons-pb-settings-page">

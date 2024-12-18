@@ -16,6 +16,43 @@ settings_errors('king_addons_messages');
 $options = get_option('king_addons_options');
 ?>
 <div class="king-addons-admin">
+    <?php if (!king_addons_freemius()->can_use_premium_code__premium_only()): ?>
+        <div class="kng-promo">
+            <div class="kng-promo-wrap">
+                <div class="kng-promo-wrap-icon">
+                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/unlock-v2.svg'; ?>"
+                         alt="<?php echo esc_html__('Unlock Icon', 'king-addons'); ?>">
+                </div>
+                <div class="kng-promo-wrap-1">
+                    <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 600+ Templates Today!', 'king-addons'); ?></h1>
+                    <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next level. Get advanced tools like Ajax Search, Popup Builder,
+                        Taxonomy List, and more. All for just $2<span class="kng-promo-price-txt-small">99</span>/month!
+                    </h2>
+                </div>
+                <div class="kng-promo-wrap-2">
+                    <div class="kng-promo-navigation">
+                        <div class="kng-promo-btn-wrap">
+                            <a href="https://kingaddons.com/pricing/?rel=king-addons-dashboard" target="_blank">
+                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share.svg'; ?>"
+                                     alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
+                                <div class="kng-promo-btn-txt"><?php echo esc_html__('Learn More', 'king-addons'); ?></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="king-addons-special-animation">
+            <div class="king-addons-special-animation-container">
+                <div class="king-addons-special-animation-colors">
+                    <div class="king-addons-special-animation-yellow king-addons-special-animation-color"></div>
+                    <div class="king-addons-special-animation-pink-one king-addons-special-animation-color"></div>
+                    <div class="king-addons-special-animation-pink-two king-addons-special-animation-color"></div>
+                    <div class="king-addons-special-animation-blue king-addons-special-animation-color"></div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
     <div class="kng-intro">
         <div class="kng-intro-wrap">
             <div class="kng-intro-wrap-1">
@@ -25,46 +62,48 @@ $options = get_option('king_addons_options');
             <div class="kng-intro-wrap-2">
                 <div class="kng-navigation">
                     <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
-                    <div class="kng-nav-item kng-nav-item-current">
-                        <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
-                            <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                 alt="<?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?>">
-                            <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
-                        </a>
-                    </div>
+                        <div class="kng-nav-item kng-nav-item-current">
+                            <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
+                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                     alt="<?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?>">
+                                <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
+                            </a>
+                        </div>
                     <?php endif; ?>
                     <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
-                    <div class="kng-nav-item kng-nav-item-current">
-                        <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
-                            <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                 alt="<?php echo esc_html__('Popup Builder', 'king-addons'); ?>">
-                            <div class="kng-nav-item-txt"><?php echo esc_html__('Popup Builder', 'king-addons'); ?></div>
-                        </a>
-                    </div>
+                        <div class="kng-nav-item kng-nav-item-current">
+                            <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
+                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                     alt="<?php echo esc_html__('Popup Builder', 'king-addons'); ?>">
+                                <div class="kng-nav-item-txt"><?php echo esc_html__('Popup Builder', 'king-addons'); ?></div>
+                            </a>
+                        </div>
                     <?php endif; ?>
                     <?php if (KING_ADDONS_EXT_TEMPLATES_CATALOG): ?>
-                    <div class="kng-nav-item">
-                        <a href="../wp-admin/admin.php?page=king-addons-templates">
-                            <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
-                                 alt="<?php echo esc_html__('Free Templates', 'king-addons'); ?>">
-                            <div class="kng-nav-item-txt"><?php echo esc_html__('Free Templates', 'king-addons'); ?></div>
-                        </a>
-                    </div>
+                        <div class="kng-nav-item kng-nav-item-current">
+                            <a href="../wp-admin/admin.php?page=king-addons-templates">
+                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
+                                     alt="<?php echo esc_html__('Free Templates', 'king-addons'); ?>">
+                                <div class="kng-nav-item-txt"><?php echo esc_html__('Free Templates', 'king-addons'); ?></div>
+                            </a>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
-    <div class="king-addons-special-animation">
-    <div class="king-addons-special-animation-container">
-        <div class="king-addons-special-animation-colors">
-            <div class="king-addons-special-animation-yellow king-addons-special-animation-color"></div>
-            <div class="king-addons-special-animation-pink-one king-addons-special-animation-color"></div>
-            <div class="king-addons-special-animation-pink-two king-addons-special-animation-color"></div>
-            <div class="king-addons-special-animation-blue king-addons-special-animation-color"></div>
+    <?php if (king_addons_freemius()->can_use_premium_code__premium_only()): ?>
+        <div class="king-addons-special-animation">
+            <div class="king-addons-special-animation-container">
+                <div class="king-addons-special-animation-colors">
+                    <div class="king-addons-special-animation-yellow king-addons-special-animation-color"></div>
+                    <div class="king-addons-special-animation-pink-one king-addons-special-animation-color"></div>
+                    <div class="king-addons-special-animation-pink-two king-addons-special-animation-color"></div>
+                    <div class="king-addons-special-animation-blue king-addons-special-animation-color"></div>
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
+    <?php endif; ?>
     <!--suppress HtmlUnknownTarget -->
     <form action="options.php" method="post">
         <?php
