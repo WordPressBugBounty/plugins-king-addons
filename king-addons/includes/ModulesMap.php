@@ -281,7 +281,7 @@ final class ModulesMap
                 ],
                 'progress-bar' => [
                     'title' => esc_html__('Progress Bar', 'king-addons'),
-                    'description' => esc_html__('Visualize progress or milestones with the Progress Bar widget. Perfect for showcasing goals, achievements, or completion statuses. Customize the style, colors, and animations to match your website design and engage your audience effectively. Ideal for portfolios, skill displays, or project tracking.', 'king-addons'),
+                    'description' => esc_html__('Highlight progress, goals, or achievements with a fully customizable design. Perfect for showcasing skills, project statuses, or performance metrics in a visually appealing way.', 'king-addons'),
                     'php-class' => 'Progress_Bar',
                     'has-pro' => true,
                     'docs-link' => '',
@@ -292,10 +292,11 @@ final class ModulesMap
                 ],
 //                'team-member' => [
 //                    'title' => esc_html__('Team Member', 'king-addons'),
-//                    'description' => esc_html__('Lorem ipsum dolor set amet', 'king-addons'),
-//                    'php-class' => 'Test',
+//                    'description' => esc_html__('Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.', 'king-addons'),
+//                    'php-class' => 'Team_Member',
+//                    'has-pro' => true,
 //                    'docs-link' => '',
-////                    'demo-link' => 'https://kingaddons.com/elementor/test/',
+////                    'demo-link' => 'https://kingaddons.com/elementor/team-member/',
 //                    'demo-link' => '',
 //                    'css' => ['style'],
 //                    'js' => [],

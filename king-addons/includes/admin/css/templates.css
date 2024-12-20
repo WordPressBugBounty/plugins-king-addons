@@ -520,7 +520,13 @@ html,
     border: none;
     border-radius: 12px;
     background: #191919;
-    background: linear-gradient(45deg, #5B03FF, #9B62FF);
+    /*background: linear-gradient(45deg, #5B03FF, #9B62FF);*/
+    background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);
+    transition: all 300ms ease;
+}
+
+.premium-promo-popup-purchase-btn:hover {
+    transform: scale(1.05);
 }
 
 /*noinspection DuplicatedCode*/
@@ -588,10 +594,16 @@ html,
     color: white;
     border-radius: 12px;
     background: #262829;
-    background: linear-gradient(45deg, #5B03FF, #9B62FF);
+    /*background: linear-gradient(45deg, #5B03FF, #9B62FF);*/
+    background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);
     border: none;
     font-size: 14px;
     letter-spacing: normal;
+    transition: all 300ms ease;
+}
+
+.promo-btn:hover {
+    transform: scale(1.05);
 }
 
 #king-addons-pagination-inner-wrap a.page-numbers:hover {

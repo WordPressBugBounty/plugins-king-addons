@@ -274,7 +274,7 @@ final class Core
             ]
         );
 
-        $list_html = '<ul>' . implode('', array_map(fn($feature) => "<li>{$feature}</li>", $features)) . '</ul>';
+        $list_html = '<ul>' . implode('', array_map(fn($feature) => "<li>$feature</li>", $features)) . '</ul>';
 
         $module->add_control(
             'king_addons_pro_features_list',

@@ -1,7 +1,7 @@
-=== King Addons for Elementor - Free Elements, Widgets, Templates, and Features ===
+=== King Addons for Elementor - Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
-Tags: elementor addons, elementor widgets, free Elementor templates, WordPress design, website customization
-Stable tag: 24.12.19
+Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
+Stable tag: 24.12.20.3
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -12,84 +12,89 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 == Description ==
 
-**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** delivers **600+ professionally designed templates** and **40+ FREE widgets**, making it easy to build stunning websites that are fast, responsive, and highly functional. Whether you're a beginner or a pro, this comprehensive toolkit enhances Elementor's capabilities with advanced features and lightweight design.
+**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **40+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
 
-With tools like **One Page Navigation**, **Off-Canvas Content**, and **Styled Text Builder**, King Addons lets you create seamless navigation, hidden menus, and dynamic text animations. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Vertical Scrollable Images** allow you to build engaging, interactive experiences without coding.
+Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
 
-This plugin is optimized for performance, ensuring your website remains lightweight while offering powerful features like **Global Sections**, **Particles Backgrounds**, and **Custom CSS** for advanced customization. Perfect for creating blogs, business sites, portfolios, or e-commerce pages, **King Addons** transforms your web design workflow.
+Perfect for creating **restaurant websites**, **online stores**, **portfolio pages**, and **business sites**, **King Addons** simplifies web design while ensuring your site remains lightweight and fast. **King Addons uses lightweight code** to ensure exceptional performance without compromising functionality. Trusted by thousands of websites worldwide and used by top WordPress developers and agencies, **King Addons** provides the flexibility and advanced WordPress customization needed to build exceptional websites.
 
-Whether you’re designing a sleek one-page layout or a feature-rich blog, **King Addons** is your ultimate Elementor companion, combining speed, flexibility, and style for exceptional results.
+Try **King Addons** for free and explore its powerful features. Whether you are building a sleek single-page site or a feature-packed online store, **King Addons** is your ultimate website builder addon. It combines speed, flexibility, and advanced Elementor enhancements for exceptional design results.
 
-[**CHECK THE DEMOS**](https://kingaddons.com) to see the widgets in action.
+[**CHECK THE DEMOS**](https://kingaddons.com) to see these features in action.
 
-### Key Features
+### **Key Features**
 
-- **Advanced Templates Catalog**: Access **600+ SEO-friendly templates** to quickly build entire pages, sections, and layouts that are responsive and visually stunning.
-- **Popup & Modal Builder**: Create promotional popups, subscription forms, and announcements with full control over design, animations, and triggers.
-- **One Page Navigation**: Enhance user experience with smooth anchor-based scrolling, ideal for single-page websites.
-- **Global Section Management**: Save time by reusing headers, footers, and call-to-action sections across your website, ensuring consistent branding.
-- **Image Hotspots & Interactivity**: Add clickable areas to images, perfect for product highlights or interactive storytelling.
-- **Image Comparison Tool**: Showcase before-and-after visuals with a draggable slider for product displays or design projects.
-- **Business Hours Widget**: Display opening hours attractively for businesses like restaurants, shops, and service providers.
-- **Blog Posts Carousel**: Dynamically showcase your latest or featured blog posts in an engaging slider format.
-- **Price List & Menu**: Present pricing or menu items stylishly, perfect for restaurants, cafes, or product showcases.
-- **Testimonials & Reviews**: Build credibility with interactive testimonial sliders and review carousels.
-- **Vertical Scrollable Images**: Seamlessly display long images like infographics, timelines, or catalogs without resizing.
-- **Customizable Buttons**: Use Creative and Pulsing Buttons to drive user interactions and conversions.
-- **Dynamic Search with AJAX**: Deliver instant results as users type, improving navigation and user experience.
-- **Parallax & Particle Backgrounds**: Add depth and animation to your pages with lightweight parallax effects and particle animations.
-- **Custom CSS Integration**: Tailor every element with your own styles for complete design control.
+- **Templates Catalog**: Access **600+ SEO-friendly templates** to create responsive, visually stunning pages, sections, and layouts in minutes.
+- **Popup & Modal Builder**: Design attention-grabbing promotional popups, subscription forms, or announcements with full control over style and animations.
+- **Dynamic Search with AJAX**: Provide instant search results as users type, enhancing navigation and user experience.
+- **One Page Navigation**: Enable smooth scrolling for single-page sites, improving usability and user engagement.
+- **Image Comparison Tool**: Highlight before-and-after visuals with a draggable slider, ideal for product showcases or design portfolios.
+- **Interactive Image Hotspots**: Add clickable areas to images, great for product details or engaging storytelling.
+- **Blog Posts Carousel**: Showcase recent or featured blog posts dynamically in an eye-catching carousel format.
+- **Global Sections Management**: Save headers, footers, and CTAs for reuse, ensuring consistent design across your site.
+- **Price List & Menu**: Present prices or menu items stylishly, perfect for restaurants, cafes, or product listings.
+- **Testimonials & Reviews Carousel**: Build trust with dynamic sliders for customer testimonials and reviews.
+- **Vertical Scrollable Images**: Display infographics, timelines, or long images interactively without resizing.
+- **Customizable Buttons**: Drive conversions with engaging **Creative Buttons** and **Pulsing Buttons**.
+- **Parallax & Particle Backgrounds**: Add depth and motion to your pages with lightweight, visually stunning animations.
+- **Custom CSS**: Apply your own styles for full control over the appearance and layout of every element.
+- **Mobile-Friendly Features**: Ensure all widgets and designs look great on any device, providing a seamless user experience.
+- **Drag and Drop Integration**: All widgets are fully compatible with Elementor's drag-and-drop builder, making customization simple and intuitive.
+- **Responsive Design Tools**: Create layouts that automatically adapt to any screen size, ensuring your site looks stunning on desktop, tablet, and mobile.
+- **Improve Website Speed**: Tools are optimized to ensure your website remains lightweight and performs smoothly.
+- **No Coding Required**: Customize your site effortlessly with user-friendly widgets and tools.
+- **Global Compatibility**: Ideal for users in any language or region, offering tools that adapt to diverse needs.
 
 ### FREE Elementor extensions & tools
 
-- **Templates Catalog** - 600+ Elementor ready templates. Perfect for quickly building pages, sections, or entire layouts with professional designs. Browse, customize, and apply templates that fit your brand style and save time in the website creation process. It features professionally designed, attention-grabbing, and SEO-optimized templates perfect for any site. Ideal for creating a cohesive and visually appealing site with ease.
-- **Popup Builder** - Design and customize eye-catching popups with the Elementor Popup Builder extension. Ideal for creating promotional messages, announcements, or subscription forms that capture visitor attention. Customize the style, animations, and triggers to match your website design and ensure an engaging user experience. Perfect for boosting conversions, increasing sign-ups, or sharing important updates.
-- **Header & Footer Builder** - Easily design and customize your website headers and footers with the Elementor Header & Footer Builder. Create responsive, professional-looking layouts that fit your brand style. Add menus, logos, and other elements, and adjust the design for desktop, tablet, and mobile views to ensure a seamless user experience across all devices. Perfect for enhancing site navigation and brand consistency.
+- **Templates Catalog** - Access over 600 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
+- **Popup Builder** - Customize eye-catching popups with the Popup Builder extension for Elementor. Ideal for announcements, promotional messages, or subscription forms. Adjust styles, animations, and triggers to boost conversions, capture attention, and enhance user experience.
+- **Header & Footer Builder** - Create and customize responsive headers and footers with the Elementor Header & Footer Builder. Add menus, logos, and other elements while ensuring seamless navigation and brand consistency across all devices.
 
 ### FREE Elementor widgets, modules, elements
 
-- [**One Page Navigation**](https://kingaddons.com/elementor/one-page-navigation/) - Facilitates seamless navigation within a single page, using anchor links to smoothly scroll to different sections, enhancing user experience and site organization. Uses only CSS, not any JS.
-- [**Off-Canvas Content**](https://kingaddons.com/elementor/off-canvas-content/) - Allows the creation of hidden (offcanvas), slide-in panels on websites, ideal for menus, widgets, or additional content, accessible with a simple user interaction.
-- [**Styled Text Builder**](https://kingaddons.com/elementor/styled-text-builder/) - Enables the creation of uniquely styled and animated text elements, offering extensive customization options for impactful and visually captivating web typography. Allows combining different styles in one text paragraph.
-- [**Image Hotspots**](https://kingaddons.com/elementor/image-hotspots/) - Module for Elementor to create interactive, clickable areas on images, ideal for displaying information or links in a dynamic, visually engaging way. Uses only CSS, not any JS.
-- [**Image Comparison**](https://kingaddons.com/elementor/image-comparison/) - Also known as Before & After, the widget offers an interactive tool to visually contrast two images side-by-side with a draggable slider, perfect for before-and-after views, product comparisons, or design showcases.
-- [**Vertical Scrollable Image**](https://kingaddons.com/elementor/vertical-scrollable-image/) - Widget allows seamless vertical scrolling on mouse hover over through long images, such as infographics or timelines, on a webpage, enhancing user engagement and storytelling without resizing. Uses only CSS, not any JS.
-- [**Global Section & Container**](https://kingaddons.com/elementor/global-section-container/) - Allows designers to create and manage reusable website sections and containers, streamlining design consistency and efficiency across multiple pages. Useful for building Header, Footer, and CTA sections. Does not affect website performance because it uses Elementor built-in functionality. Does not use any CSS or JS.
-- [**Card Carousel**](https://kingaddons.com/elementor/card-carousel/) - Create a card carousel, also known as horizontal slider/scroller. Each card has an image, title, subtitle, description and button. Ideal for showcasing content, highlighting features, or presenting services, perfect for team members and testimonials sections. It is fully responsive, and supports both mobile and mouse dragging.
-- [**Auto-Scrolling Text**](https://kingaddons.com/elementor/auto-scrolling-text/) - An engaging text marquee for dynamic, continuously scrolling text sections. Ideal for announcements, news tickers, or any content you want in constant motion. Customize the style with various effects, and add images to enhance your design. Uses only CSS for animation.
-- [**Popup & Lightbox Modal**](https://kingaddons.com/elementor/popup-lightbox-modal/) - A versatile tool for creating engaging popups and lightbox modals. Perfect for displaying important messages, promotions, or multimedia content. Customize the appearance and behavior with various effects, and easily add images, videos, and other elements to capture your audience attention.
-- [**Video Popup**](https://kingaddons.com/elementor/video-popup/) - A powerful tool for creating engaging video popups. Ideal for showcasing promotional videos, tutorials, or any multimedia content. Customize the appearance and behavior with various effects, and easily integrate videos to capture your audience attention.
-- [**Blog Posts Carousel**](https://kingaddons.com/elementor/blog-posts-carousel/) - A dynamic tool for showcasing blog posts in an engaging carousel format. Perfect for highlighting featured articles, news, and updates. Customize the layout, style, and transition effects to create an eye-catching display that enhances your website design and attracts readers.
-- [**Image Grid**](https://kingaddons.com/elementor/image-grid/) - Create stunning image galleries with masonry and fit rows grid layouts. Perfectly adaptable for both mobile and desktop views. Customize the design to match your website style and showcase your images beautifully.
-- [**Business Hours**](https://kingaddons.com/elementor/business-hours/) - Display your business hours, also known as opening hours or working hours, clearly and attractively. Customize the layout and style to match your website design, ensuring your customers always know when you are open. Perfect for restaurants, shops, and any business that wants to communicate their hours effectively.
-- [**Price List & Menu**](https://kingaddons.com/elementor/price-list-menu/) - Showcase your price list and menu items clearly and stylishly. Perfect for restaurants, cafes, and any business offering a range of products or services. Customize the layout and style to fit your brand, ensuring your offerings are presented in an appealing and organized manner.
-- [**Image Hover Box**](https://kingaddons.com/elementor/image-hover-box/) - Create interactive image elements with engaging hover effects. Ideal for showcasing services, products, or portfolio items. Customize the hover effects, layout, and style to enhance your website visual appeal and provide an interactive user experience.
-- [**Reading Progress Bar**](https://kingaddons.com/elementor/reading-progress-bar/) - Enhance user engagement with a dynamic reading progress bar. Ideal for blogs, articles, and long-form content. Customize the style, position, and behavior to match your website design and provide readers with a visual cue of their progress.
-- [**Pulsing Button**](https://kingaddons.com/elementor/pulsing-button/) - Boost interactivity with an engaging call-to-action (CTA) animated button. Ideal for driving clicks, sign-ups, or purchases. Customize animation effects, colors, and styles to match your brand and catch visitors attention. Perfect for increasing conversions.
-- [**Creative Button**](https://kingaddons.com/elementor/creative-button/) - Add a touch of creativity to your website with the Creative Button widget. Perfect for unique and eye-catching call-to-actions. Customize shapes, colors, and effects to align with your brand and capture visitor attention. Ideal for enhancing user engagement and driving interactions.
-- [**Hovering Image Stack**](https://kingaddons.com/elementor/hovering-image-stack/) - Create visually appealing image stacks to showcase multiple images in a layered format. Perfect for portfolios, product displays, or galleries. Customize the stack style, spacing, and effects to match your website design and provide a unique visual experience for your visitors.
-- [**Content Hover & Flip Box**](https://kingaddons.com/elementor/content-hover-flip-box/) - Showcase interactive content with the Content Hover Box widget. This versatile tool includes various hover effects and also has the Flip Box effect for enhanced engagement. Perfect for highlighting features, services, or promotions in a visually appealing way. Customize the layout, colors, and effects to match your website design.
-- [**Flip Countdown & Timer**](https://kingaddons.com/elementor/flip-countdown-timer/) - Add dynamic urgency to your events or promotions with the Flip Countdown widget. This tool features a unique flipping animation, perfect for time-limited offers, upcoming launches, or important dates. Customize the design, format, and style to match your website, ensuring it captures visitors attention and encourages action.
-- [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/) - Showcase your statistics or milestones with the Smooth Counter widget. Featuring seamless animations, this tool is perfect for displaying numbers, achievements, or progress in an engaging way. Customize the design, animation speed, and style to match your website, ensuring it draws visitors attention and enhances your content.
-- [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/) - Build trust and credibility with the Testimonial widget. Perfect for showcasing customer reviews, feedback, or client success stories. Customize the layout, design, and style to fit your brand, ensuring that positive experiences stand out and resonate with your audience.
-- [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/) - Display customer feedback and reviews dynamically with the Testimonial & Review Carousel widget. Ideal for showcasing client testimonials, ratings, or success stories in a sliding format. Customize the layout, transition effects, and style to match your brand, making positive experiences stand out and engage your audience effectively.
-- [**Feature List**](https://kingaddons.com/elementor/feature-list/) - Showcase key features or benefits with the Feature List widget. Perfect for highlighting product or service advantages in an organized and visually appealing format. Each list item can include icons, badges, and descriptions for added emphasis. Customize the layout, style, and icons to match your website design and engage your audience effectively.
-- [**Taxonomy List**](https://kingaddons.com/) - Display a structured list of taxonomies, such as categories or tags, with the Taxonomy List widget. Perfect for organizing content and improving navigation on your website. Customize the layout, style, and hierarchy to match your design and help visitors easily explore related topics or sections.
-- [**Page List**](https://kingaddons.com/) - Display a structured list of website pages with the Page List widget. Perfect for creating sitemaps, navigation menus, or directories. Customize the layout, style, and order to match your website design, and make navigation simple and efficient for your visitors.
-- [**Search (AJAX, live results and filters)**](https://kingaddons.com/) - Enhance your website with the search widget for fast and dynamic search functionality. Display instant results as users type, improving user experience and navigation. Customize the layout, style, and filters to match your website design, making it easier for visitors to find content quickly and efficiently.
-- [**Progress Bar**](https://kingaddons.com/) - Visualize progress or milestones with the Progress Bar widget. Perfect for showcasing goals, achievements, or completion statuses. Customize the style, colors, and animations to match your website design and engage your audience effectively. Ideal for portfolios, skill displays, or project tracking.
+- [**One Page Navigation**](https://kingaddons.com/elementor/one-page-navigation/) - Enhance single-page navigation with anchor links for smooth scrolling. Uses only CSS, ensuring optimal performance.
+- [**Off-Canvas Content**](https://kingaddons.com/elementor/off-canvas-content/) - Create slide-in panels for menus, widgets, or hidden content, accessible with simple user interactions.
+- [**Styled Text Builder**](https://kingaddons.com/elementor/styled-text-builder/) - Design unique, animated text elements with extensive customization options, allowing different styles within a single text block.
+- [**Image Hotspots**](https://kingaddons.com/elementor/image-hotspots/) - Add interactive, clickable areas to images for dynamic and engaging content. Uses only CSS for fast performance.
+- [**Image Comparison**](https://kingaddons.com/elementor/image-comparison/) - Known as Before & After, this widget offers a draggable slider to compare images side by side. Perfect for product or design showcases.
+- [**Vertical Scrollable Image**](https://kingaddons.com/elementor/vertical-scrollable-image/) - Allow seamless vertical scrolling of long images on hover. Ideal for infographics or timelines. Uses only CSS for lightweight implementation.
+- [**Global Section & Container**](https://kingaddons.com/elementor/global-section-container/) - Manage reusable sections and containers to ensure consistent design. Leverages Elementor functionality without additional CSS or JS.
+- [**Card Carousel**](https://kingaddons.com/elementor/card-carousel/) - Display cards with images, text, and buttons in a responsive carousel. Perfect for highlighting team members, features, or testimonials.
+- [**Auto-Scrolling Text**](https://kingaddons.com/elementor/auto-scrolling-text/) - Add dynamic text marquees with customizable scrolling and styling. Enhance designs with image integration and smooth animations powered by CSS.
+- [**Popup & Lightbox Modal**](https://kingaddons.com/elementor/popup-lightbox-modal/) - Create engaging popups or modals to display content, promotions, or media. Add interactive elements with customizable effects.
+- [**Video Popup**](https://kingaddons.com/elementor/video-popup/) - Showcase videos in engaging popups with custom styling and animations. Perfect for tutorials or promotional content.
+- [**Blog Posts Carousel**](https://kingaddons.com/elementor/blog-posts-carousel/) - Display blog posts dynamically in a customizable carousel. Ideal for highlighting featured articles or news updates.
+- [**Image Grid**](https://kingaddons.com/elementor/image-grid/) - Showcase images in masonry or fit-row grid layouts, fully adaptable for mobile and desktop views.
+- [**Business Hours**](https://kingaddons.com/elementor/business-hours/) - Display clear business hours, also called opening hours, with fully customizable layouts and styles.
+- [**Price List & Menu**](https://kingaddons.com/elementor/price-list-menu/) - Present your menu or price list in a stylish, organized format with fully customizable design options.
+- [**Image Hover Box**](https://kingaddons.com/elementor/image-hover-box/) - Add engaging hover effects to images. Perfect for services, portfolios, or products.
+- [**Reading Progress Bar**](https://kingaddons.com/elementor/reading-progress-bar/) - Track user progress on long-form content with customizable progress bars.
+- [**Pulsing Button**](https://kingaddons.com/elementor/pulsing-button/) - Drive user interactions with animated call-to-action buttons.
+- [**Creative Button**](https://kingaddons.com/elementor/creative-button/) - Design unique buttons with customizable shapes and effects.
+- [**Hovering Image Stack**](https://kingaddons.com/elementor/hovering-image-stack/) - Layer multiple images interactively for portfolios or galleries.
+- [**Content Hover & Flip Box**](https://kingaddons.com/elementor/content-hover-flip-box/) - Add hover effects and flip animations to content boxes for enhanced engagement.
+- [**Flip Countdown & Timer**](https://kingaddons.com/elementor/flip-countdown-timer/) - Create countdown timers with flipping animations to boost urgency.
+- [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/) - Display animated statistics or milestones with smooth transitions.
+- [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/) - Build trust by showcasing client reviews or testimonials.
+- [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/) - Highlight feedback in a dynamic carousel format.
+- [**Feature List**](https://kingaddons.com/elementor/feature-list/) - Highlight product or service benefits with styled lists.
+- [**Taxonomy List**](https://kingaddons.com/) - Display categories or tags in an organized and navigable list.
+- [**Page List**](https://kingaddons.com/) - Present website pages in a structured, customizable format.
+- [**Search (AJAX, live results and filters)**](https://kingaddons.com/) - Enable fast, dynamic searches with live results and advanced filters.
+- [**Progress Bar**](https://kingaddons.com/) - Highlight goals or progress visually with fully customizable designs.
 
 ### FREE Elementor features
 
-- [**Particles Background**](https://kingaddons.com/elementor/particles-background/) - Brings website to life by adding a dynamic, animated particle effect as background, creating an engaging and modern visual experience.
-- [**Parallax Background**](https://kingaddons.com/elementor/parallax-background/) - Adds a dynamic, multi-layered visual effect to website backgrounds, moving at different speeds during scrolling for an immersive, 3D-like experience for sections and containers. The feature uses only lightweight JS code (11 kilobytes).
-- [**Matte Glass Background**](https://kingaddons.com/elementor/matte-glass-background/) - Adds matte glass background feature also known as frosted glass effect. The feature uses only CSS, not any JavaScript at all.
-- [**Advanced Border Radius**](https://kingaddons.com/elementor/advanced-border-radius/) - Perfect for creating unique, rounded corners on elements. Customize the border radius for each corner, add different styles, and create visually appealing shapes to match your brand. Ideal for adding a modern and stylish touch to your site.
-- [**Floating Animation**](https://kingaddons.com/elementor/floating-animation/) - Adds floating animation setting. The feature does not use JavaScript, only lightweight CSS animation.
-- [**Custom CSS**](https://kingaddons.com/elementor/custom-css/) - Provides an easy-to-use interface for adding personalized CSS styles, allowing precise control over the appearance and layout of web elements on your page.
-- [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/) - Adds rotating animation setting. The feature does not use JS, only lightweight CSS animation.
-- [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/) - Wrap everything in link - section, container, column and common elements.
-- [**Duplicator**](https://kingaddons.com/elementor/duplicator/) - Adds feature to duplicate posts, pages, Elementor templates and etc.
+- [**Particles Background**](https://kingaddons.com/elementor/particles-background/) - Add animated particles for dynamic, engaging backgrounds.
+- [**Parallax Background**](https://kingaddons.com/elementor/parallax-background/) - Create immersive multi-layered scrolling backgrounds with lightweight JS.
+- [**Matte Glass Background**](https://kingaddons.com/elementor/matte-glass-background/) - Apply a frosted glass effect using only CSS.
+- [**Advanced Border Radius**](https://kingaddons.com/elementor/advanced-border-radius/) - Customize unique rounded corners for a modern design touch.
+- [**Floating Animation**](https://kingaddons.com/elementor/floating-animation/) - Add CSS-based floating animations for interactive visuals.
+- [**Custom CSS**](https://kingaddons.com/elementor/custom-css/) - Add personalized CSS styles easily for precise design control.
+- [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/) - Apply lightweight CSS-based rotating effects to elements.
+- [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/) - Wrap sections or elements in clickable links.
+- [**Duplicator**](https://kingaddons.com/elementor/duplicator/) - Duplicate posts, pages, or templates effortlessly.
 
 ### Happy User of King Addons?
 
@@ -106,6 +111,34 @@ Note: This plugin works with Elementor. Make sure you have [Elementor](https://w
 4. You can also see them under the category "King Addons" in your element/widget list.
 
 == Frequently Asked Questions ==
+
+= What is King Addons for Elementor? =
+
+King Addons is a powerful Elementor toolkit and WordPress addon that provides **600+ templates** and **40+ widgets** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
+
+= How does King Addons improve WordPress website speed? =
+
+King Addons is optimized for performance, ensuring all widgets and templates are lightweight. By using minimal code and leveraging Elementor's built-in functionality, it keeps websites fast and responsive without compromising design or features.
+
+= Can I use King Addons for a multilingual website? =
+
+Yes, King Addons is fully compatible with multilingual plugins like WPML and Polylang, making it easy to build websites in multiple languages. Its global compatibility ensures smooth functionality for users in any region.
+
+= What are the best widgets in King Addons? =
+
+Some of the most popular widgets include **Dynamic Search with AJAX**, **Popup Builder**, **Image Comparison Tool**, **Blog Posts Carousel**, and **Interactive Image Hotspots**. These widgets are designed to enhance functionality and engage your audience effectively.
+
+= Does King Addons slow down my website? =
+
+No, King Addons is built with lightweight code to ensure performance. All widgets are optimized to run efficiently, ensuring your website remains fast and responsive.
+
+= Is King Addons suitable for beginners? =
+
+Absolutely. King Addons is designed to be beginner-friendly with intuitive drag-and-drop functionality and no coding required. It is perfect for anyone looking to create professional websites without technical expertise.
+
+= Can I try King Addons before buying? =
+
+Yes, King Addons offers a free version with powerful features. Explore the free tools and widgets to see how they can transform your Elementor website.
 
 = Can I use the plugin without Elementor Page Builder? =
 
@@ -136,6 +169,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.20.3 - December 20, 2024 =
+* **New:** Templates Catalog - 8 premium templates added. Update the plugin to view them on last pages of the catalog.
 
 = King Addons for Elementor version 24.12.19 - December 19, 2024 =
  * **New:** Progress Bar widget added.

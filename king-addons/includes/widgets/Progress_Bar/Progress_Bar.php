@@ -1410,5 +1410,4 @@ class Progress_Bar extends Widget_Base
 
         return $timing_functions;
     }
-
 }
