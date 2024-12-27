@@ -43,13 +43,13 @@ final class Popup_Builder
 
     }
 
-    public function enqueueScriptPreviewHandler()
+    public function enqueueScriptPreviewHandler(): void
     {
         wp_enqueue_script('king-addons-popup-builder-popup-preview-script', KING_ADDONS_URL . 'includes/extensions/Popup_Builder/preview-handler.js', array('jquery'), KING_ADDONS_VERSION, true);
     }
 
 
-    public function register_elementor_document_type($documents_manager)
+    public function register_elementor_document_type($documents_manager): void
     {
         require_once(KING_ADDONS_PATH . 'includes/extensions/Popup_Builder/Popup_Module.php');
 
@@ -61,12 +61,12 @@ final class Popup_Builder
         }
     }
 
-    public function enqueue_styles()
+    public function enqueue_styles(): void
     {
         wp_enqueue_style('king-addons-popup-builder-popup-module-style', KING_ADDONS_URL . 'includes/extensions/Popup_Builder/popup-module.css', '', KING_ADDONS_VERSION);
     }
 
-    public function enqueue_scripts()
+    public function enqueue_scripts(): void
     {
         wp_enqueue_script('king-addons-popup-builder-popup-module-script', KING_ADDONS_URL . 'includes/extensions/Popup_Builder/popup-module.js', [
             'jquery',
@@ -74,7 +74,7 @@ final class Popup_Builder
         ], KING_ADDONS_VERSION, true);
     }
 
-    public function render_popups()
+    public function render_popups(): void
     {
         $conditions = json_decode(get_option('king_addons_pb_popup_conditions'), true);
 
@@ -96,14 +96,14 @@ final class Popup_Builder
         }
     }
 
-    public static function display_popups_by_location($conditions, $page)
+    public static function display_popups_by_location($conditions, $page): void
     {
         foreach ($conditions[$page] as $popup) {
             self::render_popup_content($popup);
         }
     }
 
-    public static function render_popup_content($slug)
+    public static function render_popup_content($slug): void
     {
 
         $template_id = self::get_template_id($slug);
@@ -253,7 +253,7 @@ final class Popup_Builder
         return $template;
     }
 
-    public function block_template_frontend()
+    public function block_template_frontend(): void
     {
         if (is_singular('king_addons_ext_pb') && !current_user_can('edit_posts')) {
             wp_redirect(site_url(), 301);
@@ -267,14 +267,14 @@ final class Popup_Builder
         return $post_meta['_elementor_template_type'][0] ?? false;
     }
 
-    public function redirect_to_options_page()
+    public function redirect_to_options_page(): void
     {
         if (get_current_screen()->post_type == 'king_addons_ext_pb' && isset($_GET['action']) && $_GET['action'] == 'edit') {
             wp_redirect('admin.php?page=king-addons-popup-builder');
         }
     }
 
-    public function register_templates_library_cpt()
+    public function register_templates_library_cpt(): void
     {
 
         $args = array(
@@ -306,7 +306,7 @@ final class Popup_Builder
 
     }
 
-    public function king_addons_pb_delete_template()
+    public function king_addons_pb_delete_template(): void
     {
         /** @noinspection DuplicatedCode */
         $nonce = $_POST['nonce'];
@@ -325,7 +325,7 @@ final class Popup_Builder
         }
     }
 
-    public function king_addons_pb_save_template_conditions()
+    public function king_addons_pb_save_template_conditions(): void
     {
 
         $nonce = $_POST['nonce'];
@@ -344,7 +344,7 @@ final class Popup_Builder
         return wp_unslash(json_encode(array_filter(json_decode(stripcslashes($data), true))));
     }
 
-    public function king_addons_pb_create_template()
+    public function king_addons_pb_create_template(): void
     {
         $nonce = $_POST['nonce'];
 
@@ -390,7 +390,7 @@ final class Popup_Builder
         }
     }
 
-    public static function renderPopupBuilder()
+    public static function renderPopupBuilder(): void
     {
         $screen = get_current_screen();
         if ($screen->id === 'toplevel_page_king-addons-popup-builder') {
@@ -421,7 +421,8 @@ final class Popup_Builder
                                 <div class="kng-promo-btn-txt">
                                     <?php esc_html_e('Unlock Premium Features & 600+ Templates Today!', 'king-addons'); ?>
                                 </div>
-                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share-v2.svg'; ?>"
+                                <img width="16px"
+                                     src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share-v2.svg'; ?>"
                                      alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
                             </a>
                         </div>
@@ -443,7 +444,7 @@ final class Popup_Builder
         <?php
     }
 
-    public static function render_conditions_popup()
+    public static function render_conditions_popup(): void
     {
         $active_tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : 'king_addons_pb_tab_header';
         ?>
@@ -794,7 +795,7 @@ final class Popup_Builder
         <?php
     }
 
-    public static function render_create_template_popup()
+    public static function render_create_template_popup(): void
     {
         ?>
         <div class="king-addons-pb-user-template-popup-wrap king-addons-pb-admin-popup-wrap">
@@ -838,7 +839,7 @@ final class Popup_Builder
         return $custom_type_list;
     }
 
-    public static function render_theme_builder_templates($template)
+    public static function render_theme_builder_templates($template): void
     {
         $args = array(
             'post_type' => array('king_addons_ext_pb'),
@@ -897,7 +898,7 @@ final class Popup_Builder
         return $template->ID ?? false;
     }
 
-    public static function archive_pages_popup_conditions($conditions)
+    public static function archive_pages_popup_conditions($conditions): void
     {
         $term_id = '';
         $term_name = '';
@@ -996,7 +997,7 @@ final class Popup_Builder
         return $result;
     }
 
-    public static function single_pages_popup_conditions($conditions)
+    public static function single_pages_popup_conditions($conditions): void
     {
         global $post;
 

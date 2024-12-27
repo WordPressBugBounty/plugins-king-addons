@@ -69,7 +69,7 @@ final class RegisterAssets
      */
     function registerLibrariesFiles(): void
     {
-        foreach (ModulesMap::getModulesMapArray()['libraries'] as $library_id => $library_array) {
+        foreach (LibrariesMap::getLibrariesMapArray()['libraries'] as $library_id => $library_array) {
             foreach ($library_array['css'] as $css) {
                 wp_register_style(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $library_id . '-' . $css, KING_ADDONS_URL . 'includes/assets/libraries/' . $library_id . '/' . $css . '.css', null, KING_ADDONS_VERSION);
             }

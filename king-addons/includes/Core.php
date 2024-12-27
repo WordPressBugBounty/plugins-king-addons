@@ -49,6 +49,7 @@ final class Core
     public function __construct()
     {
         require_once(KING_ADDONS_PATH . 'includes/ModulesMap.php');
+        require_once(KING_ADDONS_PATH . 'includes/LibrariesMap.php');
 
         if ($this->hasElementorCompatibility()) {
 
@@ -81,6 +82,8 @@ final class Core
             // Additional
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2_API.php');
+            require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Animations.php');
+            require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Button_Animations.php');
             require_once(KING_ADDONS_PATH . 'includes/widgets/Search/Search_Ajax.php');
 
             self::enableWidgetsByDefault();
@@ -253,6 +256,9 @@ final class Core
     public function registerControls(Controls_Manager $controls_manager): void
     {
         $controls_manager->register(new AJAX_Select2\Ajax_Select2());
+        $controls_manager->register(new Animations\Animations());
+        $controls_manager->register(new Animations\Animations_Alternative());
+        $controls_manager->register(new Button_Animations\Button_Animations());
     }
 
     function enqueueEditorStyles(): void
@@ -260,7 +266,7 @@ final class Core
         wp_enqueue_style(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', KING_ADDONS_URL . 'includes/admin/css/elementor-editor.css', '', KING_ADDONS_VERSION);
     }
 
-    public static function renderProFeaturesSection($module, $section, $type, $widget_name, $features)
+    public static function renderProFeaturesSection($module, $section, $type, $widget_name, $features): void
     {
         if (king_addons_freemius()->can_use_premium_code__premium_only()) {
             return;
@@ -288,7 +294,7 @@ final class Core
         $module->end_controls_section();
     }
 
-    public static function renderUpgradeProNotice($module, $controls_manager, $widget_name, $option, $condition = [])
+    public static function renderUpgradeProNotice($module, $controls_manager, $widget_name, $option, $condition = []): void
     {
         if (king_addons_freemius()->can_use_premium_code__premium_only()) {
             return;
@@ -319,7 +325,6 @@ final class Core
             ARRAY_FILTER_USE_BOTH
         );
     }
-
 }
 
 Core::instance();

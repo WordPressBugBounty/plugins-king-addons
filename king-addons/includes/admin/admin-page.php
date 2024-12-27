@@ -15,17 +15,35 @@ settings_errors('king_addons_messages');
 
 $options = get_option('king_addons_options');
 ?>
+<style>
+    #wpcontent {
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    html, #wpcontent {
+        background: #101112;
+    }
+
+    .king-addons-admin {
+        display: none;
+        max-width: 1660px;
+        margin: 10px 20px 0 0;
+        padding: 20px;
+    }
+</style>
 <div class="king-addons-admin">
     <?php if (!king_addons_freemius()->can_use_premium_code__premium_only()): ?>
         <div class="kng-promo">
             <div class="kng-promo-wrap">
                 <div class="kng-promo-wrap-icon">
-                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/unlock-v2.svg'; ?>"
+                    <img width="50px" src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/unlock-v2.svg'; ?>"
                          alt="<?php echo esc_html__('Unlock Icon', 'king-addons'); ?>">
                 </div>
                 <div class="kng-promo-wrap-1">
                     <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 600+ Templates Today!', 'king-addons'); ?></h1>
-                    <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next level. Get advanced tools like Ajax Search, Popup Builder,
+                    <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next level.
+                        Get advanced tools like Ajax Search, Popup Builder,
                         Taxonomy List, and more. All for just $2<span class="kng-promo-price-txt-small">99</span>/month!
                     </h2>
                 </div>
@@ -33,7 +51,8 @@ $options = get_option('king_addons_options');
                     <div class="kng-promo-navigation">
                         <div class="kng-promo-btn-wrap">
                             <a href="https://kingaddons.com/pricing/?rel=king-addons-dashboard" target="_blank">
-                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share.svg'; ?>"
+                                <img width="16px"
+                                     src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share.svg'; ?>"
                                      alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
                                 <div class="kng-promo-btn-txt"><?php echo esc_html__('Learn More', 'king-addons'); ?></div>
                             </a>

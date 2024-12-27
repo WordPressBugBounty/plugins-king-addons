@@ -1,4 +1,4 @@
-<?php /** @noinspection SpellCheckingInspection */
+<?php
 
 namespace King_Addons;
 
@@ -290,17 +290,16 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                 ],
-//                'team-member' => [
-//                    'title' => esc_html__('Team Member', 'king-addons'),
-//                    'description' => esc_html__('Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.', 'king-addons'),
-//                    'php-class' => 'Team_Member',
-//                    'has-pro' => true,
-//                    'docs-link' => '',
-////                    'demo-link' => 'https://kingaddons.com/elementor/team-member/',
-//                    'demo-link' => '',
-//                    'css' => ['style'],
-//                    'js' => [],
-//                ],
+                'team-member' => [
+                    'title' => esc_html__('Team Member', 'king-addons'),
+                    'description' => esc_html__('Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.', 'king-addons'),
+                    'php-class' => 'Team_Member',
+                    'docs-link' => '',
+//                    'demo-link' => 'https://kingaddons.com/elementor/team-member/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => [],
+                ],
 //                'charts' => [
 //                    'title' => esc_html__('Charts', 'king-addons'),
 //                    'description' => esc_html__('Lorem ipsum dolor set amet', 'king-addons'),
@@ -413,56 +412,6 @@ final class ModulesMap
                     'demo-link' => 'https://kingaddons.com/elementor/duplicator/',
                     'css' => [],
                     'js' => []
-                ],
-            ],
-            'libraries' => [
-                'animation' => [
-                    'css' => ['timing'],
-                    'js' => []
-                ],
-                'swiper' => [
-                    'css' => ['swiper'],
-                    'js' => ['swiper']
-                ],
-                'flipclock' => [
-                    'css' => ['flipclock'],
-                    'js' => ['flipclock']
-                ],
-                'jarallax' => [
-                    'css' => [],
-                    'js' => ['jarallax']
-                ],
-                'jquery' => [
-                    'css' => [],
-                    'js' => ['jquery']
-                ],
-                'jquerynumerator' => [
-                    'css' => [],
-                    'js' => ['jquerynumerator']
-                ],
-                'odometer' => [
-                    'css' => ['minimal'],
-                    'js' => ['odometer']
-                ],
-                'particles' => [
-                    'css' => [],
-                    'js' => ['particles']
-                ],
-                'isotope' => [
-                    'css' => [],
-                    'js' => ['isotope']
-                ],
-                'imagesloaded' => [
-                    'css' => [],
-                    'js' => ['imagesloaded']
-                ],
-                'wpcolorpicker' => [
-                    'css' => [],
-                    'js' => ['wpcolorpicker']
-                ],
-                'perfectscrollbar' => [
-                    'css' => [],
-                    'js' => ['perfectscrollbar']
                 ],
             ]
         ];

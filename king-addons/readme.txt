@@ -1,14 +1,14 @@
-=== King Addons for Elementor - Free Elements, Widgets, Templates, and Features for Elementor ===
+=== King Addons for Elementor - Popular Elementor Addon With 600+ Ready Templates, 40+ Advanced Widgets ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.20.3
+Stable tag: 24.12.27
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-600+ Elementor templates, 40+ free widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+600+ Elementor templates, 40+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
@@ -83,6 +83,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Page List**](https://kingaddons.com/) - Present website pages in a structured, customizable format.
 - [**Search (AJAX, live results and filters)**](https://kingaddons.com/) - Enable fast, dynamic searches with live results and advanced filters.
 - [**Progress Bar**](https://kingaddons.com/) - Highlight goals or progress visually with fully customizable designs.
+- [**Team Member**](https://kingaddons.com/) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
 
 ### FREE Elementor features
 
@@ -169,6 +170,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.27 - December 27, 2024 =
+* **New:** Team Member widget added.
+* **New:** Templates Catalog - 8 premium templates added. Update the plugin to view them on last pages of the catalog.
+* **Improved:** Elementor Header & Footer Builder extension.
+* **Improved:** UI of Elementor Addons dashboard.
 
 = King Addons for Elementor version 24.12.20.3 - December 20, 2024 =
 * **New:** Templates Catalog - 8 premium templates added. Update the plugin to view them on last pages of the catalog.

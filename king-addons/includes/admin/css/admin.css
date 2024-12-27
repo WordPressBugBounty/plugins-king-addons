@@ -7,6 +7,7 @@ html,
 /*noinspection SpellCheckingInspection*/
 #wpcontent {
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 @font-face {
@@ -18,6 +19,7 @@ html,
 }
 
 .king-addons-admin {
+    display: block !important;
     max-width: 1660px;
     margin: 10px 20px 0 0;
     padding: 20px;
@@ -73,6 +75,7 @@ html,
 }
 
 .kng-promo-btn-wrap a {
+    will-change: transform;
     width: 140px;
     text-align: center;
     justify-content: center;
@@ -93,6 +96,7 @@ html,
 }
 
 .kng-promo-btn-wrap img {
+    will-change: auto;
     margin-right: 8px;
     width: 16px;
     height: 16px;
@@ -100,9 +104,13 @@ html,
 
 /*noinspection CssNonIntegerLengthInPixels*/
 .kng-promo-btn-txt {
+    will-change: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
     font-size: 16px;
     font-weight: 500;
-    color: black;
+    color: rgb(0 0 0 / 68%);
     line-height: 1;
     letter-spacing: 0.5px;
     text-decoration: none;
@@ -141,12 +149,6 @@ html,
     width: auto;
     flex-basis: auto;
     margin-left: 40px;
-}
-
-.kng-promo-btn-txt {
-    font-size: 16px;
-    font-weight: 500;
-    color: black;
 }
 
 .kng-promo-subtitle {
@@ -192,7 +194,7 @@ html,
 .kng-tr-testimonial .kng-td-content h3:after,
 .kng-tr-progress-bar .kng-td-content h3:after,
     /*.kng-tr-content-flip-box .kng-td-content h3:after,*/
-/*.kng-tr-styled-text-builder .kng-td-content h3:after,*/
+    /*.kng-tr-styled-text-builder .kng-td-content h3:after,*/
 .kng-tr-card-carousel .kng-td-content h3:after,
 .kng-tr-auto-scrolling-text .kng-td-content h3:after,
 .kng-tr-blog-posts .kng-td-content h3:after,
@@ -290,6 +292,7 @@ tr {
 .kng-td-link {
     font-size: 17px;
     display: block;
+    font-weight: 500;
     width: fit-content;
     margin-top: 25px;
     text-decoration: none;
@@ -337,8 +340,8 @@ tr {
     margin-bottom: 15px;
     font-size: 15px;
     line-height: 1.4705882353;
-    font-weight: 400;
-    letter-spacing: -0.022em;
+    font-weight: 500;
+    letter-spacing: normal;
     margin-top: 13px;
 }
 
@@ -372,7 +375,7 @@ tr {
     font-size: 19px;
     line-height: 1.1428571429;
     font-weight: 600;
-    letter-spacing: .007em;
+    letter-spacing: normal;
 }
 
 .kng-btn-submit-wrap {

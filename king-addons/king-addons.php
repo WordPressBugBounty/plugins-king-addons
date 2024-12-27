@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: King Addons
- * Description: King Addons has 500+ premium templates, 40+ FREE widgets like One Page Navigation, Off-Canvas, Image Hotspots, Particles Background.
+ * Description: 600+ Elementor templates, 40+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.12.20.3
+ * Version: 24.12.27
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.12.20.3';
+const KING_ADDONS_VERSION = '24.12.27';
 
 /** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
@@ -100,6 +100,16 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
             king_addons_freemius()->add_filter('deactivate_on_activation', '__return_false');
         }
 //    }
+
+
+    if (!function_exists('king_addons_doDectivation')) {
+        function king_addons_doDectivation()
+        {
+            delete_option('king_addons_HFB_flushed_rewrite_rules');
+        }
+
+        register_deactivation_hook(__FILE__, 'king_addons_doDectivation');
+    }
 
     /**
      * Main function

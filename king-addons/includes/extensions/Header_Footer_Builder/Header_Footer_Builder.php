@@ -78,6 +78,11 @@ final class Header_Footer_Builder
         ];
 
         register_post_type('king-addons-el-hf', $args);
+
+        if (false === get_option('king_addons_HFB_flushed_rewrite_rules')) {
+            add_option('king_addons_HFB_flushed_rewrite_rules', true);
+            flush_rewrite_rules();
+        }
     }
 
     function registerMetabox()

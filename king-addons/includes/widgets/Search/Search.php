@@ -55,7 +55,7 @@ class Search extends Widget_Base
         return 'https://kingaddons.com/elementor/search/';
     }
 
-    public function add_section_style_ajax()
+    public function add_section_style_ajax(): void
     {
         $this->start_controls_section(
             'section_style_ajax',
@@ -834,7 +834,7 @@ class Search extends Widget_Base
     {
     }
 
-    public function add_control_search_query()
+    public function add_control_search_query(): void
     {
         $search_post_type = array_merge(['all' => esc_html__('All', 'king-addons')], Core::getCustomTypes('post', false));
 
@@ -862,7 +862,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_select_category()
+    public function add_control_select_category(): void
     {
         $this->add_control(
             'select_category',
@@ -879,7 +879,7 @@ class Search extends Widget_Base
     {
     }
 
-    public function add_control_ajax_search()
+    public function add_control_ajax_search(): void
     {
         $this->add_control(
             'ajax_search',
@@ -895,7 +895,7 @@ class Search extends Widget_Base
     {
     }
 
-    public function add_control_show_password_protected()
+    public function add_control_show_password_protected(): void
     {
         if (current_user_can('administrator')) {
             $this->add_control(
@@ -913,7 +913,7 @@ class Search extends Widget_Base
         }
     }
 
-    public function add_control_open_in_new_page()
+    public function add_control_open_in_new_page(): void
     {
         $this->add_control(
             'ajax_search_link_target',
@@ -927,7 +927,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_show_ajax_thumbnails()
+    public function add_control_show_ajax_thumbnails(): void
     {
         $this->add_control(
             'show_ajax_thumbnails',
@@ -942,7 +942,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_exclude_posts_without_thumbnail()
+    public function add_control_exclude_posts_without_thumbnail(): void
     {
         $this->add_control(
             'exclude_posts_without_thumbnail',
@@ -958,7 +958,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_show_description()
+    public function add_control_show_description(): void
     {
         $this->add_control(
             'show_description',
@@ -974,7 +974,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_number_of_words_in_excerpt()
+    public function add_control_number_of_words_in_excerpt(): void
     {
         $this->add_control(
             'number_of_words_in_excerpt',
@@ -993,7 +993,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_show_view_result_btn()
+    public function add_control_show_view_result_btn(): void
     {
         $this->add_control(
             'show_view_result_btn',
@@ -1008,7 +1008,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_view_result_text()
+    public function add_control_view_result_text(): void
     {
         $this->add_control(
             'view_result_text',
@@ -1027,7 +1027,7 @@ class Search extends Widget_Base
         );
     }
 
-    public function add_control_no_results_text()
+    public function add_control_no_results_text(): void
     {
         $this->add_control(
             'no_results_text',
@@ -1045,7 +1045,7 @@ class Search extends Widget_Base
         );
     }
 
-    protected function register_controls()
+    protected function register_controls(): void
     {
 
         $this->start_controls_section(
@@ -1987,7 +1987,7 @@ class Search extends Widget_Base
     {
     }
 
-    protected function render_search_submit_btn()
+    protected function render_search_submit_btn(): void
     {
         $settings = $this->get_settings();
 
@@ -2017,7 +2017,7 @@ class Search extends Widget_Base
         endif;
     }
 
-    protected function render()
+    protected function render(): void
     {
         $settings = $this->get_settings();
         $this->add_render_attribute(
