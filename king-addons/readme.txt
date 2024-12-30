@@ -1,7 +1,7 @@
-=== King Addons for Elementor - Popular Elementor Addon With 600+ Ready Templates, 40+ Advanced Widgets ===
+=== King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.27
+Stable tag: 24.12.30
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -84,6 +84,8 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Search (AJAX, live results and filters)**](https://kingaddons.com/) - Enable fast, dynamic searches with live results and advanced filters.
 - [**Progress Bar**](https://kingaddons.com/) - Highlight goals or progress visually with fully customizable designs.
 - [**Team Member**](https://kingaddons.com/) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
+- [**Share Buttons**](https://kingaddons.com/) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
+- [**Pricing Table**](https://kingaddons.com/) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
 
 ### FREE Elementor features
 
@@ -170,6 +172,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.30 - December 30, 2024 =
+* **New:** Pricing Table widget added.
+* **New:** Share Buttons widget added.
+* **Improved:** PHP 8.4+ compatibility improved.
+* **Improved:** King Addons Pro - PHP 8.4+ compatibility improved too.
 
 = King Addons for Elementor version 24.12.27 - December 27, 2024 =
 * **New:** Team Member widget added.

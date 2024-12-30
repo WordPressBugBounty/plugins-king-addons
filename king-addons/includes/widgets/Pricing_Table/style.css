@@ -1,0 +1,323 @@
+.king-addons-pricing-table {
+    position: relative;
+}
+
+.king-addons-pricing-table-heading {
+    text-align: center;
+}
+
+.king-addons-pricing-table-heading-inner {
+    display: inline-block;
+}
+
+.king-addons-pricing-table-heading-left .king-addons-pricing-table-heading-inner > div,
+.king-addons-pricing-table-heading-right .king-addons-pricing-table-heading-inner > div {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.king-addons-pricing-table-heading-left .king-addons-pricing-table-icon {
+    float: left;
+}
+
+.king-addons-pricing-table-heading-right .king-addons-pricing-table-icon {
+    float: right;
+}
+
+.king-addons-pricing-table-heading-left .king-addons-pricing-table-title-wrap,
+.king-addons-pricing-table-heading-right .king-addons-pricing-table-title-wrap {
+    text-align: left;
+}
+
+.king-addons-pricing-table-heading-center .king-addons-pricing-table-icon img {
+    margin: 0 auto;
+}
+
+.king-addons-pricing-table-icon img {
+    display: block;
+    border-style: none;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-title-wrap .king-addons-pricing-table-title {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-title-wrap .king-addons-pricing-table-sub-title {
+    font-size: 14px;
+}
+
+.king-addons-pricing-table-price {
+    text-align: center;
+    font-size: 65px;
+    font-weight: 500;
+    line-height: 0.9;
+}
+
+.king-addons-pricing-table-price-inner {
+    display: flex;
+    justify-content: center;
+}
+
+.king-addons-pricing-table-sub-price,
+.king-addons-pricing-table-currency,
+.king-addons-pricing-table-old-price,
+.king-addons-pricing-table-period {
+    line-height: 1;
+}
+
+.king-addons-pricing-table-period {
+    font-size: 17px;
+    line-height: 1.5;
+    align-self: flex-end;
+}
+
+.king-addons-pricing-table-old-price {
+    text-decoration: line-through !important;
+}
+
+.king-addons-pricing-table-feature {
+    position: relative;
+    font-size: 15px;
+    padding: 0;
+}
+
+.king-addons-pricing-table-feature-inner {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.king-addons-pricing-table-feature-inner span {
+    position: relative;
+}
+
+.king-addons-pricing-table-feature-inner span.king-addons-pricing-table-ftext-line-yes {
+    text-decoration: line-through;
+}
+
+.king-addons-pricing-table-feature:after {
+    content: "";
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.king-addons-pricing-table section:last-of-type:after {
+    display: none;
+}
+
+.king-addons-pricing-table-feature-text,
+.king-addons-pricing-table-feature-icon {
+    display: inline;
+}
+
+.king-addons-pricing-table-feature-icon {
+    margin-right: 8px;
+}
+
+.king-addons-pricing-table-feature-tooltip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    border-radius: 4px;
+    padding: 6px 10px;
+    visibility: hidden;
+    opacity: 0;
+    font-size: 15px;
+    transform: translate(-50%, -100%);
+    transition: all 230ms ease-in-out 0s;
+    text-align: center;
+}
+
+.king-addons-pricing-table-feature-tooltip:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top-style: solid;
+    border-top-width: 6px;
+    transform: translateX(-50%);
+}
+
+.king-addons-pricing-table-feature:hover .king-addons-pricing-table-feature-tooltip {
+    visibility: visible;
+    opacity: 1;
+    top: 5px;
+    transform: translate(-50%, -100%);
+}
+
+.king-addons-pricing-table-button {
+    text-align: center;
+    font-size: 17px;
+}
+
+.king-addons-pricing-table-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.king-addons-pricing-table-btn span {
+    position: relative;
+    z-index: 2;
+    opacity: 1 !important;
+}
+
+.king-addons-pricing-table-btn:before,
+.king-addons-pricing-table-btn:after {
+    z-index: 1 !important;
+}
+
+.king-addons-pricing-table-badge {
+    position: absolute;
+    display: inline-block;
+    text-align: center;
+    z-index: 2;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-badge .king-addons-pricing-table-badge-inner {
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.king-addons-pricing-table-badge-left {
+    left: 0;
+    right: auto;
+}
+
+.king-addons-pricing-table-badge-right {
+    left: auto;
+    right: 0;
+}
+
+.king-addons-pricing-table-badge-corner {
+    top: 0;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+}
+
+.king-addons-pricing-table-badge-corner .king-addons-pricing-table-badge-inner {
+    width: 200%;
+}
+
+.king-addons-pricing-table-badge-corner.king-addons-pricing-table-badge-right {
+    transform: rotate(90deg);
+}
+
+.king-addons-pricing-table-badge-circle {
+    top: 0;
+}
+
+.king-addons-pricing-table-badge-circle .king-addons-pricing-table-badge-inner {
+    border-radius: 100%;
+}
+
+.king-addons-pricing-table-badge-flag {
+    border-right: 5px;
+}
+
+.king-addons-pricing-table-badge-flag.king-addons-pricing-table-badge-left {
+    margin-left: -10px;
+}
+
+.king-addons-pricing-table-badge-flag.king-addons-pricing-table-badge-right {
+    margin-right: -10px;
+}
+
+.king-addons-pricing-table-badge-flag:before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    bottom: -5px;
+    width: 0;
+    height: 0;
+    margin-left: -10px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top-style: solid;
+    border-top-width: 10px;
+}
+
+.king-addons-pricing-table-badge-flag .king-addons-pricing-table-badge-inner {
+    position: relative;
+    z-index: 2;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.king-addons-pricing-table-badge-flag.king-addons-pricing-table-badge-left:before {
+    left: 5px;
+    transform: rotate(90deg);
+}
+
+.king-addons-pricing-table-badge-flag.king-addons-pricing-table-badge-right:before {
+    right: -5px;
+    transform: rotate(-90deg);
+}
+
+.king-addons-pricing-table-badge-flag.king-addons-pricing-table-badge-left .king-addons-pricing-table-badge-inner {
+    border-bottom-right-radius: 3px;
+}
+
+.king-addons-pricing-table-badge-flag.king-addons-pricing-table-badge-right .king-addons-pricing-table-badge-inner {
+    border-bottom-left-radius: 3px;
+}
+
+.king-addons-pricing-table-text {
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.king-addons-pricing-table-divider {
+    margin: 0 auto;
+    border: 0;
+}
+
+.king-addons-pricing-table-animation-slide {
+    transition-property: margin;
+    transition-timing-function: ease-in-out;
+}
+
+.king-addons-pricing-table-animation-bounce {
+    animation-iteration-count: 1;
+}
+
+.king-addons-pricing-table-animation-slide:hover {
+    margin-top: -5px;
+}
+
+.king-addons-pricing-table-animation-bounce:hover {
+    animation-name: bounce;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-heading {
+    background-color: #f9f9f9;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-price {
+    background-color: #5B03FF;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-button {
+    background-color: #f9f9f9;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-btn {
+    background-color: #2B2B2B;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-btn:hover {
+    background-color: #4A45D2;
+}
+
+.elementor-widget-king-addons-pricing-table .king-addons-pricing-table-text {
+    background-color: #f9f9f9;
+}

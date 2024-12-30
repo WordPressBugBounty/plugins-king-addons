@@ -1294,7 +1294,7 @@ class Team_Member extends Widget_Base
             [
                 'label' => esc_html__('Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#605BE5',
+                'default' => '#5B03FF',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-member-social' => 'color: {{VALUE}}',
                     '{{WRAPPER}} .king-addons-member-social svg' => 'fill: {{VALUE}}'
@@ -1318,7 +1318,7 @@ class Team_Member extends Widget_Base
             [
                 'label' => esc_html__('Border Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#605BE5',
+                'default' => '#5B03FF',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-member-social' => 'border-color: {{VALUE}}',
                 ],
@@ -1630,7 +1630,7 @@ class Team_Member extends Widget_Base
             [
                 'label' => esc_html__('Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#605BE5',
+                'default' => '#5B03FF',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-member-btn' => 'background-color: {{VALUE}}',
                 ],
@@ -1642,7 +1642,7 @@ class Team_Member extends Widget_Base
             [
                 'label' => esc_html__('Border Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#605BE5',
+                'default' => '#5B03FF',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-member-btn' => 'border-color: {{VALUE}}',
                 ],

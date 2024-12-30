@@ -325,6 +325,151 @@ final class Core
             ARRAY_FILTER_USE_BOTH
         );
     }
+
+    public static function getShareIcon($args = []): string
+    {
+        $args = wp_parse_args($args, [
+            'network' => '',
+            'url' => '',
+            'title' => '',
+            'text' => '',
+            'image' => '',
+            'show_whatsapp_title' => 'no',
+            'show_whatsapp_excerpt' => 'no',
+            'tooltip' => 'no',
+            'icons' => 'no',
+            'labels' => 'no',
+            'custom_label' => '',
+        ]);
+
+        $url = esc_url($args['url']);
+        $title = wp_strip_all_tags($args['title']);
+        $text = wp_strip_all_tags($args['text']);
+        $image = esc_url($args['image']);
+        $network = $args['network'];
+
+        $get_whatsapp_url = function ($a) {
+            if ('yes' === $a['show_whatsapp_title'] && 'yes' === $a['show_whatsapp_excerpt']) {
+                return 'https://api.whatsapp.com/send?text=*' . $a['title'] . '*%0a' . $a['text'] . '%0a' . $a['url'];
+            } elseif ('yes' === $a['show_whatsapp_title']) {
+                return 'https://api.whatsapp.com/send?text=*' . $a['title'] . '*%0a' . $a['url'];
+            } elseif ('yes' === $a['show_whatsapp_excerpt']) {
+                return 'https://api.whatsapp.com/send?text=*' . $a['text'] . '%0a' . $a['url'];
+            }
+            return 'https://api.whatsapp.com/send?text=' . $a['url'];
+        };
+
+        $networks_map = [
+            'facebook-f' => [
+                'url' => "https://www.facebook.com/sharer.php?u={$url}",
+                'title' => esc_html__('Facebook', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'x-twitter' => [
+                'url' => "https://twitter.com/intent/tweet?url={$url}",
+                'title' => esc_html__('X (Twitter)', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'linkedin-in' => [
+                'url' => "https://www.linkedin.com/shareArticle?mini=true&url={$url}&title={$title}&summary={$text}&source={$url}",
+                'title' => esc_html__('LinkedIn', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'pinterest-p' => [
+                'url' => "https://www.pinterest.com/pin/create/button/?url={$url}&media={$image}",
+                'title' => esc_html__('Pinterest', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'reddit' => [
+                'url' => "https://reddit.com/submit?url={$url}&title={$title}",
+                'title' => esc_html__('Reddit', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'tumblr' => [
+                'url' => "https://tumblr.com/share/link?url={$url}",
+                'title' => esc_html__('Tumblr', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'digg' => [
+                'url' => "https://digg.com/submit?url={$url}",
+                'title' => esc_html__('Digg', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'xing' => [
+                'url' => "https://www.xing.com/app/user?op=share&url={$url}",
+                'title' => esc_html__('Xing', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'vk' => [
+                'url' => "https://vk.ru/share.php?url={$url}&title={$title}&description=" . wp_trim_words($text, 250) . "&image={$image}/",
+                'title' => esc_html__('VK', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'odnoklassniki' => [
+                'url' => "https://connect.ok.ru/offer?url={$url}",
+                'title' => esc_html__('OK', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'get-pocket' => [
+                'url' => "https://getpocket.com/edit?url={$url}",
+                'title' => esc_html__('Pocket', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'skype' => [
+                'url' => "https://web.skype.com/share?url={$url}",
+                'title' => esc_html__('Skype', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'whatsapp' => [
+                'url' => $get_whatsapp_url($args),
+                'title' => esc_html__('WhatsApp', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'telegram' => [
+                'url' => "https://telegram.me/share/url?url={$url}&text={$text}",
+                'title' => esc_html__('Telegram', 'king-addons'),
+                'icon' => 'fab',
+            ],
+            'envelope' => [
+                'url' => "mailto:?subject={$title}&body={$url}",
+                'title' => esc_html__('Email', 'king-addons'),
+                'icon' => 'fas',
+            ],
+            'print' => [
+                'url' => "javascript:window.print()",
+                'title' => esc_html__('Print', 'king-addons'),
+                'icon' => 'fas',
+            ],
+        ];
+
+        if (!isset($networks_map[$network])) {
+            return '';
+        }
+
+        $share_url = $networks_map[$network]['url'];
+        $network_title = $networks_map[$network]['title'];
+        $icon_category = $networks_map[$network]['icon'];
+
+        $output = '<a href="' . esc_url($share_url) . '" class="king-addons-share-icon king-addons-share-' . esc_attr($network) . '" target="_blank">';
+
+        if ('yes' === $args['tooltip']) {
+            $output .= '<span class="king-addons-share-tooltip king-addons-tooltip">' . esc_html($network_title) . '</span>';
+        }
+
+        if ('yes' === $args['icons']) {
+            $output .= '<i class="' . esc_attr($icon_category) . ' fa-' . esc_attr($network) . '"></i>';
+        }
+
+        if ('yes' === $args['labels']) {
+            $label = !empty($args['custom_label']) ? $args['custom_label'] : $network_title;
+            $output .= '<span class="king-addons-share-label">' . esc_html($label) . '</span>';
+        }
+
+        $output .= '</a>';
+
+        return $output;
+    }
+
 }
 
 Core::instance();

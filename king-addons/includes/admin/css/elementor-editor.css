@@ -415,12 +415,16 @@
     background-image: url(../img/team-member.svg);
 }
 
-.king-addons-icon.king-addons-charts {
-    background-image: url(../img/charts.svg);
+.king-addons-icon.king-addons-share-buttons {
+    background-image: url(../img/share-buttons.svg);
 }
 
 .king-addons-icon.king-addons-pricing-table {
     background-image: url(../img/pricing-table.svg);
+}
+
+.king-addons-icon.king-addons-charts {
+    background-image: url(../img/charts.svg);
 }
 
 /* for elementor icons */
