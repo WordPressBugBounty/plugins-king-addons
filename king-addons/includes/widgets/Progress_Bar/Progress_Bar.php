@@ -441,7 +441,7 @@ class Progress_Bar extends Widget_Base
             [
                 'label' => esc_html__('Animation Timing', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
-                'options' => $this->animation_timings(),
+                'options' => Core::getAnimationTimings(),
                 'default' => 'ease-default',
             ]
         );
@@ -1337,77 +1337,5 @@ class Progress_Bar extends Widget_Base
         }
 
         echo '</div>';
-    }
-
-    /** @noinspection DuplicatedCode */
-    public function animation_timings(): array
-    {
-        $timing_functions = [
-            'ease-default' => 'Default',
-            'linear' => 'Linear',
-            'ease-in' => 'Ease In',
-            'ease-out' => 'Ease Out',
-            'pro-eio' => 'EI Out (Pro)',
-            'pro-eiqd' => 'EI Quad (Pro)',
-            'pro-eicb' => 'EI Cubic (Pro)',
-            'pro-eiqrt' => 'EI Quart (Pro)',
-            'pro-eiqnt' => 'EI Quint (Pro)',
-            'pro-eisn' => 'EI Sine (Pro)',
-            'pro-eiex' => 'EI Expo (Pro)',
-            'pro-eicr' => 'EI Circ (Pro)',
-            'pro-eibk' => 'EI Back (Pro)',
-            'pro-eoqd' => 'EO Quad (Pro)',
-            'pro-eocb' => 'EO Cubic (Pro)',
-            'pro-eoqrt' => 'EO Quart (Pro)',
-            'pro-eoqnt' => 'EO Quint (Pro)',
-            'pro-eosn' => 'EO Sine (Pro)',
-            'pro-eoex' => 'EO Expo (Pro)',
-            'pro-eocr' => 'EO Circ (Pro)',
-            'pro-eobk' => 'EO Back (Pro)',
-            'pro-eioqd' => 'EIO Quad (Pro)',
-            'pro-eiocb' => 'EIO Cubic (Pro)',
-            'pro-eioqrt' => 'EIO Quart (Pro)',
-            'pro-eioqnt' => 'EIO Quint (Pro)',
-            'pro-eiosn' => 'EIO Sine (Pro)',
-            'pro-eioex' => 'EIO Expo (Pro)',
-            'pro-eiocr' => 'EIO Circ (Pro)',
-            'pro-eiobk' => 'EIO Back (Pro)',
-        ];
-
-        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
-            $timing_functions = [
-                'ease-default' => 'Default',
-                'linear' => 'Linear',
-                'ease-in' => 'Ease In',
-                'ease-out' => 'Ease Out',
-                'ease-in-out' => 'Ease In Out',
-                'ease-in-quad' => 'Ease In Quad',
-                'ease-in-cubic' => 'Ease In Cubic',
-                'ease-in-quart' => 'Ease In Quart',
-                'ease-in-quint' => 'Ease In Quint',
-                'ease-in-sine' => 'Ease In Sine',
-                'ease-in-expo' => 'Ease In Expo',
-                'ease-in-circ' => 'Ease In Circ',
-                'ease-in-back' => 'Ease In Back',
-                'ease-out-quad' => 'Ease Out Quad',
-                'ease-out-cubic' => 'Ease Out Cubic',
-                'ease-out-quart' => 'Ease Out Quart',
-                'ease-out-quint' => 'Ease Out Quint',
-                'ease-out-sine' => 'Ease Out Sine',
-                'ease-out-expo' => 'Ease Out Expo',
-                'ease-out-circ' => 'Ease Out Circ',
-                'ease-out-back' => 'Ease Out Back',
-                'ease-in-out-quad' => 'Ease In Out Quad',
-                'ease-in-out-cubic' => 'Ease In Out Cubic',
-                'ease-in-out-quart' => 'Ease In Out Quart',
-                'ease-in-out-quint' => 'Ease In Out Quint',
-                'ease-in-out-sine' => 'Ease In Out Sine',
-                'ease-in-out-expo' => 'Ease In Out Expo',
-                'ease-in-out-circ' => 'Ease In Out Circ',
-                'ease-in-out-back' => 'Ease In Out Back',
-            ];
-        }
-
-        return $timing_functions;
     }
 }

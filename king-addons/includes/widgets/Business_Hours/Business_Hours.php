@@ -112,7 +112,7 @@ class Business_Hours extends Widget_Base
             [
                 'label' => esc_html__('Day Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#1E1E1E33',
+                'default' => '#1E1E1E59',
                 'selectors' => [
                     '{{WRAPPER}} {{CURRENT_ITEM}} .king-addons-business-hours-item-day' => 'color: {{VALUE}};',
                 ],
@@ -139,7 +139,7 @@ class Business_Hours extends Widget_Base
             [
                 'label' => esc_html__('Hours Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#1E1E1E33',
+                'default' => '#1E1E1E59',
                 'selectors' => [
                     '{{WRAPPER}} {{CURRENT_ITEM}} .king-addons-business-hours-item-hours' => 'color: {{VALUE}};',
                 ],
@@ -154,7 +154,7 @@ class Business_Hours extends Widget_Base
             [
                 'label' => esc_html__('Line Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#1E1E1E33',
+                'default' => '#1E1E1E59',
                 'selectors' => [
                     '{{WRAPPER}} {{CURRENT_ITEM}} .king-addons-business-hours-item-line' => 'border-color: {{VALUE}};',
                 ],
@@ -300,7 +300,7 @@ class Business_Hours extends Widget_Base
             [
                 'label' => esc_html__('Line Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#1E1E1E33',
+                'default' => '#1E1E1E59',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-business-hours-item-line' => 'border-bottom-color: {{VALUE}};',
                 ],

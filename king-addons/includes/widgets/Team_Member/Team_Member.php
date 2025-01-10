@@ -443,7 +443,6 @@ class Team_Member extends Widget_Base
             ]
         );
 
-
         $this->end_controls_section();
 
         $this->add_section_layout();
@@ -2018,7 +2017,7 @@ class Team_Member extends Widget_Base
                 // Member name
                 if ('' !== $settings['member_name'] && 'below' === $settings['member_name_location']) {
                     $tags_whitelist = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p'];
-                    $member_name_tag = self::validate_html_tags_wl($settings['member_name_tag'], 'h3', $tags_whitelist);
+                    $member_name_tag = Core::validateHTMLTags($settings['member_name_tag'], 'h3', $tags_whitelist);
 
                     echo '<' . esc_attr($member_name_tag) . ' class="king-addons-member-name">';
                     echo wp_kses_post($settings['member_name']);
@@ -2064,15 +2063,6 @@ class Team_Member extends Widget_Base
             </div>
         <?php
         endif;
-    }
-
-    public function validate_html_tags_wl($setting, $default, $tags_whitelist)
-    {
-        $value = $setting;
-        if (!in_array($value, $tags_whitelist)) {
-            $value = $default;
-        }
-        return $value;
     }
 
     protected function team_member_overlay()

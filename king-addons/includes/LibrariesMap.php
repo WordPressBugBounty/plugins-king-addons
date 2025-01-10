@@ -12,8 +12,12 @@ final class LibrariesMap
     {
         return ['libraries' => [
             'animation' => [
-                'css' => ['general', 'button', 'timing'],
+                'css' => ['general', 'button', 'timing', 'loading'],
                 'js' => []
+            ],
+            'charts' => [
+                'css' => [],
+                'js' => ['charts']
             ],
             'swiper' => [
                 'css' => ['swiper'],

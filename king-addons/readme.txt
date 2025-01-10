@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.30
+Stable tag: 24.12.37
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -79,11 +79,11 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/) - Build trust by showcasing client reviews or testimonials.
 - [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/) - Highlight feedback in a dynamic carousel format.
 - [**Feature List**](https://kingaddons.com/elementor/feature-list/) - Highlight product or service benefits with styled lists.
-- [**Taxonomy List**](https://kingaddons.com/) - Display categories or tags in an organized and navigable list.
-- [**Page List**](https://kingaddons.com/) - Present website pages in a structured, customizable format.
-- [**Search (AJAX, live results and filters)**](https://kingaddons.com/) - Enable fast, dynamic searches with live results and advanced filters.
-- [**Progress Bar**](https://kingaddons.com/) - Highlight goals or progress visually with fully customizable designs.
-- [**Team Member**](https://kingaddons.com/) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
+- [**Taxonomy List**](https://kingaddons.com/elementor/taxonomy-list/) - Display categories or tags in an organized and navigable list.
+- [**Page List**](https://kingaddons.com/elementor/page-list/) - Present website pages in a structured, customizable format.
+- [**Search (AJAX, instant live results and filters)**](https://kingaddons.com/elementor/ajax-search/) - Enable fast, dynamic searches with live results and advanced filters.
+- [**Progress Bar**](https://kingaddons.com/elementor/progress-bar/) - Highlight goals or progress visually with fully customizable designs.
+- [**Team Member**](https://kingaddons.com/elementor/team-member/) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
 - [**Share Buttons**](https://kingaddons.com/) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
 - [**Pricing Table**](https://kingaddons.com/) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
 
@@ -103,6 +103,10 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 
 - If you have any more questions, visit our support on the [Plugin's Forum](https://wordpress.org/support/plugin/king-addons).
 - Rate us on [WordPress](https://wordpress.org/support/plugin/king-addons/reviews/?rate=5#new-post) :)
+
+### Keywords
+
+Before and after image sliders, WooCommerce pricing tools, advanced tools for professionals, custom form builder WordPress, speed-enhanced WordPress plugins, temp, WooCommerce product grid, advanced styling options, templ, bu, custom Elementor modules, responsive product galleries, AJAX-powered search, templa, build, MailChimp integration plugin, interactive blog grids, elimentr, elem, testimonials and reviews, addo, beginner-friendly plugins, a, drag and drop editor, Elementor plugin, dynamic content display, visual website builder, t, pag, widg, elemen, wid, e, template, interactive forms for Elementor, fr, business hours widget, fre, easy to use, blog post carousels, team member showcase, ele, call-to-action buttons, elementor, best Elementor widgets, extens, boost conversions with Elementor, te, tem, pricing tables WordPress, mobile-friendly WordPress addons, extensi, unyson, pricing calculator for services, engage visitors with interactive elements, element, customizable progress bars, WordPress page builder, lightweight Elementor tools, templat, exten, conditional logic for WordPress, add, WooCommerce Elementor widgets, ad, news ticker for WordPress, eleme, product showcases, Elementor addons, widge, bui, Elementor templates, elementr, ex, magazine-style layouts, free Elementor widgets, wi, uneson, WordPress charts plugin, elem, optimized Elementor widgets, w, alimentor, p, tem, data tables for Elementor, extensio, protected content WordPress, elementar, cross-domain copy-paste Elementor, no coding required, product sliders for WooCommerce, exte, content tickers for updates, f, responsive grid layouts, interactive sliders for Elementor, buil, elemento, lightweight WordPress plugins, sale countdown timer, ext, timeline widgets for WordPress, elimentor, SEO-friendly WordPress addons, responsive design tools, el, service comparison tables, pa, interactive pricing slider, create visually stunning designs, builde, b, advanced Elementor features, newsletter sign-up forms.
 
 == Installation ==
 
@@ -172,6 +176,15 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.37 - January 10, 2025 =
+* **New:** Search (AJAX) demo added.
+* **New:** Team Member demo added.
+* **New:** Progress Bar demo added.
+* **New:** Taxonomy List demo added.
+* **New:** Page List demo added.
+* **Improved:** King Addons Pro - PHP 8.4+ compatibility improved.
+* We added some behind-the-scenes improvements and optimizations to ensure the plugin runs even faster & smoother.
 
 = King Addons for Elementor version 24.12.30 - December 30, 2024 =
 * **New:** Pricing Table widget added.

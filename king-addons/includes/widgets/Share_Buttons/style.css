@@ -1,7 +1,7 @@
 .king-addons-share-buttons .king-addons-share-icon {
-    overflow: hidden;
     position: relative;
     display: flex;
+    overflow: hidden;
     color: #ffffff !important;
 }
 
@@ -39,14 +39,14 @@
 }
 
 .king-addons-share-buttons .king-addons-share-icon {
-    transition-property: opacity, border-color;
     transition-timing-function: linear;
+    transition-property: opacity, border-color;
 }
 
 .king-addons-share-buttons .king-addons-share-icon i,
 .king-addons-share-buttons .king-addons-share-icon span {
-    transition-property: color, background-color;
     transition-timing-function: linear;
+    transition-property: color, background-color;
 }
 
 .king-addons-share-official .king-addons-share-icon:hover {

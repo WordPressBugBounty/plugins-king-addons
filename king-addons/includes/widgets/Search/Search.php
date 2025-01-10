@@ -52,7 +52,7 @@ class Search extends Widget_Base
 
     public function get_custom_help_url(): string
     {
-        return 'https://kingaddons.com/elementor/search/';
+        return 'https://kingaddons.com/elementor/ajax-search/';
     }
 
     public function add_section_style_ajax(): void

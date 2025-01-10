@@ -78,7 +78,7 @@ class Search_Ajax
         }
 
         if ($_POST['king_addons_category'] == 0 || $_POST['king_addons_query_type'] === 'all') {
-            $tax_query = []; // Reset tax query
+            $tax_query = [];
         }
 
         $can_view_protected_posts = current_user_can('read_private_posts');

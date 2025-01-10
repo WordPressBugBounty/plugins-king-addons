@@ -48,10 +48,10 @@
 }
 
 .king-addons-pricing-table-price {
-    text-align: center;
     font-size: 65px;
     font-weight: 500;
     line-height: 0.9;
+    text-align: center;
 }
 
 .king-addons-pricing-table-price-inner {
@@ -77,8 +77,8 @@
 }
 
 .king-addons-pricing-table-feature {
-    position: relative;
     font-size: 15px;
+    position: relative;
     padding: 0;
 }
 
@@ -97,10 +97,10 @@
 }
 
 .king-addons-pricing-table-feature:after {
-    content: "";
     display: block;
     width: 100%;
     margin: 0 auto;
+    content: "";
 }
 
 .king-addons-pricing-table section:last-of-type:after {
@@ -117,51 +117,51 @@
 }
 
 .king-addons-pricing-table-feature-tooltip {
+    font-size: 15px;
     position: absolute;
     top: 0;
     left: 50%;
-    border-radius: 4px;
-    padding: 6px 10px;
     visibility: hidden;
-    opacity: 0;
-    font-size: 15px;
-    transform: translate(-50%, -100%);
+    padding: 6px 10px;
     transition: all 230ms ease-in-out 0s;
+    transform: translate(-50%, -100%);
     text-align: center;
+    opacity: 0;
+    border-radius: 4px;
 }
 
 .king-addons-pricing-table-feature-tooltip:before {
-    content: "";
     position: absolute;
-    left: 50%;
     bottom: -5px;
+    left: 50%;
     width: 0;
     height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top-style: solid;
-    border-top-width: 6px;
+    content: "";
     transform: translateX(-50%);
+    border-top-width: 6px;
+    border-top-style: solid;
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
 }
 
 .king-addons-pricing-table-feature:hover .king-addons-pricing-table-feature-tooltip {
-    visibility: visible;
-    opacity: 1;
     top: 5px;
+    visibility: visible;
     transform: translate(-50%, -100%);
+    opacity: 1;
 }
 
 .king-addons-pricing-table-button {
-    text-align: center;
     font-size: 17px;
+    text-align: center;
 }
 
 .king-addons-pricing-table-btn {
     position: relative;
-    overflow: hidden;
     display: inline-block;
-    vertical-align: middle;
+    overflow: hidden;
     cursor: pointer;
+    vertical-align: middle;
 }
 
 .king-addons-pricing-table-btn span {
@@ -177,9 +177,9 @@
 
 .king-addons-pricing-table-badge {
     position: absolute;
+    z-index: 2;
     display: inline-block;
     text-align: center;
-    z-index: 2;
 }
 
 .elementor-widget-king-addons-pricing-table .king-addons-pricing-table-badge .king-addons-pricing-table-badge-inner {
@@ -188,20 +188,20 @@
 }
 
 .king-addons-pricing-table-badge-left {
-    left: 0;
     right: auto;
+    left: 0;
 }
 
 .king-addons-pricing-table-badge-right {
-    left: auto;
     right: 0;
+    left: auto;
 }
 
 .king-addons-pricing-table-badge-corner {
     top: 0;
+    overflow: hidden;
     width: 200px;
     height: 200px;
-    overflow: hidden;
 }
 
 .king-addons-pricing-table-badge-corner .king-addons-pricing-table-badge-inner {
@@ -233,17 +233,17 @@
 }
 
 .king-addons-pricing-table-badge-flag:before {
-    content: "";
     position: absolute;
     z-index: 1;
     bottom: -5px;
     width: 0;
     height: 0;
     margin-left: -10px;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top-style: solid;
+    content: "";
     border-top-width: 10px;
+    border-top-style: solid;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
 }
 
 .king-addons-pricing-table-badge-flag .king-addons-pricing-table-badge-inner {
@@ -282,8 +282,8 @@
 }
 
 .king-addons-pricing-table-animation-slide {
-    transition-property: margin;
     transition-timing-function: ease-in-out;
+    transition-property: margin;
 }
 
 .king-addons-pricing-table-animation-bounce {

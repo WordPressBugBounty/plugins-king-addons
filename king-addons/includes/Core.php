@@ -8,7 +8,6 @@ namespace King_Addons;
 use Elementor\Widgets_Manager;
 use Elementor\Controls_Manager;
 
-/** @noinspection SpellCheckingInspection */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
@@ -85,6 +84,9 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Animations.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Button_Animations.php');
             require_once(KING_ADDONS_PATH . 'includes/widgets/Search/Search_Ajax.php');
+
+            // Additional - Grids, Magazine Grid
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/PostLikes.php');
 
             self::enableWidgetsByDefault();
 
@@ -171,54 +173,128 @@ final class Core
     }
 
     /**
-     * Register Widgets
+     * Registers Elementor widgets with a mechanism to skip (and remember) broken widgets
+     * that caused a fatal error previously, and try them again if the plugin version is updated.
      *
-     * Load widgets files and register new Elementor widgets.
-     *
-     * Fired by `elementor/widgets/register` action hook.
-     *
-     * @param Widgets_Manager $widgets_manager Elementor widgets manager.
+     * @param Widgets_Manager $widgets_manager
+     * @return void
      */
     function registerWidgets(Widgets_Manager $widgets_manager): void
     {
+        // Used to track which widget is currently being loaded when a fatal error occurs
+        static $currentlyLoadingWidgetId = null;
+
+        $currentPluginVersion = KING_ADDONS_VERSION;
+
+        // Get plugin options to check if a widget is enabled
         $options = get_option('king_addons_options');
 
+        /**
+         * Retrieve the array of broken widgets from the WordPress options.
+         * The structure is expected to be something like:
+         * [
+         *   'widget_id' => [
+         *       'version' => '1.2.0',
+         *       'error'   => 'Some fatal error message'
+         *   ],
+         *   ...
+         * ]
+         */
+        $brokenWidgets = get_option('king_addons_broken_widgets', []);
+
+        /**
+         * STEP 1: Clear out any "broken widgets" where the stored version is
+         * less than the current plugin version. This gives them a second chance
+         * after an update, assuming the issue may have been fixed.
+         */
+        foreach ($brokenWidgets as $brokenId => $brokenData) {
+            if (
+                isset($brokenData['version'])
+                && version_compare($currentPluginVersion, $brokenData['version'], '>')
+            ) {
+                // If the plugin version is now higher, we remove the widget from the blacklist
+                unset($brokenWidgets[$brokenId]);
+            }
+        }
+
+        // Update the option after cleaning up
+        update_option('king_addons_broken_widgets', $brokenWidgets);
+
+        /**
+         * STEP 2: Use register_shutdown_function to detect any fatal errors (E_ERROR, E_PARSE, etc.)
+         * that might occur during the loading of a widget. If an error is detected, store that widget
+         * in the "broken" list with the current plugin version and the error message.
+         */
+        register_shutdown_function(function () use (&$currentlyLoadingWidgetId, $currentPluginVersion) {
+            $error = error_get_last();
+            if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+                // If a fatal error occurred while loading a specific widget
+                if (!empty($currentlyLoadingWidgetId)) {
+                    $brokenWidgetsLocal = get_option('king_addons_broken_widgets', []);
+                    $brokenWidgetsLocal[$currentlyLoadingWidgetId] = [
+                        'version' => $currentPluginVersion,
+                        'error' => $error['message'] ?? ''
+                    ];
+                    update_option('king_addons_broken_widgets', $brokenWidgetsLocal);
+                }
+            }
+        });
+
+        /**
+         * STEP 3: Now we iterate through all widgets in our modules map and try to load them.
+         * If a widget is in the broken list, we skip it to avoid repeated fatal errors.
+         */
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget) {
+            // Check if the widget is enabled in the options
+            if (!isset($options[$widget_id]) || $options[$widget_id] !== 'enabled') {
+                continue;
+            }
 
-            if ($options[$widget_id] === 'enabled') {
-                $widget_class = $widget['php-class'];
-                $path_widget_class = "King_Addons\\" . $widget_class;
+            // If this widget is listed as broken, skip it
+            if (array_key_exists($widget_id, $brokenWidgets)) {
+                // Log something here if needed:
+                // error_log("Skipping widget {$widget_id}, it previously caused a fatal error.");
+                continue;
+            }
 
-                // Include the base widget class
-                require_once(KING_ADDONS_PATH . 'includes/widgets/' . $widget_class . '/' . $widget_class . '.php');
+            // Track which widget we're loading
+            $currentlyLoadingWidgetId = $widget_id;
 
-                if (king_addons_freemius()->can_use_premium_code__premium_only() && defined('KING_ADDONS_PRO_PATH')) {
-                    if (isset($widget['has-pro'])) {
-                        $pro_file_path = KING_ADDONS_PRO_PATH . 'includes/widgets/' . $widget_class . '_Pro/' . $widget_class . '_Pro.php';
+            // Include the base widget class
+            $widget_class = $widget['php-class'];
+            $path_widget_class = "King_Addons\\" . $widget_class;
+            require_once(KING_ADDONS_PATH . 'includes/widgets/' . $widget_class . '/' . $widget_class . '.php');
 
-                        if (file_exists($pro_file_path)) {
-                            // Include the Pro version class if the file exists
-                            require_once($pro_file_path);
+            // Check if we can load the Pro version
+            if (
+                function_exists('king_addons_freemius')
+                && king_addons_freemius()->can_use_premium_code__premium_only()
+                && defined('KING_ADDONS_PRO_PATH')
+            ) {
+                if (!empty($widget['has-pro'])) {
+                    $pro_file_path = KING_ADDONS_PRO_PATH . 'includes/widgets/' . $widget_class . '_Pro/' . $widget_class . '_Pro.php';
 
-                            $path_widget_class_pro = "King_Addons\\" . $widget_class . '_Pro';
-                            $widgets_manager->register(new $path_widget_class_pro);
-
-                        } else {
-                            // error_log("Pro file not found: $pro_file_path. Registering base widget.");
-                            $widgets_manager->register(new $path_widget_class);
-                        }
+                    if (file_exists($pro_file_path)) {
+                        require_once($pro_file_path);
+                        $path_widget_class_pro = "King_Addons\\" . $widget_class . '_Pro';
+                        $widgets_manager->register(new $path_widget_class_pro);
                     } else {
-                        // Register base widget if no 'has-pro' key
+                        // If Pro file doesn't exist, register the base widget
                         $widgets_manager->register(new $path_widget_class);
                     }
                 } else {
-                    // Register base widget if Freemius premium code not available
+                    // No 'has-pro', register the base widget
                     $widgets_manager->register(new $path_widget_class);
                 }
+            } else {
+                // No Freemius Pro available, register the base widget
+                $widgets_manager->register(new $path_widget_class);
             }
+
+            // Clear the tracking variable after successful load
+            $currentlyLoadingWidgetId = null;
         }
     }
-
 
     function enableWidgetsByDefault(): void
     {
@@ -361,62 +437,62 @@ final class Core
 
         $networks_map = [
             'facebook-f' => [
-                'url' => "https://www.facebook.com/sharer.php?u={$url}",
+                'url' => "https://www.facebook.com/sharer.php?u=$url",
                 'title' => esc_html__('Facebook', 'king-addons'),
                 'icon' => 'fab',
             ],
             'x-twitter' => [
-                'url' => "https://twitter.com/intent/tweet?url={$url}",
+                'url' => "https://twitter.com/intent/tweet?url=$url",
                 'title' => esc_html__('X (Twitter)', 'king-addons'),
                 'icon' => 'fab',
             ],
             'linkedin-in' => [
-                'url' => "https://www.linkedin.com/shareArticle?mini=true&url={$url}&title={$title}&summary={$text}&source={$url}",
+                'url' => "https://www.linkedin.com/shareArticle?mini=true&url=$url&title=$title&summary=$text&source=$url",
                 'title' => esc_html__('LinkedIn', 'king-addons'),
                 'icon' => 'fab',
             ],
             'pinterest-p' => [
-                'url' => "https://www.pinterest.com/pin/create/button/?url={$url}&media={$image}",
+                'url' => "https://www.pinterest.com/pin/create/button/?url=$url&media=$image",
                 'title' => esc_html__('Pinterest', 'king-addons'),
                 'icon' => 'fab',
             ],
             'reddit' => [
-                'url' => "https://reddit.com/submit?url={$url}&title={$title}",
+                'url' => "https://reddit.com/submit?url=$url&title=$title",
                 'title' => esc_html__('Reddit', 'king-addons'),
                 'icon' => 'fab',
             ],
             'tumblr' => [
-                'url' => "https://tumblr.com/share/link?url={$url}",
+                'url' => "https://tumblr.com/share/link?url=$url",
                 'title' => esc_html__('Tumblr', 'king-addons'),
                 'icon' => 'fab',
             ],
             'digg' => [
-                'url' => "https://digg.com/submit?url={$url}",
+                'url' => "https://digg.com/submit?url=$url",
                 'title' => esc_html__('Digg', 'king-addons'),
                 'icon' => 'fab',
             ],
             'xing' => [
-                'url' => "https://www.xing.com/app/user?op=share&url={$url}",
+                'url' => "https://www.xing.com/app/user?op=share&url=$url",
                 'title' => esc_html__('Xing', 'king-addons'),
                 'icon' => 'fab',
             ],
             'vk' => [
-                'url' => "https://vk.ru/share.php?url={$url}&title={$title}&description=" . wp_trim_words($text, 250) . "&image={$image}/",
+                'url' => "https://vk.ru/share.php?url=$url&title=$title&description=" . wp_trim_words($text, 250) . "&image=$image/",
                 'title' => esc_html__('VK', 'king-addons'),
                 'icon' => 'fab',
             ],
             'odnoklassniki' => [
-                'url' => "https://connect.ok.ru/offer?url={$url}",
+                'url' => "https://connect.ok.ru/offer?url=$url",
                 'title' => esc_html__('OK', 'king-addons'),
                 'icon' => 'fab',
             ],
             'get-pocket' => [
-                'url' => "https://getpocket.com/edit?url={$url}",
+                'url' => "https://getpocket.com/edit?url=$url",
                 'title' => esc_html__('Pocket', 'king-addons'),
                 'icon' => 'fab',
             ],
             'skype' => [
-                'url' => "https://web.skype.com/share?url={$url}",
+                'url' => "https://web.skype.com/share?url=$url",
                 'title' => esc_html__('Skype', 'king-addons'),
                 'icon' => 'fab',
             ],
@@ -426,12 +502,12 @@ final class Core
                 'icon' => 'fab',
             ],
             'telegram' => [
-                'url' => "https://telegram.me/share/url?url={$url}&text={$text}",
+                'url' => "https://telegram.me/share/url?url=$url&text=$text",
                 'title' => esc_html__('Telegram', 'king-addons'),
                 'icon' => 'fab',
             ],
             'envelope' => [
-                'url' => "mailto:?subject={$title}&body={$url}",
+                'url' => "mailto:?subject=$title&body=$url",
                 'title' => esc_html__('Email', 'king-addons'),
                 'icon' => 'fas',
             ],
@@ -468,6 +544,335 @@ final class Core
         $output .= '</a>';
 
         return $output;
+    }
+
+    public static function validateHTMLTags($setting, $default, $tags_whitelist)
+    {
+        $value = $setting;
+        if (!in_array($value, $tags_whitelist)) {
+            $value = $default;
+        }
+        return $value;
+    }
+
+    public static function getIcon($icon, $dir)
+    {
+        if (empty($icon) || strpos($icon, 'fa-') === false) {
+            return '';
+        }
+
+        $dir = $dir ? "-$dir" : '';
+        return wp_kses(
+            '<i class="' . esc_attr($icon . $dir) . '"></i>',
+            ['i' => ['class' => []]]
+        );
+    }
+
+    public static function getPluginName()
+    {
+        return 'King Addons';
+    }
+
+    public static function getAnimationTimings(): array
+    {
+        /** @noinspection DuplicatedCode */
+        $timings = [
+            'ease-default' => 'Default',
+            'linear' => 'Linear',
+            'ease-in' => 'Ease In',
+            'ease-out' => 'Ease Out',
+            'pro-eio' => 'EI Out (Pro)',
+            'pro-eiqd' => 'EI Quad (Pro)',
+            'pro-eicb' => 'EI Cubic (Pro)',
+            'pro-eiqrt' => 'EI Quart (Pro)',
+            'pro-eiqnt' => 'EI Quint (Pro)',
+            'pro-eisn' => 'EI Sine (Pro)',
+            'pro-eiex' => 'EI Expo (Pro)',
+            'pro-eicr' => 'EI Circ (Pro)',
+            'pro-eibk' => 'EI Back (Pro)',
+            'pro-eoqd' => 'EO Quad (Pro)',
+            'pro-eocb' => 'EO Cubic (Pro)',
+            'pro-eoqrt' => 'EO Quart (Pro)',
+            'pro-eoqnt' => 'EO Quint (Pro)',
+            'pro-eosn' => 'EO Sine (Pro)',
+            'pro-eoex' => 'EO Expo (Pro)',
+            'pro-eocr' => 'EO Circ (Pro)',
+            'pro-eobk' => 'EO Back (Pro)',
+            'pro-eioqd' => 'EIO Quad (Pro)',
+            'pro-eiocb' => 'EIO Cubic (Pro)',
+            'pro-eioqrt' => 'EIO Quart (Pro)',
+            'pro-eioqnt' => 'EIO Quint (Pro)',
+            'pro-eiosn' => 'EIO Sine (Pro)',
+            'pro-eioex' => 'EIO Expo (Pro)',
+            'pro-eiocr' => 'EIO Circ (Pro)',
+            'pro-eiobk' => 'EIO Back (Pro)',
+        ];
+
+        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
+            /** @noinspection DuplicatedCode */
+            $timings = [
+                'ease-default' => 'Default',
+                'linear' => 'Linear',
+                'ease-in' => 'Ease In',
+                'ease-out' => 'Ease Out',
+                'ease-in-out' => 'Ease In Out',
+                'ease-in-quad' => 'Ease In Quad',
+                'ease-in-cubic' => 'Ease In Cubic',
+                'ease-in-quart' => 'Ease In Quart',
+                'ease-in-quint' => 'Ease In Quint',
+                'ease-in-sine' => 'Ease In Sine',
+                'ease-in-expo' => 'Ease In Expo',
+                'ease-in-circ' => 'Ease In Circ',
+                'ease-in-back' => 'Ease In Back',
+                'ease-out-quad' => 'Ease Out Quad',
+                'ease-out-cubic' => 'Ease Out Cubic',
+                'ease-out-quart' => 'Ease Out Quart',
+                'ease-out-quint' => 'Ease Out Quint',
+                'ease-out-sine' => 'Ease Out Sine',
+                'ease-out-expo' => 'Ease Out Expo',
+                'ease-out-circ' => 'Ease Out Circ',
+                'ease-out-back' => 'Ease Out Back',
+                'ease-in-out-quad' => 'Ease In Out Quad',
+                'ease-in-out-cubic' => 'Ease In Out Cubic',
+                'ease-in-out-quart' => 'Ease In Out Quart',
+                'ease-in-out-quint' => 'Ease In Out Quint',
+                'ease-in-out-sine' => 'Ease In Out Sine',
+                'ease-in-out-expo' => 'Ease In Out Expo',
+                'ease-in-out-circ' => 'Ease In Out Circ',
+                'ease-in-out-back' => 'Ease In Out Back',
+            ];
+        }
+
+        return $timings;
+    }
+
+    public static function getAnimationTimingsConditionsPro()
+    {
+        return [
+            'pro-eibk',
+            'pro-eicb',
+            'pro-eicr',
+            'pro-eiex',
+            'pro-eio',
+            'pro-eiobk',
+            'pro-eiocb',
+            'pro-eiocr',
+            'pro-eioex',
+            'pro-eioqd',
+            'pro-eioqnt',
+            'pro-eioqrt',
+            'pro-eiosn',
+            'pro-eiqd',
+            'pro-eiqnt',
+            'pro-eiqrt',
+            'pro-eisn',
+            'pro-eobk',
+            'pro-eocb',
+            'pro-eocr',
+            'pro-eoex',
+            'pro-eoqd',
+            'pro-eoqnt',
+            'pro-eoqrt',
+            'pro-eosn',
+        ];
+    }
+
+    public static function isBlogArchive()
+    {
+        return (
+                is_home()
+                && '0' === get_option('page_on_front')
+                && '0' === get_option('page_for_posts')
+            ) || (
+                intval(get_option('page_for_posts')) === get_queried_object_id()
+                && !is_404()
+            );
+    }
+
+    public static function filterOembedResults($html)
+    {
+        preg_match('/src="([^"]+)"/', $html, $m);
+        return $m[1] . '&auto_play=true';
+    }
+
+    public static function getWooCommerceTaxonomies()
+    {
+        $filtered = array_filter(get_object_taxonomies('product'), fn($t) => get_taxonomy($t)->show_ui);
+        return array_combine($filtered, array_map(fn($t) => get_taxonomy($t)->label, $filtered));
+    }
+
+    public static function getCustomMetaKeysTaxonomies()
+    {
+        $data = [];
+        $tax_types = Core::getCustomTypes('tax', false);
+
+        foreach ($tax_types as $taxonomy_slug => $post_type_name) {
+            $meta_keys = [];
+            foreach (get_terms($taxonomy_slug) as $tax) {
+                $keys = array_keys(get_term_meta($tax->term_id));
+                $keys = array_filter($keys, fn($key) => '_' !== $key[0]);
+                $meta_keys = array_merge($meta_keys, $keys);
+            }
+            $data[$taxonomy_slug] = array_unique($meta_keys);
+        }
+
+        $merged_meta_keys = array_values(array_unique(array_merge(...$data)));
+        $options = array_combine($merged_meta_keys, $merged_meta_keys);
+
+        return [$data, $options];
+    }
+
+    public static function getMailchimpLists()
+    {
+        $api_key = get_option('king_addons_mailchimp_api_key', '');
+        $mailchimp_list = ['def' => esc_html__('Select List', 'king-addons')];
+
+        if (!$api_key) {
+            return $mailchimp_list;
+        }
+
+        $url = 'https://' . explode('-', $api_key)[1] . '.api.mailchimp.com/3.0/lists/';
+        $response = wp_remote_get($url, [
+            'headers' => ['Authorization' => 'Basic ' . base64_encode('user:' . $api_key)]
+        ]);
+
+        $body = json_decode(wp_remote_retrieve_body($response));
+        if (!empty($body->lists)) {
+            foreach ($body->lists as $list) {
+                $mailchimp_list[$list->id] = $list->name . ' (' . $list->stats->member_count . ')';
+            }
+        }
+
+        return $mailchimp_list;
+    }
+
+    public static function getMailchimpGroups()
+    {
+        $apiKey = get_option('king_addons_mailchimp_api_key');
+        $domain = 'https://' . substr($apiKey, strpos($apiKey, '-') + 1) . '.api.mailchimp.com/3.0/';
+        $authArgs = ['headers' => ['Authorization' => 'Basic ' . base64_encode('user:' . $apiKey)]];
+        $groups = ['def' => 'Select Group'];
+        $mailchimpIDs = Core::getMailchimpLists();
+
+        foreach ($mailchimpIDs as $audience => $ignore) {
+            if ($audience === 'def') {
+                continue;
+            }
+
+            $cats = wp_remote_get("{$domain}lists/$audience/interest-categories", $authArgs);
+            $cats = json_decode($cats['body'])->categories ?? [];
+
+            foreach ($cats as $cat) {
+                $interests = wp_remote_get("{$domain}lists/$audience/interest-categories/$cat->id/interests", $authArgs);
+                $interests = json_decode($interests['body'])->interests ?? [];
+
+                foreach ($interests as $int) {
+                    $groups[$int->id] = $int->name;
+                }
+            }
+        }
+
+        return $groups;
+    }
+
+    public static function getShopURL($settings)
+    {
+        global $wp;
+        $url = ('' === get_option('permalink_structure'))
+            ? remove_query_arg(['page', 'paged'], add_query_arg($wp->query_string, '', home_url($wp->request)))
+            : preg_replace('%/page/[0-9]+%', '', home_url(trailingslashit($wp->request)));
+        $url = add_query_arg('kingaddonsfilters', '', $url);
+        $single_params = [
+            'min_price' => true,
+            'max_price' => true,
+            'orderby' => false,
+            'psearch' => false,
+            'filter_product_cat' => false,
+            'filter_product_tag' => false,
+            'filter_rating' => false,
+        ];
+        foreach ($single_params as $param => $needs_clean) {
+            if (isset($_GET[$param])) {
+                $value = wp_unslash($_GET[$param]);
+                /** @noinspection PhpUndefinedFunctionInspection */
+                $value = $needs_clean ? wc_clean($value) : $value;
+                $url = add_query_arg($param, $value, $url);
+            }
+        }
+        /** @noinspection DuplicatedCode */
+        /** @noinspection PhpUndefinedFunctionInspection */
+        if ($chosen_attrs = WC()->query->get_layered_nav_chosen_attributes()) {
+            foreach ($chosen_attrs as $name => $data) {
+                /** @noinspection PhpUndefinedFunctionInspection */
+                $filter_name = wc_attribute_taxonomy_slug($name);
+                if (!empty($data['terms'])) {
+                    $url = add_query_arg('filter_' . $filter_name, implode(',', $data['terms']), $url);
+                }
+                if (!empty($settings)) {
+                    if ('or' === $settings['tax_query_type'] || isset($_GET['query_type_' . $filter_name])) {
+                        $url = add_query_arg('query_type_' . $filter_name, 'or', $url);
+                    }
+                }
+            }
+        }
+        return $url;
+    }
+
+    public static function getClientIP()
+    {
+        $server_ip_keys = [
+            'HTTP_CLIENT_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_FORWARDED',
+            'HTTP_X_CLUSTER_CLIENT_IP',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($server_ip_keys as $key) {
+            if (isset($_SERVER[$key])) {
+                $ip = wp_kses_post_deep(wp_unslash($_SERVER[$key]));
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    return $ip;
+                }
+            }
+        }
+
+        return '127.0.0.1';
+    }
+
+    public static function getCustomMetaKeys()
+    {
+        // Get all custom post types (slug => name).
+        $post_types = Core::getCustomTypes('post', false);
+
+        // Build $data with each post type’s unique custom meta keys (excluding keys beginning with "_").
+        $data = array_combine(
+            array_keys($post_types),
+            array_map(function ($slug) {
+                $keys = [];
+                foreach (get_posts(['post_type' => $slug, 'posts_per_page' => -1]) as $post) {
+                    // get_post_custom_keys can return null, so cast to array:
+                    foreach ((array)get_post_custom_keys($post->ID) as $meta_key) {
+                        // Exclude protected keys (those beginning with "_").
+                        if ($meta_key[0] !== '_') {
+                            $keys[] = $meta_key;
+                        }
+                    }
+                }
+                return array_values(array_unique($keys));
+            }, array_keys($post_types))
+        );
+
+        // Flatten all meta keys across all post types, remove duplicates, and reindex.
+        $merged_meta_keys = array_values(array_unique(array_merge([], ...$data)));
+
+        // Create an associative array where key == value (for convenient dropdowns, etc.).
+        $options = array_combine($merged_meta_keys, $merged_meta_keys);
+
+        // Return both the per-post-type data and the merged, deduplicated options.
+        return [$data, $options];
     }
 
 }

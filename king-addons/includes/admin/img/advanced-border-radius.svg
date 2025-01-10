@@ -1,12 +1,12 @@
-<svg height="512" width="512"  xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+<svg height="512" width="512" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
      viewBox="0 0 511.999 511.999" style="enable-background:new 0 0 511.999 511.999;" xml:space="preserve">
     <defs>
         <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" style="stop-color:#9B62FF;stop-opacity:1"/>
-			<stop offset="100%" style="stop-color:#5B03FF;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#5B03FF;stop-opacity:1"/>
         </linearGradient>
     </defs>
-	<g fill="url(#grad1)">
+    <g fill="url(#grad1)">
 		<path d="M498.524,246.289c37.946-67.933-8.537-149.5-85.88-157.205l-28.232-2.813c-20.648-2.059-39.019-11.017-54.264-28.128
 			c-53.11-59.611-152.169-45.064-184.82,26.765c-7.941,17.466-22.298,31.44-40.428,39.344l-39.773,17.34
 			c-63.457,27.666-84.861,104.38-44.848,159.184c26.809,36.718,32.583,42.522,37.129,59.229l12.532,46.073

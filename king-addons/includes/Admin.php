@@ -5,7 +5,6 @@
 
 namespace King_Addons;
 
-/** @noinspection SpellCheckingInspection */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
@@ -30,6 +29,15 @@ final class Admin
             [$this, 'showAdminPage'],
             KING_ADDONS_URL . 'includes/admin/img/icon-for-admin.svg',
             58.7
+        );
+
+        add_submenu_page(
+            'king-addons',              // parent slug
+            'King Addons Settings',     // page title
+            'Settings',                 // menu title
+            'manage_options',           // capability
+            'king-addons-settings',     // submenu slug
+            [$this, 'showSettingsPage'] // callback function to render the page
         );
 
         if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
@@ -103,6 +111,17 @@ final class Admin
         require_once(KING_ADDONS_PATH . 'includes/admin/admin-page.php');
     }
 
+    function showSettingsPage(): void
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        self::enqueueSettingsAssets();
+
+        require_once(KING_ADDONS_PATH . 'includes/admin/settings-page.php');
+    }
+
     function createSettings(): void
     {
         // Register a new setting for "king-addons" page.
@@ -163,7 +182,7 @@ final class Admin
     {
         ?>
         <h2 id="<?php echo esc_attr($args['id']); ?>"
-            class="kng-section-title"><?php esc_html_e('Widgets', 'king-addons'); ?></h2>
+            class="kng-section-title"><?php esc_html_e('Elements', 'king-addons'); ?></h2>
         <?php
     }
 
@@ -179,5 +198,10 @@ final class Admin
     function enqueueAdminAssets(): void
     {
         wp_enqueue_style('king-addons-admin', KING_ADDONS_URL . 'includes/admin/css/admin.css', '', KING_ADDONS_VERSION);
+    }
+
+    function enqueueSettingsAssets(): void
+    {
+        wp_enqueue_style('king-addons-settings', KING_ADDONS_URL . 'includes/admin/css/settings.css', '', KING_ADDONS_VERSION);
     }
 }
