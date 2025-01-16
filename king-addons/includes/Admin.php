@@ -108,7 +108,7 @@ final class Admin
 
         self::enqueueAdminAssets();
 
-        require_once(KING_ADDONS_PATH . 'includes/admin/admin-page.php');
+        require_once(KING_ADDONS_PATH . 'includes/admin/layouts/admin-page.php');
     }
 
     function showSettingsPage(): void
@@ -117,9 +117,9 @@ final class Admin
             return;
         }
 
-        self::enqueueSettingsAssets();
+        require_once(KING_ADDONS_PATH . 'includes/admin/layouts/settings-page.php');
 
-        require_once(KING_ADDONS_PATH . 'includes/admin/settings-page.php');
+        self::enqueueSettingsAssets();
     }
 
     function createSettings(): void
@@ -155,7 +155,7 @@ final class Admin
                     'description' => $widget_array['description'],
                     'docs_link' => $widget_array['docs-link'],
                     'demo_link' => $widget_array['demo-link'],
-                    'class' => 'kng-tr kng-tr-' . $widget_id
+                    'class' => 'kng-tr kng-tr-' . $widget_id . (!empty($widget_array['has-pro']) ? ' kng-tr-freemium' : '')
                 )
             );
         }
@@ -203,5 +203,10 @@ final class Admin
     function enqueueSettingsAssets(): void
     {
         wp_enqueue_style('king-addons-settings', KING_ADDONS_URL . 'includes/admin/css/settings.css', '', KING_ADDONS_VERSION);
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-wpcolorpicker-wpcolorpicker');
+        wp_enqueue_script('king-addons-settings', KING_ADDONS_URL . 'includes/admin/js/settings.js', '', KING_ADDONS_VERSION);
     }
 }

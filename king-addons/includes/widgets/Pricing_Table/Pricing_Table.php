@@ -2005,6 +2005,17 @@ class Pricing_Table extends Widget_Base
             ]
         );
 
+        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+            $this->add_control(
+                'team_member_pro_notice_2',
+                [
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-pricing-table-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'content_classes' => 'king-addons-pro-notice',
+                ]
+            );
+        }
+
         $this->add_control(
             'btn_typography_divider',
             [

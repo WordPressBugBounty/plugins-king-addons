@@ -535,7 +535,7 @@ class Feature_List extends Widget_Base
                     ],
                     [
                         'king_addons_feature_list_list_title' => esc_html__('Versatile Layout Options', 'king-addons'),
-                        'king_addons_feature_list_description' => esc_html__('Select from a variety of layout designs and icon shapes to suit your unique style.', 'king-addons'),
+                        'king_addons_feature_list_description' => esc_html__('Choose from a variety of layout designs and icon shapes to suit your unique style.', 'king-addons'),
                         'king_addons_feature_list_icon' => [
                             'value' => 'fas fa-th-large',
                             'library' => 'solid'

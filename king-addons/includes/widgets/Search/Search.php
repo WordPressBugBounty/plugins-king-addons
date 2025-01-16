@@ -202,8 +202,8 @@ class Search extends Widget_Base
                     ],
                 ],
                 'default' => [
-                    'unit' => 'vh',
-                    'size' => 50,
+                    'unit' => 'px',
+                    'size' => 350,
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-data-fetch ul' => 'max-height: {{SIZE}}{{UNIT}};',

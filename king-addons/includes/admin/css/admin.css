@@ -69,7 +69,7 @@ html,
     display: inline-block;
     margin: 0;
     padding: 0 0 4px;
-    background: linear-gradient(132.2deg,#F9D423 7.64%,#FF4E50 97.11%);
+    background: linear-gradient(132.2deg, #F9D423 7.64%, #FF4E50 97.11%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -217,6 +217,29 @@ html,
 
 tr {
     position: relative;
+}
+
+tr:after {
+    content: 'FREE';
+    top: 5px;
+    right: 10px;
+    position: absolute;
+    font-size: 11px;
+    padding: 9px 10px;
+    letter-spacing: 0.5px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #646970;
+    font-weight: 700;
+    /*background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);*/
+    /*background: linear-gradient(51deg, #F7B500, #6DD400 76%);*/
+    /*-webkit-background-clip: text;*/
+    /*-webkit-text-fill-color: transparent;*/
+}
+
+.kng-tr-team-member:after,
+.kng-tr-freemium:after {
+    content: 'FREEMIUM';
 }
 
 .kng-tr .kng-td-wrap-before-1,
@@ -634,7 +657,7 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
 
 .king-addons-special-animation .king-addons-special-animation-colors {
     opacity: 1;
-    transform: translate3d(0,0,0)
+    transform: translate3d(0, 0, 0)
 }
 
 @keyframes colorAnimation {

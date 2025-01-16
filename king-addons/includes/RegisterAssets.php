@@ -2,9 +2,8 @@
 
 namespace King_Addons;
 
-/** @noinspection SpellCheckingInspection */
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+    exit;
 }
 
 final class RegisterAssets

@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.37
+Stable tag: 24.12.39
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -84,8 +84,10 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Search (AJAX, instant live results and filters)**](https://kingaddons.com/elementor/ajax-search/) - Enable fast, dynamic searches with live results and advanced filters.
 - [**Progress Bar**](https://kingaddons.com/elementor/progress-bar/) - Highlight goals or progress visually with fully customizable designs.
 - [**Team Member**](https://kingaddons.com/elementor/team-member/) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
-- [**Share Buttons**](https://kingaddons.com/) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
-- [**Pricing Table**](https://kingaddons.com/) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
+- [**Share Buttons**](https://kingaddons.com/elementor/share-buttons/) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
+- [**Pricing Table**](https://kingaddons.com/elementor/pricing-table/) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
+- [**Charts**](https://kingaddons.com/) - Visualize data effectively. Create bar, line, pie, or radar charts with customizable styles and responsive layouts. Perfect for dashboards, reports, or data-driven content.
+- [**Image Accordion**](https://kingaddons.com/) - Create interactive image accordions for visually dynamic displays. Perfect for portfolios, galleries, or storytelling in a customizable and responsive layout.
 
 ### FREE Elementor features
 
@@ -176,6 +178,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.39 - January 17, 2025 =
+* **New:** Charts widget added.
+* **New:** Image Accordion widget added.
+* **New:** Pricing Table demo added.
+* **New:** Share Buttons demo added.
 
 = King Addons for Elementor version 24.12.37 - January 10, 2025 =
 * **New:** Search (AJAX) demo added.

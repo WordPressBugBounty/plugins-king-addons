@@ -511,4 +511,8 @@
     background-image: url(../img/form-styler.svg);
 }
 
+.king-addons-icon.king-addons-lottie-animations {
+    background-image: url(../img/lottie-animations.svg);
+}
+
 /* for elementor icons */

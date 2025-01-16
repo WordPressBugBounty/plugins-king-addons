@@ -6,9 +6,14 @@
 }
 
 .king-addons-share-buttons .king-addons-share-icon i {
+    /*font-family: "Font Awesome 5 Free", serif;*/
     display: block;
     text-align: center;
 }
+
+/*.king-addons-share-buttons .king-addons-share-icon i:before {*/
+/*    font-family: "Font Awesome 5 Free", serif;*/
+/*}*/
 
 .king-addons-share-label {
     flex-grow: 1;

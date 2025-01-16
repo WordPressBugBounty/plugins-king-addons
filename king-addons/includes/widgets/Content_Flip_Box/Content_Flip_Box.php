@@ -459,7 +459,7 @@ class Content_Flip_Box extends Widget_Base
                 'prefix_class' => 'king-addons-content-flip-box-anim-direction-',
                 'render_type' => 'template',
                 'condition' => [
-                    'king_addons_content_flip_box_box_animation!' => ['fade', 'zoom-in', 'zoom-out',],
+                    'king_addons_content_flip_box_box_animation!' => ['fade', 'zoom-in', 'zoom-out'],
                 ],
             ]
         );

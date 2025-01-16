@@ -36,6 +36,11 @@
     color: black;
 }
 
+hr.king-addons-settings-separator {
+    border: none;
+    border-top: 1px solid rgb(100 105 112 / 40%);
+}
+
 /*noinspection DuplicatedCode*/
 .notice {
     display: flex;

@@ -52,15 +52,15 @@ final class Core
 
         if ($this->hasElementorCompatibility()) {
 
-            require_once(KING_ADDONS_PATH . 'includes/elementor-constants.php');
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Elementor/elementor-constants.php');
 
             // Initial requirements check
-            require_once(KING_ADDONS_PATH . 'includes/RequirementsCheck.php');
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Check_Requirements/Check_Requirements.php');
 
             // Templates Catalog
             if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
                 require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
-                require_once(KING_ADDONS_PATH . 'includes/Templates.php');
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/Templates.php');
             }
 
             // Header & Footer Builder
@@ -96,7 +96,25 @@ final class Core
             self::enableFeatures();
 
             new Admin();
+
+            add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendStyles']);
+            add_action('wp_enqueue_scripts', [$this, 'enqueueLightboxDynamicStyles']);
         }
+    }
+
+    function enqueueFrontendStyles()
+    {
+        /**
+         * It fixes the default Elementor SVG icon rendering feature (Settings -> Features -> Inline Font Icons)
+         * because sometimes Elementor still renders Font Awesome icons but doesn't load the corresponding Font Awesome styles.
+         * Therefore, we have to enqueue the styles.
+         */
+        wp_enqueue_style(
+            'font-awesome-5-all',
+            ELEMENTOR_ASSETS_URL . 'lib/font-awesome/css/all' . (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min') . '.css',
+            false,
+            KING_ADDONS_VERSION
+        );
     }
 
     function hasElementorCompatibility(): bool
@@ -130,6 +148,7 @@ final class Core
             $plugin = 'elementor/elementor.php';
             $activation_url = wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin);
             $message = '<div class="error"><p>' . esc_html__('King Addons plugin is not working because you need to activate the Elementor plugin.', 'king-addons') . '</p>';
+            /** @noinspection HtmlUnknownTarget */
             $message .= '<p>' . sprintf('<a href="%s" class="button-primary">%s</a>', $activation_url, esc_html__('Activate Elementor now', 'king-addons')) . '</p></div>';
         } else {
             if (!current_user_can('install_plugins')) {
@@ -137,6 +156,7 @@ final class Core
             }
             $install_url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=elementor'), 'install-plugin_elementor');
             $message = '<div class="error"><p>' . esc_html__('King Addons plugin is not working because you need to install the Elementor plugin.', 'king-addons') . '</p>';
+            /** @noinspection HtmlUnknownTarget */
             $message .= '<p>' . sprintf('<a href="%s" class="button-primary">%s</a>', $install_url, esc_html__('Install Elementor now', 'king-addons')) . '</p></div>';
         }
         echo $message;
@@ -192,13 +212,13 @@ final class Core
         /**
          * Retrieve the array of broken widgets from the WordPress options.
          * The structure is expected to be something like:
-         * [
+         *
          *   'widget_id' => [
          *       'version' => '1.2.0',
          *       'error'   => 'Some fatal error message'
          *   ],
          *   ...
-         * ]
+         *
          */
         $brokenWidgets = get_option('king_addons_broken_widgets', []);
 
@@ -379,7 +399,7 @@ final class Core
         $module->add_control(
             $option . '_pro_notice',
             [
-                'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-' . $widget_name . '-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                'raw' => 'Upgrade to the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-' . $widget_name . '-settings-upgrade-pro" target="_blank">Pro version</a></strong> now<br> and unlock this powerful feature!',
                 'type' => $controls_manager,
                 'content_classes' => 'king-addons-pro-notice',
                 'condition' => [
@@ -873,6 +893,29 @@ final class Core
 
         // Return both the per-post-type data and the merged, deduplicated options.
         return [$data, $options];
+    }
+
+    public function enqueueLightboxDynamicStyles()
+    {
+        wp_register_style('king-addons-lightbox-dynamic-style', false);
+        wp_enqueue_style('king-addons-lightbox-dynamic-style');
+
+        $bg = esc_html(get_option('king_addons_lightbox_bg_color', 'rgba(0,0,0,0.6)'));
+        $toolbar = esc_html(get_option('king_addons_lightbox_toolbar_color', 'rgba(0,0,0,0.8)'));
+        $caption = esc_html(get_option('king_addons_lightbox_caption_color', 'rgba(0,0,0,0.8)'));
+        $gallery = esc_html(get_option('king_addons_lightbox_gallery_color', '#444444'));
+        $progress_bar = esc_html(get_option('king_addons_lightbox_pb_color', '#8a8a8a'));
+        $ui_color = esc_html(get_option('king_addons_lightbox_ui_color', '#efefef'));
+        $icon_size = floatval(get_option('king_addons_lightbox_icon_size', 20));
+        $icon_size_big = $icon_size + 4;
+        $ui_hover = esc_html(get_option('king_addons_lightbox_ui_hover_color', '#ffffff'));
+        $text_color = esc_html(get_option('king_addons_lightbox_text_color', '#efefef'));
+        $text_size = esc_html(get_option('king_addons_lightbox_text_size', 14));
+        $arrow_size = esc_html(get_option('king_addons_lightbox_arrow_size', 35));
+
+        $custom_css = "#lg-counter { color: $text_color !important; font-size: {$text_size}px !important; opacity: 0.9; } .lg-backdrop { background-color: $bg !important; } .lg-dropdown:after { border-bottom-color: $toolbar !important; } .lg-icon { color: $ui_color !important; font-size: {$icon_size}px !important; background-color: transparent !important; } .lg-icon.lg-toogle-thumb { font-size: {$icon_size_big}px !important; } .lg-icon:hover, .lg-dropdown-text:hover { color: $ui_hover !important; } .lg-prev, .lg-next { font-size: {$arrow_size}px !important; } .lg-progress { background-color: $progress_bar !important; } .lg-sub-html { background-color: $caption !important; } .lg-sub-html, .lg-dropdown-text { color: $text_color !important; font-size: {$text_size}px !important; } .lg-thumb-item { border-radius: 0 !important; border: none !important; opacity: 0.5; } .lg-thumb-item.active { opacity: 1; } .lg-thumb-outer, .lg-progress-bar { background-color: $gallery !important; } .lg-thumb-outer { padding: 0 10px; } .lg-toolbar, .lg-dropdown { background-color: $toolbar !important; }";
+
+        wp_add_inline_style('king-addons-lightbox-dynamic-style', $custom_css);
     }
 
 }
