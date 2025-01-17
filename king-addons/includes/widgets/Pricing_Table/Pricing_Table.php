@@ -2592,7 +2592,8 @@ class Pricing_Table extends Widget_Base
                                         </div>
                                     <?php elseif ($item['heading_icon_type'] === 'image' && !empty($item['heading_image']['url'])) : ?>
                                         <div class="king-addons-pricing-table-icon">
-                                            <img src="<?php echo esc_attr($item['heading_image']['url']); ?>" alt="">
+                                            <img src="<?php echo esc_attr($item['heading_image']['url']); ?>"
+                                                 alt="<?php echo esc_attr($item['heading_image']['alt'] ?? ''); ?>">
                                         </div>
                                     <?php endif; ?>
 

@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.39
+Stable tag: 24.12.40
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -88,6 +88,8 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Pricing Table**](https://kingaddons.com/elementor/pricing-table/) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
 - [**Charts**](https://kingaddons.com/) - Visualize data effectively. Create bar, line, pie, or radar charts with customizable styles and responsive layouts. Perfect for dashboards, reports, or data-driven content.
 - [**Image Accordion**](https://kingaddons.com/) - Create interactive image accordions for visually dynamic displays. Perfect for portfolios, galleries, or storytelling in a customizable and responsive layout.
+- [**Accordion**](https://kingaddons.com/) - Present collapsible sections for better content organization. Ideal for FAQs, long articles, or feature breakdowns with customizable and responsive designs.
+- [**Tabs**](https://kingaddons.com/) - Organize content into tabs for easy navigation and a clean layout. Perfect for FAQs, features, or segmented content in a fully responsive format.
 
 ### FREE Elementor features
 
@@ -178,6 +180,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.40 - January 17, 2025 =
+* **New:** Accordion widget added.
+* **New:** Tabs widget added.
 
 = King Addons for Elementor version 24.12.39 - January 17, 2025 =
 * **New:** Charts widget added.
