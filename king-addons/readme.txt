@@ -1,18 +1,18 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.40
+Stable tag: 24.12.43
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-600+ Elementor templates, 40+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+600+ Elementor templates, 50+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
-**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **40+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
+**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **50+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
 
 Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
 
@@ -90,6 +90,8 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Image Accordion**](https://kingaddons.com/) - Create interactive image accordions for visually dynamic displays. Perfect for portfolios, galleries, or storytelling in a customizable and responsive layout.
 - [**Accordion**](https://kingaddons.com/) - Present collapsible sections for better content organization. Ideal for FAQs, long articles, or feature breakdowns with customizable and responsive designs.
 - [**Tabs**](https://kingaddons.com/) - Organize content into tabs for easy navigation and a clean layout. Perfect for FAQs, features, or segmented content in a fully responsive format.
+- [**Content Ticker**](https://kingaddons.com/) - Display scrolling text or updates. Perfect for news, announcements, or dynamic content in a sleek, responsive design.
+- [**Timeline**](https://kingaddons.com/) - Display posts or events in a chronological timeline format. Perfect for storytelling, showcasing milestones, or creating visually appealing timelines.
 
 ### FREE Elementor features
 
@@ -125,7 +127,7 @@ Note: This plugin works with Elementor. Make sure you have [Elementor](https://w
 
 = What is King Addons for Elementor? =
 
-King Addons is a powerful Elementor toolkit and WordPress addon that provides **600+ templates** and **40+ widgets** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
+King Addons is a powerful Elementor toolkit and WordPress addon that provides **600+ templates** and **50+ widgets** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
 
 = How does King Addons improve WordPress website speed? =
 
@@ -180,6 +182,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.43 - January 18, 2025 =
+* **New:** Timeline widget added.
+* **New:** Content Ticker widget added.
 
 = King Addons for Elementor version 24.12.40 - January 17, 2025 =
 * **New:** Accordion widget added.

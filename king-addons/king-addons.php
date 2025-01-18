@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: King Addons
- * Description: 600+ Elementor templates, 40+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+ * Description: 600+ Elementor templates, 50+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.12.40
+ * Version: 24.12.43
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.12.40';
+const KING_ADDONS_VERSION = '24.12.43';
 
 /** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
