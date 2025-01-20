@@ -132,7 +132,7 @@ class Accordion extends Widget_Base
         );
 
 
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'advanced-accordion', 'accordion_content_type', ['pro-tm']);
+        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'accordion', 'accordion_content_type', ['pro-tm']);
 
         $repeater->add_control(
             'accordion_content_template',
@@ -1224,7 +1224,7 @@ class Accordion extends Widget_Base
                 $id = icl_object_id($id, 'elementor_library', false, ICL_LANGUAGE_CODE);
             }
         }
-        $edit_link = '<span class="king-addons-template-edit-btn" data-permalink="' . get_permalink($id) . '">Edit Template</span>';
+        $edit_link = '<a class="king-addons-template-edit-btn" href="' . get_permalink($id) . '">Edit Template</a>';
         $type = get_post_meta(get_the_ID(), '_king_addons_template_type', true);
         $has_css = ('internal' === get_option('elementor_css_print_method') || '' !== $type);
         return Elementor\Plugin::instance()->frontend->get_builder_content_for_display($id, $has_css) . $edit_link;

@@ -1455,7 +1455,7 @@ class Tabs extends Widget_Base
                 $id = icl_object_id($id, 'elementor_library', false, ICL_LANGUAGE_CODE);
             }
         }
-        $edit_link = '<span class="king-addons-template-edit-btn" data-permalink="' . esc_url(get_permalink($id)) . '">Edit Template</span>';
+        $edit_link = '<a class="king-addons-template-edit-btn" href="' . esc_url(get_permalink($id)) . '">Edit Template</a>';
         $type = get_post_meta(get_the_ID(), '_king_addons_template_type', true);
         $has_css = ('internal' === get_option('elementor_css_print_method') || '' !== $type);
         return Plugin::instance()->frontend->get_builder_content_for_display($id, $has_css) . $edit_link;

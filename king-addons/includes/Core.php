@@ -99,7 +99,73 @@ final class Core
 
             add_action('wp_enqueue_scripts', [$this, 'enqueueFrontendStyles']);
             add_action('wp_enqueue_scripts', [$this, 'enqueueLightboxDynamicStyles']);
+
+            // Notice - Upgrade Suggestion
+            if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+                add_action('wp_ajax_king_addons_premium_notice_dismiss', [$this, 'king_addons_premium_notice_dismiss_callback']);
+                add_action('admin_notices', [$this, 'showNoticeUpgrade']);
+            }
         }
+    }
+
+    function king_addons_premium_notice_dismiss_callback()
+    {
+        // Check user capabilities
+        if (!current_user_can('manage_options')) {
+            wp_die();
+        }
+        $user_id = get_current_user_id();
+        // Save the current time as the last dismissal time for the premium notice
+        update_user_meta($user_id, 'king_addons_premium_notice_dismissed_time', time());
+        wp_die(); // End AJAX request
+    }
+
+    function showNoticeUpgrade()
+    {
+        // Check user capabilities; show notice only to administrators as an example
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $now = time();
+        // Retrieve the last time the premium notice was dismissed by the user
+        $last_dismissed = get_user_meta($user_id, 'king_addons_premium_notice_dismissed_time', true);
+
+        // If the premium notice was dismissed less than a week ago (604800 seconds), do not show it
+        if ($last_dismissed && ($now - $last_dismissed) < 604800) {
+//        if ($last_dismissed && ($now - $last_dismissed) < 60) {
+            return;
+        }
+        ?>
+        <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
+             style="border-left: 4px solid #0073aa;padding: 5px 15px;">
+            <p style="font-size: 15px;margin:0;">
+                <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
+                            style="font-weight: 700;">50+</strong> extensions for only $<strong
+                            style="font-weight: 700;">2</strong>
+                    <span class="kng-promo-price-txt-small"
+                          style="font-size: 11px; font-weight: 400; vertical-align: text-top;">99</span>/month. Upgrade now and boost your website!</span>
+                <span>
+                <a style="margin-left: 10px; font-size: 14px;" href="https://kingaddons.com/pricing?ref=special-offer"
+                   class="button button-primary">Learn More</a>
+                </span>
+            </p>
+        </div>
+        <script>
+            (function ($) {
+                // Wait for the document to be ready
+                $(document).ready(function () {
+                    // Attach click handler to the dismiss button of the premium notice
+                    $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function () {
+                        $.post(ajaxurl, {
+                            action: 'king_addons_premium_notice_dismiss'
+                        });
+                    });
+                });
+            })(jQuery);
+        </script>
+        <?php
     }
 
     function enqueueFrontendStyles()

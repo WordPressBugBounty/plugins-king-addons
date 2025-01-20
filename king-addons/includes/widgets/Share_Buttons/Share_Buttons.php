@@ -544,7 +544,7 @@ class Share_Buttons extends Widget_Base
             [
                 'label' => esc_html__('Icon Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#4A45D2',
+                'default' => '#4D02D8',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-share-buttons .king-addons-share-icon i' => 'background-color: {{VALUE}}',
                     '{{WRAPPER}} .king-addons-share-buttons .king-addons-share-icon svg' => 'background-color: {{VALUE}}',
@@ -649,7 +649,7 @@ class Share_Buttons extends Widget_Base
             [
                 'label' => esc_html__('Label Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#4A45D2',
+                'default' => '#4D02D8',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-share-buttons .king-addons-share-icon:hover .king-addons-share-label' => 'background-color: {{VALUE}}',
                 ],

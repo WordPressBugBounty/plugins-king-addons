@@ -43,8 +43,8 @@ $options = get_option('king_addons_options');
                 <div class="kng-promo-wrap-1">
                     <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 600+ Templates Today!', 'king-addons'); ?></h1>
                     <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next level.
-                        Get advanced tools like Ajax Search, Popup Builder,
-                        Taxonomy List, and more. All for just $2<span class="kng-promo-price-txt-small">99</span>/month!
+                        Get advanced tools like Live Search, Popup Builder,
+                        Pricing Table, Timeline, and more. All for just $2<span class="kng-promo-price-txt-small">99</span>/month!
                     </h2>
                 </div>
                 <div class="kng-promo-wrap-2">
@@ -137,6 +137,8 @@ $options = get_option('king_addons_options');
 
         global $wp_settings_sections, $wp_settings_fields;
 
+        $first_item = true;
+
         foreach ((array)$wp_settings_sections[$page] as $section) {
 
             $section_current = $section['id'];
@@ -177,26 +179,51 @@ $options = get_option('king_addons_options');
                                     <p class="kng-td-description">
                                         <?php echo esc_attr($args['description']); ?>
                                     </p>
-                                    <div class="kng-settings-switch-box">
-                                        <input type="hidden"
-                                               name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
-                                               value="disabled"/>
-                                        <input type="checkbox"
-                                               class="kng-settings-switch"
-                                               id="<?php echo esc_attr($args['label_for']); ?>"
-                                               name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
-                                               value="enabled"
-                                            <?php checked(isset($options[$args['label_for']]) && $options[$args['label_for']] === 'enabled'); ?>
-                                        />
-                                        <label for="<?php echo esc_attr($args['label_for']); ?>"
-                                               class="kng-settings-switch-label"></label>
+                                    <div class="kng-settings-wrap">
+                                        <div class="kng-td-link-wrap">
+                                            <?php
+                                            $demo_link = $args['demo_link'];
+                                            if (!empty($demo_link)) {
+                                                echo '<a class="kng-td-link" href="' . esc_url($demo_link) . '"target="_blank"><div class="kng-td-link-label-wrap"><div class="kng-td-link-label">' . esc_html__('View Demo', 'king-addons') . '</div></div></a>';
+                                            }
+                                            ?>
+                                            <?php
+                                            if ($first_item) : ?>
+                                                <div class="kng-settings-switch-notice-2">
+                                                    &lt;- check how it looks and its features
+                                                </div>
+                                                <?php
+                                            endif;
+                                            ?>
+                                        </div>
+                                        <div class="kng-settings-switch-box-wrap">
+                                            <div class="kng-settings-switch-box">
+                                                <input type="hidden"
+                                                       name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
+                                                       value="disabled"/>
+                                                <input type="checkbox"
+                                                       class="kng-settings-switch"
+                                                       id="<?php echo esc_attr($args['label_for']); ?>"
+                                                       name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
+                                                       value="enabled"
+                                                    <?php checked(isset($options[$args['label_for']]) && $options[$args['label_for']] === 'enabled'); ?>
+                                                />
+                                                <label for="<?php echo esc_attr($args['label_for']); ?>"
+                                                       class="kng-settings-switch-label"></label>
+                                            </div>
+
+                                            <?php
+                                            if ($first_item) : ?>
+                                                <div class="kng-settings-switch-notice">
+                                                    &lt;- enable/disable this module
+                                                </div>
+                                                <?php
+                                                $first_item = false;
+                                            endif;
+                                            ?>
+
+                                        </div>
                                     </div>
-                                    <?php
-                                    $demo_link = $args['demo_link'];
-                                    if (!empty($demo_link)) {
-                                        echo '<a class="kng-td-link" href="' . esc_url($demo_link) . '"target="_blank">' . esc_html__('View Demo', 'king-addons') . '</a>';
-                                    }
-                                    ?>
                                 </div>
                             </div>
                         </div>

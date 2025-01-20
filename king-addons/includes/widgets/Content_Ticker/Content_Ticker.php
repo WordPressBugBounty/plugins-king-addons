@@ -1662,7 +1662,7 @@ class Content_Ticker extends Widget_Base
             [
                 'label' => esc_html__('Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#4A45D2',
+                'default' => '#4D02D8',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-ticker-arrow:hover' => 'background-color: {{VALUE}};',
                 ],

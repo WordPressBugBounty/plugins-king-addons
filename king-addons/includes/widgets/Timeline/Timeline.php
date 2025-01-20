@@ -469,7 +469,7 @@ class Timeline extends Widget_Base
         );
 
 
-        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'posts-timeline', 'timeline_animation', [
+        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'timeline', 'timeline_animation', [
             'pro-fu',
             'pro-fd',
             'pro-fl',
@@ -1373,8 +1373,7 @@ class Timeline extends Widget_Base
             ]
         );
 
-
-        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'posts-timeline', 'timeline_post_types', ['pro-rl']);
+        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'timeline', 'timeline_post_types', ['pro-rl']);
 
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
             $this->add_control(
@@ -2070,7 +2069,7 @@ class Timeline extends Widget_Base
             ]
         );
 
-        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'posts-timeline', 'overlay_animation', ['pro-slrt', 'pro-slxrt', 'pro-slbt', 'pro-sllt', 'pro-sltp', 'pro-slxlt', 'pro-sktp', 'pro-skrt', 'pro-skbt', 'pro-sklt', 'pro-scup', 'pro-scdn', 'pro-rllt', 'pro-rlrt']);
+        Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'timeline', 'overlay_animation', ['pro-slrt', 'pro-slxrt', 'pro-slbt', 'pro-sllt', 'pro-sltp', 'pro-slxlt', 'pro-sktp', 'pro-skrt', 'pro-skbt', 'pro-sklt', 'pro-scup', 'pro-scdn', 'pro-rllt', 'pro-rlrt']);
 
         $this->add_control(
             'overlay_animation_duration',
@@ -4789,7 +4788,7 @@ class Timeline extends Widget_Base
             [
                 'label' => esc_html__('Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#4A45D2',
+                'default' => '#4D02D8',
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-grid-pagination a:hover' => 'background-color: {{VALUE}}',
                     '{{WRAPPER}} .king-addons-grid-pagination > div > span:not(.king-addons-disabled-arrow):hover' => 'background-color: {{VALUE}}',

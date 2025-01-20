@@ -43,7 +43,7 @@ final class Admin
         if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
             add_menu_page(
                 'King Addons for Elementor',
-                'Free Templates',
+                (!king_addons_freemius()->can_use_premium_code() ? 'Free Templates' : 'Templates Pro'),
                 'manage_options',
                 'king-addons-templates',
                 [Templates::instance(), 'render_template_catalog_page'],

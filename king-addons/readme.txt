@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.43
+Stable tag: 24.12.44
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -86,12 +86,13 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Team Member**](https://kingaddons.com/elementor/team-member/) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
 - [**Share Buttons**](https://kingaddons.com/elementor/share-buttons/) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
 - [**Pricing Table**](https://kingaddons.com/elementor/pricing-table/) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
-- [**Charts**](https://kingaddons.com/) - Visualize data effectively. Create bar, line, pie, or radar charts with customizable styles and responsive layouts. Perfect for dashboards, reports, or data-driven content.
+- [**Charts**](https://kingaddons.com/elementor/charts/) - Visualize data effectively. Create bar, line, pie, or radar charts with customizable styles and responsive layouts. Perfect for dashboards, reports, or data-driven content.
 - [**Image Accordion**](https://kingaddons.com/) - Create interactive image accordions for visually dynamic displays. Perfect for portfolios, galleries, or storytelling in a customizable and responsive layout.
 - [**Accordion**](https://kingaddons.com/) - Present collapsible sections for better content organization. Ideal for FAQs, long articles, or feature breakdowns with customizable and responsive designs.
 - [**Tabs**](https://kingaddons.com/) - Organize content into tabs for easy navigation and a clean layout. Perfect for FAQs, features, or segmented content in a fully responsive format.
 - [**Content Ticker**](https://kingaddons.com/) - Display scrolling text or updates. Perfect for news, announcements, or dynamic content in a sleek, responsive design.
 - [**Timeline**](https://kingaddons.com/) - Display posts or events in a chronological timeline format. Perfect for storytelling, showcasing milestones, or creating visually appealing timelines.
+- [**Slider**](https://kingaddons.com/) - Create engaging sliders with images, text, or multimedia. Fully customizable and responsive, it is perfect for hero sections or featured content displays.
 
 ### FREE Elementor features
 
@@ -182,6 +183,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.44 - January 20, 2025 =
+* **New:** Slider widget added.
+* **New:** Charts demo added.
 
 = King Addons for Elementor version 24.12.43 - January 18, 2025 =
 * **New:** Timeline widget added.
