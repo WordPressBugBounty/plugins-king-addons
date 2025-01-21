@@ -182,7 +182,7 @@ class Share_Buttons extends Widget_Base
                 'share_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 buttons are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-share-buttons-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 buttons are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-share-buttons-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );

@@ -20,7 +20,7 @@ class Flip_Countdown extends Widget_Base
 
     public function get_title(): string
     {
-        return esc_html__('Flip Countdown', 'king-addons');
+        return esc_html__('Flip Countdown & Timer', 'king-addons');
     }
 
     public function get_icon(): string

@@ -912,7 +912,7 @@ class Slider extends Widget_Base
                 'slider_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-slider-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-slider-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]
@@ -990,7 +990,7 @@ class Slider extends Widget_Base
                 'slider_columns_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'Slider Columns option is fully supported<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-advanced-slider-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Slider Columns option is fully supported<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-advanced-slider-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]

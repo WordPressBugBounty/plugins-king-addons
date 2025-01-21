@@ -460,7 +460,7 @@ final class Popup_Builder
                         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
                             echo '<span><br>';
                             echo esc_html__('All conditions are available in the ', 'king-addons');
-                            echo '<strong><a href="https://kingaddons.com/pricing/?ref=kng-module-popup-builder-change-conditions-window" target="_blank">';
+                            echo '<strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-popup-builder-change-conditions-window" target="_blank">';
                             echo esc_html__('Pro version.', 'king-addons');
                             echo '</a></strong></span>';
                         }

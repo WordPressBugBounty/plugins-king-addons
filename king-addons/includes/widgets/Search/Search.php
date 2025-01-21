@@ -1063,7 +1063,7 @@ class Search extends Widget_Base
             $this->add_control(
                 'search_query_up_pro_notice',
                 [
-                    'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-search-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-search-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'type' => Controls_Manager::RAW_HTML,
                     'content_classes' => 'king-addons-pro-notice',
                     'condition' => [
@@ -2069,7 +2069,7 @@ class Search extends Widget_Base
             <?php if (!king_addons_freemius()->can_use_premium_code__premium_only() && current_user_can('administrator')) : ?>
                 <p class="king-addons-search-admin-notice"><?php
                     echo esc_html__('More than 2 results are available in the ', 'king-addons');
-                    echo '<strong><a href="https://kingaddons.com/pricing/?ref=kng-module-search-settings-upgrade-pro" target="_blank">' . esc_html__('PRO version', 'king-addons') . '</a></strong>';
+                    echo '<strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-search-settings-upgrade-pro" target="_blank">' . esc_html__('PRO version', 'king-addons') . '</a></strong>';
                     echo esc_html__(' of King Addons (this notice is visible to admin users only)', 'king-addons');
                     ?></p>
             <?php endif; ?>

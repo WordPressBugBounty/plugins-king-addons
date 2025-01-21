@@ -255,8 +255,6 @@
                                 const $currentSlide = $(this).closest(".slick-slide");
                                 let videoSrc = $currentSlide.find(".king-addons-slider-item").attr("data-video-src") || "";
 
-                                console.log("Current video source:", videoSrc);
-
                                 if (videoSrc.includes("youtube")) {
                                     videoSrc += "&autoplay=1";
                                 }

@@ -44,7 +44,8 @@ $options = get_option('king_addons_options');
                     <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 600+ Templates Today!', 'king-addons'); ?></h1>
                     <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next level.
                         Get advanced tools like Live Search, Popup Builder,
-                        Pricing Table, Timeline, and more. All for just $2<span class="kng-promo-price-txt-small">99</span>/month!
+                        Pricing Table, Timeline, and more. All for just $2<span
+                                class="kng-promo-price-txt-small">99</span>/month!
                     </h2>
                 </div>
                 <div class="kng-promo-wrap-2">
@@ -184,7 +185,7 @@ $options = get_option('king_addons_options');
                                             <?php
                                             $demo_link = $args['demo_link'];
                                             if (!empty($demo_link)) {
-                                                echo '<a class="kng-td-link" href="' . esc_url($demo_link) . '"target="_blank"><div class="kng-td-link-label-wrap"><div class="kng-td-link-label">' . esc_html__('View Demo', 'king-addons') . '</div></div></a>';
+                                                echo '<a class="kng-td-link" href="' . esc_url($demo_link) . '?utm_source=kng-dashboard' . '" target="_blank"><div class="kng-td-link-label-wrap"><div class="kng-td-link-label">' . esc_html__('View Demo', 'king-addons') . '</div></div></a>';
                                             }
                                             ?>
                                             <?php
@@ -192,7 +193,7 @@ $options = get_option('king_addons_options');
                                                 <div class="kng-settings-switch-notice-2">
                                                     &lt;- check how it looks and its features
                                                 </div>
-                                                <?php
+                                            <?php
                                             endif;
                                             ?>
                                         </div>

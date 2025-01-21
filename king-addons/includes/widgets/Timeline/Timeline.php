@@ -295,12 +295,12 @@ class Timeline extends Widget_Base
                 'type' => Controls_Manager::SELECT,
                 'default' => 'F j, Y',
                 'options' => [
-                    'F j, Y' => esc_html__(date('F j, Y')),
-                    'Y-m-d' => esc_html__(date('Y-m-d')),
-                    'Y, M, D' => esc_html__(date('Y, M, D')),
-                    'm/d/Y' => esc_html__(date('m/d/Y')),
-                    'd/m/Y' => esc_html__(date('d/m/Y')),
-                    'j. F Y' => esc_html__(date('j. F y'))
+                    'F j, Y' => esc_html(date('F j, Y')),
+                    'Y-m-d' => esc_html(date('Y-m-d')),
+                    'Y, M, D' => esc_html(date('Y, M, D')),
+                    'm/d/Y' => esc_html(date('m/d/Y')),
+                    'd/m/Y' => esc_html(date('d/m/Y')),
+                    'j. F Y' => esc_html(date('j. F y'))
                 ],
                 'condition' => [
                     'timeline_content' => 'dynamic',
@@ -362,7 +362,7 @@ class Timeline extends Widget_Base
                 'slides_to_show_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                     'condition' => [
@@ -570,8 +570,8 @@ class Timeline extends Widget_Base
             [
                 'label' => esc_html__('Show Label', 'king-addons'),
                 'type' => Controls_Manager::SWITCHER,
-                'label_on' => esc_html__('Show', 'king-addons-addpns'),
-                'label_off' => esc_html__('Hide', 'king-addons-addpns'),
+                'label_on' => esc_html__('Show', 'king-addons'),
+                'label_off' => esc_html__('Hide', 'king-addons'),
                 'return_value' => 'yes',
                 'default' => 'no',
             ]
@@ -660,7 +660,7 @@ class Timeline extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'default' => 'Secondaty Label',
+                'default' => 'Secondary Label',
                 'condition' => [
                     'repeater_show_extra_label' => 'yes'
                 ]
@@ -698,7 +698,7 @@ class Timeline extends Widget_Base
         $repeater->add_control(
             'repeater_youtube_video_url',
             [
-                'label' => esc_html__('Youtube Video Link', 'twae1'),
+                'label' => esc_html__('Youtube Video Link', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
                 'dynamic' => [
                     'active' => true,
@@ -1337,7 +1337,7 @@ class Timeline extends Widget_Base
                 'timeline_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]
@@ -1379,7 +1379,7 @@ class Timeline extends Widget_Base
             $this->add_control(
                 'query_source_cpt_pro_notice',
                 [
-                    'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-grid-upgrade-expert#purchasepro" target="_blank">Expert version</a></strong>',
+                    'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-grid-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'type' => Controls_Manager::RAW_HTML,
                     'content_classes' => 'king-addons-pro-notice',
                     'condition' => [
@@ -1505,7 +1505,7 @@ class Timeline extends Widget_Base
                 'posts_per_page_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Posts are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Posts are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]
@@ -5084,7 +5084,7 @@ class Timeline extends Widget_Base
                     $this->animation = preg_match('/right/i', $settings['timeline_animation'])
                         ? str_replace('right', 'left', $settings['timeline_animation'])
                         : $settings['timeline_animation'];
-                } elseif ('king-addons-right-aligned' === $this->content_alignment) {
+                } else {
                     $this->animation = preg_match('/left/i', $settings['timeline_animation'])
                         ? str_replace('left', 'right', $settings['timeline_animation'])
                         : $settings['timeline_animation'];
@@ -5124,13 +5124,13 @@ class Timeline extends Widget_Base
     public function add_custom_horizontal_timeline_attributes($content, $settings, $index)
     {
         $this->timeline_description = $content['repeater_description'];
-        $this->story_date_label = esc_html__($content['repeater_date_label']);
-        $this->story_extra_label = esc_html__($content['repeater_extra_label']);
+        $this->story_date_label = esc_html($content['repeater_date_label']);
+        $this->story_extra_label = esc_html($content['repeater_extra_label']);
         $this->timeline_story_title = wp_kses_post($content['repeater_story_title']);
         $this->thumbnail_size = $content['king_addons_thumbnail_size'];
         $this->thumbnail_custom_dimension = $content['king_addons_thumbnail_custom_dimension'];
-        $this->show_year_label = esc_html__($content['repeater_show_year_label']);
-        $this->timeline_year = esc_html__($content['repeater_year']);
+        $this->show_year_label = esc_html($content['repeater_show_year_label']);
+        $this->timeline_year = esc_html($content['repeater_year']);
 
         $this->title_key = $this->get_repeater_setting_key('repeater_story_title', 'timeline_repeater_list', $index);
         $this->year_key = $this->get_repeater_setting_key('repeater_year', 'timeline_repeater_list', $index);
@@ -5227,7 +5227,7 @@ class Timeline extends Widget_Base
             );
             if (!empty($matches[1])) {
                 $id = $matches[1];
-                $media = '<iframe width="100%" height="auto" src="www.youtube.com/embed/' . esc_attr($id) . '" allowfullscreen></iframe>';
+                $media = '<iframe width="100%" height="auto" src="https://www.youtube.com/embed/' . esc_attr($id) . '" allowfullscreen></iframe>';
             } else {
                 $media = __("Wrong URL", "king-addons-addons");
             }
@@ -5286,7 +5286,7 @@ class Timeline extends Widget_Base
 
             if ($content['repeater_show_year_label'] === 'yes') {
                 echo '<span class="king-addons-year-wrap">
-                    <span class="king-addons-year-label king-addons-year">' . esc_html__($content['repeater_year']) . '</span>
+                    <span class="king-addons-year-label king-addons-year">' . esc_html($content['repeater_year']) . '</span>
                   </span>';
             }
 
@@ -5296,7 +5296,7 @@ class Timeline extends Widget_Base
                 if (!empty($content['repeater_date_label']) || !empty($content['repeater_extra_label'])) {
                     echo '<time class="king-addons-extra-label" data-aos="' . esc_attr($this->animation) . '" data-aos-left="' . esc_attr($this->animation_loadmore_left) . '" data-aos-right="' . esc_attr($this->animation_loadmore_right) . '" data-animation-offset="' . esc_attr($settings['animation_offset']) . '" data-animation-duration="' . esc_attr($settings['aos_animation_duration']) . '">';
                     echo !empty($content['repeater_date_label'])
-                        ? '<span class="king-addons-label">' . esc_html__($content['repeater_date_label']) . '</span>'
+                        ? '<span class="king-addons-label">' . esc_html($content['repeater_date_label']) . '</span>'
                         : '';
                     echo !empty($content['repeater_extra_label'])
                         ? '<span class="king-addons-sub-label">' . wp_kses_post($content['repeater_extra_label']) . '</span>'
@@ -5322,9 +5322,9 @@ class Timeline extends Widget_Base
                     if (!empty($content['repeater_story_title']) && 'yes' === $settings['show_title'] && 'yes' === $settings['title_overlay']) {
                         /** @noinspection PhpIllegalStringOffsetInspection */
                         if (!empty($repeater_title_link['url'])) {
-                            echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . ' class="king-addons-title">' . esc_html__($content['repeater_story_title']) . '</a></p>';
+                            echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . ' class="king-addons-title">' . esc_html($content['repeater_story_title']) . '</a></p>';
                         } else {
-                            echo '<p class="king-addons-title-wrap"><span class="king-addons-title">' . esc_html__($content['repeater_story_title']) . '</span></p>';
+                            echo '<p class="king-addons-title-wrap"><span class="king-addons-title">' . esc_html($content['repeater_story_title']) . '</span></p>';
                         }
                     }
                     if (!empty($content['repeater_description']) && 'yes' === $settings['show_description'] && 'yes' === $settings['description_overlay']) {
@@ -5345,9 +5345,9 @@ class Timeline extends Widget_Base
                 if (!empty($content['repeater_story_title']) && 'yes' === $settings['show_title'] && 'yes' !== $settings['title_overlay']) {
                     /** @noinspection PhpIllegalStringOffsetInspection */
                     if (!empty($repeater_title_link['url'])) {
-                        echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . ' class="king-addons-title">' . esc_html__($content['repeater_story_title']) . '</a></p>';
+                        echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . ' class="king-addons-title">' . esc_html($content['repeater_story_title']) . '</a></p>';
                     } else {
-                        echo '<p class="king-addons-title-wrap"><span class="king-addons-title">' . esc_html__($content['repeater_story_title']) . '</span></p>';
+                        echo '<p class="king-addons-title-wrap"><span class="king-addons-title">' . esc_html($content['repeater_story_title']) . '</span></p>';
                     }
                 }
                 if (!empty($content['repeater_description']) && 'yes' === $settings['show_description'] && 'yes' !== $settings['description_overlay']) {
@@ -5382,7 +5382,7 @@ class Timeline extends Widget_Base
         wp_reset_postdata();
 
         if (!$this->my_query->have_posts()) {
-            echo '<div>' . esc_html__($settings['query_not_found_text']) . '</div>';
+            echo '<div>' . esc_html($settings['query_not_found_text']) . '</div>';
             return;
         }
 
@@ -5417,7 +5417,7 @@ class Timeline extends Widget_Base
                          data-aos-right="' . esc_attr($this->animation_loadmore_right) . '"
                          data-animation-offset="' . esc_attr($settings['animation_offset']) . '"
                          data-animation-duration="' . esc_attr($settings['aos_animation_duration']) . '">
-                    <span class="king-addons-label">' . esc_html__(get_the_date($settings['date_format'])) . '</span>
+                    <span class="king-addons-label">' . esc_html(get_the_date($settings['date_format'])) . '</span>
                   </time>';
             }
 
@@ -5441,16 +5441,16 @@ class Timeline extends Widget_Base
                 if ('yes' === $settings['show_overlay'] && !empty(get_the_post_thumbnail_url())) {
                     echo '<div class="king-addons-timeline-story-overlay ' . esc_attr($this->animation_class) . '">';
                     if ('yes' === $settings['show_title'] && 'yes' === $settings['title_overlay']) {
-                        echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html__(get_the_title()) . '</a></p>';
+                        echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html(get_the_title()) . '</a></p>';
                     }
                     if ('yes' === $settings['show_date'] && 'yes' === $settings['date_overlay']) {
-                        echo '<div class="king-addons-inner-date-label">' . esc_html__(get_the_date($settings['date_format'])) . '</div>';
+                        echo '<div class="king-addons-inner-date-label">' . esc_html(get_the_date($settings['date_format'])) . '</div>';
                     }
                     if (!empty(get_the_content()) && 'yes' === $settings['show_description'] && 'yes' === $settings['description_overlay']) {
-                        echo '<div class="king-addons-description">' . esc_html__(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
+                        echo '<div class="king-addons-description">' . esc_html(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
                     }
                     if ('yes' === $this->show_readmore && 'yes' === $settings['readmore_overlay']) {
-                        echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html__($settings['read_more_text']) . '</a></div>';
+                        echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html($settings['read_more_text']) . '</a></div>';
                     }
                     echo '</div>';
                 }
@@ -5468,16 +5468,16 @@ class Timeline extends Widget_Base
             if ($hasNonOverlayContent) {
                 echo '<div class="king-addons-timeline-content-wrapper">';
                 if ('yes' === $settings['show_title'] && 'yes' !== $settings['title_overlay']) {
-                    echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html__(get_the_title()) . '</a></p>';
+                    echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html(get_the_title()) . '</a></p>';
                 }
                 if ('yes' === $settings['show_date'] && 'yes' !== $settings['date_overlay']) {
-                    echo '<div class="king-addons-inner-date-label">' . esc_html__(get_the_date($settings['date_format'])) . '</div>';
+                    echo '<div class="king-addons-inner-date-label">' . esc_html(get_the_date($settings['date_format'])) . '</div>';
                 }
                 if (!empty(get_the_content()) && 'yes' === $settings['show_description'] && 'yes' !== $settings['description_overlay']) {
-                    echo '<div class="king-addons-description">' . esc_html__(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
+                    echo '<div class="king-addons-description">' . esc_html(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
                 }
                 if ('yes' === $this->show_readmore && 'yes' !== $settings['readmore_overlay']) {
-                    echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html__($settings['read_more_text']) . '</a></div>';
+                    echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html($settings['read_more_text']) . '</a></div>';
                 }
                 echo '</div>';
             }
@@ -5530,7 +5530,7 @@ class Timeline extends Widget_Base
                     if (!empty($this->story_date_label) || !empty($this->story_extra_label)) {
                         echo '<div class="king-addons-extra-label">';
                         if (!empty($this->story_date_label)) {
-                            echo '<span ' . $this->get_render_attribute_string($this->date_label_key) . '>' . esc_html__($this->story_date_label) . '</span>';
+                            echo '<span ' . $this->get_render_attribute_string($this->date_label_key) . '>' . esc_html($this->story_date_label) . '</span>';
                         }
                         if (!empty($this->story_extra_label)) {
                             echo '<span ' . $this->get_render_attribute_string($this->extra_label_key) . '>' . wp_kses_post($this->story_extra_label) . '</span>';
@@ -5556,9 +5556,9 @@ class Timeline extends Widget_Base
                         echo '<div class="king-addons-timeline-story-overlay ' . esc_attr($this->animation_class) . '">';
                         if (!empty($this->timeline_story_title) && 'yes' === $settings['show_title'] && 'yes' === $settings['title_overlay']) {
                             if (!empty($repeater_title_link['url'])) {
-                                echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . $this->get_render_attribute_string($this->title_key) . '>' . esc_html__($this->timeline_story_title) . '</a></p>';
+                                echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . $this->get_render_attribute_string($this->title_key) . '>' . esc_html($this->timeline_story_title) . '</a></p>';
                             } else {
-                                echo '<p class="king-addons-title-wrap"><span ' . $this->get_render_attribute_string($this->title_key) . '>' . esc_html__($this->timeline_story_title) . '</span></p>';
+                                echo '<p class="king-addons-title-wrap"><span ' . $this->get_render_attribute_string($this->title_key) . '>' . esc_html($this->timeline_story_title) . '</span></p>';
                             }
                         }
                         if (!empty($this->timeline_description) && 'yes' === $settings['show_description'] && 'yes' === $settings['description_overlay']) {
@@ -5577,9 +5577,9 @@ class Timeline extends Widget_Base
                     echo '<div class="king-addons-timeline-content-wrapper">';
                     if (!empty($this->timeline_story_title) && 'yes' === $settings['show_title'] && 'yes' !== $settings['title_overlay']) {
                         if (!empty($repeater_title_link['url'])) {
-                            echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string($this->title_key) . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . '>' . esc_html__($this->timeline_story_title) . '</a></p>';
+                            echo '<p class="king-addons-title-wrap"><a ' . $this->get_render_attribute_string($this->title_key) . $this->get_render_attribute_string('repeater_title_link' . $this->item_url_count) . '>' . esc_html($this->timeline_story_title) . '</a></p>';
                         } else {
-                            echo '<p class="king-addons-title-wrap"><span ' . $this->get_render_attribute_string($this->title_key) . '>' . esc_html__($this->timeline_story_title) . '</span></p>';
+                            echo '<p class="king-addons-title-wrap"><span ' . $this->get_render_attribute_string($this->title_key) . '>' . esc_html($this->timeline_story_title) . '</span></p>';
                         }
                     }
                     if (!empty($this->timeline_description) && 'yes' === $settings['show_description'] && 'yes' !== $settings['description_overlay']) {
@@ -5609,7 +5609,7 @@ class Timeline extends Widget_Base
         $this->horizontal_timeline_classes($settings);
 
         if (!$this->my_query->have_posts()) {
-            echo '<div>' . esc_html__($settings['query_not_found_text']) . '</div>';
+            echo '<div>' . esc_html($settings['query_not_found_text']) . '</div>';
             return;
         }
 
@@ -5648,16 +5648,16 @@ class Timeline extends Widget_Base
                 if ('yes' === $settings['show_overlay'] && !empty(get_the_post_thumbnail_url())) {
                     echo '<div class="king-addons-timeline-story-overlay ' . esc_attr($this->animation_class) . '">';
                     if ('yes' === $settings['show_title'] && 'yes' === $settings['title_overlay']) {
-                        echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html__(get_the_title()) . '</a></p>';
+                        echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html(get_the_title()) . '</a></p>';
                     }
                     if ('yes' === $settings['show_date'] && 'yes' === $settings['date_overlay']) {
-                        echo '<div class="king-addons-inner-date-label">' . esc_html__(get_the_date($settings['date_format'])) . '</div>';
+                        echo '<div class="king-addons-inner-date-label">' . esc_html(get_the_date($settings['date_format'])) . '</div>';
                     }
                     if (!empty(get_the_content()) && 'yes' === $settings['show_description'] && 'yes' === $settings['description_overlay']) {
-                        echo '<div class="king-addons-description">' . esc_html__(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
+                        echo '<div class="king-addons-description">' . esc_html(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
                     }
                     if ('yes' === $this->show_readmore && 'yes' === $settings['readmore_overlay']) {
-                        echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html__($settings['read_more_text']) . '</a></div>';
+                        echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html($settings['read_more_text']) . '</a></div>';
                     }
                     echo '</div>';
                 }
@@ -5675,16 +5675,16 @@ class Timeline extends Widget_Base
             if ($hasNonOverlayContent) {
                 echo '<div class="king-addons-timeline-content-wrapper">';
                 if ('yes' === $settings['show_title'] && 'yes' !== $settings['title_overlay']) {
-                    echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html__(get_the_title()) . '</a></p>';
+                    echo '<p class="king-addons-title-wrap"><a class="king-addons-title" href="' . esc_url(get_the_permalink()) . '">' . esc_html(get_the_title()) . '</a></p>';
                 }
                 if ('yes' === $settings['show_date'] && 'yes' !== $settings['date_overlay']) {
-                    echo '<div class="king-addons-inner-date-label">' . esc_html__(get_the_date($settings['date_format'])) . '</div>';
+                    echo '<div class="king-addons-inner-date-label">' . esc_html(get_the_date($settings['date_format'])) . '</div>';
                 }
                 if (!empty(get_the_content()) && 'yes' === $settings['show_description'] && 'yes' !== $settings['description_overlay']) {
-                    echo '<div class="king-addons-description">' . esc_html__(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
+                    echo '<div class="king-addons-description">' . esc_html(wp_trim_words(get_the_content(), $settings['excerpt_count'])) . '</div>';
                 }
                 if ('yes' === $this->show_readmore && 'yes' !== $settings['readmore_overlay']) {
-                    echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html__($settings['read_more_text']) . '</a></div>';
+                    echo '<div class="king-addons-read-more-wrap"><a class="king-addons-read-more-button" href="' . esc_url(get_the_permalink()) . '">' . esc_html($settings['read_more_text']) . '</a></div>';
                 }
                 echo '</div>';
             }
@@ -5698,7 +5698,7 @@ class Timeline extends Widget_Base
             // Extra Label
             if ('yes' === $settings['show_extra_label']) {
                 echo '<div class="king-addons-extra-label">
-                    <span class="king-addons-label">' . esc_html__(get_the_date($settings['date_format'])) . '</span>
+                    <span class="king-addons-label">' . esc_html(get_the_date($settings['date_format'])) . '</span>
                   </div>';
             }
             echo '<div class="king-addons-main-line-icon king-addons-icon">';
@@ -5722,9 +5722,9 @@ class Timeline extends Widget_Base
                 continue;
             }
             if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-                $post_types['pro-' . substr($slug, 0, 2)] = esc_html__($title) . ' (Pro)';
+                $post_types['pro-' . substr($slug, 0, 2)] = esc_html($title) . ' (Pro)';
             } else {
-                $post_types[$slug] = esc_html__($title);
+                $post_types[$slug] = esc_html($title);
             }
         }
 

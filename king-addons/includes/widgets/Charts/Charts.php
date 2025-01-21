@@ -410,7 +410,7 @@ class Charts extends Widget_Base
                 'charts_repeater_labels_data_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 Data Labels are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-charts-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 Data Labels are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-charts-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );
@@ -549,7 +549,7 @@ class Charts extends Widget_Base
                 'charts_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 Items are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-charts-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 Items are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-charts-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );

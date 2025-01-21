@@ -331,7 +331,7 @@ class Tabs extends Widget_Base
                 'tabs_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 Tabs are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-tabs-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 Tabs are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-tabs-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]
@@ -369,7 +369,7 @@ class Tabs extends Widget_Base
             $this->add_control(
                 'tabs_align_pro_notice',
                 [
-                    'raw' => 'Horizontal Align option is fully supported in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-tabs-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Horizontal Align option is fully supported in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-tabs-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'type' => Controls_Manager::RAW_HTML,
                     'content_classes' => 'king-addons-pro-notice',
                     'condition' => [
