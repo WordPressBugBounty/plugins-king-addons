@@ -904,7 +904,6 @@ class Data_Table extends Widget_Base
 
         $this->end_controls_section();
 
-
         Core::renderProFeaturesSection($this, '', Controls_Manager::RAW_HTML, 'data-table', [
             'Import Table Data from CSV File Upload or URL',
             'Enable Live Search for Tables',

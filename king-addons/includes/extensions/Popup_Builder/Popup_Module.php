@@ -1003,7 +1003,7 @@ class King_Addons_Popup_Module extends Document
 
     public static function getUpgradeProLink($widget_name): string
     {
-        return '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-upgrade-pro" target="_blank">' . esc_html__('Learn More About Pro', 'king-addons') . '</a>';
+        return '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">' . esc_html__('Learn More About Pro', 'king-addons') . '</a>';
     }
 
 }

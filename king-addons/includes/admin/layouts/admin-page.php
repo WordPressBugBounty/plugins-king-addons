@@ -185,7 +185,7 @@ $options = get_option('king_addons_options');
                                             <?php
                                             $demo_link = $args['demo_link'];
                                             if (!empty($demo_link)) {
-                                                echo '<a class="kng-td-link" href="' . esc_url($demo_link) . '?utm_source=kng-dashboard' . '" target="_blank"><div class="kng-td-link-label-wrap"><div class="kng-td-link-label">' . esc_html__('View Demo', 'king-addons') . '</div></div></a>';
+                                                echo '<a class="kng-td-link" href="' . esc_url($demo_link) . '?utm_source=kng-dashboard&utm_medium=plugin&utm_campaign=kng' . '" target="_blank"><div class="kng-td-link-label-wrap"><div class="kng-td-link-label">' . esc_html__('View Demo', 'king-addons') . '</div></div></a>';
                                             }
                                             ?>
                                             <?php

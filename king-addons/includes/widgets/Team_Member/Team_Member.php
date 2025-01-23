@@ -237,7 +237,7 @@ class Team_Member extends Widget_Base
                 'team_member_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'Advanced overlay animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-team-member-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Advanced overlay animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-team-member-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );
@@ -1793,7 +1793,7 @@ class Team_Member extends Widget_Base
                 'team_member_pro_notice_2',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-team-member-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-team-member-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );

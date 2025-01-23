@@ -632,7 +632,7 @@ class Image_Accordion extends Widget_Base
                 'accordion_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 Items are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-image-accordion-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 Items are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-image-accordion-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );
@@ -708,7 +708,7 @@ class Image_Accordion extends Widget_Base
             $repeater->add_control(
                 'element_align_pro_notice',
                 [
-                    'raw' => 'Vertical and Horizontal Align options are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-image-accordion-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Vertical and Horizontal Align options are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-image-accordion-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
 
                     'type' => Controls_Manager::RAW_HTML,
                     'content_classes' => 'king-addons-pro-notice',
@@ -1842,7 +1842,7 @@ class Image_Accordion extends Widget_Base
                 'team_member_pro_notice_2',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-image-accordion-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-image-accordion-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );

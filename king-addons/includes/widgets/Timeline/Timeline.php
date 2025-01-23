@@ -362,7 +362,7 @@ class Timeline extends Widget_Base
                 'slides_to_show_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                     'condition' => [
@@ -1337,7 +1337,7 @@ class Timeline extends Widget_Base
                 'timeline_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Slides are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]
@@ -1379,7 +1379,7 @@ class Timeline extends Widget_Base
             $this->add_control(
                 'query_source_cpt_pro_notice',
                 [
-                    'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-grid-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'This option is available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-grid-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'type' => Controls_Manager::RAW_HTML,
                     'content_classes' => 'king-addons-pro-notice',
                     'condition' => [
@@ -1505,7 +1505,7 @@ class Timeline extends Widget_Base
                 'posts_per_page_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 4 Posts are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 4 Posts are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-posts-timeline-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
 
                     'content_classes' => 'king-addons-pro-notice',
                 ]

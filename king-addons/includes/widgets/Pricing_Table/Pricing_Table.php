@@ -106,7 +106,7 @@ class Pricing_Table extends Widget_Base
                 'pricing_table_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'Feature Item Tooltip and Even/Odd Feature Item Background Color options are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-pricing-table-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Feature Item Tooltip and Even/Odd Feature Item Background Color options are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-pricing-table-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );
@@ -2010,7 +2010,7 @@ class Pricing_Table extends Widget_Base
                 'team_member_pro_notice_2',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-pricing-table-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
+                    'raw' => 'Advanced button animations are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-pricing-table-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );

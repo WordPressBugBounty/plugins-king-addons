@@ -148,7 +148,7 @@ final class Core
                           style="font-size: 11px; font-weight: 400; vertical-align: text-top;">99</span>/month. Upgrade now and boost your website!</span>
                 <span>
                 <a style="margin-left: 10px; font-size: 14px;"
-                   href="https://kingaddons.com/pricing?utm_source=kng-notice-special-offer"
+                   href="https://kingaddons.com/pricing?utm_source=kng-notice-special-offer&utm_medium=plugin&utm_campaign=kng"
                    class="button button-primary">Learn More</a>
                 </span>
             </p>
@@ -455,7 +455,7 @@ final class Core
             'king_addons_pro_features_list',
             [
                 'type' => $type,
-                'raw' => $list_html . '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-upgrade-pro" target="_blank">' . esc_html__('Learn More About Pro', 'king-addons') . '</a>',
+                'raw' => $list_html . '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">' . esc_html__('Learn More About Pro', 'king-addons') . '</a>',
                 'content_classes' => 'king-addons-pro-features-list',
             ]
         );
@@ -472,7 +472,7 @@ final class Core
         $module->add_control(
             $option . '_pro_notice',
             [
-                'raw' => 'Upgrade to the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-settings-upgrade-pro" target="_blank">Pro version</a></strong> now<br> and unlock this feature!',
+                'raw' => 'Upgrade to the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong> now<br> and unlock this feature!',
                 'type' => $controls_manager,
                 'content_classes' => 'king-addons-pro-notice',
                 'condition' => [

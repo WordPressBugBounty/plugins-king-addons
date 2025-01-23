@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.45
+Stable tag: 24.12.46
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -20,7 +20,7 @@ Perfect for creating **restaurant websites**, **online stores**, **portfolio pag
 
 Try **King Addons** for free and explore its powerful features. Whether you are building a sleek single-page site or a feature-packed online store, **King Addons** is your ultimate website builder addon. It combines speed, flexibility, and advanced Elementor enhancements for exceptional design results.
 
-[**CHECK THE DEMOS**](https://kingaddons.com/?utm=kng-wp-org) to see these features in action.
+[**CHECK THE DEMOS**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) to see these features in action.
 
 ### **Key Features**
 
@@ -53,60 +53,61 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 
 ### FREE Elementor widgets, modules, elements
 
-- [**One Page Navigation**](https://kingaddons.com/elementor/one-page-navigation/?utm=kng-wp-org) - Enhance single-page navigation with anchor links for smooth scrolling. Uses only CSS, ensuring optimal performance.
-- [**Off-Canvas Content**](https://kingaddons.com/elementor/off-canvas-content/?utm=kng-wp-org) - Create slide-in panels for menus, widgets, or hidden content, accessible with simple user interactions.
-- [**Styled Text Builder**](https://kingaddons.com/elementor/styled-text-builder/?utm=kng-wp-org) - Design unique, animated text elements with extensive customization options, allowing different styles within a single text block.
-- [**Image Hotspots**](https://kingaddons.com/elementor/image-hotspots/?utm=kng-wp-org) - Add interactive, clickable areas to images for dynamic and engaging content. Uses only CSS for fast performance.
-- [**Image Comparison**](https://kingaddons.com/elementor/image-comparison/?utm=kng-wp-org) - Known as Before & After, this widget offers a draggable slider to compare images side by side. Perfect for product or design showcases.
-- [**Vertical Scrollable Image**](https://kingaddons.com/elementor/vertical-scrollable-image/?utm=kng-wp-org) - Allow seamless vertical scrolling of long images on hover. Ideal for infographics or timelines. Uses only CSS for lightweight implementation.
-- [**Global Section & Container**](https://kingaddons.com/elementor/global-section-container/?utm=kng-wp-org) - Manage reusable sections and containers to ensure consistent design. Leverages Elementor functionality without additional CSS or JS.
-- [**Card Carousel**](https://kingaddons.com/elementor/card-carousel/?utm=kng-wp-org) - Display cards with images, text, and buttons in a responsive carousel. Perfect for highlighting team members, features, or testimonials.
-- [**Auto-Scrolling Text**](https://kingaddons.com/elementor/auto-scrolling-text/?utm=kng-wp-org) - Add dynamic text marquees with customizable scrolling and styling. Enhance designs with image integration and smooth animations powered by CSS.
-- [**Popup & Lightbox Modal**](https://kingaddons.com/elementor/popup-lightbox-modal/?utm=kng-wp-org) - Create engaging popups or modals to display content, promotions, or media. Add interactive elements with customizable effects.
-- [**Video Popup**](https://kingaddons.com/elementor/video-popup/?utm=kng-wp-org) - Showcase videos in engaging popups with custom styling and animations. Perfect for tutorials or promotional content.
-- [**Blog Posts Carousel**](https://kingaddons.com/elementor/blog-posts-carousel/?utm=kng-wp-org) - Display blog posts dynamically in a customizable carousel. Ideal for highlighting featured articles or news updates.
-- [**Image Grid**](https://kingaddons.com/elementor/image-grid/?utm=kng-wp-org) - Showcase images in masonry or fit-row grid layouts, fully adaptable for mobile and desktop views.
-- [**Business Hours**](https://kingaddons.com/elementor/business-hours/?utm=kng-wp-org) - Display clear business hours, also called opening hours, with fully customizable layouts and styles.
-- [**Price List & Menu**](https://kingaddons.com/elementor/price-list-menu/?utm=kng-wp-org) - Present your menu or price list in a stylish, organized format with fully customizable design options.
-- [**Image Hover Box**](https://kingaddons.com/elementor/image-hover-box/?utm=kng-wp-org) - Add engaging hover effects to images. Perfect for services, portfolios, or products.
-- [**Reading Progress Bar**](https://kingaddons.com/elementor/reading-progress-bar/?utm=kng-wp-org) - Track user progress on long-form content with customizable progress bars.
-- [**Pulsing Button**](https://kingaddons.com/elementor/pulsing-button/?utm=kng-wp-org) - Drive user interactions with animated call-to-action buttons.
-- [**Creative Button**](https://kingaddons.com/elementor/creative-button/?utm=kng-wp-org) - Design unique buttons with customizable shapes and effects.
-- [**Hovering Image Stack**](https://kingaddons.com/elementor/hovering-image-stack/?utm=kng-wp-org) - Layer multiple images interactively for portfolios or galleries.
-- [**Content Hover & Flip Box**](https://kingaddons.com/elementor/content-hover-flip-box/?utm=kng-wp-org) - Add hover effects and flip animations to content boxes for enhanced engagement.
-- [**Flip Countdown & Timer**](https://kingaddons.com/elementor/flip-countdown-timer/?utm=kng-wp-org) - Create countdown timers with flipping animations to boost urgency.
-- [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/?utm=kng-wp-org) - Display animated statistics or milestones with smooth transitions.
-- [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/?utm=kng-wp-org) - Build trust by showcasing client reviews or testimonials.
-- [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/?utm=kng-wp-org) - Highlight feedback in a dynamic carousel format.
-- [**Feature List**](https://kingaddons.com/elementor/feature-list/?utm=kng-wp-org) - Highlight product or service benefits with styled lists.
-- [**Taxonomy List**](https://kingaddons.com/elementor/taxonomy-list/?utm=kng-wp-org) - Display categories or tags in an organized and navigable list.
-- [**Page List**](https://kingaddons.com/elementor/page-list/?utm=kng-wp-org) - Present website pages in a structured, customizable format.
-- [**Search (AJAX, instant live results and filters)**](https://kingaddons.com/elementor/ajax-search/?utm=kng-wp-org) - Enable fast, dynamic searches with live results and advanced filters.
-- [**Progress Bar**](https://kingaddons.com/elementor/progress-bar/?utm=kng-wp-org) - Highlight goals or progress visually with fully customizable designs.
-- [**Team Member**](https://kingaddons.com/elementor/team-member/?utm=kng-wp-org) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
-- [**Share Buttons**](https://kingaddons.com/elementor/share-buttons/?utm=kng-wp-org) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
-- [**Pricing Table**](https://kingaddons.com/elementor/pricing-table/?utm=kng-wp-org) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
-- [**Charts**](https://kingaddons.com/elementor/charts/?utm=kng-wp-org) - Visualize data effectively. Create bar, line, pie, or radar charts with customizable styles and responsive layouts. Perfect for dashboards, reports, or data-driven content.
-- [**Image Accordion**](https://kingaddons.com/?utm=kng-wp-org) - Create interactive image accordions for visually dynamic displays. Perfect for portfolios, galleries, or storytelling in a customizable and responsive layout.
-- [**Accordion**](https://kingaddons.com/?utm=kng-wp-org) - Present collapsible sections for better content organization. Ideal for FAQs, long articles, or feature breakdowns with customizable and responsive designs.
-- [**Tabs**](https://kingaddons.com/?utm=kng-wp-org) - Organize content into tabs for easy navigation and a clean layout. Perfect for FAQs, features, or segmented content in a fully responsive format.
-- [**Content Ticker**](https://kingaddons.com/?utm=kng-wp-org) - Display scrolling text or updates. Perfect for news, announcements, or dynamic content in a sleek, responsive design.
-- [**Timeline**](https://kingaddons.com/elementor/timeline/?utm=kng-wp-org) - Display posts or events in a chronological timeline format. Perfect for storytelling, showcasing milestones, or creating visually appealing timelines.
-- [**Slider**](https://kingaddons.com/?utm=kng-wp-org) - Create engaging sliders with images, text, or multimedia. Fully customizable and responsive, it is perfect for hero sections or featured content displays.
-- [**Data Table**](https://kingaddons.com/?utm=kng-wp-org) - Present data effectively with customizable tables. Perfect for pricing comparisons, schedules, or detailed information in a responsive and user-friendly layout.
-- [**Countdown Timer**](https://kingaddons.com/?utm=kng-wp-org) - Add urgency to your promotions or events. Perfect for sales, launches, or special events in a fully customizable and responsive format. It also has an Evergreen Timer, which continuously resets for each visitor, providing a customized countdown clock that never truly expires.
+- [**One Page Navigation**](https://kingaddons.com/elementor/one-page-navigation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Enhance single-page navigation with anchor links for smooth scrolling. Uses only CSS, ensuring optimal performance.
+- [**Off-Canvas Content**](https://kingaddons.com/elementor/off-canvas-content/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create slide-in panels for menus, widgets, or hidden content, accessible with simple user interactions.
+- [**Styled Text Builder**](https://kingaddons.com/elementor/styled-text-builder/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design unique, animated text elements with extensive customization options, allowing different styles within a single text block.
+- [**Image Hotspots**](https://kingaddons.com/elementor/image-hotspots/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive, clickable areas to images for dynamic and engaging content. Uses only CSS for fast performance.
+- [**Image Comparison**](https://kingaddons.com/elementor/image-comparison/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Known as Before & After, this widget offers a draggable slider to compare images side by side. Perfect for product or design showcases.
+- [**Vertical Scrollable Image**](https://kingaddons.com/elementor/vertical-scrollable-image/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Allow seamless vertical scrolling of long images on hover. Ideal for infographics or timelines. Uses only CSS for lightweight implementation.
+- [**Global Section & Container**](https://kingaddons.com/elementor/global-section-container/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Manage reusable sections and containers to ensure consistent design. Leverages Elementor functionality without additional CSS or JS.
+- [**Card Carousel**](https://kingaddons.com/elementor/card-carousel/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display cards with images, text, and buttons in a responsive carousel. Perfect for highlighting team members, features, or testimonials.
+- [**Auto-Scrolling Text**](https://kingaddons.com/elementor/auto-scrolling-text/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add dynamic text marquees with customizable scrolling and styling. Enhance designs with image integration and smooth animations powered by CSS.
+- [**Popup & Lightbox Modal**](https://kingaddons.com/elementor/popup-lightbox-modal/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create engaging popups or modals to display content, promotions, or media. Add interactive elements with customizable effects.
+- [**Video Popup**](https://kingaddons.com/elementor/video-popup/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase videos in engaging popups with custom styling and animations. Perfect for tutorials or promotional content.
+- [**Blog Posts Carousel**](https://kingaddons.com/elementor/blog-posts-carousel/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display blog posts dynamically in a customizable carousel. Ideal for highlighting featured articles or news updates.
+- [**Image Grid**](https://kingaddons.com/elementor/image-grid/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase images in masonry or fit-row grid layouts, fully adaptable for mobile and desktop views.
+- [**Business Hours**](https://kingaddons.com/elementor/business-hours/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display clear business hours, also called opening hours, with fully customizable layouts and styles.
+- [**Price List & Menu**](https://kingaddons.com/elementor/price-list-menu/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Present your menu or price list in a stylish, organized format with fully customizable design options.
+- [**Image Hover Box**](https://kingaddons.com/elementor/image-hover-box/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add engaging hover effects to images. Perfect for services, portfolios, or products.
+- [**Reading Progress Bar**](https://kingaddons.com/elementor/reading-progress-bar/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Track user progress on long-form content with customizable progress bars.
+- [**Pulsing Button**](https://kingaddons.com/elementor/pulsing-button/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Drive user interactions with animated call-to-action buttons.
+- [**Creative Button**](https://kingaddons.com/elementor/creative-button/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design unique buttons with customizable shapes and effects.
+- [**Hovering Image Stack**](https://kingaddons.com/elementor/hovering-image-stack/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Layer multiple images interactively for portfolios or galleries.
+- [**Content Hover & Flip Box**](https://kingaddons.com/elementor/content-hover-flip-box/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add hover effects and flip animations to content boxes for enhanced engagement.
+- [**Flip Countdown & Timer**](https://kingaddons.com/elementor/flip-countdown-timer/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create countdown timers with flipping animations to boost urgency.
+- [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display animated statistics or milestones with smooth transitions.
+- [**Testimonial & Review**](https://kingaddons.com/elementor/testimonial-review/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Build trust by showcasing client reviews or testimonials.
+- [**Testimonial & Review Carousel**](https://kingaddons.com/elementor/testimonial-review-carousel/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Highlight feedback in a dynamic carousel format.
+- [**Feature List**](https://kingaddons.com/elementor/feature-list/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Highlight product or service benefits with styled lists.
+- [**Taxonomy List**](https://kingaddons.com/elementor/taxonomy-list/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display categories or tags in an organized and navigable list.
+- [**Page List**](https://kingaddons.com/elementor/page-list/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Present website pages in a structured, customizable format.
+- [**Search (AJAX, instant live results and filters)**](https://kingaddons.com/elementor/ajax-search/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Enable fast, dynamic searches with live results and advanced filters.
+- [**Progress Bar**](https://kingaddons.com/elementor/progress-bar/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Highlight goals or progress visually with fully customizable designs.
+- [**Team Member**](https://kingaddons.com/elementor/team-member/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Highlight your team members with names, roles, photos, and social media links. Perfect for corporate websites, agencies, or portfolios, it offers fully customizable layouts to match your design and responsive features for any device.
+- [**Share Buttons**](https://kingaddons.com/elementor/share-buttons/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add stylish and customizable share buttons to your website to boost social media engagement. Perfect for blogs, articles, and product pages, it supports various platforms and responsive designs to ensure seamless sharing across all devices.
+- [**Pricing Table**](https://kingaddons.com/elementor/pricing-table/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase pricing plans with customizable layouts and feature comparisons. Perfect for highlighting offers or services, it ensures a responsive and visually appealing design to match your website.
+- [**Charts**](https://kingaddons.com/elementor/charts/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Visualize data effectively. Create bar, line, pie, or radar charts with customizable styles and responsive layouts. Perfect for dashboards, reports, or data-driven content.
+- [**Image Accordion**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive image accordions for visually dynamic displays. Perfect for portfolios, galleries, or storytelling in a customizable and responsive layout.
+- [**Accordion**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Present collapsible sections for better content organization. Ideal for FAQs, long articles, or feature breakdowns with customizable and responsive designs.
+- [**Tabs**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Organize content into tabs for easy navigation and a clean layout. Perfect for FAQs, features, or segmented content in a fully responsive format.
+- [**Content Ticker**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display scrolling text or updates. Perfect for news, announcements, or dynamic content in a sleek, responsive design.
+- [**Timeline**](https://kingaddons.com/elementor/timeline/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts or events in a chronological timeline format. Perfect for storytelling, showcasing milestones, or creating visually appealing timelines.
+- [**Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create engaging sliders with images, text, or multimedia. Fully customizable and responsive, it is perfect for hero sections or featured content displays.
+- [**Data Table**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Present data effectively with customizable tables. Perfect for pricing comparisons, schedules, or detailed information in a responsive and user-friendly layout.
+- [**Countdown Timer**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add urgency to your promotions or events. Perfect for sales, launches, or special events in a fully customizable and responsive format. It also has an Evergreen Timer, which continuously resets for each visitor, providing a customized countdown clock that never truly expires.
+- [**Lottie Animations**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.
 
 ### FREE Elementor features
 
-- [**Particles Background**](https://kingaddons.com/elementor/particles-background/?utm=kng-wp-org) - Add animated particles for dynamic, engaging backgrounds.
-- [**Parallax Background**](https://kingaddons.com/elementor/parallax-background/?utm=kng-wp-org) - Create immersive multi-layered scrolling backgrounds with lightweight JS.
-- [**Matte Glass Background**](https://kingaddons.com/elementor/matte-glass-background/?utm=kng-wp-org) - Apply a frosted glass effect using only CSS.
-- [**Advanced Border Radius**](https://kingaddons.com/elementor/advanced-border-radius/?utm=kng-wp-org) - Customize unique rounded corners for a modern design touch.
-- [**Floating Animation**](https://kingaddons.com/elementor/floating-animation/?utm=kng-wp-org) - Add CSS-based floating animations for interactive visuals.
-- [**Custom CSS**](https://kingaddons.com/elementor/custom-css/?utm=kng-wp-org) - Add personalized CSS styles easily for precise design control.
-- [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/?utm=kng-wp-org) - Apply lightweight CSS-based rotating effects to elements.
-- [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/?utm=kng-wp-org) - Wrap sections or elements in clickable links.
-- [**Duplicator**](https://kingaddons.com/elementor/duplicator/?utm=kng-wp-org) - Duplicate posts, pages, or templates effortlessly.
+- [**Particles Background**](https://kingaddons.com/elementor/particles-background/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add animated particles for dynamic, engaging backgrounds.
+- [**Parallax Background**](https://kingaddons.com/elementor/parallax-background/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create immersive multi-layered scrolling backgrounds with lightweight JS.
+- [**Matte Glass Background**](https://kingaddons.com/elementor/matte-glass-background/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Apply a frosted glass effect using only CSS.
+- [**Advanced Border Radius**](https://kingaddons.com/elementor/advanced-border-radius/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Customize unique rounded corners for a modern design touch.
+- [**Floating Animation**](https://kingaddons.com/elementor/floating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add CSS-based floating animations for interactive visuals.
+- [**Custom CSS**](https://kingaddons.com/elementor/custom-css/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add personalized CSS styles easily for precise design control.
+- [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Apply lightweight CSS-based rotating effects to elements.
+- [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Wrap sections or elements in clickable links.
+- [**Duplicator**](https://kingaddons.com/elementor/duplicator/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Duplicate posts, pages, or templates effortlessly.
 
 ### Happy User of King Addons?
 
@@ -115,7 +116,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 
 ### Keywords
 
-Before and after image sliders, WooCommerce pricing tools, advanced tools for professionals, custom form builder WordPress, speed-enhanced WordPress plugins, temp, WooCommerce product grid, advanced styling options, templ, bu, form, se, wucomerce, ki, essent, ultimate, elim, ultimat, li, performan, c, live search, galle, websi, go, searc, aja, carous, par, parral, m, med, v, vid, butto, prod, cal, calen, calenda, jq, ta, gr, bo, popu, Elementor custom breakpoints, sticky header plugin, Elementor mega menu, custom Elementor modules, woocommerc, responsive product galleries, perfor, AJAX-powered search, templa, build, premium, MailChimp integration plugin, carou, interactive blog grids, elimentr, elem, perf, testimonials and reviews, addo, beginner-friendly plugins, a, drag and drop editor, woocomme, sl, slid, g, perfo, Elementor plugin, lite, dynamic content display,  ga, visual website builder, t, pag, widg, elemen, wid, e, template, interactive forms for Elementor, fr, paral, essentia, woocommer, business hours widget, fre, easy to use, da, premi, wo, for, s, blog post carousels, parala, ima, team member showcase, ele, call-to-action buttons, gri, po, elementor, paralla, elime, best Elementor widgets, extens, d, boost conversions with Elementor, te, pricing tables WordPress, woocom, per, mobile-friendly WordPress addons, ulti, extensi, unyson, gallery, si, site, web, pricing calculator for services, parall, i,  caro, engage visitors with interactive elements, element, customizable progress bars, googl, sea, es, WordPress page builder, as, astr, woo, esse, lightweight Elementor tools, eli, templat, ast, k, prem, kin, ess, ult, l, webs, lit, pe, ultima,performa, dat, performanc, co, pre, sit, websit, goog, se, sear, aj, ca, carouse, parr, paralax, im, imag, me, medi, vi, vide, butt, produ, cale, b, calend, wu, wc, tabl, contact, Gutenberg bridging plugin, white label Elementor plugin, exten, conditional logic for WordPress, add, WooCommerce Elementor widgets, ad, news ticker for WordPress, eleme, product showcases, contac, pro, Elementor addons, widge, bui, Elementor templates, elementr, ex, magazine-style layouts, wooco, free Elementor widgets, wi, essen, uneson, astra, WordPress charts plugin, elem, optimized Elementor widgets, w, alimentor, p, tem, essential, data tables for Elementor, extensio, protected content WordPress, elementar, wucom, essenti, u, cross-domain copy-paste Elementor, s, ul, conta, pr, slide, gall, no coding required, wor, product sliders for WooCommerce, exte, content tickers for updates, f, responsive grid layouts, wooc, interactive sliders for Elementor, buil, elemento, lightweight WordPress plugins, woocomm, sale countdown timer, ext, sli, timeline widgets for WordPress, galler, s, elimentor, perform, SEO-friendly WordPress addons, con, premiu, fo, gal, responsive design tools, el, service comparison tables, pa, interactive pricing slider, create visually stunning designs, builde, advanced Elementor features, newsletter sign-up forms.
+Before and after image sliders, WooCommerce pricing tools, advanced tools for professionals, custom form builder WordPress, speed-enhanced WordPress plugins, temp, WooCommerce product grid, advanced styling options, templ, bu, custom Elementor modules, responsive product galleries, AJAX-powered search, templa, build, MailChimp integration plugin, interactive blog grids, elimentr, elem, testimonials and reviews, addo, beginner-friendly plugins, a, drag and drop editor, Elementor plugin, dynamic content display, visual website builder, t, pag, widg, elemen, wid, e, template, interactive forms for Elementor, fr, business hours widget, fre, easy to use, blog post carousels, team member showcase, ele, call-to-action buttons, elementor, best Elementor widgets, extens, boost conversions with Elementor, te, tem, pricing tables WordPress, mobile-friendly WordPress addons, extensi, unyson, pricing calculator for services, engage visitors with interactive elements, element, customizable progress bars, WordPress page builder, lightweight Elementor tools, templat, exten, conditional logic for WordPress, add, WooCommerce Elementor widgets, ad, news ticker for WordPress, eleme, product showcases, Elementor addons, widge, bui, Elementor templates, elementr, ex, magazine-style layouts, free Elementor widgets, wi, uneson, WordPress charts plugin, elem, optimized Elementor widgets, w, alimentor, p, tem, data tables for Elementor, extensio, protected content WordPress, elementar, cross-domain copy-paste Elementor, no coding required, product sliders for WooCommerce, exte, content tickers for updates, f, responsive grid layouts, interactive sliders for Elementor, buil, elemento, lightweight WordPress plugins, sale countdown timer, ext, timeline widgets for WordPress, elimentor, SEO-friendly WordPress addons, responsive design tools, el, service comparison tables, pa, interactive pricing slider, create visually stunning designs, builde, b, advanced Elementor features, newsletter sign-up forms.
 
 == Installation ==
 
@@ -185,6 +186,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.46 - January 22, 2025 =
+* **New:** Lottie Animations widget added.
 
 = King Addons for Elementor version 24.12.45 - January 22, 2025 =
 * **New:** Data Table widget added.
