@@ -43,11 +43,11 @@ final class Admin
         if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
             add_menu_page(
                 'King Addons for Elementor',
-                (!king_addons_freemius()->can_use_premium_code() ? 'Free Templates' : 'Templates Pro'),
+                (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')),
                 'manage_options',
                 'king-addons-templates',
                 [Templates::instance(), 'render_template_catalog_page'],
-                KING_ADDONS_URL . 'includes/admin/img/icon-for-templates.svg',
+                KING_ADDONS_URL . 'includes/admin/img/icon-for-menu-templates.svg',
                 58.71
             );
         }

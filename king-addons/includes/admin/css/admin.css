@@ -670,7 +670,8 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
 }
 
 .kng-nav-item a {
-    background: linear-gradient(45deg, #5B03FF, #9B62FF);
+    /*background: linear-gradient(45deg, #5B03FF, #9B62FF);*/
+    background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);
 }
 
 .kng-nav-item.kng-nav-item-current a {

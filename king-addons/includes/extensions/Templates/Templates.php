@@ -26,7 +26,7 @@ final class Templates
         $is_premium_active = king_addons_freemius()->can_use_premium_code();
 
         // For UI testing, it doesn't enable the real premium
-//        $is_premium_active = true;
+//        $is_premium_active = false;
 
         // Arrays for categories and tags
         $categories = [];
@@ -145,12 +145,13 @@ final class Templates
                         <?php if (!$is_premium_active): ?>
                             <div class="promo-wrapper">
                                 <div class="promo-txt"><?php
-                                    esc_html_e('Import premium templates for only', 'king-addons');
-                                    echo ' $2<span class="promo-price-txt-small">99</span>/';
-                                    esc_html_e('month', 'king-addons');
+                                    esc_html_e('Unlock Premium Templates', 'king-addons');
+                                    echo '<ul><li>$2<span class="promo-price-txt-small">99</span>/mo</li>';
+                                    echo '<li>Unlimited Downloads</li>';
+                                    echo '<li>Keep Them Even After</li></ul>';
                                     ?></div>
-                                <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
-                                    <button class="promo-btn purchase-btn"><?php esc_html_e('Learn More', 'king-addons'); ?></button>
+                                <a class="purchase-btn" href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">
+                                    <button class="promo-btn purchase-btn"><?php esc_html_e('Upgrade Now', 'king-addons'); ?></button>
                                 </a>
                             </div>
                         <?php endif; ?>
@@ -216,12 +217,18 @@ final class Templates
                 <div class="premium-promo-popup-content">
                     <div class="premium-promo-popup-wrapper">
                         <div class="premium-promo-popup-txt"><?php
-                            esc_html_e('Get 600+ professionally designed, attention-grabbing templates and premium extensions for only', 'king-addons');
-                            echo ' $2<span class="promo-price-txt-small">99</span>/';
+
+                            echo '<span class="pr-popup-title">Want This Premium Template?</span>';
+                            echo '<br><span class="pr-popup-desc">';
+                            echo 'Get <span class="pr-popup-desc-b">unlimited downloads</span> for just';
+                            echo ' <span class="pr-popup-desc-b">$2<span class="promo-price-txt-small">99</span>/';
                             esc_html_e('month', 'king-addons');
+                            echo '</span> — keep them <span class="pr-popup-desc-b">even after</span> your subscription ends!';
+                            echo '</span>';
+
                             ?></div>
-                        <a class="purchase-btn" href="https://kingaddons.com/pricing/" target="_blank">
-                            <button class="premium-promo-popup-purchase-btn purchase-btn"><?php esc_html_e('Learn More', 'king-addons'); ?></button>
+                        <a class="purchase-btn" href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">
+                            <button class="premium-promo-popup-purchase-btn purchase-btn"><?php esc_html_e('Upgrade Now', 'king-addons'); ?></button>
                         </a>
                         <button id="close-premium-promo-popup"><?php esc_html_e('Close', 'king-addons'); ?></button>
                     </div>
@@ -335,7 +342,7 @@ final class Templates
         }
 
         // Pagination setup
-        $items_per_page = 18;
+        $items_per_page = 20;
         $total_templates = count($filtered_templates);
         $offset = ($current_page - 1) * $items_per_page;
         $paged_templates = array_slice($filtered_templates, $offset, $items_per_page);

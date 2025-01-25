@@ -8,6 +8,10 @@
     padding: 9px 0 0 !important;
 }
 
+#toplevel_page_king-addons-templates .wp-menu-image img {
+    opacity: 0.9;
+}
+
 #toplevel_page_king-addons-popup-builder .wp-menu-image img {
     display: inline !important;
     box-sizing: content-box !important;

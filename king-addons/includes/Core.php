@@ -455,7 +455,7 @@ final class Core
             'king_addons_pro_features_list',
             [
                 'type' => $type,
-                'raw' => $list_html . '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">' . esc_html__('Learn More About Pro', 'king-addons') . '</a>',
+                'raw' => $list_html . '<a class="king-addons-pro-features-cta-btn" href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">' . esc_html__('Upgrade Now', 'king-addons') . '</a>',
                 'content_classes' => 'king-addons-pro-features-list',
             ]
         );

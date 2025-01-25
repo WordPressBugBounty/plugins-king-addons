@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.46
+Stable tag: 24.12.47
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -92,7 +92,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Tabs**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Organize content into tabs for easy navigation and a clean layout. Perfect for FAQs, features, or segmented content in a fully responsive format.
 - [**Content Ticker**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display scrolling text or updates. Perfect for news, announcements, or dynamic content in a sleek, responsive design.
 - [**Timeline**](https://kingaddons.com/elementor/timeline/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts or events in a chronological timeline format. Perfect for storytelling, showcasing milestones, or creating visually appealing timelines.
-- [**Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create engaging sliders with images, text, or multimedia. Fully customizable and responsive, it is perfect for hero sections or featured content displays.
+- [**Slider**](https://kingaddons.com/elementor/slider/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create engaging sliders with images, text, or multimedia. Fully customizable and responsive, it is perfect for hero sections or featured content displays.
 - [**Data Table**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Present data effectively with customizable tables. Perfect for pricing comparisons, schedules, or detailed information in a responsive and user-friendly layout.
 - [**Countdown Timer**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add urgency to your promotions or events. Perfect for sales, launches, or special events in a fully customizable and responsive format. It also has an Evergreen Timer, which continuously resets for each visitor, providing a customized countdown clock that never truly expires.
 - [**Lottie Animations**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.
@@ -187,7 +187,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= King Addons for Elementor version 24.12.46 - January 22, 2025 =
+= King Addons for Elementor version 24.12.47 - January 25, 2025 =
+* **New:** Slider demo added.
+* **Improved:** Templates Catalog.
+
+= King Addons for Elementor version 24.12.46 - January 23, 2025 =
 * **New:** Lottie Animations widget added.
 
 = King Addons for Elementor version 24.12.45 - January 22, 2025 =

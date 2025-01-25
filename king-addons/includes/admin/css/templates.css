@@ -5,10 +5,10 @@
 
 .templates-grid {
     display: grid;
-    margin-right: 15px;
-    margin-left: 15px;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 17px 17px;
+    margin-right: 20px;
+    margin-left: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 20px;
 }
 
 .template-item {
@@ -68,9 +68,12 @@
 }
 
 #premium-promo-popup {
-    width: 500px;
-    height: auto;
-    padding: 20px;
+    width: 469px;
+    /*height: auto;*/
+    padding: 20px 50px;
+    height: 300px;
+    display: flex;
+    align-items: center;
 }
 
 .license-activating-popup-content {
@@ -135,7 +138,7 @@
 
 .promo-price-txt-small {
     font-size: 11px;
-    font-weight: 400;
+    font-weight: 500;
     color: #00000099;
     vertical-align: super;
 }
@@ -166,7 +169,7 @@
     overflow: hidden;
     width: 100%;
     border-radius: 5px;
-    min-height: 450px;
+    /*min-height: 450px;*/
     background: #f8f8f8;
 }
 
@@ -513,7 +516,7 @@ html,
     align-items: center;
     flex-flow: row;
     margin-top: 10px;
-    padding: 15px 25px;
+    padding: 15px 30px;
     cursor: pointer;
     text-decoration: none;
     color: white;
@@ -522,7 +525,8 @@ html,
     background: #191919;
     /*background: linear-gradient(45deg, #5B03FF, #9B62FF);*/
     background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);
-    transition: all 300ms ease;
+    transition: all 600ms ease;
+    font-size: 16px;
 }
 
 .premium-promo-popup-purchase-btn:hover {
@@ -621,12 +625,13 @@ html,
 }
 
 .template-item:hover {
-    transform: scale(1.025);
+    /*transform: scale(1.025);*/
+    box-shadow: 0 11px 34px 0 rgba(120, 120, 128, 0.16);
 }
 
 .promo-wrapper {
     margin-top: 20px;
-    padding: 20px;
+    padding: 20px 20px 20px 20px;
     border: 2px solid #191919;
     border-radius: 12px;
 }
@@ -636,6 +641,12 @@ html,
     font-weight: 600;
     line-height: 1.3;
     margin-bottom: 18px;
+}
+
+.promo-txt ul {
+    list-style-type: disc;
+    list-style-position: outside;
+    margin-left: 20px;
 }
 
 .templates-grid-wrapper {
@@ -689,7 +700,7 @@ html,
 }
 
 .premium-promo-popup-wrapper {
-    border: 2px solid #191919;
+    /* border: 2px solid #191919; */
     border-radius: 12px;
     padding: 20px;
     text-align: center;
@@ -740,4 +751,19 @@ html,
 
 .purchase-btn {
     text-decoration: none;
+}
+
+.pr-popup-title {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.pr-popup-desc {
+    margin-top: 10px;
+    display: block;
+    font-weight: 400;
+}
+
+.pr-popup-desc-b {
+    font-weight: 700;
 }
