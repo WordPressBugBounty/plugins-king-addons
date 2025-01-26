@@ -457,6 +457,7 @@ html,
     display: inline-block;
     margin: 0 !important;
     margin-right: 7px !important;
+    margin-bottom: 7px !important;
     padding: 10px 32px;
     text-decoration: none;
     letter-spacing: normal;
@@ -469,6 +470,7 @@ html,
 #king-addons-pagination-inner-wrap .page-numbers.current {
     text-decoration: underline;
     color: #191919;
+    font-weight: 800;
 }
 
 #king-addons-pagination-inner-wrap .page-numbers.dots {

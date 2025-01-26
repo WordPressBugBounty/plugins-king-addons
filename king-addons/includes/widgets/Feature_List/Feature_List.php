@@ -66,7 +66,7 @@ class Feature_List extends Widget_Base
         $this->start_controls_section(
             'king_addons_section_feature_list_general',
             [
-                'label' => esc_html__('General', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('General', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -326,7 +326,7 @@ class Feature_List extends Widget_Base
         $this->start_controls_section(
             'king_addons_feature_list_content_section',
             [
-                'label' => esc_html__('Content', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Content', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -569,7 +569,7 @@ class Feature_List extends Widget_Base
         $this->start_controls_section(
             'king_addons_section_feature_list_icon_styles',
             [
-                'label' => esc_html__('Media', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Media', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
@@ -721,7 +721,7 @@ class Feature_List extends Widget_Base
         $this->start_controls_section(
             'king_addons_section_feature_list_line_styles',
             [
-                'label' => esc_html__('Line', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Line', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'condition' => [
                     'king_addons_feature_list_line' => 'yes'
@@ -787,7 +787,7 @@ class Feature_List extends Widget_Base
         $this->start_controls_section(
             'king_addons_section_feature_list_title_description_styles',
             [
-                'label' => esc_html__('Title & Description', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Title & Description', 'king-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );

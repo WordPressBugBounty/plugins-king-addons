@@ -150,7 +150,7 @@ final class Templates
                                     echo '<li>Unlimited Downloads</li>';
                                     echo '<li>Keep Them Even After</li></ul>';
                                     ?></div>
-                                <a class="purchase-btn" href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">
+                                <a class="purchase-btn" href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-side&utm_medium=plugin&utm_campaign=kng" target="_blank">
                                     <button class="promo-btn purchase-btn"><?php esc_html_e('Upgrade Now', 'king-addons'); ?></button>
                                 </a>
                             </div>
@@ -359,7 +359,7 @@ final class Templates
                      data-tags="<?php echo esc_attr(implode(',', $template['tags'])); ?>"
                      data-template-key="<?php echo esc_attr($attr_key); ?>"
                      data-template-plan="<?php echo esc_attr($template['plan']); ?>">
-                    <img class="kng-addons-template-thumbnail"
+                    <img class="kng-addons-template-thumbnail" loading="lazy"
                          src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
                          alt="<?php echo esc_attr($template['title']); ?>">
                     <h3><?php echo esc_html($template['title']); ?></h3>
@@ -384,6 +384,8 @@ final class Templates
             'total' => ceil($total_templates / $items_per_page),
             'prev_text' => __('&larr; Previous', 'king-addons'),
             'next_text' => __('Next &rarr;', 'king-addons'),
+            'end_size' => 9,
+            'mid_size' => 3,
         ));
         if ($pages) {
             echo '<div id="king-addons-pagination-inner-wrap" class="pagination-inner-wrap"><div class="pagination-inner">';
