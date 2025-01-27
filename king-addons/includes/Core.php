@@ -139,19 +139,19 @@ final class Core
         }
         ?>
         <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
-             style="border-left: 4px solid #0073aa;padding: 5px 15px;">
-            <p style="font-size: 15px;margin:0;">
+             style="border-left: 4px solid #0073aa;padding: 10px 15px;">
+            <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
                 <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
                             style="font-weight: 700;">50+</strong> extensions for only $<strong
-                            style="font-weight: 700;">2</strong>
-                    <span class="kng-promo-price-txt-small"
-                          style="font-size: 11px; font-weight: 400; vertical-align: text-top;">99</span>/month. Upgrade now and boost your website!</span>
+                            style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
                 <span>
-                <a style="margin-left: 10px; font-size: 14px;"
+                <a style="margin-left: 10px;font-size: 14px;padding-left: 20px;padding-right: 20px;display: flex;align-items: center;"
                    href="https://kingaddons.com/pricing?utm_source=kng-notice-special-offer&utm_medium=plugin&utm_campaign=kng"
-                   class="button button-primary">Learn More</a>
+                   class="button button-primary"><img style="margin-right: 5px;width: 14px;height: 14px;" src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                                      alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
                 </span>
             </p>
+            <button type="button" class="notice-dismiss" style="opacity: 0.4;"></button>
         </div>
         <script>
             (function ($) {

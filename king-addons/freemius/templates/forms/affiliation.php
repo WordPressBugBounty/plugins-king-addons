@@ -86,7 +86,7 @@
             fs_text_inline( 'Non-expiring', 'non-expiring', $slug ) );
     }
 
-    $apply_to_become_affiliate_text = fs_text_inline( 'Apply to become a partner', 'apply-to-become-an-affiliate', $slug );
+    $apply_to_become_affiliate_text = fs_text_inline( 'Apply to become an affiliate', 'apply-to-become-an-affiliate', $slug );
 
     $module_id                   = $fs->get_id();
     $affiliate_program_terms_url = "https://freemius.com/plugin/{$module_id}/{$slug}/legal/affiliate-program/";
@@ -147,8 +147,8 @@
                         <div class="entry-content">
                             <?php if ( ! $is_affiliate ) : ?>
                                 <div id="application_messages_container">
-                                    <p><?php echo esc_html( sprintf( fs_text_inline( 'Like the %s?', 'become-an-ambassador', $slug ), $module_type ) ) ?></p>
-                                    <p><?php echo esc_html( sprintf( fs_text_inline( 'Refer new customers to our %s and earn %s commission on each successful sale you refer. Become a partner and have passive income!', 'refer-new-customers', $slug ), $module_type, $commission ) ) ?></p>
+                                    <p><?php echo esc_html( sprintf( fs_text_inline( 'Like the %s? Become our ambassador and earn cash ;-)', 'become-an-ambassador', $slug ), $module_type ) ) ?></p>
+                                    <p><?php echo esc_html( sprintf( fs_text_inline( 'Refer new customers to our %s and earn %s commission on each successful sale you refer!', 'refer-new-customers', $slug ), $module_type, $commission ) ) ?></p>
                                 </div>
                             <?php endif ?>
                             <h3><?php fs_esc_html_echo_inline( 'Program Summary', 'program-summary', $slug ) ?></h3>
@@ -165,7 +165,7 @@
                                 <?php endif ?>
                                 <li><?php echo esc_html( sprintf( fs_text_inline( '%s minimum payout amount.', 'minimum-payout-amount', $slug ), '$100' ) ) ?></li>
                                 <li><?php fs_esc_html_echo_inline( 'Payouts are in USD and processed monthly via PayPal.', 'payouts-unit-and-processing', $slug ) ?></li>
-                                <li><?php fs_esc_html_echo_inline( 'Trusted partner.', 'commission-payment', $slug ) ?></li>
+                                <li><?php fs_esc_html_echo_inline( 'As we reserve 30 days for potential refunds, we only pay commissions that are older than 30 days.', 'commission-payment', $slug ) ?></li>
                             </ul>
                             <div id="application_form_container" <?php echo ( $is_pending_affiliate ) ? '' : 'style="display: none"' ?>>
                                 <h3><?php fs_esc_html_echo_inline( 'Affiliate', 'affiliate', $slug ) ?></h3>
@@ -237,7 +237,7 @@
                             <?php if ( ! $is_affiliate ) : ?>
                                 <a id="cancel_button" href="#" class="button button-secondary button-cancel" style="display: none"><?php fs_esc_html_echo_inline( 'Cancel', 'cancel', $slug ) ?></a>
                                 <a id="submit_button" class="button button-primary disabled" href="#" style="display: none"><?php echo esc_html( $apply_to_become_affiliate_text ) ?></a>
-                                <a id="apply_button" class="button button-primary" href="#"><?php fs_esc_html_echo_inline( 'Become a partner', 'become-an-affiliate', $slug ) ?></a>
+                                <a id="apply_button" class="button button-primary" href="#"><?php fs_esc_html_echo_inline( 'Become an affiliate', 'become-an-affiliate', $slug ) ?></a>
                             <?php endif ?>
                         </div>
                     </div>
@@ -508,11 +508,3 @@
     if ( $has_tabs ) {
         $fs->_add_tabs_after_content();
     }
-
-    $params = array(
-        'page'           => 'affiliation',
-        'module_id'      => $module_id,
-        'module_slug'    => $slug,
-        'module_version' => $fs->get_plugin_version(),
-    );
-    fs_require_template( 'powered-by.php', $params );

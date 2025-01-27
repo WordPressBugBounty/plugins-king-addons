@@ -85,28 +85,22 @@ final class Templates
                         <div class="kng-navigation">
                             <div class="kng-nav-item kng-nav-item-current">
                                 <a href="../wp-admin/admin.php?page=king-addons">
-                                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                         alt="<?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?>">
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?></div>
                                 </a>
                             </div>
                             <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
-                            <div class="kng-nav-item kng-nav-item-current">
-                                <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
-                                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                         alt="<?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?>">
-                                    <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
-                                </a>
-                            </div>
+                                <div class="kng-nav-item kng-nav-item-current">
+                                    <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
+                                        <div class="kng-nav-item-txt"><?php echo esc_html__('Free Header & Footer Builder', 'king-addons'); ?></div>
+                                    </a>
+                                </div>
                             <?php endif; ?>
                             <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
-                            <div class="kng-nav-item kng-nav-item-current">
-                                <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
-                                    <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                         alt="<?php echo esc_html__('Popup Builder', 'king-addons'); ?>">
-                                    <div class="kng-nav-item-txt"><?php echo esc_html__('Popup Builder', 'king-addons'); ?></div>
-                                </a>
-                            </div>
+                                <div class="kng-nav-item kng-nav-item-current">
+                                    <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
+                                        <div class="kng-nav-item-txt"><?php echo esc_html__('Free Popup Builder', 'king-addons'); ?></div>
+                                    </a>
+                                </div>
                             <?php endif; ?>
                             <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
@@ -114,6 +108,16 @@ final class Templates
                                         <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/up.svg'; ?>"
                                              alt="<?php echo esc_html__('Activate License', 'king-addons'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Activate License', 'king-addons'); ?></div>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                            <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
+                                <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
+                                    <a href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-top&utm_medium=plugin&utm_campaign=kng"
+                                       target="_blank">
+                                        <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                             alt="<?php echo esc_html__('Get Premium', 'king-addons'); ?>">
+                                        <div class="kng-nav-item-txt"><?php echo esc_html__('Get Premium', 'king-addons'); ?></div>
                                     </a>
                                 </div>
                             <?php endif; ?>
@@ -146,12 +150,20 @@ final class Templates
                             <div class="promo-wrapper">
                                 <div class="promo-txt"><?php
                                     esc_html_e('Unlock Premium Templates', 'king-addons');
-                                    echo '<ul><li>$2<span class="promo-price-txt-small">99</span>/mo</li>';
+                                    echo '<ul><li>$2/month</li>';
                                     echo '<li>Unlimited Downloads</li>';
                                     echo '<li>Keep Them Even After</li></ul>';
                                     ?></div>
-                                <a class="purchase-btn" href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-side&utm_medium=plugin&utm_campaign=kng" target="_blank">
-                                    <button class="promo-btn purchase-btn"><?php esc_html_e('Upgrade Now', 'king-addons'); ?></button>
+                                <a class="purchase-btn"
+                                   href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-side&utm_medium=plugin&utm_campaign=kng"
+                                   target="_blank">
+                                    <button class="promo-btn purchase-btn"
+                                            style="display: flex;align-items: center;"
+                                    >
+                                        <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                             style="margin-right: 5px;width: 14px;height: 14px;"
+                                             alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
+                                    </button>
                                 </a>
                             </div>
                         <?php endif; ?>
@@ -163,10 +175,12 @@ final class Templates
                                placeholder="<?php esc_attr_e('Search templates...', 'king-addons'); ?>">
                     </div>
                     <div class="templates-grid">
-                        <?php echo $result['grid_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                        <?php echo $result['grid_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        ?>
                     </div>
                     <div class="pagination">
-                        <?php echo $result['pagination_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                        <?php echo $result['pagination_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        ?>
                     </div>
                 </div>
             </div>
@@ -221,14 +235,19 @@ final class Templates
                             echo '<span class="pr-popup-title">Want This Premium Template?</span>';
                             echo '<br><span class="pr-popup-desc">';
                             echo 'Get <span class="pr-popup-desc-b">unlimited downloads</span> for just';
-                            echo ' <span class="pr-popup-desc-b">$2<span class="promo-price-txt-small">99</span>/';
-                            esc_html_e('month', 'king-addons');
+                            echo ' <span class="pr-popup-desc-b">$2/month';
                             echo '</span> — keep them <span class="pr-popup-desc-b">even after</span> your subscription ends!';
                             echo '</span>';
 
                             ?></div>
-                        <a class="purchase-btn" href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">
-                            <button class="premium-promo-popup-purchase-btn purchase-btn"><?php esc_html_e('Upgrade Now', 'king-addons'); ?></button>
+                        <a class="purchase-btn"
+                           href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-proe&utm_medium=plugin&utm_campaign=kng"
+                           target="_blank">
+                            <button class="premium-promo-popup-purchase-btn purchase-btn">
+                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                     style="margin-right: 7px;width: 16px;height: 16px;"
+                                     alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
+                            </button>
                         </a>
                         <button id="close-premium-promo-popup"><?php esc_html_e('Close', 'king-addons'); ?></button>
                     </div>

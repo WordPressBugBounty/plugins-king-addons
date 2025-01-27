@@ -50,8 +50,7 @@ $options = get_option('king_addons_options');
                         <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next
                             level.
                             Get advanced tools like Live Search, Popup Builder,
-                            Pricing Table, Timeline, and more. All for just $2<span
-                                    class="kng-promo-price-txt-small">99</span>/month!
+                            Pricing Table, Timeline, and more. All for just $2/month!
                         </h2>
                     </div>
                     <div class="kng-promo-wrap-2">
@@ -91,18 +90,14 @@ $options = get_option('king_addons_options');
                     <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
                         <div class="kng-nav-item kng-nav-item-current">
                             <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
-                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                     alt="<?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?>">
-                                <div class="kng-nav-item-txt"><?php echo esc_html__('Header & Footer Builder', 'king-addons'); ?></div>
+                                <div class="kng-nav-item-txt"><?php echo esc_html__('Free Header & Footer Builder', 'king-addons'); ?></div>
                             </a>
                         </div>
                     <?php endif; ?>
                     <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
                         <div class="kng-nav-item kng-nav-item-current">
                             <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
-                                <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                     alt="<?php echo esc_html__('Popup Builder', 'king-addons'); ?>">
-                                <div class="kng-nav-item-txt"><?php echo esc_html__('Popup Builder', 'king-addons'); ?></div>
+                                <div class="kng-nav-item-txt"><?php echo esc_html__('Free Popup Builder', 'king-addons'); ?></div>
                             </a>
                         </div>
                     <?php endif; ?>
