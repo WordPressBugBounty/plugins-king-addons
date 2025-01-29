@@ -572,10 +572,10 @@ class Data_Table extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'placeholder' => esc_html__('link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'show_external' => true,
                 'default' => [
-                    'url' => 'example.com',
+                    'url' => esc_html__('https://example.com', 'king-addons'),
                     'is_external' => true,
                     'nofollow' => true,
                 ],

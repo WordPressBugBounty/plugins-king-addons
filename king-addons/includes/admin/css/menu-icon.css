@@ -48,3 +48,7 @@ ul#adminmenu > #toplevel_page_king-addons-templates > a.wp-has-current-submenu:a
 #toplevel_page_king-addons-templates {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
+
+.king-addons-upgrade-notice .notice-dismiss {
+    opacity: 0.4;
+}

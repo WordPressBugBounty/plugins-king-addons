@@ -54,7 +54,7 @@ class Wrapper_Link
             [
                 'label' => esc_html__('Link', 'king-addons'),
                 'type' => Controls_Manager::URL,
-                'placeholder' => 'https://example.com',
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'options' => [
                     'url',
                     'is_external'

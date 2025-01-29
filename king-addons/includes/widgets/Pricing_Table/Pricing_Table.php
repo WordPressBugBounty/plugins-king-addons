@@ -398,7 +398,7 @@ class Pricing_Table extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'placeholder' => esc_html__('https://link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'show_label' => false,
                 'condition' => [
                     'type_select' => 'button',

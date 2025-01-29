@@ -56,6 +56,11 @@ final class RegisterAssets
             'nonce' => wp_create_nonce('king_addons_search_nonce'),
         ]);
 
+        wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-mailchimp-script', 'KingAddonsMailChimpData', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('king_addons_mailchimp_nonce'),
+        ]);
+
         foreach (ModulesMap::getModulesMapArray()['features'] as $feature_id => $feature_array) {
             foreach ($feature_array['js'] as $js) {
                 wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $feature_id . '-' . $js, KING_ADDONS_URL . 'includes/features/' . $feature_array['php-class'] . '/' . $js . '.js', null, KING_ADDONS_VERSION);

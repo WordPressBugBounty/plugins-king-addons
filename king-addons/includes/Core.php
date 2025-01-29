@@ -84,6 +84,7 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Animations.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Button_Animations.php');
             require_once(KING_ADDONS_PATH . 'includes/widgets/Search/Search_Ajax.php');
+            require_once(KING_ADDONS_PATH . 'includes/widgets/MailChimp/MailChimp_Ajax.php');
 
             // Additional - Grids, Magazine Grid
 //            require_once(KING_ADDONS_PATH . 'includes/helpers/PostLikes.php');
@@ -151,7 +152,6 @@ final class Core
                                                       alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
                 </span>
             </p>
-            <button type="button" class="notice-dismiss" style="opacity: 0.4;"></button>
         </div>
         <script>
             (function ($) {

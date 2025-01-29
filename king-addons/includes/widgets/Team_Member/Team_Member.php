@@ -522,7 +522,7 @@ class Team_Member extends Widget_Base
                     'active' => true,
                 ],
                 'show_external' => false,
-                'placeholder' => esc_html__('https://www.link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'social_media' => 'yes',
                 ],
@@ -567,7 +567,7 @@ class Team_Member extends Widget_Base
                     'active' => true,
                 ],
                 'show_external' => false,
-                'placeholder' => esc_html__('https://www.link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'social_media' => 'yes',
                 ],
@@ -612,7 +612,7 @@ class Team_Member extends Widget_Base
                     'active' => true,
                 ],
                 'show_external' => false,
-                'placeholder' => esc_html__('https://www.link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'social_media' => 'yes',
                 ],
@@ -657,7 +657,7 @@ class Team_Member extends Widget_Base
                     'active' => true,
                 ],
                 'show_external' => false,
-                'placeholder' => esc_html__('https://www.link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'social_media' => 'yes',
                 ],
@@ -698,7 +698,7 @@ class Team_Member extends Widget_Base
                     'active' => true,
                 ],
                 'show_external' => false,
-                'placeholder' => esc_html__('https://www.link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'social_media' => 'yes',
                 ],
@@ -744,7 +744,7 @@ class Team_Member extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'placeholder' => esc_html__('https://link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'member_btn' => 'yes',
                 ],

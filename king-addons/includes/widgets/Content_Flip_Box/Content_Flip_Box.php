@@ -281,7 +281,7 @@ class Content_Flip_Box extends Widget_Base
                     'active' => true,
                 ],
                 'label' => esc_html__('Link URL', 'king-addons'),
-                'placeholder' => esc_html__('https://link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'default' => [
                     'url' => '#',
                 ],

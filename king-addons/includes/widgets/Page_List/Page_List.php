@@ -166,7 +166,7 @@ class Page_List extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'placeholder' => esc_html__('https://link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'default' => [
                     'url' => '',
                     'is_external' => true,

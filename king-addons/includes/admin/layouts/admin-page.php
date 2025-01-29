@@ -89,21 +89,21 @@ $options = get_option('king_addons_options');
                 <div class="kng-navigation">
                     <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
                         <div class="kng-nav-item kng-nav-item-current">
-                            <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
+                            <a href="<?php echo admin_url('edit.php?post_type=king-addons-el-hf'); ?>">
                                 <div class="kng-nav-item-txt"><?php echo esc_html__('Free Header & Footer Builder', 'king-addons'); ?></div>
                             </a>
                         </div>
                     <?php endif; ?>
                     <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
                         <div class="kng-nav-item kng-nav-item-current">
-                            <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
+                            <a href="<?php echo admin_url('admin.php?page=king-addons-popup-builder'); ?>">
                                 <div class="kng-nav-item-txt"><?php echo esc_html__('Free Popup Builder', 'king-addons'); ?></div>
                             </a>
                         </div>
                     <?php endif; ?>
                     <?php if (KING_ADDONS_EXT_TEMPLATES_CATALOG): ?>
                         <div class="kng-nav-item kng-nav-item-current-active">
-                            <a href="../wp-admin/admin.php?page=king-addons-templates">
+                            <a href="<?php echo admin_url('admin.php?page=king-addons-templates'); ?>">
                                 <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
                                      alt="<?php echo (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')); ?>">
                                 <div class="kng-nav-item-txt"><?php echo (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')); ?></div>

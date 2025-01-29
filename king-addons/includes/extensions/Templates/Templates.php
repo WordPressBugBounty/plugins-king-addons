@@ -84,20 +84,20 @@ final class Templates
                     <div class="kng-intro-wrap-2">
                         <div class="kng-navigation">
                             <div class="kng-nav-item kng-nav-item-current">
-                                <a href="../wp-admin/admin.php?page=king-addons">
+                                <a href="<?php echo admin_url('admin.php?page=king-addons'); ?>">
                                     <div class="kng-nav-item-txt"><?php echo esc_html__('Free Widgets & Features', 'king-addons'); ?></div>
                                 </a>
                             </div>
                             <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
                                 <div class="kng-nav-item kng-nav-item-current">
-                                    <a href="../wp-admin/edit.php?post_type=king-addons-el-hf">
+                                    <a href="<?php echo admin_url('edit.php?post_type=king-addons-el-hf'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Free Header & Footer Builder', 'king-addons'); ?></div>
                                     </a>
                                 </div>
                             <?php endif; ?>
                             <?php if (KING_ADDONS_EXT_POPUP_BUILDER): ?>
                                 <div class="kng-nav-item kng-nav-item-current">
-                                    <a href="../wp-admin/admin.php?page=king-addons-popup-builder">
+                                    <a href="<?php echo admin_url('admin.php?page=king-addons-popup-builder'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Free Popup Builder', 'king-addons'); ?></div>
                                     </a>
                                 </div>

@@ -331,7 +331,7 @@ class Lottie_Animations extends Widget_Base
                 'default' => array(
                     'url' => '#',
                 ),
-                'placeholder' => 'https://link.com/',
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'label_block' => true,
                 'condition' => array(
                     'link_switcher' => 'yes',

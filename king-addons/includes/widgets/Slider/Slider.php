@@ -388,7 +388,7 @@ class Slider extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'placeholder' => esc_html__('your-link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'show_label' => false,
                 'condition' => [
                     'slider_item_link_type' => 'custom',
@@ -426,7 +426,7 @@ class Slider extends Widget_Base
                 'dynamic' => [
                     'active' => true,
                 ],
-                'placeholder' => esc_html__('www.your-link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'slider_content_type' => 'custom',
                     'slider_item_link_type' => ['video-youtube', 'video-vimeo'],
@@ -776,7 +776,7 @@ class Slider extends Widget_Base
                     'active' => true,
                 ],
                 'label_block' => false,
-                'placeholder' => esc_html__('www.your-link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'slider_item_btn_1' => 'yes',
                     'slider_show_content' => 'yes',
@@ -860,7 +860,7 @@ class Slider extends Widget_Base
                     'active' => true,
                 ],
                 'label_block' => false,
-                'placeholder' => esc_html__('www.your-link.com', 'king-addons'),
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'condition' => [
                     'slider_item_btn_2' => 'yes',
                     'slider_show_content' => 'yes',

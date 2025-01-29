@@ -101,7 +101,7 @@ class Hovering_Image_Stack extends Widget_Base
                 'label' => esc_html__('Link', 'king-addons'),
                 'type' => Controls_Manager::URL,
                 'label_block' => true,
-                'placeholder' => 'https://example.com',
+                'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'dynamic' => [
                     'active' => true,
                 ]
