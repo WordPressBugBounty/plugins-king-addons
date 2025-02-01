@@ -331,12 +331,10 @@ class Mailchimp extends Widget_Base
 
         $this->end_controls_section();
 
-
         Core::renderProFeaturesSection($this, '', Controls_Manager::RAW_HTML, 'mailchimp', [
-            'Add Extra Fields - Name, Last Name & Phone Number',
+            'Add Extra Fields - Name, Last Name, Phone Number',
             'Clear Fields After Form Submission'
         ]);
-
 
         $this->start_controls_section(
             'section_style_container',
@@ -1462,7 +1460,6 @@ class Mailchimp extends Widget_Base
             <?php endif; ?>
 
             <div class="king-addons-mailchimp-fields">
-                <!-- Email Input -->
                 <div class="king-addons-mailchimp-email">
                     <?php echo $email_label; ?>
                     <input

@@ -17,7 +17,6 @@
 }
 
 .king-addons-data-table {
-
     border-collapse: collapse;
     border-spacing: 0;
     margin-right: 0 !important;
@@ -44,34 +43,16 @@
 }
 
 .king-addons-flex-column {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
 }
 
 .king-addons-flex-column-reverse {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: reverse;
-    -ms-flex-direction: column-reverse;
     flex-direction: column-reverse;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
 }
 
@@ -97,8 +78,6 @@
     position: absolute;
     top: 50%;
     right: 5%;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
     transform: translateY(-50%);
 }
 
@@ -108,11 +87,7 @@
 }
 
 .king-addons-table-custom-pagination-inner-cont {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
 }
 
@@ -121,11 +96,7 @@
 }
 
 .king-addons-table-export-button-cont {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
 }
 
@@ -134,16 +105,9 @@
     width: 100%;
 }
 
-
 .king-addons-export-search-inner-cont {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
     justify-content: space-between;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
 }
 
@@ -154,7 +118,6 @@
 .king-addons-table-td,
 .king-addons-table-th {
     vertical-align: middle;
-
 }
 
 .king-addons-table-appended-tr {
@@ -170,14 +133,8 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
     background: green;
     color: white;
@@ -192,14 +149,8 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
     background: red;
     color: white;
@@ -208,8 +159,6 @@
     font-size: 15px;
     border-radius: 50%;
 }
-
-
 
 .king-addons-table-text {
     position: relative;
@@ -222,24 +171,16 @@
 
 .king-addons-xls,
 .king-addons-csv {
-    padding: auto;
+    padding: inherit;
 }
 
 .king-addons-entry-info-yes .king-addons-table-pagination-cont {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
     justify-content: space-between;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
 }
 
 .king-addons-entry-info-yes .king-addons-table-custom-pagination {
-    -webkit-box-pack: end;
-    -ms-flex-pack: end;
     justify-content: flex-end;
 }
 
@@ -255,7 +196,7 @@
 
 .king-addons-data-table .fa-question-circle {
     font-weight: 400 !important;
-    font-family: "Font Awesome 5 Free" !important;
+    font-family: "Font Awesome 5 Free", serif !important;
 }
 
 .king-addons-data-table-content-tooltip {
@@ -267,19 +208,17 @@
     visibility: hidden;
     opacity: 0;
     font-size: 15px;
-    -webkit-transform: translate(-50%, -100%);
-    -ms-transform: translate(-50%, -100%);
     transform: translate(-50%, -100%);
-    -webkit-transition: all 230ms ease-in-out 0s;
-    -o-transition: all 230ms ease-in-out 0s;
     transition: all 230ms ease-in-out 0s;
     text-align: center;
 }
 
+/*noinspection DuplicatedCode*/
 .king-addons-data-table-content-tooltip:before {
     content: "";
     position: absolute;
-    left: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: -5px;
     width: 0;
     height: 0;
@@ -293,24 +232,12 @@
     visibility: visible;
     opacity: 1;
     top: -7px;
-    -ms-transform: translate(-50%, -100%);
     transform: translate(-50%, -100%);
-    -webkit-transform: translate(-50%, -100%);
-}
-
-.king-addons-data-table-content-tooltip:before {
-    left: 50%;
-    -ms-transform: translateX(-50%);
-    transform: translateX(-50%);
-    -webkit-transform: translateX(-50%) !important;
 }
 
 @media screen and (max-width: 768px) {
     .king-addons-export-search-inner-cont,
     .king-addons-table-pagination-cont {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
         flex-direction: column;
     }
 
@@ -320,7 +247,6 @@
 
     .king-addons-table-export-button-cont {
         width: 100%;
-        -ms-flex-pack: distribute;
         justify-content: space-around;
     }
 }

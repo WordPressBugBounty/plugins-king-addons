@@ -59,9 +59,11 @@ class Slider extends Widget_Base
     public function get_style_depends()
     {
         return [
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-slick-helper',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-general',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-timing',
-            KING_ADDONS_ASSETS_UNIQUE_KEY . '-slider-style'
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-slider-style',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
         ];
     }
 

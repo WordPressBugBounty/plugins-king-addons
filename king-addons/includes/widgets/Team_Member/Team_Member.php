@@ -35,7 +35,12 @@ class Team_Member extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-team-member-style', KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-general', KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-button'];
+        return [
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-team-member-style',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-general',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-button',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
+        ];
     }
 
     public function get_categories(): array

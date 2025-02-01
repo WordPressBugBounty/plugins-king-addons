@@ -56,6 +56,10 @@ class Creative_Button extends Widget_Base
         return 'https://kingaddons.com/elementor/creative-button/';
     }
 
+    public function has_widget_inner_wrapper(): bool {
+        return true;
+    }
+
     protected function register_controls(): void
     {
 

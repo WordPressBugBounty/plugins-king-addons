@@ -67,6 +67,10 @@ class Tabs extends Widget_Base
         return 'https://kingaddons.com/';
     }
 
+    public function has_widget_inner_wrapper(): bool {
+        return true;
+    }
+
     public function add_repeater_args_tab_custom_color()
     {
         return [

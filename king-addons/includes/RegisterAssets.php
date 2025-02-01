@@ -81,6 +81,16 @@ final class RegisterAssets
                 wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $library_id . '-' . $js, KING_ADDONS_URL . 'includes/assets/libraries/' . $library_id . '/' . $js . '.js', null, KING_ADDONS_VERSION);
             }
         }
+
+        wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-grid', 'KingAddonsGridData', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('king_addons_grid_nonce'),
+            'viewCart' => esc_html__('View Cart', 'king-addons'),
+            'addedToCartText' => esc_html__('was added to cart', 'king-addons'),
+            'comparePageURL' => get_permalink(get_option('king_addons_compare_page')),
+            'wishlistPageURL' => get_permalink(get_option('king_addons_wishlist_page')),
+        ]);
+
     }
 }
 

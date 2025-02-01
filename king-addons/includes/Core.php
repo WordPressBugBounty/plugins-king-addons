@@ -78,16 +78,20 @@ final class Core
             // Admin
             require_once(KING_ADDONS_PATH . 'includes/Admin.php');
 
-            // Additional
+            // Additional - Controls
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2_API.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Animations.php');
             require_once(KING_ADDONS_PATH . 'includes/controls/Animations/Button_Animations.php');
+
+            // Additional - Widgets
             require_once(KING_ADDONS_PATH . 'includes/widgets/Search/Search_Ajax.php');
             require_once(KING_ADDONS_PATH . 'includes/widgets/MailChimp/MailChimp_Ajax.php');
 
             // Additional - Grids, Magazine Grid
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/PostLikes.php');
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Filter_Posts_Ajax.php');
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Filter_WooCommerce_Products_Ajax.php');
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Post_Likes_Ajax.php');
 
             self::enableWidgetsByDefault();
 
@@ -470,7 +474,7 @@ final class Core
         }
 
         $module->add_control(
-            $option . '_pro_notice',
+            $option . '_pro_notice_',
             [
                 'raw' => 'Upgrade to the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong> now<br> and unlock this feature!',
                 'type' => $controls_manager,
@@ -809,7 +813,10 @@ final class Core
             $data[$taxonomy_slug] = array_unique($meta_keys);
         }
 
-        $merged_meta_keys = array_values(array_unique(array_merge(...$data)));
+
+        $merged = call_user_func_array('array_merge', array_values($data));
+        $merged_meta_keys = array_values(array_unique($merged));
+
         $options = array_combine($merged_meta_keys, $merged_meta_keys);
 
         return [$data, $options];

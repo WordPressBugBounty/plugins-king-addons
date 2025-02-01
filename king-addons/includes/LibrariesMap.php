@@ -32,6 +32,14 @@ final class LibrariesMap
                     'css' => [],
                     'js' => ['fullpage']
                 ],
+                'general' => [
+                    'css' => ['general'],
+                    'js' => []
+                ],
+                'grid' => [
+                    'css' => ['grid'],
+                    'js' => ['grid']
+                ],
                 'imagesloaded' => [
                     'css' => [],
                     'js' => ['imagesloaded']
@@ -42,7 +50,7 @@ final class LibrariesMap
                 ],
                 'isotope' => [
                     'css' => [],
-                    'js' => ['isotope']
+                    'js' => ['isotope', 'kng']
                 ],
                 'jarallax' => [
                     'css' => [],
@@ -97,7 +105,7 @@ final class LibrariesMap
                     'js' => ['perfectscrollbar']
                 ],
                 'slick' => [
-                    'css' => [],
+                    'css' => ['helper'],
                     'js' => ['slick']
                 ],
                 'swiper' => [

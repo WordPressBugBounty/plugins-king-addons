@@ -50,7 +50,10 @@ class Data_Table extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-data-table-style'];
+        return [
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-data-table-style',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
+        ];
     }
 
     public function get_custom_help_url()
@@ -1709,11 +1712,12 @@ class Data_Table extends Widget_Base
     {
     }
 
-    protected function render_csv_data($url, $sorting_icon, $settings) {
+    protected function render_csv_data($url, $sorting_icon, $settings)
+    {
         // Extract path info just once
         $parsed_url = pathinfo($url);
-        $extension  = $parsed_url['extension'] ?? '';
-        $dirname    = $parsed_url['dirname'] ?? '';
+        $extension = $parsed_url['extension'] ?? '';
+        $dirname = $parsed_url['dirname'] ?? '';
 
         ob_start();
 
@@ -1731,33 +1735,34 @@ class Data_Table extends Widget_Base
         return ob_get_clean();
     }
 
-    protected function king_addons_parse_csv_to_table($filename, $settings, $sorting_icon) {
+    protected function king_addons_parse_csv_to_table($filename, $settings, $sorting_icon)
+    {
         $allowed_html = [
             'a' => [
-                'href'   => [],
-                'title'  => [],
+                'href' => [],
+                'title' => [],
                 'target' => [],
             ],
-            'b'     => [],
-            'strong'=> [],
-            'i'     => [],
-            'em'    => [],
-            'p'     => [],
-            'br'    => [],
-            'ul'    => [],
-            'ol'    => [],
-            'li'    => [],
-            'span'  => [],
-            'div'   => [ 'class' => [] ],
-            'img'   => [
-                'src'    => [],
-                'alt'    => [],
-                'width'  => [],
+            'b' => [],
+            'strong' => [],
+            'i' => [],
+            'em' => [],
+            'p' => [],
+            'br' => [],
+            'ul' => [],
+            'ol' => [],
+            'li' => [],
+            'span' => [],
+            'div' => ['class' => []],
+            'img' => [
+                'src' => [],
+                'alt' => [],
+                'width' => [],
                 'height' => [],
             ],
         ];
 
-        $handle    = fopen($filename, 'r');
+        $handle = fopen($filename, 'r');
         $delimiter = $this->detect_csv_delimiter($filename);
 
         echo '<table class="king-addons-append-to-scope king-addons-data-table">';
@@ -1766,7 +1771,7 @@ class Data_Table extends Widget_Base
         if ('yes' === $settings['display_header']) {
             $csv_header = fgetcsv($handle, 0, $delimiter);
             echo '<thead><tr class="king-addons-table-head-row king-addons-table-row">';
-            foreach ((array) $csv_header as $header_cell) {
+            foreach ((array)$csv_header as $header_cell) {
                 echo '<th class="king-addons-table-th king-addons-table-text">'
                     . wp_kses($header_cell, $allowed_html)
                     . $sorting_icon
@@ -1803,33 +1808,36 @@ class Data_Table extends Widget_Base
         fclose($handle);
     }
 
-    protected function detect_csv_delimiter($filename) {
-        $delimiters    = [',', ';'];
-        $best_delimiter= ',';
-        $max_count     = 0;
+    protected function detect_csv_delimiter($filename)
+    {
+        $delimiters = [',', ';'];
+        $best_delimiter = ',';
+        $max_count = 0;
 
-        $handle    = fopen($filename, 'r');
-        $first_line= fgets($handle);
+        $handle = fopen($filename, 'r');
+        $first_line = fgets($handle);
         fclose($handle);
 
         foreach ($delimiters as $delimiter) {
             $count = count(str_getcsv($first_line, $delimiter));
             if ($count > $max_count) {
-                $max_count     = $count;
-                $best_delimiter= $delimiter;
+                $max_count = $count;
+                $best_delimiter = $delimiter;
             }
         }
 
         return $best_delimiter;
     }
 
-    public function render_th_icon($item) {
+    public function render_th_icon($item)
+    {
         ob_start();
         Icons_Manager::render_icon($item['choose_header_col_icon'], ['aria-hidden' => 'true']);
         return ob_get_clean();
     }
 
-    public function render_th_icon_or_image($item, $i) {
+    public function render_th_icon_or_image($item, $i)
+    {
         $header_icon = '';
 
         if ($item['header_icon'] === 'yes' && $item['header_icon_type'] === 'icon') {
@@ -1840,9 +1848,9 @@ class Data_Table extends Widget_Base
 
         if ($item['header_icon'] === 'yes' && $item['header_icon_type'] === 'image') {
             $this->add_render_attribute('king_addons_table_th_img' . $i, [
-                'src'   => esc_url($item['header_col_img']['url']),
+                'src' => esc_url($item['header_col_img']['url']),
                 'class' => 'king-addons-data-table-th-img',
-                'alt'   => esc_attr(get_post_meta($item['header_col_img']['id'], '_wp_attachment_image_alt', true)),
+                'alt' => esc_attr(get_post_meta($item['header_col_img']['id'], '_wp_attachment_image_alt', true)),
             ]);
             $header_icon = '<img ' . $this->get_render_attribute_string('king_addons_table_th_img' . $i) . '>';
         }
@@ -1850,13 +1858,15 @@ class Data_Table extends Widget_Base
         echo $header_icon;
     }
 
-    public function render_td_icon($table_td, $j) {
+    public function render_td_icon($table_td, $j)
+    {
         ob_start();
         Icons_Manager::render_icon($table_td[$j]['icon_item'], ['aria-hidden' => 'true']);
         return ob_get_clean();
     }
 
-    public function render_td_icon_or_image($table_td, $j) {
+    public function render_td_icon_or_image($table_td, $j)
+    {
         $tbody_icon = '';
 
         if ($table_td[$j]['icon'] === 'yes' && $table_td[$j]['icon_type'] === 'icon') {
@@ -1867,9 +1877,9 @@ class Data_Table extends Widget_Base
 
         if ($table_td[$j]['icon'] === 'yes' && $table_td[$j]['icon_type'] === 'image') {
             $this->add_render_attribute('king_addons_table_td_img' . esc_attr($j), [
-                'src'   => esc_url($table_td[$j]['col_img']['url']),
+                'src' => esc_url($table_td[$j]['col_img']['url']),
                 'class' => 'king-addons-data-table-th-img',
-                'alt'   => esc_attr(get_post_meta($table_td[$j]['col_img']['id'], '_wp_attachment_image_alt', true)),
+                'alt' => esc_attr(get_post_meta($table_td[$j]['col_img']['id'], '_wp_attachment_image_alt', true)),
             ]);
             $tbody_icon = '<img ' . $this->get_render_attribute_string('king_addons_table_td_img' . esc_attr($j)) . '>';
         }
@@ -1877,11 +1887,13 @@ class Data_Table extends Widget_Base
         echo $tbody_icon;
     }
 
-    public function render_search_export() {
+    public function render_search_export()
+    {
         // Intentionally empty (as in original code)
     }
 
-    protected function render() {
+    protected function render()
+    {
         $settings = $this->get_settings_for_display();
 
         // Additional variables
@@ -1895,13 +1907,13 @@ class Data_Table extends Widget_Base
                 'king-addons-table-inner-container',
                 ('yes' === $settings['enable_custom_pagination'] ? 'king-addons-hide-table-before-arrange' : ''),
             ],
-            'data-table-sorting'       => $settings['enable_table_sorting'],
-            'data-custom-pagination'   => $settings['enable_custom_pagination'],
-            'data-row-pagination'      => $settings['enable_row_pagination'],
-            'data-entry-info'          => king_addons_freemius()->can_use_premium_code__premium_only()
+            'data-table-sorting' => $settings['enable_table_sorting'],
+            'data-custom-pagination' => $settings['enable_custom_pagination'],
+            'data-row-pagination' => $settings['enable_row_pagination'],
+            'data-entry-info' => king_addons_freemius()->can_use_premium_code__premium_only()
                 ? $settings['enable_entry_info']
                 : 'no',
-            'data-rows-per-page'       => $settings['table_items_per_page'] ?? '',
+            'data-rows-per-page' => $settings['table_items_per_page'] ?? '',
         ]);
 
         ?>
@@ -1917,16 +1929,14 @@ class Data_Table extends Widget_Base
                 $sorting_icon,
                 $settings
             );
-        }
-        // If external CSV/Google Sheets URL
+        } // If external CSV/Google Sheets URL
         elseif (isset($settings['choose_csv_type']) && 'url' === $settings['choose_csv_type']) {
             echo $this->render_csv_data(
                 esc_url($settings['table_insert_url']['url']),
                 $sorting_icon,
                 $settings
             );
-        }
-        // Else build table from repeater rows
+        } // Else build table from repeater rows
         else {
             $table_tr = [];
             $table_td = [];
@@ -1936,12 +1946,12 @@ class Data_Table extends Widget_Base
             foreach ($settings['table_content_rows'] as $content_row) {
                 $countRows++;
                 $oddEven = ($countRows % 2 === 0) ? 'king-addons-even' : 'king-addons-odd';
-                $row_id  = uniqid();
+                $row_id = uniqid();
 
                 if ($content_row['table_content_row_type'] === 'row') {
                     $table_tr[] = [
-                        'id'    => $row_id,
-                        'type'  => $content_row['table_content_row_type'],
+                        'id' => $row_id,
+                        'type' => $content_row['table_content_row_type'],
                         'class' => [
                             'king-addons-table-body-row',
                             'king-addons-table-row',
@@ -1952,24 +1962,24 @@ class Data_Table extends Widget_Base
                 } elseif ($content_row['table_content_row_type'] === 'col') {
                     $last_key = array_key_last($table_tr);
                     $table_td[] = [
-                        'row_id'       => $table_tr[$last_key]['id'] ?? '',
-                        'type'         => $content_row['table_content_row_type'],
-                        'content'      => $content_row['table_td'],
-                        'colspan'      => $content_row['table_content_row_colspan'],
-                        'rowspan'      => $content_row['table_content_row_rowspan'],
-                        'link'         => $content_row['cell_link'],
-                        'external'     => $content_row['cell_link']['is_external'] ? '_blank' : '_self',
-                        'icon_type'    => $content_row['td_icon_type'],
-                        'icon'         => $content_row['td_icon'],
-                        'icon_position'=> $content_row['td_icon_position'],
-                        'icon_item'    => $content_row['choose_td_icon'],
-                        'col_img'      => $content_row['td_col_img'],
-                        'class'        => [
+                        'row_id' => $table_tr[$last_key]['id'] ?? '',
+                        'type' => $content_row['table_content_row_type'],
+                        'content' => $content_row['table_td'],
+                        'colspan' => $content_row['table_content_row_colspan'],
+                        'rowspan' => $content_row['table_content_row_rowspan'],
+                        'link' => $content_row['cell_link'],
+                        'external' => $content_row['cell_link']['is_external'] ? '_blank' : '_self',
+                        'icon_type' => $content_row['td_icon_type'],
+                        'icon' => $content_row['td_icon'],
+                        'icon_position' => $content_row['td_icon_position'],
+                        'icon_item' => $content_row['choose_td_icon'],
+                        'col_img' => $content_row['td_col_img'],
+                        'class' => [
                             'elementor-repeater-item-' . esc_attr($content_row['_id']),
                             'king-addons-table-td',
                         ],
-                        'content_tooltip'        => $content_row['content_tooltip'],
-                        'content_tooltip_text'   => $content_row['content_tooltip_text'],
+                        'content_tooltip' => $content_row['content_tooltip'],
+                        'content_tooltip_text' => $content_row['content_tooltip_text'],
                         'content_tooltip_show_icon' => $content_row['content_tooltip_show_icon'],
                     ];
                 }
@@ -1984,7 +1994,7 @@ class Data_Table extends Widget_Base
                         $i = 0;
                         foreach ($settings['table_header'] as $item) {
                             $this->add_render_attribute('th_class_' . $i, [
-                                'class'   => [
+                                'class' => [
                                     'king-addons-table-th',
                                     'elementor-repeater-item-' . esc_attr($item['_id']),
                                 ],
@@ -2047,7 +2057,7 @@ class Data_Table extends Widget_Base
                                     $this->add_render_attribute('tbody_td_attributes_' . $i . '_' . $j, [
                                         'colspan' => $table_td[$j]['colspan'] > 1 ? $table_td[$j]['colspan'] : '',
                                         'rowspan' => $table_td[$j]['rowspan'] > 1 ? $table_td[$j]['rowspan'] : '',
-                                        'class'   => $table_td[$j]['class'],
+                                        'class' => $table_td[$j]['class'],
                                     ]);
                                     ?>
                                     <td <?php echo $this->get_render_attribute_string('tbody_td_attributes_' . $i . '_' . $j); ?>>
@@ -2064,7 +2074,7 @@ class Data_Table extends Widget_Base
                                         ?>">
                                             <?php
                                             if ($table_td[$j]['icon'] === 'yes'
-                                                && in_array($table_td[$j]['icon_position'], ['left','top','bottom'], true)
+                                                && in_array($table_td[$j]['icon_position'], ['left', 'top', 'bottom'], true)
                                             ) {
                                                 $this->render_td_icon_or_image($table_td, $j);
                                             }

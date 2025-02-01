@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 "use strict";
 (function ($) {
     $(window).on('elementor/frontend/init', function () {
@@ -216,6 +218,7 @@
                     });
 
                     $scope.find('.king-addons-data-fetch').on('click', '.king-addons-close-search', function () {
+                        // noinspection DuplicatedCode
                         $scope.find('.king-addons-search-form-input').val('');
                         $scope.find('.king-addons-data-fetch').slideUp(200);
                         setTimeout(function () {
@@ -229,6 +232,7 @@
                     $('body').on('click', function (e) {
                         if (!e.target.classList.value.includes('king-addons-data-fetch') && !e.target.closest('.king-addons-data-fetch')) {
                             if (!e.target.classList.value.includes('king-addons-search-form') && !e.target.closest('.king-addons-search-form')) {
+                                // noinspection DuplicatedCode
                                 $scope.find('.king-addons-search-form-input').val('');
                                 $scope.find('.king-addons-data-fetch').slideUp(200);
                                 setTimeout(function () {

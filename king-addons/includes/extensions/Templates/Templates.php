@@ -241,7 +241,7 @@ final class Templates
 
                             ?></div>
                         <a class="purchase-btn"
-                           href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-proe&utm_medium=plugin&utm_campaign=kng"
+                           href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng"
                            target="_blank">
                             <button class="premium-promo-popup-purchase-btn purchase-btn">
                                 <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"

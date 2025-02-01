@@ -54,7 +54,8 @@ class Content_Ticker extends Widget_Base
     public function get_style_depends()
     {
         return [
-            KING_ADDONS_ASSETS_UNIQUE_KEY . '-content-ticker-style'
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-content-ticker-style',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
         ];
     }
 

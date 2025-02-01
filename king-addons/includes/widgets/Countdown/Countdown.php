@@ -51,7 +51,10 @@ class Countdown extends Widget_Base
 
     public function get_style_depends()
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-countdown-style'];
+        return [
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-countdown-style',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
+        ];
     }
 
     public function get_custom_help_url()
@@ -61,6 +64,10 @@ class Countdown extends Widget_Base
 
     public function is_reload_preview_required()
     {
+        return true;
+    }
+
+    public function has_widget_inner_wrapper(): bool {
         return true;
     }
 

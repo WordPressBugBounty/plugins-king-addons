@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.50
+Stable tag: 24.12.52
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -98,6 +98,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Lottie Animations**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.
 - [**Google Maps**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Perfect for displaying business locations, contact details, or navigation routes, this widget allows you to adjust styles, markers, and layouts. Ideal for enhancing user experience with responsive and visually appealing map designs.
 - [**MailChimp**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Easily integrate MailChimp forms into your website. Perfect for growing your email list with customizable and responsive sign-up forms.
+- [**Posts Grid & Slider/Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts in grids, sliders, or carousels with fully customizable layouts. Perfect for showcasing blog content, news, or articles in a responsive and visually appealing format.
 
 ### FREE Elementor features
 
@@ -188,6 +189,17 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.52 - February 1, 2025 =
+* **New:** Posts Grid & Slider/Carousel widget added.
+* **Improved:** Content Ticker widget layouts.
+* **Improved:** Search widget.
+* **Improved:** Team Member widget.
+* **Improved:** Countdown widget.
+* **Improved:** Slider widget.
+* **Improved:** Image Accordion widget.
+* **Improved:** Data Table widget.
+* **Improved:** Elementor compatibility.
 
 = King Addons for Elementor version 24.12.50 - January 29, 2025 =
 * **New:** MailChimp widget added.

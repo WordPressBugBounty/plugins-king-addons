@@ -59,6 +59,7 @@ class Image_Accordion extends Widget_Base
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-loading',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-image-accordion-style',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-lightgallery-lightgallery',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
         ];
     }
 

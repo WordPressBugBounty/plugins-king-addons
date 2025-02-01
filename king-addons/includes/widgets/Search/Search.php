@@ -36,7 +36,10 @@ class Search extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-search-style'];
+        return [
+                KING_ADDONS_ASSETS_UNIQUE_KEY . '-search-style',
+                KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
+        ];
     }
 
     public function get_categories(): array
