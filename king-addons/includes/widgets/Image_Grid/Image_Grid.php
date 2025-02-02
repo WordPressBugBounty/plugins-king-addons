@@ -214,13 +214,14 @@ class Image_Grid extends Widget_Base
             'kng_image_grid_image' => Utils::get_placeholder_image_src(),
         ];
 
+        /** @noinspection HtmlUnknownTarget */
         $this->add_control(
             'kng_image_grid_content_items',
             [
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => array_fill(0, 8, $default_cards),
-                'title_field' => '<img class="king-addons-repeater-list-img-icon" src="{{kng_image_grid_image.url}}"> ',
+                'title_field' => '<img alt="" class="king-addons-repeater-list-img-icon" src="{{kng_image_grid_image.url}}"> ',
             ]
         );
 

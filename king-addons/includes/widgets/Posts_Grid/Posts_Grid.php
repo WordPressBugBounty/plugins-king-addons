@@ -28,7 +28,7 @@ class Posts_Grid extends Widget_Base
 
     public function get_title()
     {
-        return esc_html__('Post Grid & Slider/Carousel', 'king-addons');
+        return esc_html__('Posts Grid & Slider/Carousel', 'king-addons');
     }
 
     public function get_icon()

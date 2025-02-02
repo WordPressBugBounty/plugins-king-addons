@@ -147,7 +147,7 @@ final class Core
              style="border-left: 4px solid #0073aa;padding: 10px 15px;">
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
                 <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
-                            style="font-weight: 700;">50+</strong> extensions for only $<strong
+                            style="font-weight: 700;">60+</strong> extensions for only $<strong
                             style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
                 <span>
                 <a style="margin-left: 10px;font-size: 14px;padding-left: 20px;padding-right: 20px;display: flex;align-items: center;"

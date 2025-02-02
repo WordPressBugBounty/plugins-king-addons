@@ -3,9 +3,13 @@
 "use strict";
 (function ($) {
     $(window).on("elementor/frontend/init", () => {
-        elementorFrontend.hooks.addAction(
+
+        const gridHooks = [
             "frontend/element_ready/king-addons-grid.default",
-            ($scope) => {
+            "frontend/element_ready/king-addons-media-grid.default"
+        ];
+
+        const gridHandler = ($scope) => {
                 elementorFrontend.elementsHandler.addHandler(
                     elementorModules.frontend.handlers.Base.extend({
                         onInit() {
@@ -1132,6 +1136,11 @@
                     { $element: $scope }
                 );
             }
-        );
+
+
+        gridHooks.forEach((hook) => {
+            elementorFrontend.hooks.addAction(hook, gridHandler);
+        });
+
     });
 })(jQuery);

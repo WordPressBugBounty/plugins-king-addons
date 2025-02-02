@@ -179,6 +179,7 @@
     border-bottom: 1px solid #e6e8ea;
 }
 
+/*noinspection CssNonIntegerLengthInPixels*/
 .king-addons-pro-features-list ul + a.king-addons-pro-features-cta-btn {
     font-size: 15px;
     font-weight: 400;
@@ -284,8 +285,92 @@
     cursor: pointer;
     color: #666666;
 }
-
 /* END: NOTICES */
+/* -------------- */
+
+/* GRID PREVIEW */
+.elementor-control-king_addons_grid_layout_select.elementor-control .elementor-control-field {
+    align-items: flex-start;
+    flex-direction: column !important;
+}
+
+.elementor-control-king_addons_grid_layout_select.elementor-control .elementor-control-input-wrapper {
+    display: flex;
+    width: 100% !important;
+    margin-top: 10px;
+}
+
+.elementor-control-king_addons_grid_layout_select.elementor-control  .elementor-choices {
+    align-items: stretch;
+    flex-wrap: wrap;
+    width: 100% !important;
+    height: auto;
+    border: 1px solid #dfd5d5;
+}
+
+.elementor-control-king_addons_grid_layout_select.elementor-control .elementor-choices label {
+    width: 33.3%;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 75%;
+}
+
+.elementor-control-king_addons_grid_layout_select input[type="radio"]:checked + label {
+    border: 2px solid #D30C5C;
+    border-radius: 0 !important;
+    background-color: #ffffff;
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(2) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='25.6' y='15.2' class='st1' width='22.2' height='11.9'/%3E%3Crect x='25.6' y='4.9' class='st1' width='22.2' height='9.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(4) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='25.6' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='37.2' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='25.6' y='4.9' class='st1' width='22.2' height='10.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(6) {
+    background: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Cg%3E%3Crect x='2.2' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='25.6' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='37.2' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='25.6' y='4.9' class='st1' width='10.5' height='10.5'/%3E%3Crect x='37.2' y='4.9' class='st1' width='10.5' height='10.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(8) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='25.6' y='4.9' class='st1' width='10.5' height='22.2'/%3E%3Crect x='37.2' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='37.2' y='4.9' class='st1' width='10.5' height='10.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(10) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='13.9' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='37.2' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='37.2' y='4.9' class='st1' width='10.5' height='10.5'/%3E%3Crect x='2.3' y='16.6' class='st1' width='10.5' height='10.5'/%3E%3Crect x='2.3' y='4.9' class='st1' width='10.5' height='10.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(12) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='28.5' height='22.2'/%3E%3Crect x='31.8' y='12.9' class='st1' width='15.9' height='6.3'/%3E%3Crect x='31.8' y='4.9' class='st1' width='15.9' height='6.8'/%3E%3Crect x='31.8' y='20.3' class='st1' width='15.9' height='6.8'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(14) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='13.9' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='2.2' y='4.9' class='st1' width='10.5' height='22.2'/%3E%3Crect x='37.2' y='4.9' class='st1' width='10.5' height='22.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(16) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='33.9' height='13.2'/%3E%3Crect x='2.2' y='19.3' class='st1' width='16.4' height='7.8'/%3E%3Crect x='19.7' y='19.3' class='st1' width='16.4' height='7.8'/%3E%3Crect x='37.2' y='4.9' class='st1' width='10.5' height='13.2'/%3E%3Crect x='37.2' y='19.3' class='st1' width='10.5' height='7.8'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(18) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='22.2' height='12.1'/%3E%3Crect x='25.6' y='4.9' class='st1' width='22.2' height='12.1'/%3E%3Crect x='2.2' y='18.2' class='st1' width='14.4' height='8.9'/%3E%3Crect x='17.8' y='18.2' class='st1' width='14.4' height='8.9'/%3E%3Crect x='33.3' y='18.2' class='st1' width='14.4' height='8.9'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(20) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3Crect x='25.6' y='4.9' class='st1' width='22.2' height='22.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(22) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='14.5' height='22.2'/%3E%3Crect x='33.4' y='4.9' class='st1' width='14.4' height='22.2'/%3E%3Crect x='17.9' y='4.9' class='st1' width='14.4' height='22.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.elementor-control-king_addons_grid_layout_select label:nth-child(24) {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='utf-8'?%3E%3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 32' style='enable-background:new 0 0 50 32;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} .st1{fill:%23C2C1C0;} %3C/style%3E%3Cg id='Background'%3E%3Crect class='st0' width='50' height='32'/%3E%3C/g%3E%3Cg id='Layer_1'%3E%3Crect x='2.2' y='4.9' class='st1' width='10.6' height='22.2'/%3E%3Crect x='37.2' y='4.9' class='st1' width='10.5' height='22.2'/%3E%3Crect x='25.6' y='4.9' class='st1' width='10.5' height='22.2'/%3E%3Crect x='14' y='4.9' class='st1' width='10.5' height='22.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* END: GRID PREVIEW */
 /* -------------- */
 
 .king-addons-icon.king-addons-image-hotspots {

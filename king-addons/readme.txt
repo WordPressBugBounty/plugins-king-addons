@@ -1,18 +1,18 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.52
+Stable tag: 24.12.53
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-600+ Elementor templates, 50+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
-**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **50+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
+**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **60+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
 
 Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
 
@@ -99,6 +99,8 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Google Maps**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Perfect for displaying business locations, contact details, or navigation routes, this widget allows you to adjust styles, markers, and layouts. Ideal for enhancing user experience with responsive and visually appealing map designs.
 - [**MailChimp**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Easily integrate MailChimp forms into your website. Perfect for growing your email list with customizable and responsive sign-up forms.
 - [**Posts Grid & Slider/Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts in grids, sliders, or carousels with fully customizable layouts. Perfect for showcasing blog content, news, or articles in a responsive and visually appealing format.
+- [**Image Grid & Slider/Carousel/Gallery**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create stunning media galleries with grids, sliders, or carousels. Perfect for showcasing images or videos in a fully customizable and responsive format.
+- [**Magazine Grid & Slider/Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
 
 ### FREE Elementor features
 
@@ -134,7 +136,7 @@ Note: This plugin works with Elementor. Make sure you have [Elementor](https://w
 
 = What is King Addons for Elementor? =
 
-King Addons is a powerful Elementor toolkit and WordPress addon that provides **600+ templates** and **50+ widgets** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
+King Addons is a powerful Elementor toolkit and WordPress addon that provides **600+ templates** and **60+ widgets** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
 
 = How does King Addons improve WordPress website speed? =
 
@@ -189,6 +191,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.53 - February 2, 2025 =
+* **New:** Image Grid & Slider/Carousel/Gallery widget added.
+* **New:** Magazine Grid & Slider/Carousel widget added.
+* **Improved:** Data Table widget.
 
 = King Addons for Elementor version 24.12.52 - February 1, 2025 =
 * **New:** Posts Grid & Slider/Carousel widget added.

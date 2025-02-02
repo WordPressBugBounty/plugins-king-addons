@@ -577,11 +577,6 @@ class Data_Table extends Widget_Base
                 ],
                 'placeholder' => esc_html__('https://example.com', 'king-addons'),
                 'show_external' => true,
-                'default' => [
-                    'url' => esc_html__('https://example.com', 'king-addons'),
-                    'is_external' => true,
-                    'nofollow' => true,
-                ],
                 'condition' => [
                     'table_content_row_type' => 'col',
                 ]

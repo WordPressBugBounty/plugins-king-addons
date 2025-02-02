@@ -1,8 +1,10 @@
-<?php
+<?php /** @noinspection PhpUndefinedFunctionInspection */
 
 namespace King_Addons;
 
 use Elementor\Group_Control_Image_Size;
+use Elementor\Plugin;
+use WP_Query;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -31,7 +33,7 @@ class Filter_WooCommerce_Products_Ajax
 
     public function get_max_num_pages($settings)
     {
-        $query = new \WP_Query($this->get_main_query_args());
+        $query = new WP_Query($this->get_main_query_args());
         $max_num_pages = (int) ceil($query->max_num_pages);
 
         $adjustedTotalPosts = max(0, $query->found_posts - $query->query_vars['offset']);
@@ -142,7 +144,7 @@ class Filter_WooCommerce_Products_Ajax
             case 'cross-sell':
                 $this->crossell_ids = [];
                 if (is_cart()) {
-                    foreach (WC()->cart->get_cart() as $item => $values) {
+                    foreach (WC()->cart->get_cart() as $values) {
                         $product            = $values['data'];
                         $cross_sell_ids     = $product->get_cross_sell_ids();
                         $this->crossell_ids = array_merge($this->crossell_ids, $cross_sell_ids);
@@ -184,7 +186,7 @@ class Filter_WooCommerce_Products_Ajax
 
             case 'current':
                 // If not in Elementor editor mode, use the global WP query's query_vars.
-                if (true !== \Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                if (true !== Plugin::$instance->editor->is_edit_mode()) {
                     global $wp_query;
                     $args                 = $wp_query->query_vars;
                     $args['tax_query']    = $this->get_tax_query_args();
@@ -661,9 +663,10 @@ class Filter_WooCommerce_Products_Ajax
         echo '</div></div>';
     }
 
+    /** @noinspection DuplicatedCode */
     public function render_product_likes($settings, $class, $post_id)
     {
-        $post_likes = new king_addons_Post_Likes();
+        $post_likes = new Post_Likes_Ajax();
         echo '<div class="' . esc_attr($class) . '">';
         echo '<div class="inner-block">';
         if ('before' === $settings['element_extra_text_pos']) {
@@ -1414,7 +1417,7 @@ class Filter_WooCommerce_Products_Ajax
 
     public function get_hidden_filter_class($slug, $settings)
     {
-        $posts = new \WP_Query($this->get_main_query_args());
+        $posts = new WP_Query($this->get_main_query_args());
         $visible_categories = [];
         if ($posts->have_posts()) {
             while ($posts->have_posts()) {
@@ -1624,7 +1627,7 @@ class Filter_WooCommerce_Products_Ajax
     public function king_addons_filter_woocommerce_products()
     {
         $settings = $_POST['grid_settings'];
-        $posts    = new \WP_Query($this->get_main_query_args());
+        $posts    = new WP_Query($this->get_main_query_args());
 
         if ($posts->have_posts()) {
             while ($posts->have_posts()) {
