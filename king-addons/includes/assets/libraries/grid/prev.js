@@ -5,7 +5,9 @@
     $(window).on("elementor/frontend/init", () => {
 
         const gridHooks = [
-            "frontend/element_ready/king-addons-grid.default"
+            "frontend/element_ready/king-addons-grid.default",
+            // "frontend/element_ready/king-addons-media-grid.default",
+            // "frontend/element_ready/king-addons-woocommerce-grid.default"
         ];
 
         const gridHandler = ($scope) => {
@@ -44,7 +46,6 @@
                             // Parse grid settings.
                             const settingsData = $grid.attr("data-settings");
                             const settings = settingsData ? JSON.parse(settingsData) : false;
-                            let pagesLoaded = 0;
 
                             /* ──────────────────────────────────────
                              *  INITIAL EVENT HANDLERS
@@ -80,7 +81,7 @@
                                 // If dynamic grid settings exist, set up filtering and “load more” experiments.
                                 if (settings.grid_settings) {
                                     loadMoreExperiment();
-                                    filtersExperiment(settings);
+                                    filtersExperiment();
                                 }
                                 isotopeFilters(settings);
 
@@ -125,9 +126,10 @@
                                 !$scope.hasClass("elementor-widget-king-addons-woocommerce-category-grid-pro") &&
                                 !$scope.hasClass("elementor-widget-king-addons-category-grid-pro")
                             ) {
-                                // lightboxPopup(settings);
+                                lightboxPopup(settings);
                             }
                             postLikes(settings);
+                            lazyLoadObserver();
 
                             /* ──────────────────────────────────────
                              *  FUNCTION DEFINITIONS
@@ -313,11 +315,34 @@
                                 }
                             }
 
+                            // Lazy-load images via an IntersectionObserver.
+                            function lazyLoadObserver() {
+                                setTimeout(() => {
+                                    const observer = new IntersectionObserver((entries) => {
+                                        entries.forEach((entry) => {
+                                            if (
+                                                entry.isIntersecting &&
+                                                entry.target.src.includes("icon-256x256")
+                                            ) {
+                                                setTimeout(() => {
+                                                    entry.target.src =
+                                                        entry.target.parentElement.dataset.src;
+                                                    $(entry.target).toggleClass("king-addons-hidden-image");
+                                                    $(window).trigger("resize");
+                                                }, 100);
+                                            }
+                                        });
+                                    });
+                                    $scope
+                                        .find(".king-addons-grid-image-wrap img:first-of-type")
+                                        .each(function () {
+                                            observer.observe(this);
+                                        });
+                                }, 100);
+                            }
+
                             // Update filter counts and set up filtering behavior.
                             function isotopeFilters(s, ev = "load") {
-
-                                console.log("isotopeFilters");
-
                                 if (s.filters_count === "yes") {
                                     $scope.find(".king-addons-grid-filters a, .king-addons-grid-filters span").each(function () {
                                         const $el = $(this);
@@ -326,7 +351,6 @@
                                                 $el.attr("data-filter") !== "*" ? $el.data("ajax-filter")[0] : "*";
                                             const thisFilter =
                                                 $el.attr("data-filter") !== "*" ? $el.data("ajax-filter")[1] : "*";
-                                            console.log('CURRENT OFFSET = ' + (+s.grid_settings.query_offset + $grid.find(".king-addons-grid-item").length))
                                             $.ajax({
                                                 type: "POST",
                                                 url: KingAddonsGridData.ajaxUrl,
@@ -334,14 +358,12 @@
                                                     action: s.grid_settings
                                                         ? "king_addons_get_filtered_count"
                                                         : "king_addons_get_filtered_count",
-                                                    // king_addons_offset: 0,
-                                                    king_addons_offset: +s.grid_settings.query_offset + $grid.find(".king-addons-grid-item").length,
+                                                    king_addons_offset: 0,
                                                     king_addons_filter: thisFilter,
                                                     king_addons_taxonomy: thisTaxonomy,
                                                     grid_settings: s.grid_settings,
                                                 },
                                                 success: (response) => {
-                                                    console.log('ISOTOPE GRID');
                                                     $el.find("sup").text(response.data.query_found);
                                                 },
                                             });
@@ -371,7 +393,7 @@
                                     $grid.isotopekng({ filter: deepLink });
                                     s.lightbox.selector =
                                         deepLink === "*" ? ".king-addons-grid-image-wrap" : `${deepLink} .king-addons-grid-image-wrap`;
-                                    // lightboxPopup(s);
+                                    lightboxPopup(s);
                                 }
 
                                 // Hide empty filters.
@@ -438,57 +460,29 @@
                             }
 
                             // Experiment: dynamic filtering via AJAX.
-                            function filtersExperiment(settings) {
+                            function filtersExperiment() {
                                 const countAction = $scope.hasClass("elementor-widget-king-addons-woocommerce-grid")
                                     ? "king_addons_get_woocommerce_filtered_count"
                                     : "king_addons_get_filtered_count";
                                 const contentAction = $scope.hasClass("elementor-widget-king-addons-woocommerce-grid")
                                     ? "king_addons_filter_woocommerce_products"
                                     : "king_addons_filter_grid_posts";
-                                const $pagination = $scope.find(".king-addons-grid-pagination");
-
-                                let isLoading = false;
 
                                 $scope.find(".king-addons-grid-filters").on("click", "span", function (e) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     e.stopImmediatePropagation();
 
-                                    if (isLoading) {
-                                        e.preventDefault();
-                                        return;
-                                    }
-
-                                    isLoading = true;
-
                                     const filterClass = $(this).data("filter");
                                     const thisTaxonomy = filterClass !== "*" ? $(this).data("ajax-filter")[0] : "*";
                                     const thisFilter = filterClass !== "*" ? $(this).data("ajax-filter")[1] : "*";
                                     const loader = `<div class="king-addons-grid-loader-wrap"><div class="king-addons-ring"><div></div><div></div><div></div><div></div></div></div>`;
 
-
-                                    // let thisTaxonomy = "*";
-                                    // let thisFilter = "*";
-                                    // const $activeFilter = $scope.find(".king-addons-active-filter");
-                                    // if ($activeFilter.length && $activeFilter.data("filter") !== "*") {
-                                    //     thisTaxonomy = $activeFilter.data("ajax-filter")[0];
-                                    //     thisFilter = $activeFilter.data("ajax-filter")[1];
-                                    // }
-
                                     $scope.find(".king-addons-grid-filters span").removeClass("king-addons-active-filter");
                                     $(this).addClass("king-addons-active-filter");
 
-                                    $pagination.find(".king-addons-load-more-btn").hide();
-
-                                    $grid.infiniteScroll("destroy");
-                                    // setupInfiniteScroll(settings);
-                                    // $grid.isotopekng("destroy");
-                                    pagesLoaded = 0;
-                                    // $grid.isotopekng("destroy");
-
+                                    $grid.isotopekng("destroy");
                                     $grid.html(loader);
-
-                                    console.log('FILTER');
 
                                     $.ajax({
                                         type: "POST",
@@ -502,8 +496,7 @@
                                             king_addons_taxonomy: thisTaxonomy,
                                             grid_settings: settings.grid_settings,
                                         },
-                                        success: function (res) {
-                                            console.log("settings.grid_settings.query_offset = " + settings.grid_settings.query_offset);
+                                        success: function () {
                                             $.ajax({
                                                 type: "POST",
                                                 url: KingAddonsGridData.ajaxUrl,
@@ -517,44 +510,21 @@
                                                     grid_settings: settings.grid_settings,
                                                 },
                                                 success: function (resp) {
-                                                    // setTimeout(() => {
+                                                    setTimeout(() => {
                                                         $grid.addClass("king-addons-zero-opacity");
-
-                                                    console.log("FILTER pagesLoaded = " + pagesLoaded);
-                                                        // $grid.infiniteScroll("destroy");
-                                                        $grid.isotopekng("destroy");
-
                                                         $grid.html($(resp));
-
                                                         isotopeLayout(settings, $(resp));
-                                                        $grid.imagesLoaded().progress(() => {
+                                                        setTimeout(() => {
                                                             isotopeLayout(settings);
                                                             window.dispatchEvent(new Event("resize"));
                                                             window.dispatchEvent(new Event("scroll"));
-
-                                                            $pagination.find(".king-addons-pagination-finish").hide();
-                                                            if (res.data.page_count > 1) {
-                                                                $pagination.find(".king-addons-load-more-btn").show();
-                                                                $pagination.show();
-                                                            } else {
-                                                                $pagination.find(".king-addons-pagination-finish").fadeIn(1000);
-                                                                $pagination.delay(2000).fadeOut(1000);
-                                                                setTimeout(() => $pagination.find(".king-addons-pagination-loading").hide(), 500);
-                                                            }
-
-                                                            setupInfiniteScroll(settings);
-                                                            loadMoreExperiment();
-
-                                                            mediaHoverLink();
-                                                            $grid.removeClass("king-addons-zero-opacity");
-                                                        });
-                                                    // }, 800);
+                                                        }, 500);
+                                                        mediaHoverLink();
+                                                        $grid.removeClass("king-addons-zero-opacity");
+                                                    }, 800);
                                                 },
                                             });
                                         },
-                                        complete: function () {
-                                            isLoading = false;
-                                        }
                                     });
                                 });
                             }
@@ -569,19 +539,10 @@
                                     : "king_addons_filter_grid_posts";
                                 const $pagination = $scope.find(".king-addons-grid-pagination");
 
-                                let isLoading = false;
-
                                 $scope.find(".king-addons-load-more-btn").on("click", function (e) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     e.stopImmediatePropagation();
-
-                                    if (isLoading) {
-                                        e.preventDefault();
-                                        return;
-                                    }
-
-                                    isLoading = true;
 
                                     let thisTaxonomy = "*";
                                     let thisFilter = "*";
@@ -606,7 +567,7 @@
                                             king_addons_taxonomy: thisTaxonomy,
                                             grid_settings: settings.grid_settings,
                                         },
-                                        success: function (responseCountAction) {
+                                        success: function (res) {
                                             $.ajax({
                                                 type: "POST",
                                                 url: KingAddonsGridData.ajaxUrl,
@@ -619,8 +580,8 @@
                                                     king_addons_taxonomy: thisTaxonomy,
                                                     grid_settings: settings.grid_settings,
                                                 },
-                                                success: function (responseContentAction) {
-                                                    const $items = $(responseContentAction);
+                                                success: function (resp) {
+                                                    const $items = $(resp);
                                                     $grid.infiniteScroll("appendItems", $items);
                                                     $grid.isotopekng("appended", $items);
                                                     $items.imagesLoaded().progress(() => {
@@ -629,54 +590,38 @@
                                                         setTimeout(() => $grid.addClass("grid-images-loaded"), 500);
                                                     });
                                                     $pagination.find(".king-addons-pagination-loading").hide();
-                                                    if (responseCountAction.data.page_count > 1) {
+                                                    if (res.data.page_count > 1) {
                                                         $pagination.find(".king-addons-load-more-btn").fadeIn();
                                                     } else {
                                                         $pagination.find(".king-addons-pagination-finish").fadeIn(1000);
                                                         $pagination.delay(2000).fadeOut(1000);
                                                         setTimeout(() => $pagination.find(".king-addons-pagination-loading").hide(), 500);
                                                     }
-                                                    // lightboxPopup(settings);
+                                                    lightboxPopup(settings);
                                                     $grid.data("lightGallery").destroy(true);
                                                     $grid.lightGallery(settings.lightbox);
                                                     mediaHoverLink();
                                                     postSharing();
+                                                    lazyLoadObserver();
                                                     window.dispatchEvent(new Event("resize"));
                                                     window.dispatchEvent(new Event("scroll"));
                                                 },
                                             });
                                         },
-                                        complete: function () {
-                                            isLoading = false;
-                                        }
                                     });
-
-
                                 });
                             }
 
                             // Setup Infinite Scroll.
                             function setupInfiniteScroll(s) {
-
-
-                                const countAction = $scope.hasClass("elementor-widget-king-addons-woocommerce-grid")
-                                    ? "king_addons_get_woocommerce_filtered_count"
-                                    : "king_addons_get_filtered_count";
-                                const contentAction = $scope.hasClass("elementor-widget-king-addons-woocommerce-grid")
-                                    ? "king_addons_filter_woocommerce_products"
-                                    : "king_addons_filter_grid_posts";
-
                                 const $pagination = $scope.find(".king-addons-grid-pagination");
-
                                 const scopeClass = `.elementor-element-${$scope.attr("data-id")}`;
-
                                 let navClass = false,
                                     threshold = false;
                                 if (s.pagination_type === "infinite-scroll") {
                                     threshold = 300;
                                     navClass = `${scopeClass} .king-addons-load-more-btn`;
                                 }
-                                // todo
                                 $grid.infiniteScroll({
                                     path: `${scopeClass} .king-addons-grid-pagination a`,
                                     hideNav: navClass,
@@ -692,17 +637,10 @@
                                     $pagination.find(".king-addons-load-more-btn").hide();
                                     $pagination.find(".king-addons-pagination-loading").css("display", "inline-block");
                                 });
-
+                                let pagesLoaded = 0;
                                 $grid.on("load.infiniteScroll", (event, response) => {
-                                    console.log("pagesLoaded = " + pagesLoaded);
-
                                     pagesLoaded++;
-
                                     const $items = $(response).find(scopeClass).find(".king-addons-grid-item");
-
-                                    console.log("$items = " + $items);
-                                    console.log("$items.length = " + $items.length);
-
                                     if ($scope.find(".woocommerce-result-count").length) {
                                         let updatedCount = $scope.find(".woocommerce-result-count").text();
                                         updatedCount = updatedCount.replace(
@@ -711,96 +649,16 @@
                                         );
                                         $scope.find(".woocommerce-result-count").text(updatedCount);
                                     }
-
-
                                     $grid.infiniteScroll("appendItems", $items);
                                     $grid.isotopekng("appended", $items);
                                     $items.imagesLoaded().progress(() => {
                                         isotopeLayout(s);
                                         setTimeout(() => {
-                                            // isotopeLayout(s);
-                                            // isotopeFilters(s);
-                                        //     ===============================
-
-                                        //     ================================
+                                            isotopeLayout(s);
+                                            isotopeFilters(s);
                                         }, 10);
                                         setTimeout(() => $grid.addClass("grid-images-loaded"), 500);
                                     });
-
-                                    // =====================
-
-
-                                    // let thisTaxonomy = "*";
-                                    // let thisFilter = "*";
-                                    // const $activeFilter = $scope.find(".king-addons-active-filter");
-                                    // if ($activeFilter.length && $activeFilter.data("filter") !== "*") {
-                                    //     thisTaxonomy = $activeFilter.data("ajax-filter")[0];
-                                    //     thisFilter = $activeFilter.data("ajax-filter")[1];
-                                    // }
-                                    //
-                                    // $pagination.find(".king-addons-load-more-btn").hide();
-                                    // $pagination.find(".king-addons-pagination-loading").css("display", "inline-block");
-                                    //
-                                    // $.ajax({
-                                    //     type: "POST",
-                                    //     url: KingAddonsGridData.ajaxUrl,
-                                    //     data: {
-                                    //         action: countAction,
-                                    //         king_addons_offset:
-                                    //             +settings.grid_settings.query_offset +
-                                    //             $grid.find(".king-addons-grid-item").length,
-                                    //         king_addons_filter: thisFilter,
-                                    //         king_addons_taxonomy: thisTaxonomy,
-                                    //         grid_settings: settings.grid_settings,
-                                    //     },
-                                    //     success: function (responseCountAction) {
-                                    //         console.log('responseCountAction = ' + responseCountAction.data.page_count);
-                                    //         $.ajax({
-                                    //             type: "POST",
-                                    //             url: KingAddonsGridData.ajaxUrl,
-                                    //             data: {
-                                    //                 action: contentAction,
-                                    //                 king_addons_offset:
-                                    //                     +settings.grid_settings.query_offset +
-                                    //                     $grid.find(".king-addons-grid-item").length,
-                                    //                 king_addons_filter: thisFilter,
-                                    //                 king_addons_taxonomy: thisTaxonomy,
-                                    //                 grid_settings: settings.grid_settings,
-                                    //             },
-                                    //             success: function (responseContentAction) {
-                                    //                 const $items = $(responseContentAction);
-                                    //                 $grid.infiniteScroll("appendItems", $items);
-                                    //                 $grid.isotopekng("appended", $items);
-                                    //                 $items.imagesLoaded().progress(() => {
-                                    //                     isotopeLayout(settings);
-                                    //                     setTimeout(() => isotopeLayout(settings), 100);
-                                    //                     setTimeout(() => $grid.addClass("grid-images-loaded"), 500);
-                                    //                 });
-                                    //                 $pagination.find(".king-addons-pagination-loading").hide();
-                                    //                 if (responseCountAction.data.page_count > 1) {
-                                    //                     $pagination.find(".king-addons-load-more-btn").fadeIn();
-                                    //                 } else {
-                                    //                     $pagination.find(".king-addons-pagination-finish").fadeIn(1000);
-                                    //                     $pagination.delay(2000).fadeOut(1000);
-                                    //                     setTimeout(() => $pagination.find(".king-addons-pagination-loading").hide(), 500);
-                                    //                 }
-                                    //                 lightboxPopup(settings);
-                                    //                 $grid.data("lightGallery").destroy(true);
-                                    //                 $grid.lightGallery(settings.lightbox);
-                                    //                 mediaHoverLink();
-                                    //                 postSharing();
-                                    //                 window.dispatchEvent(new Event("resize"));
-                                    //                 window.dispatchEvent(new Event("scroll"));
-                                    //
-                                    //             },
-                                    //         });
-                                    //     },
-                                    //     // complete: function () {
-                                    //     //     isLoading = false;
-                                    //     // }
-                                    // });
-
-                                    // =====================
                                     $pagination.find(".king-addons-pagination-loading").hide();
                                     if (pagesLoaded < s.pagination_max_pages) {
                                         if (s.pagination_type === "load-more") {
@@ -825,11 +683,12 @@
                                         $pagination.delay(2000).fadeOut(1000);
                                         setTimeout(() => $pagination.find(".king-addons-pagination-loading").hide(), 500);
                                     }
-                                    // lightboxPopup(s);
+                                    lightboxPopup(s);
                                     $grid.data("lightGallery").destroy(true);
                                     $grid.lightGallery(s.lightbox);
                                     mediaHoverLink();
                                     postSharing();
+                                    lazyLoadObserver();
                                     setTimeout(() => {
                                         setEqualHeight(s);
                                         window.dispatchEvent(new Event("resize"));

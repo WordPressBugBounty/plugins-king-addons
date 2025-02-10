@@ -1069,7 +1069,7 @@ class Image_Accordion extends Widget_Base
         $this->add_responsive_control(
             'overlay_height',
             [
-                'label' => esc_html__('Overlay Hegiht', 'king-addons'),
+                'label' => esc_html__('Overlay Height', 'king-addons'),
                 'type' => Controls_Manager::SLIDER,
                 'size_units' => ['%', 'px'],
                 'default' => [

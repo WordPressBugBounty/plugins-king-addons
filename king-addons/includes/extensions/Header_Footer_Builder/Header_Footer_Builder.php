@@ -97,6 +97,7 @@ final class Header_Footer_Builder
         );
     }
 
+    // todo
     function renderMetabox($post)
     {
         $values = get_post_custom($post->ID);
@@ -118,11 +119,20 @@ final class Header_Footer_Builder
                     </select>
                 </td>
             </tr>
+
+            <?php
+
+            // todo
+//            $this->display_rules_tab();
+
+            ?>
+
             </tbody>
         </table>
         <?php
     }
 
+    // todo
     function saveMetaboxData($post_id)
     {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -137,6 +147,7 @@ final class Header_Footer_Builder
             return;
         }
 
+        // todo
         $target_locations = array(
             "rule" => array(
                 0 => "basic-global"
@@ -418,7 +429,7 @@ final class Header_Footer_Builder
                     }
                     break;
                 case 'is_woo_shop_page':
-                    $meta_args .= " OR pm.meta_value LIKE '%\"special-woo-shop\"%'";
+                    $meta_args .= " OR pm.meta_value LIKE '%\"special-woocommerce-shop\"%'";
                     break;
                 case '':
                     $current_post_id = $current_id;
@@ -602,7 +613,7 @@ final class Header_Footer_Builder
                         }
                         break;
 
-                    case 'special-woo-shop':
+                    case 'special-woocommerce-shop':
                         if (function_exists('is_shop')) {
                             /** @noinspection PhpUndefinedFunctionInspection */
                             if (is_shop()) {
@@ -917,7 +928,7 @@ final class Header_Footer_Builder
         );
 
         if (class_exists('WooCommerce')) {
-            $special_pages['special-woo-shop'] = esc_html__('WooCommerce Shop Page', 'king-addons');
+            $special_pages['special-woocommerce-shop'] = esc_html__('WooCommerce Shop Page', 'king-addons');
         }
 
         $selection_options = array(

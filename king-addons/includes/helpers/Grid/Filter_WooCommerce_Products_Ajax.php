@@ -512,7 +512,7 @@ class Filter_WooCommerce_Products_Ajax
     {
         echo '<div class="king-addons-grid-media-hover-bg ' . esc_attr($this->get_animation_class($settings, 'overlay')) . '" data-url="' . esc_url(get_the_permalink()) . '">';
         if (king_addons_freemius()->can_use_premium_code__premium_only() && !empty($settings['overlay_image']['url'])) {
-            echo '<img data-no-lazy="1" src="' . esc_url($settings['overlay_image']['url']) . '">';
+            echo '<img src="' . esc_url($settings['overlay_image']['url']) . '" alt="' . esc_attr($settings['overlay_image']['alt']) . '">';
         }
         echo '</div>';
     }
@@ -796,17 +796,17 @@ class Filter_WooCommerce_Products_Ajax
         echo '<div class="inner-block">';
 
         if ($product->is_on_sale()) {
-            echo '<span class="king-addons-woo-onsale">' . esc_html__('Sale', 'king-addons') . '</span>';
+            echo '<span class="king-addons-woocommerce-onsale">' . esc_html__('Sale', 'king-addons') . '</span>';
         }
         if (
             'yes' === $settings['element_status_offstock'] &&
             !$product->is_in_stock() &&
             !($product->is_type('variable') && $product->get_stock_quantity() > 0)
         ) {
-            echo '<span class="king-addons-woo-outofstock">' . esc_html__('Out of Stock', 'king-addons') . '</span>';
+            echo '<span class="king-addons-woocommerce-outofstock">' . esc_html__('Out of Stock', 'king-addons') . '</span>';
         }
         if ('yes' === $settings['element_status_featured'] && $product->is_featured()) {
-            echo '<span class="king-addons-woo-featured">' . esc_html__('Featured', 'king-addons') . '</span>';
+            echo '<span class="king-addons-woocommerce-featured">' . esc_html__('Featured', 'king-addons') . '</span>';
         }
         echo '</div></div>';
     }
@@ -896,21 +896,21 @@ class Filter_WooCommerce_Products_Ajax
             if ($settings['element_rating_unmarked_style'] === 'outline') {
                 $rating_icon = '&#xE933;';
             }
-            $style_class = ' king-addons-woo-rating-style-1';
+            $style_class = ' king-addons-woocommerce-rating-style-1';
         } elseif ($settings['element_rating_style'] === 'style-2') {
             if ($settings['element_rating_unmarked_style'] === 'outline') {
                 $rating_icon = '&#9734;';
             } else {
                 $rating_icon = '&#9733;';
             }
-            $style_class = ' king-addons-woo-rating-style-2';
+            $style_class = ' king-addons-woocommerce-rating-style-2';
         } else {
             $style_class = '';
         }
 
         echo '<div class="' . esc_attr($class . $style_class) . '">';
         echo '<div class="inner-block">';
-        echo '<div class="king-addons-woo-rating">';
+        echo '<div class="king-addons-woocommerce-rating">';
         if ('yes' === $settings['element_rating_score']) {
             // Ensure format X.0 if integer
             if (in_array($rating_amount, [1,2,3,4,5], true)) {

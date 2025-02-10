@@ -1961,7 +1961,7 @@ class Timeline extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-timeline-story-overlay' => 'width: {{SIZE}}{{UNIT}};top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-timeline-story-overlay' => 'width: {{SIZE}}{{UNIT}};top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
 
 
                 ],
@@ -1969,7 +1969,7 @@ class Timeline extends Widget_Base
         );
 
         $this->add_responsive_control(
-            'overlay_hegiht',
+            'overlay_height',
             [
                 'label' => esc_html__('Height', 'king-addons'),
                 'type' => Controls_Manager::SLIDER,

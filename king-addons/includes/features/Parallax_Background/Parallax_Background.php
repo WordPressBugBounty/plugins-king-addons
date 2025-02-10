@@ -78,6 +78,20 @@ class Parallax_Background
         );
 
         $element->add_control(
+            'kng_parallax_bg_notice',
+            [
+                'type' => Controls_Manager::NOTICE,
+                'notice_type' => 'info',
+                'dismissible' => false,
+                'heading' => esc_html__( 'Note', 'king-addons' ),
+                'content' => esc_html__( 'If images are not showing, try disabling the Lazy Load Background Images option in Elementor settings', 'king-addons' ),
+                'condition' => [
+                    'kng_parallax_bg_switch!' => ''
+                ],
+            ]
+        );
+
+        $element->add_control(
             'kng_parallax_bg_image',
             [
                 'label' => esc_html__('Image', 'king-addons'),
@@ -103,7 +117,6 @@ class Parallax_Background
                 ]
             ]
         );
-
 
         $element->add_control(
             'kng_parallax_bg_speed',

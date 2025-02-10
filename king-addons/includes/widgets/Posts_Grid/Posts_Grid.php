@@ -56,7 +56,7 @@ class Posts_Grid extends Widget_Base
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-infinitescroll-infinitescroll',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-isotope-kng',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-slick-slick',
-            KING_ADDONS_ASSETS_UNIQUE_KEY . '-lightgallery-lightgallery',
+//            KING_ADDONS_ASSETS_UNIQUE_KEY . '-lightgallery-lightgallery',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-grid',
         ];
     }
@@ -69,7 +69,7 @@ class Posts_Grid extends Widget_Base
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-general',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-timing',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-loading',
-            KING_ADDONS_ASSETS_UNIQUE_KEY . '-lightgallery-lightgallery',
+//            KING_ADDONS_ASSETS_UNIQUE_KEY . '-lightgallery-lightgallery',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-grid',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
         ];
@@ -142,7 +142,7 @@ class Posts_Grid extends Widget_Base
         $this->add_control(
             'secondary_img_on_hover',
             [
-                'label' => sprintf(__('2nd Image on Hover %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => sprintf(__('Secondary Image on Hover %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::SWITCHER,
                 'classes' => 'king-addons-pro-control no-distance'
             ]
@@ -428,7 +428,8 @@ class Posts_Grid extends Widget_Base
             'author' => esc_html__('Author', 'king-addons'),
             'comments' => esc_html__('Comments', 'king-addons'),
             'read-more' => esc_html__('Read More', 'king-addons'),
-            'lightbox' => esc_html__('Lightbox', 'king-addons'),
+//            TODO: Lightbox
+//            'lightbox' => esc_html__('Lightbox', 'king-addons'),
             'separator' => esc_html__('Separator', 'king-addons'),
             'pro-lk' => esc_html__('Likes (Pro)', 'king-addons'),
             'pro-shr' => esc_html__('Sharing (Pro)', 'king-addons'),
@@ -670,6 +671,406 @@ class Posts_Grid extends Widget_Base
         );
     }
 
+    /** @noinspection PhpUnused */
+    public function add_section_general_lightbox() {
+        $this->start_controls_section(
+            'section_lightbox_popup',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Lightbox Popup', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_autoplay',
+            [
+                'label' => esc_html__('Autoplay Slides', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_progressbar',
+            [
+                'label' => esc_html__('Show Progress Bar', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+                'condition' => [
+                    'lightbox_popup_autoplay' => 'true'
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_pause',
+            [
+                'label' => esc_html__('Autoplay Speed', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 5,
+                'min' => 1,
+                'max' => 10,
+                'step' => 1,
+                'condition' => [
+                    'lightbox_popup_autoplay' => 'true',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_counter',
+            [
+                'label' => esc_html__('Show Counter', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_arrows',
+            [
+                'label' => esc_html__('Show Arrows', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_captions',
+            [
+                'label' => esc_html__('Show Captions', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control_lightbox_popup_thumbnails();
+
+        $this->add_control_lightbox_popup_thumbnails_default();
+
+        $this->add_control_lightbox_popup_sharing();
+
+        $this->add_control(
+            'lightbox_popup_zoom',
+            [
+                'label' => esc_html__('Show Zoom Button', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_fullscreen',
+            [
+                'label' => esc_html__('Show Full Screen Button', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_download',
+            [
+                'label' => esc_html__('Show Download Button', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'true',
+                'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_popup_description',
+            [
+                'raw' => sprintf(__('You can change Lightbox Popup styling options globally. Navigate to <strong>Dashboard > %s > Settings</strong>.', 'king-addons'), Core::getPluginName()),
+                'type' => Controls_Manager::RAW_HTML,
+                'separator' => 'before',
+                'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+            ]
+        );
+
+        $this->end_controls_section();
+    }
+
+    /** @noinspection PhpUnused */
+    public function add_section_style_lightbox() {
+        $this->start_controls_section(
+            'section_style_lightbox',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Lightbox', 'king-addons'),
+                'tab' => Controls_Manager::TAB_STYLE,
+                'show_label' => false,
+            ]
+        );
+
+        $this->start_controls_tabs('tabs_grid_lightbox_style');
+
+        $this->start_controls_tab(
+            'tab_grid_lightbox_normal',
+            [
+                'label' => esc_html__('Normal', 'king-addons'),
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_color',
+            [
+                'label' => esc_html__('Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#ffffff',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_bg_color',
+            [
+                'label' => esc_html__('Background Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'background-color: {{VALUE}}',
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_border_color',
+            [
+                'label' => esc_html__('Border Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#E8E8E8',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Text_Shadow::get_type(),
+            [
+                'name' => 'lightbox_shadow',
+                'selector' => '{{WRAPPER}} .king-addons-grid-item-lightbox i',
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab(
+            'tab_grid_lightbox_hover',
+            [
+                'label' => esc_html__('Hover', 'king-addons'),
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_color_hr',
+            [
+                'label' => esc_html__('Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#5B03FF',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_bg_color_hr',
+            [
+                'label' => esc_html__('Background Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'background-color: {{VALUE}}',
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_border_color_hr',
+            [
+                'label' => esc_html__('Border Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#E8E8E8',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'border-color: {{VALUE}}',
+                ],
+                'separator' => 'after',
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_control(
+            'lightbox_shadow_divider',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_transition_duration',
+            [
+                'label' => esc_html__('Transition Duration (seconds)', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 0.1,
+                'min' => 0,
+                'max' => 5,
+                'step' => 0.1,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'transition-duration: {{VALUE}}s',
+                ],
+                'separator' => 'after',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'lightbox_typography',
+                'selector' => '{{WRAPPER}} .king-addons-grid-item-lightbox'
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_border_type',
+            [
+                'label' => esc_html__('Border Type', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'none' => esc_html__('None', 'king-addons'),
+                    'solid' => esc_html__('Solid', 'king-addons'),
+                    'double' => esc_html__('Double', 'king-addons'),
+                    'dotted' => esc_html__('Dotted', 'king-addons'),
+                    'dashed' => esc_html__('Dashed', 'king-addons'),
+                    'groove' => esc_html__('Groove', 'king-addons'),
+                ],
+                'default' => 'none',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-style: {{VALUE}};',
+                ],
+                'render_type' => 'template',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_border_width',
+            [
+                'label' => esc_html__('Border Width', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px'],
+                'default' => [
+                    'top' => 1,
+                    'right' => 1,
+                    'bottom' => 1,
+                    'left' => 1,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'render_type' => 'template',
+                'condition' => [
+                    'lightbox_border_type!' => 'none',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_text_spacing',
+            [
+                'label' => esc_html__('Extra Text Spacing', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 25,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 5,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .king-addons-grid-extra-text-left' => 'padding-right: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .king-addons-grid-extra-text-right' => 'padding-left: {{SIZE}}{{UNIT}};',
+                ],
+                'separator' => 'before'
+            ]
+        );
+
+        $this->add_responsive_control(
+            'lightbox_padding',
+            [
+                'label' => esc_html__('Padding', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'default' => [
+                    'top' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'left' => 0,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'render_type' => 'template',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'lightbox_margin',
+            [
+                'label' => esc_html__('Margin', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'default' => [
+                    'top' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'left' => 0,
+                ],
+                'render_type' => 'template',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'lightbox_radius',
+            [
+                'label' => esc_html__('Border Radius', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'default' => [
+                    'top' => 2,
+                    'right' => 2,
+                    'bottom' => 2,
+                    'left' => 2,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        $this->end_controls_section();
+    }
+        
     public function add_control_lightbox_popup_thumbnails()
     {
         $this->add_control(
@@ -1139,8 +1540,6 @@ class Posts_Grid extends Widget_Base
             );
         }
 
-        $qqq_condition = king_addons_freemius()->can_use_premium_code__premium_only() ? ['query_source!' => 'current', 'layout_select!' => 'slider',] : ['query_source!' => 'current'];
-
         $this->add_control(
             'query_posts_per_page',
             [
@@ -1148,14 +1547,13 @@ class Posts_Grid extends Widget_Base
                 'type' => Controls_Manager::NUMBER,
                 'default' => 9,
                 'min' => 0,
-                'condition' => $qqq_condition,
+                'condition' => (king_addons_freemius()->can_use_premium_code__premium_only() ? ['query_source!' => 'current', 'layout_select!' => 'slider',] : ['query_source!' => 'current']),
             ]
         );
 
         if (king_addons_freemius()->can_use_premium_code__premium_only()) {
-
             $this->add_control_query_slides_to_show();
-
+        } else {
             $this->add_control(
                 'limit_slides_to_show_pro_notice',
                 [
@@ -1201,7 +1599,8 @@ class Posts_Grid extends Widget_Base
 
         $this->add_control_display_scheduled_posts();
 
-        $this->add_control_query_randomize();
+        // TODO: Under development feature.
+//        $this->add_control_query_randomize();
 
         $this->add_control(
             'query_exclude_no_images',
@@ -1475,7 +1874,7 @@ class Posts_Grid extends Widget_Base
             'layout_pagination',
             [
                 'label' => esc_html__('Show Pagination', 'king-addons'),
-                'description' => esc_html__('Please note that Pagination doesn\'t work in editor', 'king-addons'),
+                'description' => esc_html__('Please note that Pagination doesn\'t work in editor.', 'king-addons'),
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'yes',
                 'return_value' => 'yes',
@@ -1487,48 +1886,60 @@ class Posts_Grid extends Widget_Base
         );
 
         $this->add_control(
+            'filters_experiment_hr_before',
+            [
+                'type' => Controls_Manager::DIVIDER,
+            ]
+        );
+
+        // TODO: Implement the Randomize Query feature.
+        $this->add_control(
             'filters_experiment',
             [
-                'label' => esc_html__('Filters & Load More Experiment', 'king-addons'),
+                'label' => esc_html__('Filters & Load More Dynamic Loading (beta feature)', 'king-addons'),
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'no',
+                'label_block' => false,
                 'return_value' => 'yes',
                 'render_type' => 'template',
-                'conditions' => [
-                    'relation' => 'and',
-                    'terms' => [
-                        [
-                            'name' => 'layout_filters',
-                            'operator' => '!=',
-                            'value' => '',
-                        ],
-                        [
-                            'relation' => 'or',
-                            'terms' => [
-                                [
-                                    'relation' => 'and',
-                                    'terms' => [
-                                        [
-                                            'name' => 'layout_pagination',
-                                            'operator' => '!=',
-                                            'value' => '',
-                                        ],
-                                        [
-                                            'name' => 'pagination_type',
-                                            'operator' => 'in',
-                                            'value' => ['load-more', 'infinite'],
-                                        ],
-                                    ]
-                                ],
-                                [
-                                    'name' => 'layout_pagination',
-                                    'operator' => '==',
-                                    'value' => '',
-                                ]
-                            ],
-                        ],
-                    ]
-                ]
+                'separator' => 'after',
+// TODO: Later
+
+//                'conditions' => [
+//                    'relation' => 'and',
+//                    'terms' => [
+//                        [
+//                            'name' => 'layout_filters',
+//                            'operator' => '!=',
+//                            'value' => '',
+//                        ],
+//                        [
+//                            'relation' => 'or',
+//                            'terms' => [
+//                                [
+//                                    'relation' => 'and',
+//                                    'terms' => [
+//                                        [
+//                                            'name' => 'layout_pagination',
+//                                            'operator' => '!=',
+//                                            'value' => '',
+//                                        ],
+//                                        [
+//                                            'name' => 'pagination_type',
+//                                            'operator' => 'in',
+//                                            'value' => ['load-more', 'infinite'],
+//                                        ],
+//                                    ]
+//                                ],
+//                                [
+//                                    'name' => 'layout_pagination',
+//                                    'operator' => '==',
+//                                    'value' => '',
+//                                ]
+//                            ],
+//                        ],
+//                    ]
+//                ]
             ]
         );
 
@@ -1537,7 +1948,6 @@ class Posts_Grid extends Widget_Base
         $this->add_control_grid_lazy_loading();
 
         $this->add_control_layout_animation();
-
 
         Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'grid', 'layout_animation', ['pro-fd', 'pro-fs']);
 
@@ -1818,7 +2228,7 @@ class Posts_Grid extends Widget_Base
                 'default' => 'block',
                 'options' => [
                     'inline' => esc_html__('Inline', 'king-addons'),
-                    'block' => esc_html__('Seperate Line', 'king-addons'),
+                    'block' => esc_html__('Separate Line', 'king-addons'),
                     'custom' => esc_html__('Custom Width', 'king-addons'),
                 ],
             ]
@@ -2592,19 +3002,19 @@ class Posts_Grid extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg' => 'width: {{SIZE}}{{UNIT}};top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-top"]' => 'top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-bottom"]' => 'bottom:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-right"]' => 'top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);right:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-left"]' => 'top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg' => 'width: {{SIZE}}{{UNIT}};top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-top"]' => 'top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-bottom"]' => 'bottom:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-right"]' => 'top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);right:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-left"]' => 'top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
                 ],
             ]
         );
 
         $this->add_responsive_control(
-            'overlay_hegiht',
+            'overlay_height',
             [
-                'label' => esc_html__('Overlay Hegiht', 'king-addons'),
+                'label' => esc_html__('Overlay Height', 'king-addons'),
                 'type' => Controls_Manager::SLIDER,
                 'size_units' => ['%', 'px'],
                 'default' => [
@@ -2756,18 +3166,7 @@ class Posts_Grid extends Widget_Base
 
         $this->add_control_secondary_img_on_hover();
 
-        $this->add_control(
-            'secondary_img_notice_video_tutorial',
-            [
-                'type' => Controls_Manager::RAW_HTML,
-                'raw' => __('<ul><li><a href="youtu.be/-Xfbtkl4fkQ" target="_blank" style="color: #93003c;"><strong>Watch Video Tutorial <span class="dashicons dashicons-video-alt3"></strong></a></li></ul>', 'king-addons'),
-                'separator' => 'after',
-
-            ]
-        );
-
         $this->add_control_image_effects();
-
 
         Core::renderUpgradeProNotice($this, Controls_Manager::RAW_HTML, 'grid', 'image_effects', ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo']);
 
@@ -2861,131 +3260,8 @@ class Posts_Grid extends Widget_Base
 
         $this->end_controls_section();
 
-
-        $this->start_controls_section(
-            'section_lightbox_popup',
-            [
-                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Lightbox Popup', 'king-addons'),
-                'tab' => Controls_Manager::TAB_CONTENT,
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_autoplay',
-            [
-                'label' => esc_html__('Autoplay Slides', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_progressbar',
-            [
-                'label' => esc_html__('Show Progress Bar', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-                'condition' => [
-                    'lightbox_popup_autoplay' => 'true'
-                ]
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_pause',
-            [
-                'label' => esc_html__('Autoplay Speed', 'king-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 5,
-                'min' => 1,
-                'max' => 10,
-                'step' => 1,
-                'condition' => [
-                    'lightbox_popup_autoplay' => 'true',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_counter',
-            [
-                'label' => esc_html__('Show Counter', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_arrows',
-            [
-                'label' => esc_html__('Show Arrows', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_captions',
-            [
-                'label' => esc_html__('Show Captions', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control_lightbox_popup_thumbnails();
-
-        $this->add_control_lightbox_popup_thumbnails_default();
-
-        $this->add_control_lightbox_popup_sharing();
-
-        $this->add_control(
-            'lightbox_popup_zoom',
-            [
-                'label' => esc_html__('Show Zoom Button', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_fullscreen',
-            [
-                'label' => esc_html__('Show Full Screen Button', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_download',
-            [
-                'label' => esc_html__('Show Download Button', 'king-addons'),
-                'type' => Controls_Manager::SWITCHER,
-                'default' => 'true',
-                'return_value' => 'true',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_popup_description',
-            [
-                'raw' => sprintf(__('You can change Lightbox Popup styling options globaly. Navigate to <strong>Dashboard > %s > Settings</strong>.', 'king-addons'), Core::getPluginName()),
-                'type' => Controls_Manager::RAW_HTML,
-                'separator' => 'before',
-                'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
-            ]
-        );
-
-        $this->end_controls_section();
-
+        // TODO: Check for issues.
+//        $this->add_section_general_lightbox();
 
         $this->start_controls_section(
             'section_grid_filters',
@@ -5809,278 +6085,9 @@ class Posts_Grid extends Widget_Base
 
 
         $this->add_section_style_sharing();
-
-
-        $this->start_controls_section(
-            'section_style_lightbox',
-            [
-                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Lightbox', 'king-addons'),
-                'tab' => Controls_Manager::TAB_STYLE,
-                'show_label' => false,
-            ]
-        );
-
-        $this->start_controls_tabs('tabs_grid_lightbox_style');
-
-        $this->start_controls_tab(
-            'tab_grid_lightbox_normal',
-            [
-                'label' => esc_html__('Normal', 'king-addons'),
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_color',
-            [
-                'label' => esc_html__('Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'color: {{VALUE}}',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_bg_color',
-            [
-                'label' => esc_html__('Background Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'background-color: {{VALUE}}',
-                ]
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_border_color',
-            [
-                'label' => esc_html__('Border Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#E8E8E8',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-color: {{VALUE}}',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Text_Shadow::get_type(),
-            [
-                'name' => 'lightbox_shadow',
-                'selector' => '{{WRAPPER}} .king-addons-grid-item-lightbox i',
-            ]
-        );
-
-        $this->end_controls_tab();
-
-        $this->start_controls_tab(
-            'tab_grid_lightbox_hover',
-            [
-                'label' => esc_html__('Hover', 'king-addons'),
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_color_hr',
-            [
-                'label' => esc_html__('Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5B03FF',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'color: {{VALUE}}',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_bg_color_hr',
-            [
-                'label' => esc_html__('Background Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'background-color: {{VALUE}}',
-                ]
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_border_color_hr',
-            [
-                'label' => esc_html__('Border Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#E8E8E8',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'border-color: {{VALUE}}',
-                ],
-                'separator' => 'after',
-            ]
-        );
-
-        $this->end_controls_tab();
-
-        $this->end_controls_tabs();
-
-        $this->add_control(
-            'lightbox_shadow_divider',
-            [
-                'type' => Controls_Manager::DIVIDER,
-                'style' => 'thick',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_transition_duration',
-            [
-                'label' => esc_html__('Transition Duration (seconds)', 'king-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 0.1,
-                'min' => 0,
-                'max' => 5,
-                'step' => 0.1,
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'transition-duration: {{VALUE}}s',
-                ],
-                'separator' => 'after',
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'lightbox_typography',
-                'selector' => '{{WRAPPER}} .king-addons-grid-item-lightbox'
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_border_type',
-            [
-                'label' => esc_html__('Border Type', 'king-addons'),
-                'type' => Controls_Manager::SELECT,
-                'options' => [
-                    'none' => esc_html__('None', 'king-addons'),
-                    'solid' => esc_html__('Solid', 'king-addons'),
-                    'double' => esc_html__('Double', 'king-addons'),
-                    'dotted' => esc_html__('Dotted', 'king-addons'),
-                    'dashed' => esc_html__('Dashed', 'king-addons'),
-                    'groove' => esc_html__('Groove', 'king-addons'),
-                ],
-                'default' => 'none',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-style: {{VALUE}};',
-                ],
-                'render_type' => 'template',
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_border_width',
-            [
-                'label' => esc_html__('Border Width', 'king-addons'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px'],
-                'default' => [
-                    'top' => 1,
-                    'right' => 1,
-                    'bottom' => 1,
-                    'left' => 1,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'render_type' => 'template',
-                'condition' => [
-                    'lightbox_border_type!' => 'none',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_text_spacing',
-            [
-                'label' => esc_html__('Extra Text Spacing', 'king-addons'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 25,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 5,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .king-addons-grid-extra-text-left' => 'padding-right: {{SIZE}}{{UNIT}};',
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .king-addons-grid-extra-text-right' => 'padding-left: {{SIZE}}{{UNIT}};',
-                ],
-                'separator' => 'before'
-            ]
-        );
-
-        $this->add_responsive_control(
-            'lightbox_padding',
-            [
-                'label' => esc_html__('Padding', 'king-addons'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => 0,
-                    'right' => 0,
-                    'bottom' => 0,
-                    'left' => 0,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'render_type' => 'template',
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'lightbox_margin',
-            [
-                'label' => esc_html__('Margin', 'king-addons'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => 0,
-                    'right' => 0,
-                    'bottom' => 0,
-                    'left' => 0,
-                ],
-                'render_type' => 'template',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'lightbox_radius',
-            [
-                'label' => esc_html__('Border Radius', 'king-addons'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => 2,
-                    'right' => 2,
-                    'bottom' => 2,
-                    'left' => 2,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'separator' => 'before',
-            ]
-        );
-
-        $this->end_controls_section();
-
+        
+        // TODO
+//        $this->add_section_style_lightbox();
 
         $this->start_controls_section(
             'section_style_filters',
@@ -8646,14 +8653,15 @@ class Posts_Grid extends Widget_Base
             // Lazy loading vs normal
             /** @noinspection PhpIfWithCommonPartsInspection */
             if ('yes' === $settings['grid_lazy_loading']) {
-                echo '<img data-no-lazy="1" src="' . KING_ADDONS_URL . 'img/icon-256x256.png" alt="' . esc_attr($alt) . '" class="king-addons-hidden-image king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+                echo '<img loading="lazy" src="'.esc_url($src).'" 
+                alt="' . esc_attr($alt) . '" class="king-addons-hidden-image king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
                 if ('yes' === $settings['secondary_img_on_hover']) {
-                    echo '<img data-no-lazy="1" src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+                    echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
                 }
             } else {
-                echo '<img data-no-lazy="1" src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '" class="king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+                echo '<img src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '" class="king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
                 if ('yes' === $settings['secondary_img_on_hover']) {
-                    echo '<img data-no-lazy="1" src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+                    echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
                 }
             }
             echo '</div>';
@@ -8664,7 +8672,7 @@ class Posts_Grid extends Widget_Base
     {
         echo '<div class="king-addons-grid-media-hover-bg ' . esc_attr($this->get_animation_class($settings, 'overlay')) . '" data-url="' . esc_url(get_the_permalink()) . '">';
         if (king_addons_freemius()->can_use_premium_code__premium_only() && !empty($settings['overlay_image']['url'])) {
-            echo '<img data-no-lazy="1" src="' . esc_url($settings['overlay_image']['url']) . '">';
+            echo '<img src="' . esc_url($settings['overlay_image']['url']) . '" alt="' . esc_attr($settings['overlay_image']['alt']) . '">';
         }
         echo '</div>';
     }

@@ -50,7 +50,7 @@ class Media_Grid extends Widget_Base
     public function get_script_depends()
     {
         return [
-            KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-grid',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-media',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-isotope-kng',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-slick-slick',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-lightgallery-lightgallery'
@@ -1868,19 +1868,19 @@ class Media_Grid extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg' => 'width: {{SIZE}}{{UNIT}};top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-top"]' => 'top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-bottom"]' => 'bottom:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-right"]' => 'top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);right:calc((100% - {{SIZE}}{{UNIT}})/2);',
-                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-left"]' => 'top:calc((100% - {{overlay_hegiht.SIZE}}{{overlay_hegiht.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg' => 'width: {{SIZE}}{{UNIT}};top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-top"]' => 'top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-bottom"]' => 'bottom:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-right"]' => 'top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);right:calc((100% - {{SIZE}}{{UNIT}})/2);',
+                    '{{WRAPPER}} .king-addons-grid-media-hover-bg[class*="-left"]' => 'top:calc((100% - {{overlay_height.SIZE}}{{overlay_height.UNIT}})/2);left:calc((100% - {{SIZE}}{{UNIT}})/2);',
                 ],
             ]
         );
 
         $this->add_responsive_control(
-            'overlay_hegiht',
+            'overlay_height',
             [
-                'label' => esc_html__('Overlay Hegiht', 'king-addons'),
+                'label' => esc_html__('Overlay Height', 'king-addons'),
                 'type' => Controls_Manager::SLIDER,
                 'size_units' => ['%', 'px'],
                 'default' => [
@@ -2739,6 +2739,16 @@ class Media_Grid extends Widget_Base
                 'condition' => [
                     'pagination_type!' => 'infinite-scroll',
                 ]
+            ]
+        );
+
+        $this->add_control(
+            'pagination_notice',
+            [
+                'raw' => sprintf(__('<strong>Performance Note:</strong> For grids that include a large number of images (100+), we recommend using the Default and Numbered pagination types because the browser tab can become heavy (especially in Chromium-based browsers).', 'king-addons'), Core::getPluginName()),
+                'type' => Controls_Manager::RAW_HTML,
+                'separator' => 'before',
+                'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
             ]
         );
 

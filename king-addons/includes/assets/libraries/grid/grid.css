@@ -86,8 +86,8 @@
 }
 
 .king-addons-grid-image-wrap img.king-addons-hidden-image {
-    visibility: hidden;
-    opacity: 0;
+    /*visibility: hidden;*/
+    /*opacity: 0;*/
 }
 
 .king-addons-hide-items-before-append {
@@ -455,7 +455,7 @@
     fill: currentColor;
 }
 
-.king-addons-woo-rating i {
+.king-addons-woocommerce-rating i {
     font-family: "eicons", serif;
     font-style: normal;
     line-height: 1;
@@ -464,7 +464,7 @@
     overflow: hidden;
 }
 
-.king-addons-woo-rating i:before {
+.king-addons-woocommerce-rating i:before {
     font-family: inherit;
     font-size: inherit;
     font-weight: 900;
@@ -476,16 +476,16 @@
     content: '\e934';
 }
 
-.king-addons-woo-rating-style-2 .king-addons-woo-rating i:before {
+.king-addons-woocommerce-rating-style-2 .king-addons-woocommerce-rating i:before {
     content: '\002605';
 }
 
-.king-addons-woo-rating .king-addons-rating-marked,
-.king-addons-woo-rating .king-addons-rating-unmarked {
+.king-addons-woocommerce-rating .king-addons-rating-marked,
+.king-addons-woocommerce-rating .king-addons-rating-unmarked {
     display: inline-flex;
 }
 
-.king-addons-woo-rating i:last-of-type {
+.king-addons-woocommerce-rating i:last-of-type {
     margin-right: 0 !important;
 }
 
@@ -562,7 +562,7 @@
     overflow: hidden;
 }
 
-.king-addons-woo-rating .king-addons-rating-icon,
+.king-addons-woocommerce-rating .king-addons-rating-icon,
 i[class*="king-addons-rating-icon-"] {
     display: inline-flex !important;
     align-items: center;
@@ -1252,7 +1252,7 @@ i[class*="king-addons-rating-icon-"] {
 
 .elementor-widget-king-addons-grid .king-addons-grid-media-hover-bg,
 .elementor-widget-king-addons-media-grid .king-addons-grid-media-hover-bg,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-media-hover-bg {
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-media-hover-bg {
     background-color: rgba(0, 0, 0, 0.25);
 }
 
@@ -1261,8 +1261,8 @@ i[class*="king-addons-rating-icon-"] {
 }
 
 .elementor-widget-king-addons-grid .king-addons-grid-item-title,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-title,
-.elementor-widget-king-addons-woo-category-grid-pro .king-addons-grid-item-title,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-title,
+.elementor-widget-king-addons-woocommerce-category-grid-pro .king-addons-grid-item-title,
 .elementor-widget-king-addons-category-grid-pro .king-addons-grid-item-title {
     font-size: 21px;
     font-weight: 700;
@@ -1295,28 +1295,26 @@ i[class*="king-addons-rating-icon-"] {
 .elementor-widget-king-addons-grid .king-addons-grid-item-protected p,
 .elementor-widget-king-addons-media-grid .king-addons-grid-item-sharing,
 .elementor-widget-king-addons-media-grid .king-addons-grid-filters li,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-content,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-product-categories,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-product-tags,
-.elementor-widget-king-addons-woo-grid .king-addons-woo-rating span,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-status .inner-block > span,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-add-to-cart a,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-likes,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-sharing,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-lightbox,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-pagination,
-.elementor-widget-king-addons-woo-grid .king-addons-grid-item-price .inner-block > span,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-content,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-product-categories,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-product-tags,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-woocommerce-rating span,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-status .inner-block > span,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-add-to-cart a,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-likes,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-sharing,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-lightbox,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-pagination,
+.elementor-widget-king-addons-woocommerce-grid .king-addons-grid-item-price .inner-block > span,
 .elementor-widget-king-addons-magazine-grid .king-addons-grid-item-content,
 .elementor-widget-king-addons-magazine-grid .king-addons-grid-item-excerpt {
     font-size: 14px;
 }
 
-
 .elementor-widget-king-addons-magazine-grid .king-addons-grid-tax-style-1 {
     font-size: 12px;
     list-style-position: inherit;
 }
-
 
 .elementor-widget-king-addons-magazine-grid .king-addons-grid-item-date,
 .elementor-widget-king-addons-magazine-grid .king-addons-grid-item-time,
