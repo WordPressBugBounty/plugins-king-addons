@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.54
+Stable tag: 24.12.55
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -98,10 +98,10 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Lottie Animations**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.
 - [**Google Maps**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Perfect for displaying business locations, contact details, or navigation routes, this widget allows you to adjust styles, markers, and layouts. Ideal for enhancing user experience with responsive and visually appealing map designs.
 - [**MailChimp**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Easily integrate MailChimp forms into your website. Perfect for growing your email list with customizable and responsive sign-up forms.
-- [**Posts Grid & Slider/Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts in grids, sliders, or carousels with fully customizable layouts. Perfect for showcasing blog content, news, or articles in a responsive and visually appealing format.
-- [**Image Grid & Slider/Carousel/Gallery**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create stunning media galleries with grids, sliders, or carousels. Perfect for showcasing images or videos in a fully customizable and responsive format.
-- [**Magazine Grid & Slider/Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
-- [**WooCommerce Grid & Slider/Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
+- [**Posts Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts in grids, sliders, or carousels with fully customizable layouts. Perfect for showcasing blog content, news, or articles in a responsive and visually appealing format.
+- [**Image Grid & Slider / Carousel/Gallery**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create stunning media galleries with grids, sliders, or carousels. Perfect for showcasing images or videos in a fully customizable and responsive format.
+- [**Magazine Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
+- [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
 
 ### FREE Elementor features
 
@@ -193,10 +193,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.12.55 - February 13, 2025 =
+* **Improved:** Performance.
+* **QA:** Checked compatibility with WordPress 6.7.2. All is good.
+
 = King Addons for Elementor version 24.12.54 - February 10, 2025 =
-* **New:** WooCommerce Grid & Slider/Carousel widget added.
-* **Improved:** Posts Grid & Slider/Carousel - Lazy Loading, Load More, Infinity Loading and Filters works better now.
-* **Improved:** Image Grid & Slider/Carousel/Gallery - Performance and the behavior has been improved for large number of images.
+* **New:** WooCommerce Grid & Slider / Carousel widget added.
+* **Improved:** Posts Grid & Slider / Carousel - Lazy Loading, Load More, Infinity Loading and Filters works better now.
+* **Improved:** Image Grid & Slider / Carousel / Gallery - Performance and the behavior has been improved for large number of images.
 * **New:** Accordion demo added.
 * **New:** Countdown & Timer demo added.
 * **New:** Tabs demo added.
@@ -205,12 +209,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * **Improved:** Parallax Background feature.
 
 = King Addons for Elementor version 24.12.53 - February 2, 2025 =
-* **New:** Image Grid & Slider/Carousel/Gallery widget added.
-* **New:** Magazine Grid & Slider/Carousel widget added.
+* **New:** Image Grid & Slider / Carousel / Gallery widget added.
+* **New:** Magazine Grid & Slider / Carousel widget added.
 * **Improved:** Data Table widget.
 
 = King Addons for Elementor version 24.12.52 - February 1, 2025 =
-* **New:** Posts Grid & Slider/Carousel widget added.
+* **New:** Posts Grid & Slider / Carousel widget added.
 * **Improved:** Content Ticker widget layouts.
 * **Improved:** Search widget.
 * **Improved:** Team Member widget.

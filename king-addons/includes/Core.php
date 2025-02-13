@@ -146,12 +146,15 @@ final class Core
         <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
              style="border-left: 4px solid #0073aa;padding: 10px 15px;">
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
-                <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
-                            style="font-weight: 700;">60+</strong> extensions for only $<strong
-                            style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
+<!--                <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong-->
+<!--                            style="font-weight: 700;">60+</strong> extensions for only $<strong-->
+<!--                            style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>-->
+                <span>Supercharge your Elementor site with <strong style="font-weight: 700;">600+</strong> stunning templates and over <strong
+                            style="font-weight: 700;">200</strong> premium features for just $<strong
+                            style="font-weight: 700;">39</strong>. Pay once and use them on unlimited sites.</span>
                 <span>
                 <a style="margin-left: 10px;font-size: 14px;padding-left: 20px;padding-right: 20px;display: flex;align-items: center;"
-                   href="https://kingaddons.com/pricing?utm_source=kng-notice-special-offer&utm_medium=plugin&utm_campaign=kng"
+                   href="https://kingaddons.com/pricing?utm_source=kng-notice-limited-time-offer&utm_medium=plugin&utm_campaign=kng"
                    class="button button-primary"><img style="margin-right: 5px;width: 14px;height: 14px;" src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
                                                       alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
                 </span>
