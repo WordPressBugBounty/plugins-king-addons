@@ -519,6 +519,7 @@ final class Templates
     public function process_import_images(): void
     {
         if (!current_user_can('manage_options')) {
+            wp_send_json_error('The current user can not manage options and create pages. Please change it in the WordPress settings.');
             return;
         }
 
@@ -591,7 +592,6 @@ final class Templates
                 ]);
             }
         } else {
-
             $new_post_id = wp_insert_post([
                 'post_title' => $page_title,
                 'post_content' => '',
@@ -666,9 +666,14 @@ final class Templates
             ];
 
             $attach_id = wp_insert_attachment($attachment, $image_file);
+
+            add_filter('intermediate_image_sizes', '__return_empty_array', 999);
+
             require_once(ABSPATH . 'wp-admin/includes/image.php');
             $attach_data = wp_generate_attachment_metadata($attach_id, $image_file);
             wp_update_attachment_metadata($attach_id, $attach_data);
+
+            remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
 
             return $attach_id;
         } catch (Exception $e) {

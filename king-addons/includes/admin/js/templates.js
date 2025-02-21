@@ -93,8 +93,21 @@ jQuery(document).ready(function ($) {
                 install: installId,
             }),
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    // The server returned a 4xx or 5xx, read the text and throw an error
+                    return response.text().then(html => {
+                        console.error('Server error:\n' + html);
+                        throw new Error('Server error (not JSON).');
+                    });
+                }
+                // If ok, parse JSON
+                return response.json();
+            })
             .then(data => {
+                if (!data.success) {
+                    console.error('API error:', data);
+                }
                 if (data.success) {
                     $('#template-installing-popup').fadeIn();
                     doImport(data);
@@ -103,6 +116,7 @@ jQuery(document).ready(function ($) {
                 }
             })
             .catch(error => {
+                console.error('Fetch error:', error);
                 alert('Connection error: ' + error);
             });
     });
@@ -135,7 +149,17 @@ jQuery(document).ready(function ($) {
                 data: JSON.stringify(initial_data),
             })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    // The server returned a 4xx or 5xx, read the text and throw an error
+                    return response.text().then(html => {
+                        console.error('Server error:\n' + html);
+                        throw new Error('Server error:\n' + html);
+                    });
+                }
+                // If ok, parse JSON
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     processNextImage()
@@ -160,7 +184,17 @@ jQuery(document).ready(function ($) {
                     action: 'process_import_images',
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        // The server returned a 4xx or 5xx, read the text and throw an error
+                        return response.text().then(html => {
+                            console.error('Server error:\n' + html);
+                            throw new Error('Server error:\n' + html);
+                        });
+                    }
+                    // If ok, parse JSON
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         if (data.data.progress !== undefined) {
@@ -189,6 +223,8 @@ jQuery(document).ready(function ($) {
                             goToPage.fadeIn();
                             $('#close-installing-popup').fadeIn();
                         }
+                    } else {
+                        console.error('Process image issue:', data);
                     }
                 })
                 .catch(error => {

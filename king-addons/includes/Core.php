@@ -153,7 +153,7 @@ final class Core
                             style="font-weight: 700;">200</strong> premium features for just $<strong
                             style="font-weight: 700;">39</strong>. Pay once and use them on unlimited sites.</span>
                 <span>
-                <a style="margin-left: 10px;font-size: 14px;padding-left: 20px;padding-right: 20px;display: flex;align-items: center;"
+                <a style="margin-left: 10px;font-size: 14px;padding: 3px 20px;display: flex;align-items: center;"
                    href="https://kingaddons.com/pricing?utm_source=kng-notice-limited-time-offer&utm_medium=plugin&utm_campaign=kng"
                    class="button button-primary"><img style="margin-right: 5px;width: 14px;height: 14px;" src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
                                                       alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
