@@ -2,7 +2,6 @@
 
 namespace King_Addons;
 
-/** @noinspection SpellCheckingInspection */
 if (!defined('ABSPATH')) {
     exit;
 }

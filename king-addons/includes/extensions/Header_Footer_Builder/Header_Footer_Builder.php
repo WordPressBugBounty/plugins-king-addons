@@ -3,6 +3,7 @@
 namespace King_Addons;
 
 use Elementor;
+use WP_Query;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -14,6 +15,7 @@ final class Header_Footer_Builder
     private static ?string $current_page_type = null;
     private static array $current_page_data = array();
     private static $location_selection;
+    private static $user_selection;
     private static $elementor_instance;
 
     public static function instance(): ?Header_Footer_Builder
@@ -30,14 +32,130 @@ final class Header_Footer_Builder
         add_action('add_meta_boxes', [$this, 'registerMetabox']);
         add_action('save_post', [$this, 'saveMetaboxData']);
         add_action('template_redirect', [$this, 'checkUserCanEdit']);
+
+        require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/ELHF_Render_On_Canvas.php');
         add_filter('single_template', [$this, 'loadElementorCanvasTemplate']);
+
         self::setCompatibility();
         add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
+        add_action('admin_action_edit', array($this, 'initialize_options'));
+        add_action('wp_ajax_king_addons_el_hf_get_posts_by_query', array($this, 'king_addons_el_hf_get_posts_by_query'));
 
         if (is_admin()) {
             add_action('manage_king-addons-el-hf_posts_custom_column', [$this, 'columnContent'], 10, 2);
             add_filter('manage_king-addons-el-hf_posts_columns', [$this, 'columnHeadings']);
         }
+    }
+
+    function king_addons_el_hf_get_posts_by_query()
+    {
+
+        check_ajax_referer('king-addons-el-hf-get-posts-by-query', 'nonce');
+
+        $search_string = isset($_POST['q']) ? sanitize_text_field($_POST['q']) : '';
+        $result = array();
+
+        $args = array(
+            'public' => true,
+            '_builtin' => false,
+        );
+
+        $output = 'names';
+        $operator = 'and';
+        $post_types = get_post_types($args, $output, $operator);
+
+        unset($post_types['elementor-hf']);
+
+        $post_types['Posts'] = 'post';
+        $post_types['Pages'] = 'page';
+
+        foreach ($post_types as $key => $post_type) {
+            $data = array();
+
+            add_filter('posts_search', array($this, 'search_only_titles'), 10, 2);
+
+            $query = new WP_Query(
+                array(
+                    's' => $search_string,
+                    'post_type' => $post_type,
+                    'posts_per_page' => -1,
+                )
+            );
+
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $title = get_the_title();
+                    $title .= (0 != $query->post->post_parent) ? ' (' . get_the_title($query->post->post_parent) . ')' : '';
+                    $id = get_the_id();
+                    $data[] = array(
+                        'id' => 'post-' . $id,
+                        'text' => $title,
+                    );
+                }
+            }
+
+            if (is_array($data) && !empty($data)) {
+                $result[] = array(
+                    'text' => $key,
+                    'children' => $data,
+                );
+            }
+        }
+
+        wp_reset_postdata();
+
+        $args = array(
+            'public' => true,
+        );
+
+        $output = 'objects';
+        $taxonomies = get_taxonomies($args, $output, $operator);
+
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_terms(
+                $taxonomy->name,
+                array(
+                    'orderby' => 'count',
+                    'hide_empty' => 0,
+                    'name__like' => $search_string,
+                )
+            );
+
+            $data = array();
+
+            $label = ucwords($taxonomy->label);
+
+            if (!empty($terms)) {
+                foreach ($terms as $term) {
+
+                    $data[] = array(
+                        'id' => 'tax-' . $term->term_id,
+                        'text' => $term->name . ' archive page',
+                    );
+
+                    $data[] = array(
+                        'id' => 'tax-' . $term->term_id . '-single-' . $taxonomy->name,
+                        'text' => 'All singulars from ' . $term->name,
+                    );
+                }
+            }
+
+            if (is_array($data) && !empty($data)) {
+                $result[] = array(
+                    'text' => $label,
+                    'children' => $data,
+                );
+            }
+        }
+
+        wp_send_json($result);
+    }
+
+    public function initialize_options()
+    {
+        self::$user_selection = self::get_user_selections();
+        self::$location_selection = self::getLocationSelections();
     }
 
     function addPostType(): void
@@ -97,11 +215,11 @@ final class Header_Footer_Builder
         );
     }
 
-    // todo
     function renderMetabox($post)
     {
         $values = get_post_custom($post->ID);
         $template_type = isset($values['king_addons_el_hf_template_type']) ? esc_attr(sanitize_text_field($values['king_addons_el_hf_template_type'][0])) : '';
+        $display_on_canvas = isset($values['king-addons-el-hf-display-on-canvas']);
 
         wp_nonce_field('king_addons_el_hf_meta_nounce', 'king_addons_el_hf_meta_nounce');
         ?>
@@ -109,7 +227,7 @@ final class Header_Footer_Builder
             <tbody>
             <tr class="king-addons-el-hf-options-row type-of-template">
                 <td class="king-addons-el-hf-options-row-heading">
-                    <label for="king_addons_el_hf_template_type"><?php esc_html_e('Type of Template', 'king-addons'); ?></label>
+                    <label for="king_addons_el_hf_template_type"><strong><?php esc_html_e('Type of Template', 'king-addons'); ?></strong></label>
                 </td>
                 <td class="king-addons-el-hf-options-row-content">
                     <select name="king_addons_el_hf_template_type" id="king_addons_el_hf_template_type">
@@ -119,20 +237,403 @@ final class Header_Footer_Builder
                     </select>
                 </td>
             </tr>
-
             <?php
-
-            // todo
-//            $this->display_rules_tab();
+            $this->display_rules_tab();
 
             ?>
-
+            <tr class="king-addons-el-hf-options-row enable-for-canvas">
+                <td class="king-addons-el-hf-options-row-heading">
+                    <label for="king-addons-el-hf-display-on-canvas">
+                        <strong><?php esc_html_e('Enable Layout for Elementor Canvas Template?', 'king-addons'); ?></strong>
+                    </label>
+                    <p><?php esc_html_e('Enabling this option will display this layout on pages using Elementor Canvas Template', 'king-addons'); ?></p>
+                </td>
+                <td class="king-addons-el-hf-options-row-content">
+                    <input type="checkbox" id="king-addons-el-hf-display-on-canvas" name="king-addons-el-hf-display-on-canvas"
+                           value="1" <?php checked($display_on_canvas); ?> />
+                </td>
+            </tr>
             </tbody>
         </table>
         <?php
     }
 
-    // todo
+
+    public function admin_styles()
+    {
+        wp_enqueue_script('king-addons-el-hf-select2', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/select2.js', array('jquery'), KING_ADDONS_VERSION, true);
+
+        wp_register_script(
+            'king-addons-el-hf-target-rule',
+            KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/conditions-target.js',
+            array(
+                'jquery',
+                'king-addons-el-hf-select2',
+            ),
+            KING_ADDONS_VERSION,
+            true
+        );
+
+        wp_enqueue_script('king-addons-el-hf-target-rule');
+
+        wp_register_script(
+            'king-addons-el-hf-user-role',
+            KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/conditions-user.js',
+            array(
+                'jquery',
+            ),
+            KING_ADDONS_VERSION,
+            true
+        );
+
+        wp_enqueue_script('king-addons-el-hf-user-role');
+
+        wp_register_style('king-addons-el-hf-select2', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/select2.css', '', KING_ADDONS_VERSION);
+        wp_enqueue_style('king-addons-el-hf-select2');
+        wp_register_style('king-addons-el-hf-target-rule', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/conditions.css', '', KING_ADDONS_VERSION);
+        wp_enqueue_style('king-addons-el-hf-target-rule');
+        wp_enqueue_script('king-addons-el-hf-script', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/admin.js', array('jquery'), KING_ADDONS_VERSION);
+
+        $localize_vars = array(
+            'please_enter' => __('Please enter', 'king-addons'),
+            'please_delete' => __('Please delete', 'king-addons'),
+            'more_char' => __('or more characters', 'king-addons'),
+            'character' => __('character', 'king-addons'),
+            'loading' => __('Loading more results…', 'king-addons'),
+            'only_select' => __('You can only select', 'king-addons'),
+            'item' => __('item', 'king-addons'),
+            'char_s' => __('s', 'king-addons'),
+            'no_result' => __('No results found', 'king-addons'),
+            'searching' => __('Searching…', 'king-addons'),
+            'not_loader' => __('The results could not be loaded.', 'king-addons'),
+            'search' => __('Search pages / post / categories', 'king-addons'),
+            'ajax_nonce' => wp_create_nonce('king-addons-el-hf-get-posts-by-query'),
+        );
+        wp_localize_script('king-addons-el-hf-select2', 'kngRules', $localize_vars);
+
+    }
+
+    public function display_rules_tab()
+    {
+        $this->admin_styles();
+        $include_locations = get_post_meta(get_the_id(), 'king_addons_el_hf_target_include_locations', true);
+        $exclude_locations = get_post_meta(get_the_id(), 'king_addons_el_hf_target_exclude_locations', true);
+        $users = get_post_meta(get_the_id(), 'king_addons_el_hf_target_user_roles', true);
+        ?>
+        <tr class="king-addons-el-hf-target-rules-row king-addons-el-hf-options-row">
+            <td class="king-addons-el-hf-target-rules-row-heading king-addons-el-hf-options-row-heading">
+                <label><strong><?php esc_html_e('Display On', 'king-addons'); ?></strong></label>
+                <p><?php esc_html_e('Add locations for where this template should appear', 'king-addons'); ?></p>
+            </td>
+            <td class="king-addons-el-hf-target-rules-row-content king-addons-el-hf-options-row-content">
+                <?php
+                self::target_rule_settings_field(
+                    'king-addons-el-hf-target-rules-location',
+                    [
+                        'title' => __('Display Rules', 'king-addons'),
+                        'value' => '[{"type":"basic-global","specific":null}]',
+                        'tags' => 'site,enable,target,pages',
+                        'rule_type' => 'display',
+                        'add_rule_label' => __('Add Display Rule', 'king-addons'),
+                    ],
+                    $include_locations
+                );
+                ?>
+            </td>
+        </tr>
+        <tr class="king-addons-el-hf-target-rules-row king-addons-el-hf-options-row">
+            <td class="king-addons-el-hf-target-rules-row-heading king-addons-el-hf-options-row-heading">
+                <label><strong><?php esc_html_e('Do Not Display On', 'king-addons'); ?></strong></label>
+                <p><?php esc_html_e('Add locations for where this template should not appear', 'king-addons'); ?></p>
+            </td>
+            <td class="king-addons-el-hf-target-rules-row-content king-addons-el-hf-options-row-content">
+                <?php
+                self::target_rule_settings_field(
+                    'king-addons-el-hf-target-rules-exclusion',
+                    [
+                        'title' => __('Exclude On', 'king-addons'),
+                        'value' => '[]',
+                        'tags' => 'site,enable,target,pages',
+                        'add_rule_label' => __('Add Exclusion Rule', 'king-addons'),
+                        'rule_type' => 'exclude',
+                    ],
+                    $exclude_locations
+                );
+                ?>
+            </td>
+        </tr>
+        <tr class="king-addons-el-hf-target-rules-row king-addons-el-hf-options-row">
+            <td class="king-addons-el-hf-target-rules-row-heading king-addons-el-hf-options-row-heading">
+                <label><strong><?php esc_html_e('User Roles', 'king-addons'); ?></strong></label>
+                <p><?php esc_html_e('Display custom template based on user role', 'king-addons'); ?></p>
+            </td>
+            <td class="king-addons-el-hf-target-rules-row-content king-addons-el-hf-options-row-content">
+                <?php
+                self::target_user_role_settings_field(
+                    'king-addons-el-hf-target-rules-users',
+                    [
+                        'title' => __('Users', 'king-addons'),
+                        'value' => '[]',
+                        'tags' => 'site,enable,target,pages',
+                        'add_rule_label' => __('Add User Rule', 'king-addons'),
+                    ],
+                    $users
+                );
+                ?>
+            </td>
+        </tr>
+        <?php
+    }
+
+    public static function get_user_selections()
+    {
+        $selection_options = array(
+            'basic' => array(
+                'label' => __('Basic', 'king-addons'),
+                'value' => array(
+                    'all' => __('All', 'king-addons'),
+                    'logged-in' => __('Logged In', 'king-addons'),
+                    'logged-out' => __('Logged Out', 'king-addons'),
+                ),
+            ),
+
+            'advanced' => array(
+                'label' => __('Advanced', 'king-addons'),
+                'value' => array(),
+            ),
+        );
+
+        /* User roles */
+        $roles = get_editable_roles();
+
+        foreach ($roles as $slug => $data) {
+            $selection_options['advanced']['value'][$slug] = $data['name'];
+        }
+
+        /**
+         * Filter options displayed in the user select field of Display conditions.
+         *
+         * @since 1.5.0
+         */
+        return apply_filters('king-addons-el-hf_user_roles_list', $selection_options);
+    }
+
+    public static function target_user_role_settings_field($name, $settings, $value)
+    {
+        $input_name = $name;
+        $add_rule_label = $settings['add_rule_label'] ?? __('Add Rule', 'king-addons');
+        $saved_values = $value;
+        $output = '';
+
+        if (!isset(self::$user_selection) || empty(self::$user_selection)) {
+            self::$user_selection = self::get_user_selections();
+        }
+        $selection_options = self::$user_selection;
+
+        $output .= '<script type="text/html" id="tmpl-king-addons-el-hf-user-role-condition">';
+        $output .= '<div class="king-addons-el-hf-user-role-condition king-addons-el-hf-user-role-{{data.id}}" data-rule="{{data.id}}" >';
+        $output .= '<span class="user_role-condition-delete dashicons dashicons-dismiss"></span>';
+
+        $output .= '<div class="user_role-condition-wrap" >';
+        $output .= '<select name="' . esc_attr($input_name) . '[{{data.id}}]" class="user_role-condition form-control king-addons-el-hf-input">';
+        $output .= '<option value="">' . __('Select', 'king-addons') . '</option>';
+
+        foreach ($selection_options as $group_data) {
+            $output .= '<optgroup label="' . $group_data['label'] . '">';
+            foreach ($group_data['value'] as $opt_key => $opt_value) {
+                $output .= '<option value="' . $opt_key . '">' . $opt_value . '</option>';
+            }
+            $output .= '</optgroup>';
+        }
+        $output .= '</select>';
+        $output .= '</div>';
+        $output .= '</div> <!-- king-addons-el-hf-user-role-condition -->';
+        $output .= '</script>';
+
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        if (!is_array($saved_values) || (is_array($saved_values) && empty($saved_values))) {
+            $saved_values = array();
+            $saved_values[0] = '';
+        }
+
+        $index = 0;
+
+        $output .= '<div class="king-addons-el-hf-user-role-wrapper king-addons-el-hf-user-role-display-on-wrap" data-type="display">';
+        $output .= '<div class="king-addons-el-hf-user-role-selector-wrapper king-addons-el-hf-user-role-display-on">';
+        $output .= '<div class="user_role-builder-wrap">';
+        foreach ($saved_values as $index => $data) {
+            $output .= '<div class="king-addons-el-hf-user-role-condition king-addons-el-hf-user-role-' . $index . '" data-rule="' . $index . '" >';
+            $output .= '<span class="user_role-condition-delete dashicons dashicons-dismiss"></span>';
+            /* Condition Selection */
+            $output .= '<div class="user_role-condition-wrap" >';
+            $output .= '<select name="' . esc_attr($input_name) . '[' . $index . ']" class="user_role-condition form-control king-addons-el-hf-input">';
+            $output .= '<option value="">' . __('Select', 'king-addons') . '</option>';
+
+            foreach ($selection_options as $group_data) {
+                $output .= '<optgroup label="' . $group_data['label'] . '">';
+                foreach ($group_data['value'] as $opt_key => $opt_value) {
+                    $output .= '<option value="' . $opt_key . '" ' . selected($data, $opt_key, false) . '>' . $opt_value . '</option>';
+                }
+                $output .= '</optgroup>';
+            }
+            $output .= '</select>';
+            $output .= '</div>';
+            $output .= '</div> <!-- king-addons-el-hf-user-role-condition -->';
+        }
+        $output .= '</div>';
+        /* Add new rule */
+        $output .= '<div class="user_role-add-rule-wrap">';
+        $output .= '<a href="#" class="button" data-rule-id="' . absint($index) . '">' . $add_rule_label . '</a>';
+        $output .= '</div>';
+        $output .= '</div>';
+        $output .= '</div>';
+
+        echo $output;
+    }
+
+    public static function target_rule_settings_field($name, $settings, $value)
+    {
+        $input_name = $name;
+        $rule_type = $settings['rule_type'] ?? 'target_rule';
+        $add_rule_label = $settings['add_rule_label'] ?? __('Add Rule', 'king-addons');
+        $saved_values = $value;
+        $output = '';
+
+        if (isset(self::$location_selection) || empty(self::$location_selection)) {
+            self::$location_selection = self::getLocationSelections();
+        }
+        $selection_options = self::$location_selection;
+
+        $output .= '<script type="text/html" id="tmpl-king-addons-el-hf-target-rule-' . $rule_type . '-condition">';
+
+        $output .= '<div class="king-addons-el-hf-target-rule-condition king-addons-el-hf-target-rule-{{data.id}}" data-rule="{{data.id}}" >';
+        $output .= '<span class="target_rule-condition-delete dashicons dashicons-dismiss"></span>';
+        $output .= '<div class="target_rule-condition-wrap" >';
+
+        $output .= '<select name="' . esc_attr($input_name) . '[rule][{{data.id}}]" class="target_rule-condition form-control king-addons-el-hf-input">';
+        $output .= '<option value="">' . __('Select', 'king-addons') . '</option>';
+
+        foreach ($selection_options as $group_data) {
+            $output .= '<optgroup label="' . $group_data['label'] . '">';
+            foreach ($group_data['value'] as $opt_key => $opt_value) {
+                $output .= '<option value="' . $opt_key . '">' . $opt_value . '</option>';
+            }
+            $output .= '</optgroup>';
+        }
+        $output .= '</select>';
+
+        $output .= '</div>';
+        $output .= '</div> <!-- king-addons-el-hf-target-rule-condition -->';
+
+        $output .= '<div class="target_rule-specific-page-wrap" style="display:none">';
+        $output .= '<select name="' . esc_attr($input_name) . '[specific][]" class="target-rule-select2 target_rule-specific-page form-control king-addons-el-hf-input " multiple="multiple">';
+        $output .= '</select>';
+        $output .= '</div>';
+
+        $output .= '</script>';
+
+        $output .= '<div class="king-addons-el-hf-target-rule-wrapper king-addons-el-hf-target-rule-' . $rule_type . '-on-wrap" data-type="' . $rule_type . '">';
+        $output .= '<div class="king-addons-el-hf-target-rule-selector-wrapper king-addons-el-hf-target-rule-' . $rule_type . '-on">';
+        $output .= self::generate_target_rule_selector($rule_type, $selection_options, $input_name, $saved_values, $add_rule_label);
+        $output .= '</div>';
+        $output .= '</div>';
+
+        echo $output;
+    }
+
+    public static function generate_target_rule_selector($type, $selection_options, $input_name, $saved_values, $add_rule_label)
+    {
+        $output = '<div class="target_rule-builder-wrap">';
+
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        if (!is_array($saved_values) || (is_array($saved_values) && empty($saved_values))) {
+            $saved_values = array();
+            $saved_values['rule'][0] = '';
+            $saved_values['specific'][0] = '';
+        }
+
+        $index = 0;
+        if (is_array($saved_values) && is_array($saved_values['rule'])) {
+            foreach ($saved_values['rule'] as $index => $data) {
+                $output .= '<div class="king-addons-el-hf-target-rule-condition king-addons-el-hf-target-rule-' . $index . '" data-rule="' . $index . '" >';
+
+                $output .= '<span class="target_rule-condition-delete dashicons dashicons-dismiss"></span>';
+                $output .= '<div class="target_rule-condition-wrap" >';
+                $output .= '<select name="' . esc_attr($input_name) . '[rule][' . $index . ']" class="target_rule-condition form-control king-addons-el-hf-input">';
+                $output .= '<option value="">' . __('Select', 'king-addons') . '</option>';
+
+                foreach ($selection_options as $group_data) {
+                    $output .= '<optgroup label="' . $group_data['label'] . '">';
+                    foreach ($group_data['value'] as $opt_key => $opt_value) {
+
+                        $selected = '';
+
+                        if ($data == $opt_key) {
+                            $selected = 'selected="selected"';
+                        }
+
+                        $output .= '<option value="' . $opt_key . '" ' . $selected . '>' . $opt_value . '</option>';
+                    }
+                    $output .= '</optgroup>';
+                }
+                $output .= '</select>';
+                $output .= '</div>';
+
+                $output .= '</div>';
+
+                $output .= '<div class="target_rule-specific-page-wrap" style="display:none">';
+                $output .= '<select name="' . esc_attr($input_name) . '[specific][]" class="target-rule-select2 target_rule-specific-page form-control king-addons-el-hf-input " multiple="multiple">';
+
+                if ('specifics' == $data && isset($saved_values['specific']) && null != $saved_values['specific'] && is_array($saved_values['specific'])) {
+                    foreach ($saved_values['specific'] as $sel_value) {
+
+                        if (strpos($sel_value, 'post-') !== false) {
+                            $post_id = (int)str_replace('post-', '', $sel_value);
+                            $post_title = get_the_title($post_id);
+                            $output .= '<option value="post-' . $post_id . '" selected="selected" >' . $post_title . '</option>';
+                        }
+
+                        if (strpos($sel_value, 'tax-') !== false) {
+                            $tax_data = explode('-', $sel_value);
+
+                            $tax_id = (int)str_replace('tax-', '', $sel_value);
+                            $term = get_term($tax_id);
+                            $term_name = '';
+
+                            if (!is_wp_error($term)) {
+                                $term_taxonomy = ucfirst(str_replace('_', ' ', $term->taxonomy));
+
+                                if (isset($tax_data[2]) && 'single' === $tax_data[2]) {
+                                    $term_name = 'All singulars from ' . $term->name;
+                                } else {
+                                    $term_name = $term->name . ' - ' . $term_taxonomy;
+                                }
+                            }
+
+                            $output .= '<option value="' . $sel_value . '" selected="selected" >' . $term_name . '</option>';
+                        }
+                    }
+                }
+                $output .= '</select>';
+                $output .= '</div>';
+            }
+        }
+
+        $output .= '</div>';
+
+        $output .= '<div class="target_rule-add-rule-wrap">';
+        $output .= '<a href="#" class="button" data-rule-id="' . absint($index) . '" data-rule-type="' . $type . '">' . $add_rule_label . '</a>';
+        $output .= '</div>';
+
+        if ('display' == $type) {
+            $output .= '<div class="target_rule-add-exclusion-rule">';
+            $output .= '<a href="#" class="button">' . __('Add Exclusion Rule', 'king-addons') . '</a>';
+            $output .= '</div>';
+        }
+
+        return $output;
+    }
+
     function saveMetaboxData($post_id)
     {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -147,18 +648,40 @@ final class Header_Footer_Builder
             return;
         }
 
-        // todo
-        $target_locations = array(
-            "rule" => array(
-                0 => "basic-global"
-            ),
-            "specific" => array()
-        );
+        if (!isset($_POST['king-addons-el-hf-target-rules-location'])) {
+            $target_locations = array(
+                'rule' => array('basic-global'),
+                'specific' => array(),
+            );
+        } else {
+            $target_locations = self::getFormatRuleValue($_POST, 'king-addons-el-hf-target-rules-location');
+            if (empty($target_locations)) {
+                $target_locations = array(
+                    'rule' => array('basic-global'),
+                    'specific' => array(),
+                );
+            }
+        }
+
+        $target_exclusion = self::getFormatRuleValue($_POST, 'king-addons-el-hf-target-rules-exclusion');
+        $target_users = [];
+
+        if (isset($_POST['king-addons-el-hf-target-rules-users'])) {
+            $target_users = array_map('sanitize_text_field', wp_unslash($_POST['king-addons-el-hf-target-rules-users']));
+        }
 
         update_post_meta($post_id, 'king_addons_el_hf_target_include_locations', $target_locations);
+        update_post_meta($post_id, 'king_addons_el_hf_target_exclude_locations', $target_exclusion);
+        update_post_meta($post_id, 'king_addons_el_hf_target_user_roles', $target_users);
 
         if (isset($_POST['king_addons_el_hf_template_type'])) {
             update_post_meta($post_id, 'king_addons_el_hf_template_type', sanitize_text_field(wp_unslash($_POST['king_addons_el_hf_template_type'])));
+        }
+
+        if (isset($_POST['king-addons-el-hf-display-on-canvas'])) {
+            update_post_meta($post_id, 'king-addons-el-hf-display-on-canvas', sanitize_text_field(wp_unslash($_POST['king-addons-el-hf-display-on-canvas'])));
+        } else {
+            delete_post_meta($post_id, 'king-addons-el-hf-display-on-canvas');
         }
     }
 
@@ -309,7 +832,6 @@ final class Header_Footer_Builder
 
     public static function getTemplateID($type)
     {
-        // TODO
         $option = [
             'location' => 'king_addons_el_hf_target_include_locations',
             'exclusion' => 'king_addons_el_hf_target_exclude_locations',
@@ -807,6 +1329,7 @@ final class Header_Footer_Builder
 
         // Display Rules
         if ('king_addons_el_hf_display_rules' === $column) {
+
             $locations = get_post_meta($post_id, 'king_addons_el_hf_target_include_locations', true);
             if (!empty($locations)) {
                 echo '<div style="margin-bottom: 5px;">';
@@ -816,6 +1339,31 @@ final class Header_Footer_Builder
                 self::columnDisplayLocation($locations);
                 echo '</div>';
             }
+
+            $locations = get_post_meta($post_id, 'king_addons_el_hf_target_exclude_locations', true);
+            if (!empty($locations)) {
+                echo '<div style="margin-bottom: 5px;">';
+                echo '<strong>';
+                echo esc_html__('Exclusion: ', 'king-addons');
+                echo '</strong>';
+                self::columnDisplayLocation($locations);
+                echo '</div>';
+            }
+
+            $users = get_post_meta($post_id, 'king_addons_el_hf_target_user_roles', true);
+            if (isset($users) && is_array($users)) {
+                if (!empty($users[0])) {
+                    $user_label = [];
+                    foreach ($users as $user) {
+                        $user_label[] = self::get_user_by_key($user);
+                    }
+                    echo '<div>';
+                    echo '<strong>Users: </strong>';
+                    echo esc_html(join(', ', $user_label));
+                    echo '</div>';
+                }
+            }
+
         }
 
         // Type of Template
@@ -839,6 +1387,21 @@ final class Header_Footer_Builder
                 echo '</div>';
             }
         }
+    }
+
+    public static function get_user_by_key($key)
+    {
+        if (!isset(self::$user_selection) || empty(self::$user_selection)) {
+            self::$user_selection = self::get_user_selections();
+        }
+        $user_selection = self::$user_selection;
+
+        if (isset($user_selection['basic']['value'][$key])) {
+            return $user_selection['basic']['value'][$key];
+        } elseif ($user_selection['advanced']['value'][$key]) {
+            return $user_selection['advanced']['value'][$key];
+        }
+        return $key;
     }
 
     public static function columnDisplayLocation($locations)
@@ -918,17 +1481,32 @@ final class Header_Footer_Builder
 
         $post_types = apply_filters('king_addons_el_hf_location_rule_post_types', array_merge($post_types, $custom_post_type));
 
-        $special_pages = array(
-            'special-404' => esc_html__('404 Page', 'king-addons'),
-            'special-search' => esc_html__('Search Page', 'king-addons'),
-            'special-blog' => esc_html__('Blog / Posts Page', 'king-addons'),
-            'special-front' => esc_html__('Front Page', 'king-addons'),
-            'special-date' => esc_html__('Date Archive', 'king-addons'),
-            'special-author' => esc_html__('Author Archive', 'king-addons'),
-        );
+        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+            $special_pages = array(
+                'special-404-none' => esc_html__('404 Page (Available in PRO)', 'king-addons'),
+                'special-search' => esc_html__('Search Page', 'king-addons'),
+                'special-blog-none' => esc_html__('Blog / Posts Page (Available in PRO)', 'king-addons'),
+                'special-front' => esc_html__('Front Page', 'king-addons'),
+                'special-date' => esc_html__('Date Archive', 'king-addons'),
+                'special-author' => esc_html__('Author Archive', 'king-addons'),
+            );
+        } else {
+            $special_pages = array(
+                'special-404' => esc_html__('404 Page', 'king-addons'),
+                'special-search' => esc_html__('Search Page', 'king-addons'),
+                'special-blog' => esc_html__('Blog / Posts Page', 'king-addons'),
+                'special-front' => esc_html__('Front Page', 'king-addons'),
+                'special-date' => esc_html__('Date Archive', 'king-addons'),
+                'special-author' => esc_html__('Author Archive', 'king-addons'),
+            );
+        }
 
         if (class_exists('WooCommerce')) {
-            $special_pages['special-woocommerce-shop'] = esc_html__('WooCommerce Shop Page', 'king-addons');
+            if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+                $special_pages['special-woocommerce-shop-none'] = esc_html__('WooCommerce Shop Page (Available in PRO)', 'king-addons');
+            } else {
+                $special_pages['special-woocommerce-shop'] = esc_html__('WooCommerce Shop Page', 'king-addons');
+            }
         }
 
         $selection_options = array(
@@ -946,6 +1524,22 @@ final class Header_Footer_Builder
                 'value' => $special_pages,
             ),
         );
+
+        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+            $selection_options['specific-target'] = array(
+                'label' => esc_html__('Specific Target', 'king-addons'),
+                'value' => array(
+                    'specifics-none' => esc_html__('Specific Pages / Posts / Taxonomies, etc. (Available in PRO)', 'king-addons'),
+                ),
+            );
+        } else {
+            $selection_options['specific-target'] = array(
+                'label' => esc_html__('Specific Target', 'king-addons'),
+                'value' => array(
+                    'specifics' => esc_html__('Specific Pages / Posts / Taxonomies, etc.', 'king-addons'),
+                ),
+            );
+        }
 
         $args = array(
             'public' => true,
@@ -980,13 +1574,6 @@ final class Header_Footer_Builder
                 }
             }
         }
-
-        $selection_options['specific-target'] = array(
-            'label' => esc_html__('Specific Target', 'king-addons'),
-            'value' => array(
-                'specifics' => esc_html__('Specific Pages / Posts / Taxonomies, etc.', 'king-addons'),
-            ),
-        );
 
         return apply_filters('king_addons_el_hf_display_on_list', $selection_options);
     }
@@ -1044,7 +1631,6 @@ final class Header_Footer_Builder
                 unset($save_data[$key]['rule'][$index]);
 
                 if (isset($save_data[$key]['specific']) && is_array($save_data[$key]['specific'])) {
-//                    array_push( $save_data[ $key ]['rule'], 'specifics' );
                     $save_data[$key]['rule'][] = 'specifics';
                 }
             }

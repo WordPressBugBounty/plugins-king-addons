@@ -88,6 +88,7 @@ table.widefat {
     border-top-right-radius: 3px;
 }
 
+/*noinspection CssNonIntegerLengthInPixels*/
 a.king-addons-el-hf-edit-template-btn {
     background: #595959;
     transition: all 100ms linear;
