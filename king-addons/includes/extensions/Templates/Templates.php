@@ -545,7 +545,7 @@ final class Templates
                 $image_retry_count[$url] = 0;
             }
 
-            $new_image_id = $this->download_image_to_media_gallery($url);
+            $new_image_id = $this->download_image_to_media_gallery($url, $image_retry_count[$url]);
             if ($new_image_id === false) {
                 $image_retry_count[$url]++;
                 set_transient('elementor_import_image_retry_count', $image_retry_count, 60 * 60);
@@ -632,7 +632,7 @@ final class Templates
         }
     }
 
-    public function download_image_to_media_gallery($image_url)
+    public function download_image_to_media_gallery($image_url, $image_retry_count)
     {
         try {
             $response = wp_remote_get($image_url);
@@ -667,13 +667,17 @@ final class Templates
 
             $attach_id = wp_insert_attachment($attachment, $image_file);
 
-            add_filter('intermediate_image_sizes', '__return_empty_array', 999);
+            if ($image_retry_count > 1) {
+                add_filter('intermediate_image_sizes', '__return_empty_array', 999);
+            }
 
             require_once(ABSPATH . 'wp-admin/includes/image.php');
             $attach_data = wp_generate_attachment_metadata($attach_id, $image_file);
             wp_update_attachment_metadata($attach_id, $attach_data);
 
-            remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
+            if ($image_retry_count > 1) {
+                remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
+            }
 
             return $attach_id;
         } catch (Exception $e) {

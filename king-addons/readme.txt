@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.57
+Stable tag: 24.12.58
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -192,6 +192,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.58 - February 26, 2025 =
+* **Improved:** Performance.
 
 = King Addons for Elementor version 24.12.57 - February 25, 2025 =
 * **New:** Elementor Header & Footer Builder extension - Added more display conditions.
