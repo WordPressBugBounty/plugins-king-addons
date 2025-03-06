@@ -23,19 +23,26 @@ final class Templates
     public function render_template_catalog_page(): void
     {
         $templates = TemplatesMap::getTemplatesMapArray();
+        $collections = CollectionsMap::getCollectionsMapArray();
+
+        uasort($collections, function($a, $b) {
+            return strcasecmp($a, $b);
+        });
+
         $is_premium_active = king_addons_freemius()->can_use_premium_code();
 
-        // For UI testing, it doesn't enable the real premium
+        // TODO: TEST: For UI testing, it doesn't enable the real premium
 //        $is_premium_active = false;
 
         // Arrays for categories and tags
         $categories = [];
         $tags = [];
+        $category_counts = [];
 
         // Getting unique categories and tags
         foreach ($templates['templates'] as $template) {
-            if (!in_array($template['subcategory'], $categories)) {
-                $categories[] = $template['subcategory'];
+            if (!in_array($template['category'], $categories)) {
+                $categories[] = $template['category'];
             }
 
             foreach ($template['tags'] as $tag) {
@@ -43,16 +50,22 @@ final class Templates
                     $tags[] = $tag;
                 }
             }
+
+            $category = $template['category'];
+            $category_counts[$category] = isset($category_counts[$category]) ? $category_counts[$category] + 1 : 1;
         }
+
+        sort($categories);
 
         // Get filters from query
         $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
-        $selected_category = isset($_GET['subcategory']) ? sanitize_text_field($_GET['subcategory']) : '';
+        $selected_category = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
+        $selected_collection = isset($_GET['collection']) ? sanitize_text_field($_GET['collection']) : '';
         $selected_tags = isset($_GET['tags']) ? array_filter(explode(',', sanitize_text_field($_GET['tags']))) : [];
         $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
 
         // Use the common function to get filtered templates and pagination
-        $result = $this->get_filtered_templates($templates, $search_query, $selected_category, $selected_tags, $current_page);
+        $result = $this->get_filtered_templates($templates, $search_query, $selected_category, $selected_tags, $selected_collection, $current_page);
 
         if (isset($_GET['ajax']) && $_GET['ajax']) {
             wp_send_json_success(['grid_html' => $result['grid_html'], 'pagination_html' => $result['pagination_html']]);
@@ -129,16 +142,29 @@ final class Templates
                 <div class="filters-wrapper">
                     <div class="filters">
                         <select id="template-category">
-                            <option value=""><?php esc_html_e('All Categories', 'king-addons'); ?></option>
+                            <option value=""><?php esc_html_e('All Categories', 'king-addons'); ?>
+                                (<?php echo count($templates['templates']); ?>)
+                            </option>
                             <?php foreach ($categories as $category): ?>
-                                <option value="<?php echo esc_attr($category); ?>" <?php selected($selected_category, $category); ?>><?php echo esc_html(ucwords(str_replace('-', ' ', $category))); ?></option>
+                                <option value="<?php echo esc_attr($category); ?>" <?php selected($selected_category, $category); ?>>
+                                    <?php echo esc_html(ucwords(str_replace('-', ' ', $category))); ?>
+                                    (<?php echo $category_counts[$category]; ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <select id="template-collection">
+                            <option value=""><?php esc_html_e('All Collections', 'king-addons'); ?> (<?php echo count($collections); ?>)</option>
+                            <?php foreach ($collections as $id => $name): ?>
+                                <option value="<?php echo esc_attr($id); ?>" <?php selected($selected_collection, $id); ?>>
+                                    <?php echo esc_html($name); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                         <div id="template-tags">
                             <?php
-                            shuffle($tags);
-
-                            foreach ($tags as $tag): ?>
+                            shuffle($tags); ?>
+                            <div class="tags-header">Tags</div>
+                            <?php foreach ($tags as $tag): ?>
                                 <label>
                                     <input type="checkbox"
                                            value="<?php echo esc_attr($tag); ?>" <?php echo in_array($tag, $selected_tags) ? 'checked' : ''; ?>> <?php echo esc_html(ucwords(str_replace('-', ' ', $tag))); ?>
@@ -194,6 +220,17 @@ final class Templates
                         <a href="#" id="template-preview-link" target="_blank">
                             <?php esc_html_e('Live Preview', 'king-addons'); ?>
                         </a>
+                        <div class="preview-mode-switcher">
+                            <button data-mode="desktop" class="active" id="preview-desktop">
+                                <span class="dashicons dashicons-desktop"></span>
+                            </button>
+                            <button data-mode="tablet" id="preview-tablet">
+                                <span class="dashicons dashicons-tablet"></span>
+                            </button>
+                            <button data-mode="mobile" id="preview-mobile">
+                                <span class="dashicons dashicons-smartphone"></span>
+                            </button>
+                        </div>
                         <button id="close-popup">
                             <?php esc_html_e('Close Preview X', 'king-addons'); ?>
                         </button>
@@ -257,7 +294,7 @@ final class Templates
         <?php
     }
 
-    private function get_filtered_templates($templates, $search_query, $selected_category, $selected_tags, $current_page): array
+    private function get_filtered_templates($templates, $search_query, $selected_category, $selected_tags, $selected_collection, $current_page): array
     {
         $search_terms = array_filter(explode(' ', $search_query));
         $has_search = !empty($search_terms);
@@ -265,7 +302,7 @@ final class Templates
 
         // Filter templates based on search and selected filters
         if (!$has_search) {
-            $filtered_templates = array_filter($templates['templates'], function ($template) use ($search_terms, $selected_category, $selected_tags) {
+            $filtered_templates = array_filter($templates['templates'], function ($template) use ($search_terms, $selected_category, $selected_tags, $selected_collection) {
 
                 foreach ($search_terms as $term) {
                     $found_in_title = stripos($template['title'], $term) !== false;
@@ -283,7 +320,7 @@ final class Templates
                     }
                 }
 
-                if ($selected_category && $template['subcategory'] !== $selected_category) {
+                if ($selected_category && $template['category'] !== $selected_category) {
                     return false;
                 }
 
@@ -296,6 +333,10 @@ final class Templates
                     }
                 }
 
+                if ($selected_collection && $template['collection'] != $selected_collection) {
+                    return false;
+                }
+
                 return true;
             });
 
@@ -306,7 +347,7 @@ final class Templates
 
             $filtered_templates = $templates['templates'];
 
-            if (!empty($search_terms) || !empty($selected_category) || !empty($selected_tags)) {
+            if (!empty($search_terms) || !empty($selected_category) || !empty($selected_tags) || !empty($selected_collection)) {
                 $matched_by_title = [];
                 $matched_by_tags = [];
 
@@ -332,7 +373,7 @@ final class Templates
 //                        }
                     }
 
-                    if ($selected_category && $template['subcategory'] !== $selected_category) {
+                    if ($selected_category && $template['category'] !== $selected_category) {
                         continue;
                     }
 
@@ -343,6 +384,10 @@ final class Templates
                                 continue 2;
                             }
                         }
+                    }
+
+                    if ($selected_collection && $template['collection'] != $selected_collection) {
+                        continue;
                     }
 
                     // Attach the template key for later use
@@ -374,7 +419,7 @@ final class Templates
                 $attr_key = ($has_search) ? $template['template_key'] : $key;
                 ?>
                 <div class="template-item"
-                     data-category="<?php echo esc_attr($template['subcategory']); ?>"
+                     data-category="<?php echo esc_attr($template['category']); ?>"
                      data-tags="<?php echo esc_attr(implode(',', $template['tags'])); ?>"
                      data-template-key="<?php echo esc_attr($attr_key); ?>"
                      data-template-plan="<?php echo esc_attr($template['plan']); ?>">
@@ -395,8 +440,9 @@ final class Templates
             'base' => add_query_arg(array(
                 'paged' => '%#%',
                 's' => $search_query,
-                'subcategory' => $selected_category,
-                'tags' => implode(',', $selected_tags)
+                'category' => $selected_category,
+                'collection' => $selected_collection,
+                'tags' => implode(',', $selected_tags),
             )),
             'format' => '?paged=%#%',
             'current' => $current_page,
@@ -459,14 +505,15 @@ final class Templates
         }
 
         $search_query = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
-        $selected_category = isset($_POST['subcategory']) ? sanitize_text_field($_POST['subcategory']) : '';
+        $selected_category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
+        $selected_collection = isset($_POST['collection']) ? sanitize_text_field($_POST['collection']) : '';
         $selected_tags = isset($_POST['tags']) ? array_filter(explode(',', sanitize_text_field($_POST['tags']))) : [];
         $current_page = isset($_POST['paged']) ? max(1, intval($_POST['paged'])) : 1;
 
         $templates = TemplatesMap::getTemplatesMapArray();
 
         // Use the common function to get filtered templates and pagination
-        $result = $this->get_filtered_templates($templates, $search_query, $selected_category, $selected_tags, $current_page);
+        $result = $this->get_filtered_templates($templates, $search_query, $selected_category, $selected_tags, $selected_collection, $current_page);
 
         wp_send_json_success(['grid_html' => $result['grid_html'], 'pagination_html' => $result['pagination_html']]);
     }

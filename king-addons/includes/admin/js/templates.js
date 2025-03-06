@@ -22,6 +22,33 @@ jQuery(document).ready(function ($) {
         $('#template-preview-popup').fadeIn();
     });
 
+    // Listen for clicks on any button inside .preview-mode-switcher
+    $('.preview-mode-switcher button').on('click', function() {
+        // Remove the .active class from all buttons
+        $('.preview-mode-switcher button').removeClass('active');
+        // Add .active to the clicked button
+        $(this).addClass('active');
+
+        // Determine which mode was clicked: desktop, tablet, or mobile
+        var mode = $(this).data('mode');
+
+        // Select the preview iframe
+        var $iframe = $('#template-preview-iframe');
+
+        // Remove any previous mode classes
+        $iframe.removeClass('preview-tablet preview-mobile');
+
+        // If tablet, add .preview-tablet class
+        if (mode === 'tablet') {
+            $iframe.addClass('preview-tablet');
+        }
+        // If mobile, add .preview-mobile class
+        else if (mode === 'mobile') {
+            $iframe.addClass('preview-mobile');
+        }
+        // If desktop, no extra class (width:100% by default).
+    });
+
     $(document).on('click', '#close-popup', function () {
         $('#template-preview-popup').fadeOut();
     });
@@ -258,10 +285,12 @@ jQuery(document).ready(function ($) {
 
     let templateSearch = $('#template-search');
     let templateCategory = $('#template-category');
+    let templateCollection = $('#template-collection');
 
     function filterTemplates(page = 1) {
         let searchQuery = templateSearch.val().toLowerCase();
         let selectedCategory = templateCategory.val();
+        let selectedCollection = templateCollection.val();
         let selectedTags = [];
 
         $('#template-tags input:checked').each(function () {
@@ -274,7 +303,8 @@ jQuery(document).ready(function ($) {
             data: {
                 action: 'filter_templates',
                 s: searchQuery,
-                subcategory: selectedCategory,
+                category: selectedCategory,
+                collection: selectedCollection,
                 tags: selectedTags.join(','),
                 paged: page
             },
@@ -298,16 +328,32 @@ jQuery(document).ready(function ($) {
     }
 
     templateSearch.on('keyup', function () {
+        templateCategory.val('');
+        templateCollection.val('');
+        $('#template-tags input:checked').prop('checked', false);
         filterTemplates();
     });
 
     templateCategory.on('change', function () {
+        templateSearch.val('');
+        templateCollection.val('');
+        $('#template-tags input:checked').prop('checked', false);
+        filterTemplates();
+    });
+
+    templateCollection.on('change', function () {
+        templateSearch.val('');
+        templateCategory.val('');
+        $('#template-tags input:checked').prop('checked', false);
         filterTemplates();
     });
 
     // TODO: For now the tags feature works as selector of sub-subcategories.
     // $('#template-tags input').on('change', filterTemplates);
     $('#template-tags input').on('change', function() {
+        templateSearch.val('');
+        templateCategory.val('');
+        templateCollection.val('');
         if ($(this).is(':checked')) {
             $('#template-tags input').not(this).prop('checked', false);
         }
@@ -317,6 +363,7 @@ jQuery(document).ready(function ($) {
     $('#reset-filters').on('click', function () {
         templateSearch.val('');
         templateCategory.val('');
+        templateCollection.val('');
         $('#template-tags input:checked').prop('checked', false);
         filterTemplates();
     });

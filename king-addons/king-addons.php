@@ -4,7 +4,7 @@
  * Description: 600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.12.58
+ * Version: 24.12.60
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.12.58';
+const KING_ADDONS_VERSION = '24.12.60';
 
 /** REQUIREMENTS */
 const KING_ADDONS_MINIMUM_PHP_VERSION = '7.4';
@@ -70,7 +70,7 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
                     'has_affiliation' => 'all',
                     'menu' => array(
                         'slug' => 'king-addons',
-                        'first-path' => 'admin.php?page=king-addons',
+                        'first-path' => 'plugins.php',
                         'pricing' => false,
                         'contact' => false,
                         'support' => false,
@@ -114,10 +114,12 @@ if (!version_compare(PHP_VERSION, KING_ADDONS_MINIMUM_PHP_VERSION, '>=')) {
     if (!function_exists('king_addons_doRedirect_after_activation')) {
         function king_addons_doRedirect_after_activation()
         {
-            if (get_option('king_addons_plugin_activated', false)) {
-                delete_option('king_addons_plugin_activated');
-                wp_redirect(admin_url('admin.php?page=king-addons'));
-                exit;
+            if (did_action('elementor/loaded')) {
+                if (get_option('king_addons_plugin_activated', false)) {
+                    delete_option('king_addons_plugin_activated');
+                    wp_redirect(admin_url('admin.php?page=king-addons'));
+                    exit;
+                }
             }
         }
 

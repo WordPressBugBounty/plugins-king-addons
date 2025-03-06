@@ -29,9 +29,12 @@ final class Header_Footer_Builder
     public function __construct()
     {
         add_action('init', [$this, 'addPostType']);
+        add_action('admin_notices', [$this, 'renderNoticeZeroPosts']);
+        add_action('in_admin_header', [$this, 'renderAdminCustomHeader']);
         add_action('add_meta_boxes', [$this, 'registerMetabox']);
         add_action('save_post', [$this, 'saveMetaboxData']);
         add_action('template_redirect', [$this, 'checkUserCanEdit']);
+        add_filter('screen_options_show_screen', [$this, 'disableScreenOptions'], 10, 2);
 
         require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/ELHF_Render_On_Canvas.php');
         add_filter('single_template', [$this, 'loadElementorCanvasTemplate']);
@@ -45,6 +48,36 @@ final class Header_Footer_Builder
             add_action('manage_king-addons-el-hf_posts_custom_column', [$this, 'columnContent'], 10, 2);
             add_filter('manage_king-addons-el-hf_posts_columns', [$this, 'columnHeadings']);
         }
+    }
+
+    /**
+     * Show an admin notice when there are zero "king-addons-el-hf" posts
+     */
+    function renderNoticeZeroPosts()
+    {
+        global $pagenow, $post_type;
+
+        // Check if we are on the "All posts" page for the custom post type
+        if ('edit.php' === $pagenow && 'edit-king-addons-el-hf' === $post_type) {
+
+            // Count published posts of this CPT
+            $count_posts = wp_count_posts('king-addons-el-hf');
+            if ($count_posts->publish == 0) {
+                echo '<div class="notice notice-info is-dismissible">';
+                echo '<p>';
+                echo esc_html__("Create the first header or footer by clicking the 'Create New' button above.", 'king addons');
+                echo '</p>';
+                echo '</div>';
+            }
+        }
+    }
+
+    public function disableScreenOptions($show_screen, $screen)
+    {
+        if ($screen->id === 'edit-king-addons-el-hf') {
+            return false;
+        }
+        return $show_screen;
     }
 
     function king_addons_el_hf_get_posts_by_query()
@@ -158,6 +191,56 @@ final class Header_Footer_Builder
         self::$location_selection = self::getLocationSelections();
     }
 
+    public function renderAdminCustomHeader()
+    {
+        $current_screen = get_current_screen()->id;
+        if ($current_screen !== 'edit-king-addons-el-hf'
+            && $current_screen !== 'header-footer_page_king-addons-el-hf-settings') {
+            return;
+        }
+
+        ?>
+        <div class="king-addons-pb-settings-page-header">
+            <h1><?php esc_html_e('Elementor Header & Footer Builder', 'king-addons'); ?></h1>
+            <p>
+                <?php esc_html_e('Create fully customizable headers and footers with display conditions to control where they appear', 'king-addons'); ?>
+            </p>
+            <div class="king-addons-pb-preview-buttons">
+                <a href="<?php echo admin_url('post-new.php?post_type=king-addons-el-hf'); ?>">
+                    <div class="king-addons-pb-user-template">
+                        <span><?php esc_html_e('Create New', 'king-addons'); ?></span>
+                        <span class="plus-icon">+</span>
+                    </div>
+                </a>
+                <?php if (!king_addons_freemius()->can_use_premium_code__premium_only()): ?>
+                    <div class="kng-promo-btn-wrap">
+                        <a href="https://kingaddons.com/pricing/?rel=king-addons-hf-builder" target="_blank">
+                            <div class="kng-promo-btn-txt">
+                                <?php esc_html_e('Unlock Premium Features & 600+ Templates Today!', 'king-addons'); ?>
+                            </div>
+                            <img width="16px"
+                                 src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share-v2.svg'; ?>"
+                                 alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+
+        $counts = wp_count_posts('king-addons-el-hf');
+        $total = (int)$counts->publish + (int)$counts->draft;
+
+        if (0 === $total) {
+            echo '<div class="notice notice-info">';
+            echo '<p>';
+            echo esc_html__("Create the first header or footer by clicking the 'Create New' button above.", 'king addons');
+            echo '</p>';
+            echo '</div>';
+        }
+
+    }
+
     function addPostType(): void
     {
         if (!current_user_can('manage_options')) {
@@ -249,7 +332,8 @@ final class Header_Footer_Builder
                     <p><?php esc_html_e('Enabling this option will display this layout on pages using Elementor Canvas Template', 'king-addons'); ?></p>
                 </td>
                 <td class="king-addons-el-hf-options-row-content">
-                    <input type="checkbox" id="king-addons-el-hf-display-on-canvas" name="king-addons-el-hf-display-on-canvas"
+                    <input type="checkbox" id="king-addons-el-hf-display-on-canvas"
+                           name="king-addons-el-hf-display-on-canvas"
                            value="1" <?php checked($display_on_canvas); ?> />
                 </td>
             </tr>

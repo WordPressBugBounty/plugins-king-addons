@@ -61,6 +61,16 @@ final class RegisterAssets
             'nonce' => wp_create_nonce('king_addons_mailchimp_nonce'),
         ]);
 
+//        wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-script', 'KingAddonsFormBuilderData', [
+//            'ajaxUrl' => admin_url('admin-ajax.php'),
+//            'nonce' => wp_create_nonce('king_addons_fb_nonce'),
+//            'input_empty' => esc_html__('Please fill out this field', 'king-addons'),
+//            'select_empty' => esc_html__('Nothing selected', 'king-addons'),
+//            'file_empty' => esc_html__('Please upload a file', 'king-addons'),
+//            'recaptcha_v3_site_key' => get_option('king_addons_recaptcha_v3_site_key'),
+//            'recaptcha_error' => esc_html__('Recaptcha Error', 'king-addons'),
+//        ]);
+
         foreach (ModulesMap::getModulesMapArray()['features'] as $feature_id => $feature_array) {
             foreach ($feature_array['js'] as $js) {
                 wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $feature_id . '-' . $js, KING_ADDONS_URL . 'includes/features/' . $feature_array['php-class'] . '/' . $js . '.js', null, KING_ADDONS_VERSION);

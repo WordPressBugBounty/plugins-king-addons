@@ -366,7 +366,7 @@ final class ModulesMap
                     'docs-link' => '',
 //                    'demo-link' => 'https://kingaddons.com/elementor/magazine-grid/',
                     'demo-link' => '',
-                    'css' => ['style'],
+                    'css' => [],
                     'js' => ['script'],
                 ],
                 'timeline' => [

@@ -95,34 +95,41 @@
     background: transparent;
 }
 
-.elementor-control.king-addons-pro-control .elementor-control-content:after {
+/* Make .king-addons-pro-control position: relative
+   so the tooltip can be positioned absolutely inside it */
+.king-addons-pro-control {
+    position: relative;
+}
+
+/* The tooltip is hidden by default */
+.king-addons-pro-tooltip {
+    position: absolute;
+    top: 40px;
+
+    /* Styling */
+    padding: 15px;
     font-size: 12px;
     font-weight: 500;
-    position: absolute;
-    z-index: 99;
-    top: 20px;
-    visibility: hidden;
-    margin-top: 10px;
-    padding: 15px;
-    content: "This is available in King Addons PRO version";
-    transition: all 0.2s ease-in;
-    opacity: 0;
     color: #93003c;
     border: 1px solid #e6e9ec;
     border-radius: 5px;
     background-color: #ffffff;
     box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+
+    /* Initially hidden */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 999;
 }
 
-.elementor-repeater-fields .elementor-control.king-addons-pro-control .elementor-control-content:after {
-    content: "This is available in King Addons PRO version";
+.king-addons-pro-tooltip a {
+    color: #5B03FF;
+    transition: none;
 }
 
-.elementor-control.king-addons-pro-control.no-distance .elementor-control-content:after {
-    margin: 0;
-}
-
-.elementor-control.king-addons-pro-control .elementor-control-content:hover:after {
+/* Show the tooltip on hover */
+.king-addons-pro-control:hover .king-addons-pro-tooltip {
     visibility: visible;
     opacity: 1;
 }
@@ -371,6 +378,19 @@
 }
 
 /* END: GRID PREVIEW */
+/* -------------- */
+
+/* FORM BUILDER */
+.king-addons-fb-step-editor-bg {
+    background: rgb(227 227 255) !important;
+    border-color: rgb(87 79 247 / 35%) !important;
+    color: #d6107c;
+}
+
+.king-addons-fb-step-editor-bg button {
+    border-color: rgb(87 79 247 / 35%) !important;
+}
+/* END: FORM BUILDER PREVIEW */
 /* -------------- */
 
 .king-addons-icon.king-addons-image-hotspots {

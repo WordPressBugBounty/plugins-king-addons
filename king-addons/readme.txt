@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.58
+Stable tag: 24.12.60
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -49,7 +49,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 
 - **Templates Catalog** - Access over 600 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
 - **Popup Builder** - Customize eye-catching popups with the Popup Builder extension for Elementor. Ideal for announcements, promotional messages, or subscription forms. Adjust styles, animations, and triggers to boost conversions, capture attention, and enhance user experience.
-- **Header & Footer Builder** - Create and customize responsive headers and footers with the Elementor Header & Footer Builder. Add menus, logos, and other elements while ensuring seamless navigation and brand consistency across all devices.
+- **Header & Footer Builder** - Design fully customizable WordPress headers and footers with advanced display conditions for complete control over visibility. Easily create sticky headers, transparent menus, or fixed footers using Elementor’s drag-and-drop editor—no coding required. Apply custom conditions for specific pages, user roles, or devices to optimize navigation and user experience. Perfect for global site headers, landing pages, and membership sites, ensuring a consistent and flexible site structure.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -118,6 +118,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 ### Happy User of King Addons?
 
 - If you have any more questions, visit our support on the [Plugin's Forum](https://wordpress.org/support/plugin/king-addons).
+- You can also ask us any question through [support@kingaddons.com](mailto:support@kingaddons.com)
 - Rate us on [WordPress](https://wordpress.org/support/plugin/king-addons/reviews/?rate=5#new-post) :)
 
 ### Keywords
@@ -192,6 +193,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.60 - March 6, 2025 =
+* **Improved:** Templates Catalog – Added categories and collections for better navigation.
+* **Improved:** Templates Catalog – Added switcher in demo preview for desktop, tablet and mobile views.
+* **Improved:** Compatibility with other plugins for Elementor improved.
+* **Improved:** Elementor Header & Footer Builder extension - Improved UI.
 
 = King Addons for Elementor version 24.12.58 - February 26, 2025 =
 * **Improved:** Performance.

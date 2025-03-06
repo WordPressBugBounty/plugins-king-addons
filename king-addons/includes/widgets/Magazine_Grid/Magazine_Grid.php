@@ -58,7 +58,6 @@ class Magazine_Grid extends Widget_Base
     public function get_style_depends()
     {
         return [
-            KING_ADDONS_ASSETS_UNIQUE_KEY . '-magazine-grid-style',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-slick-helper',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-button',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-animation-general',

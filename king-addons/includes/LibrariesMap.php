@@ -38,7 +38,12 @@ final class LibrariesMap
                 ],
                 'grid' => [
                     'css' => ['grid'],
-                    'js' => ['grid', 'media', 'woocommerce', 'prev']
+                    'js' => [
+                        'grid',
+                        'media',
+                        'woocommerce',
+//                        'prev'
+                    ]
                 ],
                 'imagesloaded' => [
                     'css' => [],

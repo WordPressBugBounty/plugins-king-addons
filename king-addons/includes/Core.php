@@ -5,6 +5,7 @@
 
 namespace King_Addons;
 
+use Elementor\Plugin;
 use Elementor\Widgets_Manager;
 use Elementor\Controls_Manager;
 
@@ -60,6 +61,7 @@ final class Core
             // Templates Catalog
             if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
                 require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/CollectionsMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/Templates.php');
             }
 
@@ -93,9 +95,21 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Filter_WooCommerce_Products_Ajax.php');
             require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Post_Likes_Ajax.php');
 
+            // Additional - Form Builder
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Create_Submission.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Send_Email.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Send_Webhook.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Subscribe_Mailchimp.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Update_Action_Meta.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Upload_Email_File.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Verify_Google_Recaptcha.php');
+//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/View_Submissions_Pro.php');
+
             self::enableWidgetsByDefault();
 
             add_action('elementor/init', [$this, 'initElementor']);
+
+            add_action('elementor/elements/categories_registered', [$this, 'addWidgetCategory']);
             add_action('elementor/controls/controls_registered', [$this, 'registerControls']);
 
             self::enableFeatures();
@@ -248,15 +262,14 @@ final class Core
 
     public function initElementor(): void
     {
-        add_action('elementor/elements/categories_registered', [$this, 'addWidgetCategory']);
         add_action('elementor/widgets/register', [$this, 'registerWidgets']);
         add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueueEditorStyles']);
         add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueueEditorScripts']);
     }
 
-    function addWidgetCategory($elements_manager): void
+    function addWidgetCategory(): void
     {
-        $elements_manager->add_category(
+        Plugin::instance()->elements_manager->add_category(
             'king-addons',
             [
                 'title' => esc_html__('King Addons', 'king-addons'),
@@ -437,7 +450,9 @@ final class Core
 
     function enqueueEditorScripts(): void
     {
+        wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', KING_ADDONS_URL . 'includes/admin/js/elementor-editor.js', '', KING_ADDONS_VERSION);
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-data-table-export', KING_ADDONS_URL . 'includes/widgets/Data_Table/preview-handler.js', '', KING_ADDONS_VERSION);
+//        wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-editor-handler', KING_ADDONS_URL . 'includes/widgets/Form_Builder/editor-handler.js', '', KING_ADDONS_VERSION);
     }
 
     public static function renderProFeaturesSection($module, $section, $type, $widget_name, $features): void
