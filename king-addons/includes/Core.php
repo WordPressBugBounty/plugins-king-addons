@@ -96,14 +96,16 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Post_Likes_Ajax.php');
 
             // Additional - Form Builder
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Create_Submission.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Send_Email.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Send_Webhook.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Subscribe_Mailchimp.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Update_Action_Meta.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Upload_Email_File.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/Verify_Google_Recaptcha.php');
-//            require_once(KING_ADDONS_PATH . 'includes/helpers/Form_Builder/View_Submissions_Pro.php');
+            if (KING_ADDONS_WGT_FORM_BUILDER) {
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Create_Submission.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Send_Email.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Send_Webhook.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Subscribe_Mailchimp.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Update_Action_Meta.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Upload_Email_File.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Verify_Google_Recaptcha.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/View_Submissions_Pro.php');
+            }
 
             self::enableWidgetsByDefault();
 
@@ -452,7 +454,10 @@ final class Core
     {
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', KING_ADDONS_URL . 'includes/admin/js/elementor-editor.js', '', KING_ADDONS_VERSION);
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-data-table-export', KING_ADDONS_URL . 'includes/widgets/Data_Table/preview-handler.js', '', KING_ADDONS_VERSION);
-//        wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-editor-handler', KING_ADDONS_URL . 'includes/widgets/Form_Builder/editor-handler.js', '', KING_ADDONS_VERSION);
+
+        if (KING_ADDONS_WGT_FORM_BUILDER) {
+            wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-editor-handler', KING_ADDONS_URL . 'includes/widgets/Form_Builder/editor-handler.js', '', KING_ADDONS_VERSION);
+        }
     }
 
     public static function renderProFeaturesSection($module, $section, $type, $widget_name, $features): void
@@ -910,16 +915,13 @@ final class Core
         foreach ($single_params as $param => $needs_clean) {
             if (isset($_GET[$param])) {
                 $value = wp_unslash($_GET[$param]);
-                /** @noinspection PhpUndefinedFunctionInspection */
                 $value = $needs_clean ? wc_clean($value) : $value;
                 $url = add_query_arg($param, $value, $url);
             }
         }
         /** @noinspection DuplicatedCode */
-        /** @noinspection PhpUndefinedFunctionInspection */
         if ($chosen_attrs = WC()->query->get_layered_nav_chosen_attributes()) {
             foreach ($chosen_attrs as $name => $data) {
-                /** @noinspection PhpUndefinedFunctionInspection */
                 $filter_name = wc_attribute_taxonomy_slug($name);
                 if (!empty($data['terms'])) {
                     $url = add_query_arg('filter_' . $filter_name, implode(',', $data['terms']), $url);

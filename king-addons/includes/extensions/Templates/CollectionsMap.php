@@ -77,6 +77,7 @@ final class CollectionsMap
             64 => 'Wedding Business',
             65 => 'Building & Construction Company',
             66 => 'Online Education Services',
+            67 => 'Wine Shop & Vineyards',
         ];
     }
 }

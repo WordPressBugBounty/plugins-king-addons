@@ -189,7 +189,7 @@ jQuery(document).ready(function ($) {
             })
             .then(data => {
                 if (data.success) {
-                    processNextImage()
+                    processNextImage();
                 } else {
                     alert('Error getting template: ' + data.message);
                 }
@@ -252,6 +252,12 @@ jQuery(document).ready(function ($) {
                         }
                     } else {
                         console.error('Process image issue:', data);
+                        // For debugging
+                        // if (data.data && data.data.retry) {
+                        //         processNextImage();
+                        // } else {
+                        //     alert('Error: ' + (data.data ? data.data.message : 'Process image issue'));
+                        // }
                     }
                 })
                 .catch(error => {

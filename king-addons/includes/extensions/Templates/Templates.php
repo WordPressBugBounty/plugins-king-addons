@@ -25,7 +25,7 @@ final class Templates
         $templates = TemplatesMap::getTemplatesMapArray();
         $collections = CollectionsMap::getCollectionsMapArray();
 
-        uasort($collections, function($a, $b) {
+        uasort($collections, function ($a, $b) {
             return strcasecmp($a, $b);
         });
 
@@ -153,7 +153,9 @@ final class Templates
                             <?php endforeach; ?>
                         </select>
                         <select id="template-collection">
-                            <option value=""><?php esc_html_e('All Collections', 'king-addons'); ?> (<?php echo count($collections); ?>)</option>
+                            <option value=""><?php esc_html_e('All Collections', 'king-addons'); ?>
+                                (<?php echo count($collections); ?>)
+                            </option>
                             <?php foreach ($collections as $id => $name): ?>
                                 <option value="<?php echo esc_attr($id); ?>" <?php selected($selected_collection, $id); ?>>
                                     <?php echo esc_html($name); ?>
@@ -491,6 +493,14 @@ final class Templates
         add_action('wp_ajax_import_elementor_page_with_images', array($this, 'import_elementor_page_with_images'));
         add_action('wp_ajax_process_import_images', array($this, 'process_import_images'));
         add_action('wp_ajax_filter_templates', array($this, 'handle_filter_templates'));
+
+        add_action('http_api_curl', array($this, 'set_custom_curl_options'), 10, 3);
+    }
+
+    public function set_custom_curl_options($handle, $r, $url) {
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 30);
+        curl_setopt($handle, CURLOPT_TIMEOUT, 30);
     }
 
     function handle_filter_templates(): void
@@ -682,10 +692,17 @@ final class Templates
     public function download_image_to_media_gallery($image_url, $image_retry_count)
     {
         try {
-            $response = wp_remote_get($image_url);
+            $response = wp_remote_get($image_url, [ 'timeout' => 30 ]);
 
             if (is_wp_error($response)) {
                 throw new Exception('HTTP request error: ' . $response->get_error_message());
+            }
+
+            $status_code = wp_remote_retrieve_response_code($response);
+            if ($status_code !== 200) {
+                throw new Exception(
+                    'HTTP status code ' . $status_code . ' when trying to download: ' . $image_url
+                );
             }
 
             $image_data = wp_remote_retrieve_body($response);
@@ -698,6 +715,9 @@ final class Templates
             $unique_image_name = $image_name . '-' . time() . '.' . $image_extension;
 
             $upload_dir = wp_upload_dir();
+            if ( ! file_exists( $upload_dir['path'] ) ) {
+                wp_mkdir_p( $upload_dir['path'] );
+            }
             $image_file = $upload_dir['path'] . '/' . $unique_image_name;
 
             if (file_put_contents($image_file, $image_data) === false) {
@@ -715,7 +735,7 @@ final class Templates
             $attach_id = wp_insert_attachment($attachment, $image_file);
 
             if ($image_retry_count > 1) {
-                add_filter('intermediate_image_sizes', '__return_empty_array', 999);
+            add_filter('intermediate_image_sizes', '__return_empty_array', 999);
             }
 
             require_once(ABSPATH . 'wp-admin/includes/image.php');
@@ -723,11 +743,12 @@ final class Templates
             wp_update_attachment_metadata($attach_id, $attach_data);
 
             if ($image_retry_count > 1) {
-                remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
+            remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
             }
 
             return $attach_id;
         } catch (Exception $e) {
+            error_log('[KING_ADDONS_ERROR] ' . $e->getMessage());
             return false;
         }
     }

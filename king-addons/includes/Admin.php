@@ -32,18 +32,28 @@ final class Admin
         );
 
         add_submenu_page(
-            'king-addons',              // parent slug
-            'King Addons Settings',     // page title
-            'Settings',                 // menu title
-            'manage_options',           // capability
-            'king-addons-settings',     // submenu slug
-            [$this, 'showSettingsPage'] // callback function to render the page
+            'king-addons',
+            'King Addons Settings',
+            'Settings',
+            'manage_options',
+            'king-addons-settings',
+            [$this, 'showSettingsPage']
         );
+
+        if (KING_ADDONS_WGT_FORM_BUILDER) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Form Submissions', 'king-addons'),
+                esc_html__('Form Submissions', 'king-addons'),
+                'edit_posts',
+                'edit.php?post_type=king-addons-fb-sub',
+            );
+        }
 
         if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
             add_menu_page(
                 'King Addons for Elementor',
-                (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')),
+                (!king_addons_freemius()->can_use_premium_code() ? esc_html__('Free Templates', 'king-addons') : esc_html__('Templates Pro', 'king-addons')),
                 'manage_options',
                 'king-addons-templates',
                 [Templates::instance(), 'render_template_catalog_page'],

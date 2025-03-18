@@ -63,14 +63,17 @@ h2.nav-tab-wrapper {
     color: white;
 }
 
-.wp-core-ui .button, .wp-core-ui .button-secondary {
+.wp-core-ui .button:not(.king-addons-upgrade-notice a),
+.wp-core-ui .button-secondary {
     color: #191919;
     border-color: #191919;
     background: white;
     border-radius: 5px !important;
 }
 
-.alternate, .striped > tbody > :nth-child(odd), ul.striped > :nth-child(odd) {
+.alternate,
+.striped > tbody > :nth-child(odd),
+ul.striped > :nth-child(odd) {
     background-color: #f2f4f5;
 }
 
