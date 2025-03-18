@@ -53,8 +53,6 @@ final class Core
 
         if ($this->hasElementorCompatibility()) {
 
-            require_once(KING_ADDONS_PATH . 'includes/helpers/Elementor/elementor-constants.php');
-
             // Initial requirements check
             require_once(KING_ADDONS_PATH . 'includes/helpers/Check_Requirements/Check_Requirements.php');
 
