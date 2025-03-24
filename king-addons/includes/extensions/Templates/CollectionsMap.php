@@ -78,6 +78,7 @@ final class CollectionsMap
             65 => 'Building & Construction Company',
             66 => 'Online Education Services',
             67 => 'Wine Shop & Vineyards',
+            68 => 'Plumber & Handyman',
         ];
     }
 }

@@ -4894,6 +4894,71 @@ final class TemplatesMap
                     'tags' => ['alcohol', 'blog', 'drinks', 'liquor', 'liquor store', 'store', 'vineyard', 'wine', 'wine bar', 'wine house', 'wine producer', 'wine shop', 'wine store', 'winery'],
                 ],
 
+                't68-fast-fixes-lasting-quality' => [
+                    'title' => esc_html__('Fast Fixes Lasting Quality', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-plumbing-repairs' => [
+                    'title' => esc_html__('Plumbing Repairs', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-emergency-repairs' => [
+                    'title' => esc_html__('Emergency Repairs', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-quality-repairs-reliable-service' => [
+                    'title' => esc_html__('Quality Repairs Reliable Service', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-about-us' => [
+                    'title' => esc_html__('About Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-our-services' => [
+                    'title' => esc_html__('Our Services', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-our-team' => [
+                    'title' => esc_html__('Our Team', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+                't68-contact-us' => [
+                    'title' => esc_html__('Contact Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 68,
+                    'category' => 'business',
+                    'subcategory' => 'services',
+                    'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
+                ],
+
 //                t67 should be the next
 
                 /* ================================= */
