@@ -493,11 +493,10 @@ final class Templates
         add_action('wp_ajax_import_elementor_page_with_images', array($this, 'import_elementor_page_with_images'));
         add_action('wp_ajax_process_import_images', array($this, 'process_import_images'));
         add_action('wp_ajax_filter_templates', array($this, 'handle_filter_templates'));
-
         add_action('http_api_curl', array($this, 'set_custom_curl_options'), 10, 3);
     }
 
-    public function set_custom_curl_options($handle, $r, $url) {
+    public function set_custom_curl_options($handle) {
         curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 30);
         curl_setopt($handle, CURLOPT_TIMEOUT, 30);
@@ -573,6 +572,26 @@ final class Templates
         }
     }
 
+    private function replace_image_data(array &$array, $old_url, $new_url, $old_id, $new_id) {
+        foreach ($array as &$value) {
+            // If this is an array, check if it has both 'url' and 'id'
+            if (is_array($value)) {
+                if (
+                    isset($value['url'], $value['id']) &&
+                    $value['url'] === $old_url &&
+                    $value['id'] === $old_id
+                ) {
+                    // Both url and id match => replace them
+                    $value['url'] = $new_url;
+                    $value['id'] = $new_id;
+                }
+
+                // Recursively check deeper nested arrays
+                $this->replace_image_data($value, $old_url, $new_url, $old_id, $new_id);
+            }
+        }
+    }
+
     public function process_import_images(): void
     {
         if (!current_user_can('manage_options')) {
@@ -610,11 +629,11 @@ final class Templates
                 if ($image_retry_count[$url] > 3) {
                     $images_processed++;
                     set_transient('elementor_import_images_processed', $images_processed, 60 * 60);
-                    $progress = round(($images_processed / $total_images) * 100);
+                    $progress = round(($images_processed / $total_images) * 90) + 10;
 
                     wp_send_json_success([
                         'progress' => $progress,
-                        'message' => "Skipped image $url after 3 attempts.",
+                        'message' => "Processed $images_processed of $total_images images.",
                         'image_url' => $url,
                         'images_processed' => $images_processed,
                         'new_image_id' => 'SKIPPED'
@@ -629,15 +648,9 @@ final class Templates
                 $new_url = wp_get_attachment_url($new_image_id);
                 $images_processed++;
                 set_transient('elementor_import_images_processed', $images_processed, 60 * 60);
-                $progress = round(($images_processed / $total_images) * 100);
+                $progress = round(($images_processed / $total_images) * 90) + 10;
 
-                array_walk_recursive($content, function (&$value, $key) use ($url, $new_url, $new_image_id, $current_image) {
-                    if ($key === 'url' && $value === $url) {
-                        $value = $new_url;
-                    } elseif ($key === 'id' && $value === $current_image['id']) {
-                        $value = $new_image_id;
-                    }
-                });
+                $this->replace_image_data($content, $url, $new_url, $current_image['id'], $new_image_id);
 
                 set_transient('elementor_import_content', $content, 60 * 60);
 
@@ -659,7 +672,7 @@ final class Templates
             if ($new_post_id) {
                 update_post_meta($new_post_id, '_elementor_data', wp_slash(json_encode($content)));
                 update_post_meta($new_post_id, '_elementor_edit_mode', 'builder');
-                update_post_meta($new_post_id, '_elementor_template_type', 'wp-page');
+                update_post_meta($new_post_id, '_elementor_template_type', 'page');
                 update_post_meta($new_post_id, '_elementor_version', $elementor_version);
 
                 update_post_meta($new_post_id, '_wp_page_template', 'elementor_canvas');

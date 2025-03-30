@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode,JSUnresolvedReference,JSValidateTypes
+
 jQuery(document).ready(function ($) {
     $(document).on('click', '.template-item', function () {
         let templateKey = $(this).data('template-key');
@@ -7,7 +9,7 @@ jQuery(document).ready(function ($) {
         templateBtn.attr('data-template-plan', templatePlan);
         let planActive = templateBtn.attr('data-plan-active');
 
-        if(templatePlan === 'premium') {
+        if (templatePlan === 'premium') {
             if (planActive === 'premium') {
                 templateBtn.text('Import Premium Template');
             } else {
@@ -23,17 +25,17 @@ jQuery(document).ready(function ($) {
     });
 
     // Listen for clicks on any button inside .preview-mode-switcher
-    $('.preview-mode-switcher button').on('click', function() {
+    $('.preview-mode-switcher button').on('click', function () {
         // Remove the .active class from all buttons
         $('.preview-mode-switcher button').removeClass('active');
         // Add .active to the clicked button
         $(this).addClass('active');
 
         // Determine which mode was clicked: desktop, tablet, or mobile
-        var mode = $(this).data('mode');
+        let mode = $(this).data('mode');
 
         // Select the preview iframe
-        var $iframe = $('#template-preview-iframe');
+        let $iframe = $('#template-preview-iframe');
 
         // Remove any previous mode classes
         $iframe.removeClass('preview-tablet preview-mobile');
@@ -152,6 +154,8 @@ jQuery(document).ready(function ($) {
         document.getElementById('progress').innerText = 'Starting import...';
         document.getElementById('image-list').innerHTML = '';
         document.getElementById('progress').innerText = 'Import initialized.';
+        document.getElementById('progress-bar').style.width = '10%';
+        document.getElementById('progress-bar').innerText = '10%';
 
         let images = data.landing.images;
 
@@ -252,12 +256,10 @@ jQuery(document).ready(function ($) {
                         }
                     } else {
                         console.error('Process image issue:', data);
-                        // For debugging
-                        // if (data.data && data.data.retry) {
-                        //         processNextImage();
-                        // } else {
-                        //     alert('Error: ' + (data.data ? data.data.message : 'Process image issue'));
-                        // }
+                        // Skip image
+                        if (data.data && data.data.retry) {
+                            processNextImage();
+                        }
                     }
                 })
                 .catch(error => {
@@ -354,9 +356,7 @@ jQuery(document).ready(function ($) {
         filterTemplates();
     });
 
-    // TODO: For now the tags feature works as selector of sub-subcategories.
-    // $('#template-tags input').on('change', filterTemplates);
-    $('#template-tags input').on('change', function() {
+    $('#template-tags input').on('change', function () {
         templateSearch.val('');
         templateCategory.val('');
         templateCollection.val('');

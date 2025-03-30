@@ -932,17 +932,12 @@ class Data_Table extends Widget_Base
                         'max' => 1500
                     ]
                 ],
-
                 'default' => [
                     'size' => 600,
                     'unit' => 'px'
                 ],
-
-
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-table-container .king-addons-data-table' => 'min-width: {{SIZE}}{{UNIT}};',
-
-
                     '{{WRAPPER}} .king-addons-table-inner-container' => 'width: 100%;',
                     '{{WRAPPER}} .king-addons-data-table' => 'width: 100%;',
                 ],
@@ -1245,8 +1240,6 @@ class Data_Table extends Widget_Base
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
                 'range' => [
-
-
                     'default' => [
                         'top' => 0,
                         'right' => 0,
@@ -1352,8 +1345,6 @@ class Data_Table extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '#7A7A7A',
                 'selectors' => [
-
-
                     '{{WRAPPER}} tbody tr:nth-child(odd) td.king-addons-table-text' => 'color: {{VALUE}}',
                     '{{WRAPPER}} tbody tr:nth-child(odd) td a' => 'color: {{VALUE}} !important',
                     '{{WRAPPER}} tbody tr:nth-child(odd) td span' => 'color: {{VALUE}} !important',
@@ -1391,10 +1382,11 @@ class Data_Table extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '#7A7A7A',
                 'selectors' => [
-
-
-                    '{{WRAPPER}} tbody tr:nth-child(even) td a .king-addons-table-text' => 'color: {{VALUE}}',
                     '{{WRAPPER}} tbody tr:nth-child(even) td.king-addons-table-text' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td a' => 'color: {{VALUE}} !important',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td span' => 'color: {{VALUE}} !important',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td a .king-addons-table-text' => 'color: {{VALUE}}',
                     '{{WRAPPER}} tbody tr:nth-child(even) td.king-addons-table-td-pag' => 'color: {{VALUE}}',
                 ],
             ]
@@ -1407,7 +1399,6 @@ class Data_Table extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '#F3F3F3',
                 'selectors' => [
-
                     '{{WRAPPER}} tbody tr:nth-child(even) td' => 'background-color: {{VALUE}};',
                 ],
             ]
@@ -1438,8 +1429,6 @@ class Data_Table extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '#7A7A7A',
                 'selectors' => [
-
-
                     '{{WRAPPER}} tbody tr:nth-child(odd) td:hover a' => 'color: {{VALUE}} !important',
                     '{{WRAPPER}} tbody tr:nth-child(odd) td:hover span' => 'color: {{VALUE}} !important',
                     '{{WRAPPER}} tbody tr:nth-child(odd) td:hover.king-addons-table-text' => 'color: {{VALUE}} !important',
@@ -1455,7 +1444,6 @@ class Data_Table extends Widget_Base
                 'label' => esc_html__('Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-
                     '{{WRAPPER}} tbody tr:nth-child(odd):hover td' => 'background-color: {{VALUE}}; cursor: pointer;',
                 ],
             ]
@@ -1476,9 +1464,12 @@ class Data_Table extends Widget_Base
                 'label' => esc_html__('Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'default' => '#7A7A7A',
-
-
                 'selectors' => [
+                    '{{WRAPPER}} tbody tr:nth-child(even) td.king-addons-table-text:hover' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td:hover a' => 'color: {{VALUE}} !important',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td:hover span' => 'color: {{VALUE}} !important',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td:hover' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} tbody tr:nth-child(even) td.king-addons-table-td-pag:hover' => 'color: {{VALUE}}',
                     '{{WRAPPER}} tbody tr:nth-child(even) td:hover.king-addons-table-text' => 'color: {{VALUE}}',
                     '{{WRAPPER}} tbody tr:nth-child(even) td:hover a .king-addons-table-text' => 'color: {{VALUE}} !important',
                     '{{WRAPPER}} tbody tr:nth-child(even) td:hover i' => 'color: {{VALUE}}',
@@ -1493,7 +1484,6 @@ class Data_Table extends Widget_Base
                 'label' => esc_html__('Background Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-
                     '{{WRAPPER}} tbody tr:nth-child(even):hover td' => 'background-color: {{VALUE}}; cursor: pointer;',
                 ],
             ]
@@ -1792,7 +1782,6 @@ class Data_Table extends Widget_Base
         }
         echo '</tbody></table>';
 
-        // Close any extra divs (if needed by your layout)
         echo '</div></div>';
 
         // Custom pagination
@@ -1884,7 +1873,6 @@ class Data_Table extends Widget_Base
 
     public function render_search_export()
     {
-        // Intentionally empty (as in original code)
     }
 
     protected function render()

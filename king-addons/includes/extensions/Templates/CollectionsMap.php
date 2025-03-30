@@ -79,6 +79,7 @@ final class CollectionsMap
             66 => 'Online Education Services',
             67 => 'Wine Shop & Vineyards',
             68 => 'Plumber & Handyman',
+            69 => 'Barber & Haircut',
         ];
     }
 }

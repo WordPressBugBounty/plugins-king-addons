@@ -4959,7 +4959,70 @@ final class TemplatesMap
                     'tags' => ['business', 'cleaning', 'tiling', 'constructor', 'consulting', 'corporate', 'handyman', 'industry', 'marketing', 'painter', 'plumber', 'plumbing', 'remodeling', 'repair', 'roofing'],
                 ],
 
-//                t67 should be the next
+                't69-premium-barber' => [
+                    'title' => esc_html__('Premium Barber', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-unleash-your-best-look' => [
+                    'title' => esc_html__('Unleash Your Best Look', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-elevate-your-look' => [
+                    'title' => esc_html__('Elevate Your Look', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-perfect-cut' => [
+                    'title' => esc_html__('Perfect Cut', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-about-us' => [
+                    'title' => esc_html__('About Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-our-services' => [
+                    'title' => esc_html__('Our Services', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-pricing' => [
+                    'title' => esc_html__('Pricing', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
+                't69-contact-us' => [
+                    'title' => esc_html__('Contact Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 69,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'beauty',
+                    'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
+                ],
 
                 /* ================================= */
                 /* ================================= */
