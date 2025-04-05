@@ -22,6 +22,10 @@
                                 return match ? +match[0].replace(/\D/g, "") : fallback;
                             };
 
+                            $.fn.smartresize = function (fn) {
+                                return fn ? this.on("resize", debounce(fn)) : this.trigger("smartresize");
+                            };
+
                             // Extract columns from class
                             const sliderColumnsDesktop = matchNumber(/king-addons-adv-slider-columns-\d/, 2);
                             const sliderColumnsWideScreen = matchNumber(/columns--widescreen\d/, sliderColumnsDesktop);

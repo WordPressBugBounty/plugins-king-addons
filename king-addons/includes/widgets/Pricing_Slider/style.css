@@ -1,0 +1,401 @@
+/* Pricing Slider Widget Styles */
+.king-addons-pricing-slider {
+    position: relative;
+    margin: 20px 0;
+    max-width: 100%;
+    /* CSS variables for sizes are passed from PHP */
+    /* Colors are applied directly by Elementor selectors */
+}
+
+.king-addons-pricing-slider__header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.king-addons-pricing-slider__title {
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.king-addons-pricing-slider__description {
+    font-size: 16px;
+    color: #777;
+}
+
+.king-addons-pricing-slider__controls {
+    margin-bottom: 20px;
+}
+
+/* Slider container */
+.king-addons-pricing-slider__range-container {
+    position: relative;
+    margin: 10px 0;
+    height: calc(var(--slider-thumb-size) + 10px);
+    display: flex;
+    align-items: center;
+}
+
+/* Background track */
+.king-addons-pricing-slider__track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: var(--slider-track-height);
+    /* background-color removed, set by Elementor selector */
+    border-radius: calc(var(--slider-track-height) / 2);
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+/* Progress bar */
+.king-addons-pricing-slider__progress {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: var(--slider-track-height);
+    /* background-color removed, set by Elementor selector */
+    border-radius: calc(var(--slider-track-height) / 2);
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 0; /* Initial width, updated by JS */
+}
+
+/* Custom thumb/handle */
+.king-addons-pricing-slider__custom-thumb {
+    position: absolute; 
+    left: 0; /* Updated by JS */
+    /* top: 50%; */ /* Removed for revert */
+    transform: translateX(-50%); /* Reverted to only horizontal centering */
+    pointer-events: none; 
+    z-index: 4; 
+    /* Removing explicit width/height/bg/shadow added in last step */
+    /* Width, height, background, border-radius, shadow should ideally come from Elementor controls or other specific rules */
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    /* background-color: var(--e-global-color-primary, #4CAF50); */
+    border-radius: 50%;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+    cursor: pointer; 
+    transition: transform 0.2s ease-out; /* Added transition for smooth scaling */
+}
+
+/* Thumb shadow (applied via Group Control) */
+/* Shadow selector is defined in Group_Control_Box_Shadow in PHP */
+
+/* Thumb hover effect (triggers on slider container hover) */
+.king-addons-pricing-slider__range-container:hover .king-addons-pricing-slider__custom-thumb {
+    /* Keep original horizontal centering and only add scaling */
+    transform: translateX(-50%) scale(1.1);
+    /* Background color and border on hover can be added separately if needed */
+}
+
+/* Actual input for functionality - invisible */
+.king-addons-pricing-slider__range {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0.001;
+    cursor: pointer;
+    z-index: 10;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+/* Hide native slider styles */
+.king-addons-pricing-slider__range::-webkit-slider-thumb,
+.king-addons-pricing-slider__range::-moz-range-thumb,
+.king-addons-pricing-slider__range::-webkit-slider-runnable-track,
+.king-addons-pricing-slider__range::-moz-range-track {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+    border: 0;
+    opacity: 0;
+}
+
+.king-addons-pricing-slider__range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.king-addons-pricing-slider__range-min,
+.king-addons-pricing-slider__range-max {
+    font-size: 14px;
+    color: #777;
+}
+
+.king-addons-pricing-slider__display {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+.king-addons-pricing-slider__price {
+    font-size: 36px;
+    font-weight: 700;
+    color: #4054b2;
+}
+
+.king-addons-pricing-slider__currency {
+    font-size: 24px;
+    vertical-align: super;
+}
+
+.king-addons-pricing-slider__period {
+    font-size: 0.8em;
+    color: #777;
+    opacity: 0.8;
+    margin-left: 5px;
+}
+
+ /* Features Section */
+.king-addons-pricing-slider__features {
+    margin-top: 20px;
+}
+
+.king-addons-pricing-slider__feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.king-addons-pricing-slider__feature-item {
+    display: flex;          /* Use flexbox for alignment */
+    align-items: center;    /* Vertically center items */
+    margin-bottom: 10px;
+}
+
+.king-addons-pricing-slider__feature-item span:first-child {
+    margin-right: 10px;     /* Space between icon and text */
+    width: 20px;            /* Fixed width for icon container */
+    text-align: center;     /* Center icon */
+    flex-shrink: 0;         /* Prevent icon from shrinking */
+}
+
+.king-addons-pricing-slider__feature-included i {
+    color: var(--e-global-color-primary, #4CAF50); /* Green for included */
+}
+
+.king-addons-pricing-slider__feature-excluded i {
+    color: var(--e-global-color-accent, #F44336);  /* Red for excluded */
+}
+
+.king-addons-pricing-slider__feature-text {
+    color: inherit;
+    font-size: 14px;        /* Adjust as needed */
+    flex-grow: 1;           /* Allow text to take remaining space */
+}
+
+/* Ensure custom thumb can move freely */
+.king-addons-pricing-slider__custom-thumb {
+    position: absolute; /* Already set, just ensuring */
+    left: 0; /* Initial position, will be updated by JS */
+    transform: translateX(-50%); /* Center the thumb */
+    pointer-events: none; /* Let the range input handle events */
+    z-index: 4; /* Make sure thumb is above progress */
+    /* Ensure no other styles restrict its horizontal movement */
+}
+
+.king-addons-pricing-slider__actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.king-addons-pricing-slider__button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4054b2;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.king-addons-pricing-slider__button:hover {
+    background-color: #5365c3;
+    color: #ffffff;
+}
+
+/* Styles for the WooCommerce Add to Cart button */
+.king-addons-pricing-slider__add-to-cart {
+    position: relative; /* Needed for loader positioning */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--e-global-color-accent, #4CAF50); /* Use accent color or a distinct WooCommerce color */
+    color: #ffffff;
+    text-decoration: none;
+    border: none; /* Buttons often don't need borders like links */
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.king-addons-pricing-slider__add-to-cart:hover {
+    background-color: var(--e-global-color-accent-dark, #388E3C); /* Slightly darker accent on hover */
+    color: #ffffff;
+}
+
+/* Loading state for the Add to Cart button */
+.king-addons-pricing-slider__add-to-cart.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.king-addons-pricing-slider__add-to-cart .king-addons-pricing-slider__loader {
+    display: none; /* Hide loader by default */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px; /* Center horizontally */
+    margin-top: -8px; /* Center vertically */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: king-addons-spin 1s linear infinite;
+}
+
+.king-addons-pricing-slider__add-to-cart.loading .king-addons-pricing-slider__loader {
+    display: block; /* Show loader when loading */
+}
+
+@keyframes king-addons-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Basic notification styles (can be overridden by Elementor settings) */
+.king-addons-slider-notice {
+    display: block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.king-addons-slider-notice.success {
+    background-color: #e8f5e9; /* Light green */
+    color: #2e7d32; /* Dark green */
+    border: 1px solid #c8e6c9;
+}
+.king-addons-slider-notice.error {
+    background-color: #ffebee; /* Light red */
+    color: #c62828; /* Dark red */
+    border: 1px solid #ffcdd2;
+}
+
+/* View Cart link basic styles */
+.king-addons-slider-view-cart {
+    display: inline-block; /* Make it inline-block to sit next to button/notice if needed */
+    margin-left: 10px; /* Add some space from the button or notice */
+    font-size: 14px;
+    /* Inherit color or set a specific link color */
+    /* color: var(--e-global-color-accent); */ 
+    text-decoration: underline;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.king-addons-slider-view-cart:hover {
+    text-decoration: none;
+    border-color: #adadad;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .king-addons-pricing-slider__title {
+        font-size: 20px;
+    }
+    
+    .king-addons-pricing-slider__description {
+        font-size: 14px;
+    }
+    
+    .king-addons-pricing-slider__price {
+        font-size: 30px;
+    }
+    
+    .king-addons-pricing-slider__currency {
+        font-size: 20px;
+    }
+    
+    .king-addons-pricing-slider__period {
+        font-size: 14px;
+    }
+}
+
+/* Container for a single slider control group (useful for multiple sliders) */
+.king-addons-pricing-slider__control-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+}
+
+/* Container for min/max values below the slider */
+.king-addons-pricing-slider__range-values {
+    width: 100%; 
+    margin-top: 10px; /* Space below slider */
+    display: flex; /* Use flex again for simple min/max alignment */
+    justify-content: space-between; /* Pushes min to left, max to right */
+    font-size: 14px;
+    color: #777;
+}
+
+/* Individual min/max value elements */
+.king-addons-pricing-slider__range-min-value,
+.king-addons-pricing-slider__range-max-value {
+    white-space: nowrap; 
+}
+
+.king-addons-pricing-slider__range-min-value {
+    text-align: left;
+}
+
+.king-addons-pricing-slider__range-max-value {
+    text-align: right;
+}
+
+/* Style for the current value indicator positioned above the thumb */
+.king-addons-pricing-slider__current-value {
+    position: absolute;
+    top: 50%; /* Vertically align with the track center */
+    left: var(--thumb-position); /* Position horizontally based on thumb */
+    transform: translateX(-50%); /* Center the indicator horizontally */
+    margin-top: calc(var(--slider-thumb-size) / 2 + 10px); /* Move below the thumb (half thumb size + gap) */
+    
+    /* Default styles */
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    line-height: 1.2;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 5; /* Above track/progress, below thumb if needed, but shouldn't overlap */
+    pointer-events: none; /* Allow clicks to pass through to the slider input */
+}
+
+.king-addons-pricing-sliders__layout-horizontal .king-addons-pricing-sliders__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Space between horizontal sliders */
+}
+
+.king-addons-pricing-sliders__layout-horizontal .king-addons-pricing-slider__control-group {
+    flex: 1 1 200px; /* Allow sliders to wrap and adjust size */
+    margin-bottom: 0; /* Remove bottom margin for horizontal layout */
+} 

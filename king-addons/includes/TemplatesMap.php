@@ -5024,6 +5024,71 @@ final class TemplatesMap
                     'tags' => ['barber', 'barber shop', 'barbershop', 'beard', 'beauty', 'coiffeur', 'hair salon', 'haircut', 'hairdresser', 'hipster', 'mustache'],
                 ],
 
+                't70-invest-in-success' => [
+                    'title' => esc_html__('Invest in Success', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-protecting-what-really-matters' => [
+                    'title' => esc_html__('Protecting What Really Matters', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-innovative-insurance-solutions' => [
+                    'title' => esc_html__('Innovative Insurance Solutions', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-empower-your-future' => [
+                    'title' => esc_html__('Empower Your Future', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-about-us' => [
+                    'title' => esc_html__('About Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-our-services' => [
+                    'title' => esc_html__('Our Services', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-our-team' => [
+                    'title' => esc_html__('Our Team', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+                't70-contact-us' => [
+                    'title' => esc_html__('Contact Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 70,
+                    'category' => 'business',
+                    'subcategory' => 'insurance',
+                    'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
+                ],
+
                 /* ================================= */
                 /* ================================= */
                 /* ================================= */

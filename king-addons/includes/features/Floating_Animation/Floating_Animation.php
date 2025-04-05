@@ -120,20 +120,83 @@ class Floating_Animation
         $element->end_controls_section();
     }
 
+    /**
+     * Renders the inline CSS for the floating animation if enabled.
+     * This function is hooked into 'elementor/frontend/before_render'.
+     * It prints a <style> tag directly into the HTML output.
+     *
+     * @param Element_Base $element The current Elementor element object.
+     */
     public static function renderAnimation(Element_Base $element): void
     {
-        if (!empty($element->get_settings_for_display('kng_floating_animation_switch'))) {
-            $kng_floating_animation_value_X = $element->get_settings_for_display('kng_floating_animation_value_X');
-            $kng_floating_animation_value = $element->get_settings_for_display('kng_floating_animation_value');
-            $kng_floating_animation_duration = $element->get_settings_for_display('kng_floating_animation_duration');
-            $kng_floating_animation_delay = $element->get_settings_for_display('kng_floating_animation_delay');
+        $settings = $element->get_settings_for_display();
+        $element_id = $element->get_id(); // Get element ID once for efficiency
 
-            if (('' != $kng_floating_animation_value_X) && ('' != $kng_floating_animation_value) && ('' != $kng_floating_animation_duration)) {
-                $element_ID = $element->get_id();
-                $inline_code = '@keyframes floating-animation-' . esc_html($element_ID) . ' {0% {transform: translate(0, 0);} 50% {transform: translate(' . esc_html($kng_floating_animation_value_X) . 'px, ' . esc_html($kng_floating_animation_value) . 'px);} 100% {transform: translate(0, 0);}} ' . '.elementor-element-' . esc_html($element_ID) . ' {animation: floating-animation-' . esc_html($element_ID) . ' ' . esc_html($kng_floating_animation_duration) . 'ms ease-in-out infinite; animation-delay: ' . esc_html($kng_floating_animation_delay) . 'ms;}';
-                wp_enqueue_style('king-addons-floating-animation-' . $element_ID, KING_ADDONS_URL . 'includes/features/Floating_Animation/style.css', '', KING_ADDONS_VERSION);
-                wp_add_inline_style('king-addons-floating-animation-' . $element_ID, $inline_code);
-            }
+        // 1. CHECK THE SWITCHER CONTROL
+        // Elementor's switcher control typically uses 'yes' for the enabled state.
+        if (empty($settings['kng_floating_animation_switch']) || 'yes' !== $settings['kng_floating_animation_switch']) {
+            return; // Animation is disabled for this element, do nothing.
         }
+
+        // 2. GET ANIMATION VALUES FROM SETTINGS
+        // Use null coalescing operator (??) to provide default values if settings are not set.
+        $value_x = $settings['kng_floating_animation_value_X'] ?? 0;
+        $value_y = $settings['kng_floating_animation_value'] ?? 0; // Using your specific setting key name for Y
+        $duration = $settings['kng_floating_animation_duration'] ?? null; // Get duration, check validity later
+        $delay = $settings['kng_floating_animation_delay'] ?? 0;
+
+        // 3. VALIDATE IF ANIMATION IS MEANINGFUL
+        // Animation requires a duration greater than 0ms to be visible.
+        if (empty($duration) || intval($duration) <= 0) {
+            // If duration is not set or is zero/negative, don't output the style tag.
+            return;
+        }
+
+        // 4. SANITIZE NUMERIC VALUES
+        // Use intval for values that can be negative (translate offsets).
+        // Use absint for values that must be non-negative (duration, delay).
+        // This prevents invalid CSS and potential security issues if settings were compromised.
+        $value_x_sanitized = intval($value_x);
+        $value_y_sanitized = intval($value_y);
+        $duration_sanitized = absint($duration);
+        $delay_sanitized = absint($delay);
+
+        // 5. GENERATE THE CSS STRING
+        // Use the element ID directly in animation names and selectors (Elementor IDs are safe).
+        // Use sprintf for cleaner code when building strings with variables.
+        $animation_name = 'floating-animation-' . $element_id;
+        $selector = '.elementor-element-' . $element_id;
+
+        $css = sprintf(
+        // Use a unique ID for the style tag itself, based on the element ID.
+        // Use esc_attr() for sanitizing the ID attribute value.
+            '<style id="floating-anim-%1$s">
+                @keyframes %2$s {
+                    0%% { transform: translate(0, 0); }
+                    50%% { transform: translate(%3$dpx, %4$dpx); }
+                    100%% { transform: translate(0, 0); }
+                }
+                %5$s {
+                    animation-name: %2$s;
+                    animation-duration: %6$dms;
+                    animation-timing-function: ease-in-out;
+                    animation-iteration-count: infinite;
+                    animation-delay: %7$dms;
+                }
+            </style>',
+            esc_attr($element_id),  // %1$s: Sanitized ID for the <style> tag attribute
+            $animation_name,        // %2$s: Animation name (uses safe element ID)
+            $value_x_sanitized,     // %3$s: Sanitized X offset (integer)
+            $value_y_sanitized,     // %4$s: Sanitized Y offset (integer)
+            $selector,              // %5$s: Element selector (uses safe element ID)
+            $duration_sanitized,    // %6$s: Sanitized duration (non-negative integer)
+            $delay_sanitized        // %7$s: Sanitized delay (non-negative integer)
+        );
+
+        // 6. OUTPUT THE GENERATED CSS
+        // Since this function is called within the 'elementor/frontend/before_render' hook,
+        // using print or echo will directly insert the <style> tag into the page's HTML
+        // just before the element's own HTML is rendered.
+        print $css;
     }
 }

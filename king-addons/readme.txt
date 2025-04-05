@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.64
+Stable tag: 24.12.65
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -102,6 +102,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Image Grid & Slider / Carousel/Gallery**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create stunning media galleries with grids, sliders, or carousels. Perfect for showcasing images or videos in a fully customizable and responsive format.
 - [**Magazine Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
 - [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
+- [**Pricing Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive pricing sliders that allow users to dynamically adjust parameters and instantly see matching features. Perfect for subscription services, product configurators, or membership plans. Compatible with WooCommerce and other pricing systems. Boosts conversions by providing visual, intuitive pricing comparisons.
 
 ### FREE Elementor features
 
@@ -193,6 +194,13 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.65 - April 5, 2025 =
+* **New:** Pricing Slider widget added.
+* **New:** Templates Catalog - 8 premium templates added.
+* **Improved:** Slider widget.
+* **Improved:** Floating and Rotating animations.
+* **Updated:** King Addons Pro plugin.
 
 = King Addons for Elementor version 24.12.64 - March 29, 2025 =
 * **New:** Templates Catalog - 8 premium templates added.

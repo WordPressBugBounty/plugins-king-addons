@@ -66,7 +66,7 @@ class Creative_Button extends Widget_Base
         $this->start_controls_section(
             'king_addons_creative_btn_section_button',
             [
-                'label' => esc_html__('Creative Button', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Creative Button', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );

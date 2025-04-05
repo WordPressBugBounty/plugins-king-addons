@@ -92,19 +92,63 @@ class Rotating_Animation
         $element->end_controls_section();
     }
 
+    /**
+     * Renders the inline CSS for the rotating animation if enabled.
+     * Hooked into 'elementor/frontend/before_render'.
+     * Prints a <style> tag directly into the HTML output.
+     *
+     * @param Element_Base $element The current Elementor element object.
+     */
     public static function renderAnimation(Element_Base $element): void
     {
-        if (!empty($element->get_settings_for_display('kng_rotating_animation_switch'))) {
+        $settings = $element->get_settings_for_display();
+        $element_id = $element->get_id();
 
-            $kng_rotating_animation_duration = $element->get_settings_for_display('kng_rotating_animation_duration');
-            $kng_rotating_animation_delay = $element->get_settings_for_display('kng_rotating_animation_delay');
-
-            if (!empty($kng_rotating_animation_duration)) {
-                $element_ID = $element->get_id();
-                $inline_code = '@keyframes rotating-animation-' . esc_html($element_ID) . ' {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg)}}' . '.elementor-element-' . esc_html($element_ID) . ' {animation: rotating-animation-' . esc_html($element_ID) . ' ' . esc_html($kng_rotating_animation_duration) . 'ms linear infinite; animation-delay: ' . esc_html($kng_rotating_animation_delay) . 'ms;';
-                wp_enqueue_style('king-addons-rotating-animation-' . $element_ID, KING_ADDONS_URL . 'includes/features/Rotating_Animation/style.css', '', KING_ADDONS_VERSION);
-                wp_add_inline_style('king-addons-rotating-animation-' . $element_ID, $inline_code);
-            }
+        // 1. CHECK THE SWITCHER CONTROL (use 'yes')
+        if (empty($settings['kng_rotating_animation_switch']) || 'yes' !== $settings['kng_rotating_animation_switch']) {
+            return; // Animation is disabled
         }
+
+        // 2. GET ANIMATION VALUES
+        $duration = $settings['kng_rotating_animation_duration'] ?? null;
+        $delay = $settings['kng_rotating_animation_delay'] ?? 0;
+
+        // 3. VALIDATE DURATION
+        if (empty($duration) || intval($duration) <= 0) {
+            return; // Needs a positive duration
+        }
+
+        // 4. SANITIZE NUMERIC VALUES (use absint for non-negative ms)
+        $duration_sanitized = absint($duration);
+        $delay_sanitized = absint($delay);
+
+        // 5. GENERATE THE CSS STRING using sprintf
+        $animation_name = 'rotating-animation-' . $element_id;
+        $selector = '.elementor-element-' . $element_id;
+
+        $css = sprintf(
+        // Add a unique ID to the style tag
+            '<style id="rotating-anim-%1$s">
+                @keyframes %2$s {
+                    0%% { transform: rotate(0deg); }
+                    100%% { transform: rotate(360deg); }
+                }
+                %3$s {
+                    animation-name: %2$s;
+                    animation-duration: %4$dms;
+                    animation-timing-function: linear; /* Linear is suitable for rotation */
+                    animation-iteration-count: infinite;
+                    animation-delay: %5$dms;
+                }
+            </style>',
+            esc_attr($element_id),  // %1$s: Sanitized ID for the <style> tag attribute
+            $animation_name,        // %2$s: Animation name
+            $selector,              // %3$s: Element selector
+            $duration_sanitized,    // %4$s: Sanitized duration (non-negative integer)
+            $delay_sanitized        // %5$s: Sanitized delay (non-negative integer)
+        );
+
+        // 6. OUTPUT THE GENERATED CSS directly into HTML
+        print $css;
     }
 }

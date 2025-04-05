@@ -47,7 +47,21 @@ final class RegisterAssets
     {
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget_array) {
             foreach ($widget_array['js'] as $js) {
-                wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-' . $js, KING_ADDONS_URL . 'includes/widgets/' . $widget_array['php-class'] . '/' . $js . '.js', array('jquery'), KING_ADDONS_VERSION, true);
+                $script_handle = KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-' . $js;
+                wp_register_script($script_handle, KING_ADDONS_URL . 'includes/widgets/' . $widget_array['php-class'] . '/' . $js . '.js', array('jquery'), KING_ADDONS_VERSION, true);
+                
+                // Localize script specifically for pricing-slider
+                if ($widget_id === 'pricing-slider' && $js === 'script') {
+                     $localized_data = [
+                         'ajax_url' => admin_url('admin-ajax.php'),
+                         'view_cart_text' => esc_html__('View Cart', 'king-addons'),
+                         // Note: Nonce should ideally be generated closer to where the button is rendered,
+                         // but passing ajax_url here is the main fix for the AJAX call.
+                         // The nonce is already passed via data attribute on the button in Pricing_Slider_Pro.php.
+                         // 'nonce' => wp_create_nonce('king_addons_add_to_cart_nonce') 
+                     ];
+                     wp_localize_script($script_handle, 'king_addons_slider_vars', $localized_data);
+                }
             }
         }
 
