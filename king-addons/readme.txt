@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.65
+Stable tag: 24.12.66
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -194,6 +194,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.66 - April 8, 2025 =
+* **Improved:** Pricing Slider widget.
+* **Improved:** Slider widget.
 
 = King Addons for Elementor version 24.12.65 - April 5, 2025 =
 * **New:** Pricing Slider widget added.

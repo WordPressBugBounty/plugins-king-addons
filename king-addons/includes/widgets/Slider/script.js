@@ -22,6 +22,21 @@
                                 return match ? +match[0].replace(/\D/g, "") : fallback;
                             };
 
+                            // Simple debounce helper.
+                            const debounce = (func, threshold = 100, execAsap) => {
+                                let timeout;
+                                return function (...args) {
+                                    const context = this;
+                                    const delayed = () => {
+                                        if (!execAsap) func.apply(context, args);
+                                        timeout = null;
+                                    };
+                                    if (timeout) clearTimeout(timeout);
+                                    else if (execAsap) func.apply(context, args);
+                                    timeout = setTimeout(delayed, threshold);
+                                };
+                            };
+
                             $.fn.smartresize = function (fn) {
                                 return fn ? this.on("resize", debounce(fn)) : this.trigger("smartresize");
                             };

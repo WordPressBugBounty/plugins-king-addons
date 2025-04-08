@@ -119,9 +119,6 @@ class Pricing_Slider extends Widget_Base
             ]
         );
 
-        // Add Advanced Formula Types control - Pro feature 
-        // $this->add_control_advanced_formula_types(); // Removed - Handled in Pro version
-
         $this->add_control(
             'min_value',
             [
@@ -358,28 +355,6 @@ class Pricing_Slider extends Widget_Base
         );
 
         $this->end_controls_section();
-
-        // Add Multiple Sliders section - Pro feature (Removed - Handled in Pro version)
-        // $this->start_controls_section(
-        //     'section_multiple_sliders',
-        //     [
-        //         'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Multiple Sliders', 'king-addons'),
-        //     ]
-        // );
-        // $this->add_control_multiple_sliders(); 
-        // $this->end_controls_section();
-
-        // Add WooCommerce Integration section - Pro feature (Removed - Handled in Pro version)
-        // $this->start_controls_section(
-        //     'section_woocommerce',
-        //     [
-        //         'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('WooCommerce', 'king-addons'),
-        //     ]
-        // );
-        $this->add_control_woocommerce_integration();
-        // $this->end_controls_section();
-
-
 
         // Features Section
         $this->start_controls_section(
@@ -1727,22 +1702,6 @@ class Pricing_Slider extends Widget_Base
 
         $this->end_controls_section();
 
-        // Add Pro Features section
-        Core::renderProFeaturesSection(
-            $this,
-            '',
-            Controls_Manager::RAW_HTML,
-            'pricing-slider',
-            [
-                esc_html__('Advanced Formula Types (Exponential, Logarithmic, etc.)', 'king-addons'),
-                esc_html__('Multiple Interactive Sliders', 'king-addons'),
-                esc_html__('WooCommerce Integration', 'king-addons'),
-                esc_html__('Multi-Currency Support', 'king-addons'),
-                esc_html__('Advanced Animation Effects', 'king-addons'),
-                esc_html__('Premium Templates Library', 'king-addons'),
-            ]
-        );
-
         // Range Labels Style Section
         $this->start_controls_section(
             'section_range_labels_style',
@@ -1900,9 +1859,32 @@ class Pricing_Slider extends Widget_Base
         );
 
         $this->end_controls_section(); // End Section Range Labels Style
+
+        // Call placeholder methods for Pro features
+        $this->add_control_slider_labels_styling();
+        $this->add_control_advanced_formula_types();
+        $this->add_control_multiple_sliders();
+        $this->add_control_woocommerce_integration();
+        $this->add_control_notifications_styling();
+
+        // Add Pro Features section
+        Core::renderProFeaturesSection(
+            $this,
+            '',
+            Controls_Manager::RAW_HTML,
+            'pricing-slider',
+            [
+                esc_html__('Advanced Formula Types (Exponential, Logarithmic, etc.)', 'king-addons'),
+                esc_html__('Multiple Interactive Sliders', 'king-addons'),
+                esc_html__('WooCommerce Integration', 'king-addons'),
+                esc_html__('Multi-Currency Support', 'king-addons'),
+                esc_html__('Advanced Animation Effects', 'king-addons'),
+                esc_html__('Premium Templates Library', 'king-addons'),
+            ]
+        );
     }
 
-    private function get_currency_symbol($symbol_name): string
+    public function get_currency_symbol($symbol_name)
     {
         $symbols = [
             'dollar' => '&#36;',
@@ -1925,7 +1907,7 @@ class Pricing_Slider extends Widget_Base
         return '';
     }
 
-    private function calculate_price($value, $settings)
+    public function calculate_price($value, $settings)
     {
         if ($settings['price_formula'] === 'linear') {
             // Linear formula: price = a * value + b
@@ -1967,12 +1949,12 @@ class Pricing_Slider extends Widget_Base
         }
     }
 
-    private function is_feature_included($feature_min_value, $current_value)
+    public function is_feature_included($feature_min_value, $current_value)
     {
         return $current_value >= $feature_min_value;
     }
 
-    protected function render()
+    public function render()
     {
         $settings = $this->get_settings_for_display();
         $default_value = isset($settings['default_value']) ? $settings['default_value'] : 50;
@@ -2178,24 +2160,27 @@ class Pricing_Slider extends Widget_Base
 <?php
     }
 
-    /**
-     * Pro feature - Advanced formula types
-     */
     public function add_control_advanced_formula_types()
     {
-        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
-            return;
-        }
+        // Empty placeholder for Pro feature
+        $this->start_controls_section(
+            'advanced_formula_types_placeholder',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Advanced Formula Types', 'king-addons'),
+            ]
+        );
 
         $this->add_control(
             'advanced_formula_types_notice',
             [
                 'type' => Controls_Manager::RAW_HTML,
-                'raw' => '<strong>Advanced Formula Types</strong> are available in the ' .
+                'raw' => 'Advanced Formula Types are available in the ' .
                     '<strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-pricing-slider-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
                 'content_classes' => 'king-addons-pro-notice',
             ]
         );
+        
+        $this->end_controls_section();
     }
 
     /**
@@ -2203,9 +2188,13 @@ class Pricing_Slider extends Widget_Base
      */
     public function add_control_multiple_sliders()
     {
-        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
-            return;
-        }
+
+        $this->start_controls_section(
+            'section_multiple_sliders_placeholder',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Multiple Sliders', 'king-addons'),
+            ]
+        );
 
         $this->add_control(
             'multiple_sliders_notice',
@@ -2216,17 +2205,12 @@ class Pricing_Slider extends Widget_Base
                 'content_classes' => 'king-addons-pro-notice',
             ]
         );
+
+        $this->end_controls_section();
     }
 
-    /**
-     * Pro feature - WooCommerce integration
-     */
     public function add_control_woocommerce_integration()
     {
-        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
-            return;
-        }
-
         // Section for WooCommerce Placeholder in Free version
         $this->start_controls_section(
             'section_woocommerce_placeholder',
@@ -2246,6 +2230,164 @@ class Pricing_Slider extends Widget_Base
         );
 
         $this->end_controls_section(); // End of section_woocommerce_placeholder
+    }
 
+    /**
+     * Adds controls for slider label styling
+     */
+    public function add_control_slider_labels_styling()
+    {
+        $this->start_controls_section(
+            'section_slider_labels_style',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Slider Labels', 'king-addons'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'slider_label_style_heading',
+            [
+                'label' => esc_html__('Slider Label Style', 'king-addons'),
+                'type' => Controls_Manager::HEADING,
+            ]
+        );
+
+        $this->add_control(
+            'slider_label_text_color',
+            [
+                'label' => esc_html__('Text Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#333333',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-pricing-slider__control-label' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'slider_label_typography',
+                'selector' => '{{WRAPPER}} .king-addons-pricing-slider__control-label',
+                'fields_options' => [
+                    'font_weight' => ['default' => '600'],
+                    'font_size' => ['default' => ['unit' => 'px', 'size' => 16]],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'slider_label_bg_color',
+            [
+                'label' => esc_html__('Background Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-pricing-slider__control-label' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_label_padding',
+            [
+                'label' => esc_html__('Padding', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'default' => [
+                    'top' => '0',
+                    'right' => '0',
+                    'bottom' => '5',
+                    'left' => '0',
+                    'unit' => 'px',
+                    'isLinked' => false,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-pricing-slider__control-label' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_label_margin',
+            [
+                'label' => esc_html__('Margin', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'default' => [
+                    'top' => '0',
+                    'right' => '0',
+                    'bottom' => '5',
+                    'left' => '0',
+                    'unit' => 'px',
+                    'isLinked' => false,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-pricing-slider__control-label' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            [
+                'name' => 'slider_label_border',
+                'label' => esc_html__('Border', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-addons-pricing-slider__control-label',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_label_border_radius',
+            [
+                'label' => esc_html__('Border Radius', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em'],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-pricing-slider__control-label' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'slider_label_text_align',
+            [
+                'label' => esc_html__('Text Alignment', 'king-addons'),
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => esc_html__('Left', 'king-addons'),
+                        'icon' => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => esc_html__('Center', 'king-addons'),
+                        'icon' => 'eicon-text-align-center',
+                    ],
+                    'right' => [
+                        'title' => esc_html__('Right', 'king-addons'),
+                        'icon' => 'eicon-text-align-right',
+                    ],
+                ],
+                'default' => 'left',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-pricing-slider__control-label' => 'text-align: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Text_Shadow::get_type(),
+            [
+                'name' => 'slider_label_text_shadow',
+                'selector' => '{{WRAPPER}} .king-addons-pricing-slider__control-label',
+            ]
+        );
+
+        $this->end_controls_section();
+    }
+
+    public function add_control_notifications_styling()
+    {
+        // Empty placeholder for Pro feature
     }
 }
