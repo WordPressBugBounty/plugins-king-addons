@@ -1,0 +1,1464 @@
+/* Main Menu Container */
+.king-addons-mega-menu {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    z-index: 999;
+}
+
+/* Horizontal Layout */
+.king-addons-mega-menu-horizontal {
+    flex-direction: row;
+}
+
+/* Vertical Layout */
+.king-addons-mega-menu-vertical {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Logo */
+.king-addons-mega-menu-logo {
+    display: flex;
+    align-items: center;
+}
+
+.king-addons-mega-menu-logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Menu Container */
+.king-addons-menu-container {
+    flex: 1;
+    display: flex;
+}
+
+/* Menu Items */
+.king-addons-menu-items {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items {
+    flex-direction: row;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items {
+    flex-direction: column;
+    width: 100%;
+}
+
+.king-addons-menu-items li {
+    position: relative;
+    list-style: none;
+    margin: 0;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li {
+    margin-right: 15px;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li {
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.king-addons-menu-items li:last-child {
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.king-addons-menu-items a {
+    display: flex;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li > a {
+    display: flex;
+    width: 100%;
+}
+
+/* Alignment styles for horizontal menu */
+.king-addons-mega-menu-horizontal[style*="justify-content: flex-start"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[style*="justify-content: flex-start"] .king-addons-menu-items {
+    justify-content: flex-start;
+}
+
+.king-addons-mega-menu-horizontal[style*="justify-content: center"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[style*="justify-content: center"] .king-addons-menu-items {
+    justify-content: center;
+}
+
+.king-addons-mega-menu-horizontal[style*="justify-content: flex-end"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[style*="justify-content: flex-end"] .king-addons-menu-items {
+    justify-content: flex-end;
+}
+
+.king-addons-mega-menu-horizontal[style*="justify-content: space-between"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[style*="justify-content: space-between"] .king-addons-menu-items {
+    justify-content: space-between;
+}
+
+/* Horizontal alignment using data attributes */
+.king-addons-mega-menu-horizontal[data-horizontal-align="flex-start"],
+.king-addons-mega-menu-horizontal[data-horizontal-align="flex-start"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[data-horizontal-align="flex-start"] .king-addons-menu-items {
+    justify-content: flex-start;
+}
+
+.king-addons-mega-menu-horizontal[data-horizontal-align="center"],
+.king-addons-mega-menu-horizontal[data-horizontal-align="center"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[data-horizontal-align="center"] .king-addons-menu-items {
+    justify-content: center;
+}
+
+.king-addons-mega-menu-horizontal[data-horizontal-align="flex-end"],
+.king-addons-mega-menu-horizontal[data-horizontal-align="flex-end"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[data-horizontal-align="flex-end"] .king-addons-menu-items {
+    justify-content: flex-end;
+}
+
+.king-addons-mega-menu-horizontal[data-horizontal-align="space-between"],
+.king-addons-mega-menu-horizontal[data-horizontal-align="space-between"] .king-addons-menu-container,
+.king-addons-mega-menu-horizontal[data-horizontal-align="space-between"] .king-addons-menu-items {
+    justify-content: space-between;
+}
+
+/* Vertical alignment styles using data-attribute */
+.king-addons-mega-menu-vertical[data-vertical-align="flex-start"] .king-addons-menu-container,
+.king-addons-mega-menu-vertical[data-vertical-align="flex-start"] .king-addons-menu-items {
+    align-items: flex-start;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="center"] .king-addons-menu-container,
+.king-addons-mega-menu-vertical[data-vertical-align="center"] .king-addons-menu-items {
+    align-items: center;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="flex-end"] .king-addons-menu-container,
+.king-addons-mega-menu-vertical[data-vertical-align="flex-end"] .king-addons-menu-items {
+    align-items: flex-end;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="flex-start"] .king-addons-menu-items > li > a {
+    justify-content: flex-start;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="center"] .king-addons-menu-items > li > a {
+    justify-content: center;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="flex-end"] .king-addons-menu-items > li > a {
+    justify-content: flex-end;
+}
+
+/* Submenu Styles */
+.king-addons-menu-items ul.sub-menu,
+.king-addons-menu-items ul.king-addons-submenu {
+    position: absolute;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    margin: 0;
+    padding: 10px 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li > ul.king-addons-submenu {
+    top: 100%;
+    left: 0;
+    transform: translateY(10px);
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-vertical .king-addons-menu-items > li > ul.king-addons-submenu {
+    top: 0;
+    left: 100%;
+    transform: translateX(10px);
+}
+
+.king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-menu-items li:hover > ul.king-addons-submenu {
+    opacity: 1;
+    visibility: visible;
+}
+
+.king-addons-menu-items ul.sub-menu li,
+.king-addons-menu-items ul.king-addons-submenu li {
+    position: relative;
+    width: 100%;
+    margin: 0;
+}
+
+.king-addons-menu-items ul.sub-menu li a,
+.king-addons-menu-items ul.king-addons-submenu li a {
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
+.king-addons-menu-items ul.sub-menu ul.sub-menu,
+.king-addons-menu-items ul.king-addons-submenu ul.king-addons-submenu,
+.king-addons-menu-items ul.sub-menu ul.king-addons-submenu,
+.king-addons-menu-items ul.king-addons-submenu ul.sub-menu {
+    top: 0;
+    left: 100%;
+    transform: translateX(10px);
+}
+
+/* Dropdown Width Styles */
+.king-addons-dropdown-width-custom .king-addons-menu-items > li > ul.sub-menu {
+    width: 300px; /* Default value, will be overridden by custom settings */
+}
+
+.king-addons-dropdown-width-full .king-addons-menu-items > li > ul.sub-menu {
+    width: 100vw;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(10px);
+    margin-left: 0;
+}
+
+.king-addons-dropdown-width-full .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Dropdown Position Styles (Pro) */
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-left .king-addons-menu-items > li > ul.sub-menu {
+    left: 0;
+    right: auto;
+    transform: translateY(10px);
+}
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-left .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateY(0);
+}
+
+.elementor-widget-king-addons-mega-menu.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-menu-items > li > ul.sub-menu,
+.elementor-widget-king-addons-mega-menu.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-menu-items > li > .king-addons-submenu {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(10px);
+}
+.elementor-widget-king-addons-mega-menu.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-menu-items > li:hover > ul.sub-menu,
+.elementor-widget-king-addons-mega-menu.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-menu-items > li:hover > .king-addons-submenu {
+    transform: translateX(-50%) translateY(0);
+}
+
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-right .king-addons-menu-items > li > ul.sub-menu {
+    left: auto;
+    right: 0;
+    transform: translateY(10px);
+}
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-right .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateY(0);
+}
+
+/* --- FIX: Center align dropdown under top menu item --- */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center .king-addons-menu-items > li > ul.sub-menu {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(10px) !important;
+    min-width: 220px;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateX(-50%) translateY(0) !important;
+}
+/* --- END FIX --- */
+
+/* --- FIX: Right align dropdown under top menu item --- */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-right .king-addons-menu-items > li > ul.sub-menu {
+    left: auto !important;
+    right: 0 !important;
+    transform: translateY(10px) !important;
+    min-width: 220px;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-right .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateY(0) !important;
+}
+/* --- END FIX --- */
+
+/* Dropdown Animation Styles */
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items .king-addons-submenu {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transform: none !important;
+}
+
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items .king-addons-submenu {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transform: none !important;
+}
+
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items .king-addons-submenu {
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items li:hover > .king-addons-submenu,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: none !important;
+}
+
+/* Advanced Animations (Pro) */
+.king-addons-mega-menu .king-addons-animation-fade-up .king-addons-menu-items ul.sub-menu {
+    transform: translateY(20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-up .king-addons-menu-items li:hover > ul.sub-menu {
+    transform: translateY(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-fade-down .king-addons-menu-items ul.sub-menu {
+    transform: translateY(-20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-down .king-addons-menu-items li:hover > ul.sub-menu {
+    transform: translateY(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-fade-left .king-addons-menu-items ul.sub-menu {
+    transform: translateX(20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-left .king-addons-menu-items li:hover > ul.sub-menu {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-fade-right .king-addons-menu-items ul.sub-menu {
+    transform: translateX(-20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-right .king-addons-menu-items li:hover > ul.sub-menu {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-zoom-in .king-addons-menu-items ul.sub-menu {
+    transform: scale(0.9);
+}
+.king-addons-mega-menu .king-addons-animation-zoom-in .king-addons-menu-items li:hover > ul.sub-menu {
+    transform: scale(1);
+}
+
+.king-addons-mega-menu .king-addons-animation-zoom-out .king-addons-menu-items ul.sub-menu {
+    transform: scale(1.1);
+}
+.king-addons-mega-menu .king-addons-animation-zoom-out .king-addons-menu-items li:hover > ul.sub-menu {
+    transform: scale(1);
+}
+
+/* Combine animation base transitions with advanced animations */
+.king-addons-mega-menu[class*="king-addons-animation-"] .king-addons-menu-items ul.sub-menu {
+    transition: opacity var(--animation-duration, 0.3s) ease, visibility var(--animation-duration, 0.3s) ease, transform var(--animation-duration, 0.3s) ease;
+}
+
+/* Vertical menu adjustments for dropdown animations */
+.king-addons-mega-menu-vertical[data-dropdown-animation="slide"] .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-vertical.king-addons-animation-fade-left .king-addons-menu-items > li > ul.sub-menu {
+    transform: translateX(10px);
+}
+.king-addons-mega-menu-vertical[data-dropdown-animation="slide"] .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-vertical.king-addons-animation-fade-left .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu-vertical.king-addons-animation-fade-right .king-addons-menu-items > li > ul.sub-menu {
+    transform: translateX(-10px);
+}
+.king-addons-mega-menu-vertical.king-addons-animation-fade-right .king-addons-menu-items > li:hover > ul.sub-menu {
+    transform: translateX(0);
+}
+
+/* Current Menu Item Styles */
+.king-addons-menu-items > li.current-menu-item > a,
+.king-addons-menu-items > li.current-menu-ancestor > a {
+    position: relative;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background-color: currentColor;
+}
+
+/* Mobile Menu */
+.king-addons-mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    order: 2; /* By default on the right */
+    margin-left: auto;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.king-addons-mobile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    padding: 15px;
+}
+
+.king-addons-mobile-menu .king-addons-menu-items,
+.king-addons-mobile-menu .king-addons-menu-items ul,
+.king-addons-mobile-menu .king-addons-submenu {
+    flex-direction: column !important;
+    width: 100%;
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+.king-addons-mobile-menu .king-addons-menu-items li {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.king-addons-mobile-menu .king-addons-menu-items a {
+    padding: 10px 0;
+    width: 100%;
+}
+
+.king-addons-mobile-menu .king-addons-menu-items ul.sub-menu,
+.king-addons-mobile-menu .king-addons-menu-items ul.king-addons-submenu {
+    display: none;
+    padding-left: 15px;
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Custom submenu styles */
+.king-addons-submenu {
+    position: absolute;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    margin: 0;
+    padding: 10px 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li > .king-addons-submenu {
+    top: 100%;
+    left: 0;
+    transform: translateY(10px);
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li > .king-addons-submenu {
+    top: 0;
+    left: 100%;
+    transform: translateX(10px);
+}
+
+.king-addons-menu-items li:hover > .king-addons-submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0);
+}
+
+.king-addons-submenu li {
+    position: relative;
+    width: 100%;
+    margin: 0;
+}
+
+.king-addons-submenu li a {
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.king-addons-submenu .king-addons-submenu {
+    top: 0;
+    left: 100%;
+    transform: translateX(10px);
+}
+
+/* Fix for submenu items in Elementor editor */
+.elementor-editor-active .king-addons-parent-submenu-item {
+    border-left: 3px solid #556068 !important;
+}
+
+.elementor-editor-active .king-addons-submenu-item {
+    border-left: 3px solid #6d7882 !important;
+}
+
+.elementor-editor-active .king-addons-submenu-container {
+    background-color: rgba(0, 0, 0, 0.03);
+    padding: 5px;
+    border-radius: 3px;
+}
+
+/* Positioning the mobile button */
+.king-addons-mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    order: 2; /* By default on the right */
+    margin-left: auto;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+/* Button position on the left */
+.king-addons-mobile-toggle-left .king-addons-mobile-menu-toggle {
+    order: 0;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* Styles for the icon color and toggle button background */
+.king-addons-mobile-menu-toggle i,
+.king-addons-mobile-menu-toggle svg {
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Styles for the mobile menu close button */
+.king-addons-mobile-menu-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: color 0.3s ease, background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.king-addons-mobile-menu-close i,
+.king-addons-mobile-menu-close svg {
+    transition: color 0.3s ease;
+}
+
+/* Mobile adaptive styles */
+@media (max-width: 1024px) {
+    /* Basic styles for the mobile version */
+    .king-addons-menu-container {
+        display: none;
+        order: 3; /* The menu will always be below the header and button */
+        width: 100%;
+        flex-basis: 100%;
+    }
+    
+    .king-addons-mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .king-addons-mega-menu {
+        justify-content: space-between !important;
+        flex-wrap: wrap;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Adapt the logo position depending on the toggle position */
+    .king-addons-mega-menu-logo {
+        order: 1; /* In the mobile version, it will always be between the toggle and the content */
+        display: flex; /* Added for alignment inside the container */
+        width: auto; /* For correct alignment */
+        flex-grow: 1; /* Takes up all remaining space */
+    }
+    
+    /* If the toggle is on the left, the logo should be on the right */
+    .king-addons-mobile-toggle-left .king-addons-logo-mobile-position-right {
+        margin-left: auto;
+        margin-right: 0;
+        order: 1;
+    }
+    
+    /* If the toggle is on the right, the logo should be on the left */
+    .king-addons-mega-menu:not(.king-addons-mobile-toggle-left) .king-addons-logo-mobile-position-left {
+        margin-left: 0;
+        margin-right: auto;
+        order: 0;
+    }
+    
+    /* Always vertical menu view in mobile mode */
+    .king-addons-mobile-menu .king-addons-menu-items,
+    .king-addons-mobile-menu .king-addons-menu-items ul,
+    .king-addons-mobile-menu .king-addons-submenu {
+        flex-direction: column !important;
+        width: 100%;
+        position: relative;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    /* Reset horizontal styles for the mobile menu */
+    .king-addons-mega-menu-horizontal .king-addons-menu-items {
+        flex-direction: column !important;
+    }
+    
+    /* Override rules for the mobile menu */
+    .king-addons-mobile-menu .king-addons-menu-items li {
+        margin: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column; /* Always vertical */
+    }
+    
+    .king-addons-mobile-menu .king-addons-menu-items a {
+        padding: 10px 0;
+        width: 100%; /* Occupy the entire available width */
+    }
+
+    .king-addons-menu-items > li > ul.sub-menu, 
+    .king-addons-menu-items > li > .king-addons-template-content, 
+    .king-addons-menu-items > li > .king-addons-submenu {
+        transform: none !important;
+    }
+
+}
+
+/* Additional Styles for Customization */
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li.current-menu-item > a,
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li.current-menu-ancestor > a {
+    position: relative;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background-color: currentColor;
+}
+
+/* Icon Styles */
+.king-addons-menu-items > li .menu-item-icon {
+    margin-right: 8px;
+}
+
+/* Ensure dropdown doesn't get cut off */
+.king-addons-mega-menu {
+    overflow: visible !important;
+}
+
+.king-addons-menu-container {
+    overflow: visible !important;
+}
+
+/* Elementor Template in Dropdown */
+.king-addons-menu-items li .king-addons-template-content {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li > .king-addons-template-content {
+    top: 100%;
+    left: 0;
+    transform: translateY(10px);
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li > .king-addons-template-content {
+    top: 0;
+    left: 100%;
+    transform: translateX(10px);
+}
+
+/* Dropdown Position for Elementor Template */
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-left .king-addons-menu-items > li > .king-addons-template-content {
+    left: 0;
+    right: auto;
+    transform: translateY(10px);
+}
+
+.elementor-widget-king-addons-mega-menu.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-menu-items > li > .king-addons-template-content {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-right .king-addons-menu-items > li > .king-addons-template-content {
+    left: auto;
+    right: 0;
+    transform: translateY(10px);
+}
+
+/* Show Elementor Template on hover */
+.king-addons-menu-items li:hover > .king-addons-template-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0);
+}
+
+.elementor-widget-king-addons-mega-menu.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-menu-items > li:hover > .king-addons-template-content {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Dropdown Width for Elementor Template */
+.king-addons-dropdown-width-custom .king-addons-menu-items > li > .king-addons-template-content {
+    width: 300px; /* Default value, will be overridden by custom settings */
+}
+
+.king-addons-dropdown-width-full .king-addons-menu-items > li > .king-addons-template-content {
+    width: 100vw;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(10px);
+    margin-left: 0;
+}
+
+.king-addons-dropdown-width-full .king-addons-menu-items > li:hover > .king-addons-template-content {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Animation for Elementor Template */
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items .king-addons-template-content {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transform: none;
+}
+
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items .king-addons-template-content {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transform: none;
+}
+
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items .king-addons-template-content {
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: none;
+}
+
+/* Advanced Animations (Pro) for Elementor Template */
+.king-addons-mega-menu .king-addons-animation-fade-up .king-addons-menu-items .king-addons-template-content {
+    transform: translateY(20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-up .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: translateY(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-fade-down .king-addons-menu-items .king-addons-template-content {
+    transform: translateY(-20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-down .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: translateY(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-fade-left .king-addons-menu-items .king-addons-template-content {
+    transform: translateX(20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-left .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-fade-right .king-addons-menu-items .king-addons-template-content {
+    transform: translateX(-20px);
+}
+.king-addons-mega-menu .king-addons-animation-fade-right .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu .king-addons-animation-zoom-in .king-addons-menu-items .king-addons-template-content {
+    transform: scale(0.9);
+}
+.king-addons-mega-menu .king-addons-animation-zoom-in .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: scale(1);
+}
+
+.king-addons-mega-menu .king-addons-animation-zoom-out .king-addons-menu-items .king-addons-template-content {
+    transform: scale(1.1);
+}
+.king-addons-mega-menu .king-addons-animation-zoom-out .king-addons-menu-items li:hover > .king-addons-template-content {
+    transform: scale(1);
+}
+
+/* Fix for center positioning with advanced animations */
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-animation-fade-up .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-animation-fade-down .king-addons-menu-items > li > .king-addons-template-content {
+    transform: translateX(-50%) translateY(20px);
+}
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-animation-fade-up .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal .king-addons-dropdown-position-center .king-addons-animation-fade-down .king-addons-menu-items > li:hover > .king-addons-template-content {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Mobile menu adjustments for Elementor templates */
+.king-addons-mobile-menu .king-addons-menu-items .king-addons-template-content {
+    position: relative;
+    width: 100% !important;
+    opacity: 1;
+    visibility: visible;
+    transform: none !important;
+    box-shadow: none;
+    padding: 10px 0;
+    display: none; /* Initially hidden in mobile view */
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-container {
+    align-items: flex-start;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="center"] .king-addons-menu-container,
+.king-addons-mega-menu-vertical[data-vertical-align="center"] .king-addons-menu-items {
+    align-items: center;
+}
+
+.king-addons-mega-menu-vertical[data-vertical-align="flex-end"] .king-addons-menu-container,
+.king-addons-mega-menu-vertical[data-vertical-align="flex-end"] .king-addons-menu-items {
+    align-items: flex-end;
+}
+
+/* Basic styles for WordPress menu items */
+.king-addons-mega-menu .king-addons-menu-items {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items {
+    flex-direction: row;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items {
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Basic styles for WordPress menu items */
+.king-addons-menu-items > li {
+    position: relative;
+    list-style: none;
+    margin: 0;
+}
+
+.king-addons-mega-menu-horizontal .king-addons-menu-items > li {
+    margin-right: 15px;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li {
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.king-addons-menu-items > li:last-child {
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.king-addons-menu-items > li > a {
+    display: flex;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.king-addons-mega-menu-vertical .king-addons-menu-items > li > a {
+    display: flex;
+    width: 100%;
+}
+
+/* Styles for logo alignment on mobile devices */
+.king-addons-logo-mobile-alignment-left {
+    justify-content: flex-start;
+}
+
+.king-addons-logo-mobile-alignment-center {
+    justify-content: center;
+}
+
+.king-addons-logo-mobile-alignment-right {
+    justify-content: flex-end;
+}
+
+/* Styles for hover effects */
+.king-addons-menu-items > li > a {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Common styles for hover indicators and active item */
+.king-addons-menu-items > li > a:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: -1;
+}
+
+/* Underline hover effect */
+.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:after {
+    bottom: 0;
+    height: 2px;
+    left: 0;
+    right: 0;
+}
+
+/* Overline hover effect */
+.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:after {
+    top: 0;
+    bottom: auto;
+    height: 2px;
+    left: 0;
+    right: 0;
+}
+
+/* Double-line hover effect */
+.king-addons-menu-items-hover-double-line .king-addons-menu-items > li > a:after {
+    content: '';
+    height: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 2px solid;
+    border-bottom: 2px solid;
+    background-color: transparent;
+    transform: scaleY(0);
+}
+
+/* Framed hover effect */
+.king-addons-menu-items-hover-framed .king-addons-menu-items > li > a:after {
+    content: '';
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 2px solid;
+    background-color: transparent;
+    transform: scale(0);
+}
+
+/* Background hover effect */
+.king-addons-menu-items-hover-background .king-addons-menu-items > li > a:after {
+    content: '';
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: scale(0);
+    opacity: 0;
+}
+
+/* Hover animations */
+/* Fade Animation */
+.king-addons-hover-animation-fade .king-addons-menu-items > li > a:hover:after {
+    opacity: 1;
+    transform: none;
+}
+
+/* Slide Animation */
+.king-addons-hover-animation-slide.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:after,
+.king-addons-hover-animation-slide.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:after {
+    width: 100%;
+    transform: translateX(-100%);
+}
+
+.king-addons-hover-animation-slide.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:hover:after,
+.king-addons-hover-animation-slide.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:hover:after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Grow Animation */
+.king-addons-hover-animation-grow.king-addons-menu-items-hover-background .king-addons-menu-items > li > a:after,
+.king-addons-hover-animation-grow.king-addons-menu-items-hover-framed .king-addons-menu-items > li > a:after {
+    transform: scale(0);
+}
+
+.king-addons-hover-animation-grow.king-addons-menu-items-hover-background .king-addons-menu-items > li > a:hover:after,
+.king-addons-hover-animation-grow.king-addons-menu-items-hover-framed .king-addons-menu-items > li > a:hover:after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.king-addons-hover-animation-grow.king-addons-menu-items-hover-double-line .king-addons-menu-items > li > a:after {
+    transform: scaleY(0);
+}
+
+.king-addons-hover-animation-grow.king-addons-menu-items-hover-double-line .king-addons-menu-items > li > a:hover:after {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+/* Drop In Animation */
+.king-addons-hover-animation-drop-in.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:after,
+.king-addons-hover-animation-drop-in.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:after {
+    transform: translateY(10px);
+}
+
+.king-addons-hover-animation-drop-in.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:hover:after,
+.king-addons-hover-animation-drop-in.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:hover:after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Drop Out Animation */
+.king-addons-hover-animation-drop-out.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:after,
+.king-addons-hover-animation-drop-out.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:after {
+    transform: translateY(-10px);
+}
+
+.king-addons-hover-animation-drop-out.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:hover:after,
+.king-addons-hover-animation-drop-out.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:hover:after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Styles for the active menu item (current-menu-item) */
+.king-addons-menu-items > li.current-menu-item > a,
+.king-addons-menu-items > li.current-menu-ancestor > a {
+    position: relative;
+}
+
+/* Common styles */
+.king-addons-current-item-underline .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-current-item-underline .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: currentColor;
+    opacity: 1;
+}
+
+.king-addons-current-item-overline .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-current-item-overline .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: currentColor;
+    opacity: 1;
+}
+
+.king-addons-current-item-double-line .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-current-item-double-line .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    opacity: 1;
+    background-color: transparent;
+}
+
+.king-addons-current-item-framed .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-current-item-framed .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 2px solid currentColor;
+    opacity: 1;
+    background-color: transparent;
+}
+
+.king-addons-current-item-background .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-current-item-background .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.1;
+    background-color: currentColor;
+}
+
+.king-addons-current-item-text .king-addons-menu-items > li.current-menu-item > a:after,
+.king-addons-current-item-text .king-addons-menu-items > li.current-menu-ancestor > a:after {
+    content: '\f105'; 
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 5px;
+    background-color: transparent;
+    opacity: 1;
+    height: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.king-addons-hover-effects-disabled.king-addons-menu-items-hover-underline .king-addons-menu-items > li > a:after,
+.king-addons-hover-effects-disabled.king-addons-menu-items-hover-overline .king-addons-menu-items > li > a:after,
+.king-addons-hover-effects-disabled.king-addons-menu-items-hover-double-line .king-addons-menu-items > li > a:after,
+.king-addons-hover-effects-disabled.king-addons-menu-items-hover-framed .king-addons-menu-items > li > a:after,
+.king-addons-hover-effects-disabled.king-addons-menu-items-hover-background .king-addons-menu-items > li > a:after {
+    display: none;
+}
+
+/* --- UNIFIED DROPDOWN ANIMATION SYSTEM --- */
+/* 1. Basic styles: only opacity/visibility, transform only via animation */
+.king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-menu-items li:hover > ul.king-addons-submenu {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 2. All dropdown menus by default: transform for animation is set only via data-dropdown-animation or class */
+.king-addons-menu-items ul.sub-menu,
+.king-addons-menu-items ul.king-addons-submenu {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+}
+
+/* 3. Fade (by data-attribute) */
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="fade"] .king-addons-menu-items ul.king-addons-submenu {
+    transform: none;
+}
+
+/* 4. Slide (by data-attribute) */
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items ul.king-addons-submenu {
+    transform: translateY(20px);
+}
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="slide"] .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: translateY(0);
+}
+
+/* 5. None (by data-attribute) */
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu[data-dropdown-animation="none"] .king-addons-menu-items ul.king-addons-submenu {
+    transition: none;
+    transform: none;
+}
+
+/* 6. Advanced: fade-up, fade-down, fade-left, fade-right, zoom-in, zoom-out (by class) */
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items ul.king-addons-submenu {
+    transform: translateY(20px);
+}
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: translateY(0);
+}
+
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items ul.king-addons-submenu {
+    transform: translateY(-20px);
+}
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: translateY(0);
+}
+
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items ul.king-addons-submenu {
+    transform: translateX(20px);
+}
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items ul.king-addons-submenu {
+    transform: translateX(-20px);
+}
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: translateX(0);
+}
+
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items ul.king-addons-submenu {
+    transform: scale(0.9);
+}
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: scale(1);
+}
+
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items ul.king-addons-submenu {
+    transform: scale(1.1);
+}
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items li:hover > ul.king-addons-submenu {
+    transform: scale(1);
+}
+/* --- END UNIFIED SYSTEM --- */
+
+/* --- UNIFIED ANIMATION SYSTEM FOR ALL DROPDOWNS --- */
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items .king-addons-submenu {
+    transform: translateY(20px) !important;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s !important;
+}
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-up .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: translateY(0) !important;
+}
+
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items .king-addons-submenu {
+    transform: translateY(-20px) !important;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s !important;
+}
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-down .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: translateY(0) !important;
+}
+
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items .king-addons-submenu {
+    transform: translateX(20px) !important;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s !important;
+}
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-left .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: translateX(0) !important;
+}
+
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items .king-addons-submenu {
+    transform: translateX(-20px) !important;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s !important;
+}
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-fade-right .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: translateX(0) !important;
+}
+
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items .king-addons-submenu {
+    transform: scale(0.9) !important;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s !important;
+}
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-zoom-in .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: scale(1) !important;
+}
+
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items .king-addons-submenu {
+    transform: scale(1.1) !important;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s !important;
+}
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items li:hover > ul.sub-menu,
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items li:hover > .king-addons-template-content,
+.king-addons-mega-menu.king-addons-animation-zoom-out .king-addons-menu-items li:hover > .king-addons-submenu {
+    transform: scale(1) !important;
+}
+/* --- END UNIFIED SYSTEM --- */
+
+/* --- COMBINED POSITION + ANIMATION SYSTEM --- */
+/* Center + fade-up */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-up .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-up .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-up .king-addons-menu-items > li > .king-addons-submenu {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) translateY(20px) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-up .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-up .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-up .king-addons-menu-items > li:hover > .king-addons-submenu {
+  transform: translateX(-50%) translateY(0) !important;
+}
+/* Center + fade-down */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-down .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-down .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-down .king-addons-menu-items > li > .king-addons-submenu {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) translateY(-20px) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-down .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-down .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-down .king-addons-menu-items > li:hover > .king-addons-submenu {
+  transform: translateX(-50%) translateY(0) !important;
+}
+/* Center + fade-left */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-left .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-left .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-left .king-addons-menu-items > li > .king-addons-submenu {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) translateX(20px) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-left .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-left .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-left .king-addons-menu-items > li:hover > .king-addons-submenu {
+  transform: translateX(-50%) translateX(0) !important;
+}
+/* Center + fade-right */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-right .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-right .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-right .king-addons-menu-items > li > .king-addons-submenu {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) translateX(-20px) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-right .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-right .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-fade-right .king-addons-menu-items > li:hover > .king-addons-submenu {
+  transform: translateX(-50%) translateX(0) !important;
+}
+/* Center + zoom-in */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-in .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-in .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-in .king-addons-menu-items > li > .king-addons-submenu {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) scale(0.9) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-in .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-in .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-in .king-addons-menu-items > li:hover > .king-addons-submenu {
+  transform: translateX(-50%) scale(1) !important;
+}
+/* Center + zoom-out */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-out .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-out .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-out .king-addons-menu-items > li > .king-addons-submenu {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) scale(1.1) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-out .king-addons-menu-items > li:hover > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-out .king-addons-menu-items > li:hover > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center.king-addons-animation-zoom-out .king-addons-menu-items > li:hover > .king-addons-submenu {
+  transform: translateX(-50%) scale(1) !important;
+}
+/* Repeat similar for left and right positions if needed */
+/* --- END COMBINED SYSTEM --- */
+
+/* --- COMBINED POSITION + FADE ANIMATION SYSTEM --- */
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center[data-dropdown-animation="fade"] .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center[data-dropdown-animation="fade"] .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-center[data-dropdown-animation="fade"] .king-addons-menu-items > li > .king-addons-submenu {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-right[data-dropdown-animation="fade"] .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-right[data-dropdown-animation="fade"] .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-right[data-dropdown-animation="fade"] .king-addons-menu-items > li > .king-addons-submenu {
+    left: auto;
+    right: 0;
+    transform: none !important;
+}
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-left[data-dropdown-animation="fade"] .king-addons-menu-items > li > ul.sub-menu,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-left[data-dropdown-animation="fade"] .king-addons-menu-items > li > .king-addons-template-content,
+.king-addons-mega-menu-horizontal.king-addons-dropdown-position-left[data-dropdown-animation="fade"] .king-addons-menu-items > li > .king-addons-submenu {
+    left: 0;
+    right: auto;
+    transform: none !important;
+}
+/* --- END COMBINED FADE SYSTEM --- */
+
+/* Dropdown icon styles */
+.menu-item-has-children > a .king-addons-dropdown-icon {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s;
+    font-size: 13px;
+}
+.menu-item-has-children.king-addons-mobile-menu__item--open > a .king-addons-dropdown-icon {
+    transform: rotate(180deg);
+}
+.menu-item-has-children:hover > a .king-addons-dropdown-icon {
+    transform: rotate(180deg);
+}

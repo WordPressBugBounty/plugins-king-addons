@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Core class do all things at the start of the plugin
  */
@@ -105,6 +106,12 @@ final class Core
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/View_Submissions_Pro.php');
             }
 
+            // ADDITIONAL CLASSES
+
+
+
+            // END: ADDITIONAL CLASSES
+
             self::enableWidgetsByDefault();
 
             add_action('elementor/init', [$this, 'initElementor']);
@@ -153,31 +160,31 @@ final class Core
 
         // If the premium notice was dismissed less than a week ago (604800 seconds), do not show it
         if ($last_dismissed && ($now - $last_dismissed) < 604800) {
-//        if ($last_dismissed && ($now - $last_dismissed) < 60) {
+            //        if ($last_dismissed && ($now - $last_dismissed) < 60) {
             return;
         }
-        ?>
+?>
         <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
-             style="border-left: 4px solid #0073aa;padding: 10px 15px;">
+            style="border-left: 4px solid #0073aa;padding: 10px 15px;">
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
-                                <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
-                                            style="font-weight: 700;">200+</strong> features for only $<strong
-                                            style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
+                <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
+                        style="font-weight: 700;">200+</strong> features for only $<strong
+                        style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
                 <span>
-                <a style="margin-left: 10px;font-size: 14px;padding: 3px 20px;display: flex;align-items: center;"
-                   href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
-                   class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
-                                                      src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                                      alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
+                    <a style="margin-left: 10px;font-size: 14px;padding: 3px 20px;display: flex;align-items: center;"
+                        href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
+                        class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
+                            src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                            alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
                 </span>
             </p>
         </div>
         <script>
-            (function ($) {
+            (function($) {
                 // Wait for the document to be ready
-                $(document).ready(function () {
+                $(document).ready(function() {
                     // Attach click handler to the dismiss button of the premium notice
-                    $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function () {
+                    $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function() {
                         $.post(ajaxurl, {
                             action: 'king_addons_premium_notice_dismiss'
                         });
@@ -185,7 +192,7 @@ final class Core
                 });
             })(jQuery);
         </script>
-        <?php
+<?php
     }
 
     function enqueueFrontendStyles()
@@ -251,7 +258,7 @@ final class Core
     function showAdminNotice_ElementorMinimumVersion(): void
     {
         $message = sprintf(
-        /* translators: 1: Plugin name 2: Elementor 3: Required Elementor version */
+            /* translators: 1: Plugin name 2: Elementor 3: Required Elementor version */
             esc_html__('%1$s plugin requires %2$s plugin version %3$s or greater.', 'king-addons'),
             esc_html__('King Addons', 'king-addons'),
             esc_html__('Elementor', 'king-addons'),
@@ -796,13 +803,13 @@ final class Core
     public static function isBlogArchive()
     {
         return (
-                is_home()
-                && '0' === get_option('page_on_front')
-                && '0' === get_option('page_for_posts')
-            ) || (
-                intval(get_option('page_for_posts')) === get_queried_object_id()
-                && !is_404()
-            );
+            is_home()
+            && '0' === get_option('page_on_front')
+            && '0' === get_option('page_for_posts')
+        ) || (
+            intval(get_option('page_for_posts')) === get_queried_object_id()
+            && !is_404()
+        );
     }
 
     public static function filterOembedResults($html)
@@ -963,7 +970,7 @@ final class Core
         // Get all custom post types (slug => name).
         $post_types = Core::getCustomTypes('post', false);
 
-        // Build $data with each post type’s unique custom meta keys (excluding keys beginning with "_").
+        // Build $data with each post type's unique custom meta keys (excluding keys beginning with "_").
         $data = array_combine(
             array_keys($post_types),
             array_map(function ($slug) {
@@ -1013,7 +1020,6 @@ final class Core
 
         wp_add_inline_style('king-addons-lightbox-dynamic-style', $custom_css);
     }
-
 }
 
 Core::instance();

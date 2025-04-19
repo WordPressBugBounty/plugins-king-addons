@@ -81,6 +81,7 @@ final class CollectionsMap
             68 => 'Plumber & Handyman',
             69 => 'Barber & Haircut',
             70 => 'Insurance Agency',
+            71 => 'Gym & Fitness',
         ];
     }
 }

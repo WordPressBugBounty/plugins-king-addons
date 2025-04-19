@@ -1914,7 +1914,12 @@ class Pricing_Slider extends Widget_Base
             return $settings['formula_a'] * $value + $settings['formula_b'];
         } else {
             // Custom prices - find closest value or interpolate
-            $custom_prices = $settings['custom_prices'];
+            $custom_prices = isset($settings['custom_prices']) && is_array($settings['custom_prices']) ? $settings['custom_prices'] : [];
+
+            // Prevent usort() on null or non-array
+            if (empty($custom_prices)) {
+                return 0;
+            }
 
             // Sort by value
             usort($custom_prices, function ($a, $b) {

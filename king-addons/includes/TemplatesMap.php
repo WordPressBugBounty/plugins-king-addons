@@ -5089,6 +5089,71 @@ final class TemplatesMap
                     'tags' => ['accounting', 'advisory', 'agents', 'auto insurance', 'broker', 'consultation', 'finance', 'health insurance', 'insurance', 'insurance agency', 'insurance agent', 'insurance company', 'life insurance', 'loan'],
                 ],
 
+                't71-your-fitness-journey' => [
+                    'title' => esc_html__('Your Fitness Journey', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-push-your-limits' => [
+                    'title' => esc_html__('Push Your Limits', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-transform-your-body' => [
+                    'title' => esc_html__('Transform Your Body', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-strength-starts-here' => [
+                    'title' => esc_html__('Strength Starts Here', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-about-us' => [
+                    'title' => esc_html__('About Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-our-services' => [
+                    'title' => esc_html__('Our Services', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-our-team' => [
+                    'title' => esc_html__('Our Team', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+                't71-contact-us' => [
+                    'title' => esc_html__('Contact Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 71,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'fitness',
+                    'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
+                ],
+
                 /* ================================= */
                 /* ================================= */
                 /* ================================= */

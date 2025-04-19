@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.66
+Stable tag: 24.12.76
 Tested up to: 6.7
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -103,6 +103,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - [**Magazine Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
 - [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
 - [**Pricing Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive pricing sliders that allow users to dynamically adjust parameters and instantly see matching features. Perfect for subscription services, product configurators, or membership plans. Compatible with WooCommerce and other pricing systems. Boosts conversions by providing visual, intuitive pricing comparisons.
+- [**Mega Menu**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create powerful navigation menus with support for dropdown menus, custom layouts, and responsive design. Perfect for creating professional website headers with both WordPress menus and custom navigation structures.
 
 ### FREE Elementor features
 
@@ -194,6 +195,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.76 - April 19, 2025 =
+* **New:** Mega Menu widget added.
+* **New:** Templates Catalog - 8 premium templates added.
+* **Improved:** Pricing Slider widget.
+* **Improved:** PHP 8+ working.
 
 = King Addons for Elementor version 24.12.66 - April 8, 2025 =
 * **Improved:** Pricing Slider widget.

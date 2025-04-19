@@ -20,3 +20,6 @@ const KING_ADDONS_EXT_POPUP_BUILDER = true;
 /** WIDGETS - Enable/Disable */
 //const KING_ADDONS_WGT_FORM_BUILDER = true;
 const KING_ADDONS_WGT_FORM_BUILDER = false;
+
+const KING_ADDONS_WGT_MEGA_MENU = true;
+//const KING_ADDONS_WGT_MEGA_MENU = false;

@@ -76,6 +76,10 @@
     background-color: rgb(87 79 247 / 5%);
 }
 
+.elementor-control-type-repeater .king-addons-submenu-item .king-mega-menu-item-type-control {
+    display: none;
+}
+
 /* -------------- */
 /* Pro Features Disclaimer */
 
@@ -132,6 +136,11 @@
 .king-addons-pro-control:hover .king-addons-pro-tooltip {
     visibility: visible;
     opacity: 1;
+}
+
+.elementor-control-type-raw_html:has(.king-addons-pro-notice) {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* END: Pro Features Disclaimer */
@@ -619,6 +628,10 @@
 
 .king-addons-icon.king-addons-lottie-animations {
     background-image: url(../img/lottie-animations.svg);
+}
+
+.king-addons-icon.king-addons-mega-menu {
+    background-image: url(../img/mega-menu.svg);
 }
 
 /* for elementor icons */

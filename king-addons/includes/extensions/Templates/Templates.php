@@ -300,10 +300,19 @@ final class Templates
     {
         $search_terms = array_filter(explode(' ', $search_query));
         $has_search = !empty($search_terms);
-//        $filtered_templates = [];
+        // Custom: direct key search
+        $search_by_key = false;
+        $found_by_key = [];
+        if (!empty($search_query) && isset($templates['templates'][$search_query])) {
+            $found_by_key[] = $templates['templates'][$search_query];
+            $found_by_key[0]['template_key'] = $search_query;
+            $search_by_key = true;
+        }
 
         // Filter templates based on search and selected filters
-        if (!$has_search) {
+        if ($search_by_key) {
+            $filtered_templates = $found_by_key;
+        } elseif (!$has_search) {
             $filtered_templates = array_filter($templates['templates'], function ($template) use ($search_terms, $selected_category, $selected_tags, $selected_collection) {
 
                 foreach ($search_terms as $term) {
@@ -369,7 +378,6 @@ final class Templates
                                 break;
                             }
                         }
-
 //                        if (!$found_in_title && !$found_in_tags) {
 //                            continue;
 //                        }
