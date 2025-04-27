@@ -64,3 +64,7 @@
 .elementor-widget-king-addons-mailchimp .king-addons-mailchimp-subscribe-btn:hover {
     background-color: #4D02D8;
 }
+
+.king-addons-mailchimp-fields input:focus {
+    outline: none;
+}

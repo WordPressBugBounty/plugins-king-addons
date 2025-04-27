@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.77
+Stable tag: 24.12.78
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -195,6 +195,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.78 - April 27, 2025 =
+* **New:** Added the master switch to on/off all elements/features in settings.
+* **New:** Posts Grid & Slider / Carousel - added feature to hide tbe post featured image or thumbnail in the grid.
+* **Improved:** Posts Grid  & Slider / Carousel widget backend.
+* **Fix:** Posts Grid & Slider / Carousel - the scale down animation did not work.
+* **Fix:** MailChimp widget - the focus border color setting did not work.
+* **Fix:** MailChimp widget - the focus box shadow setting did not work.
 
 = King Addons for Elementor version 24.12.77 - April 22, 2025 =
 * **QA:** Checked compatibility with WordPress 6.8. All is good.

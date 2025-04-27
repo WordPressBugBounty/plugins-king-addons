@@ -558,3 +558,18 @@
     display: table-cell;
     vertical-align: middle;
 }
+
+/* Fix: Overlay scale-down animation should shrink on hover, not grow. */
+.king-addons-anim-size-small.king-addons-overlay-scale-down,
+.king-addons-anim-size-medium.king-addons-overlay-scale-down,
+.king-addons-anim-size-large.king-addons-overlay-scale-down {
+    transform: scale(1);
+    transition: transform 0.3s;
+}
+
+.king-addons-animation-wrap:hover .king-addons-overlay-scale-down,
+.king-addons-animation-wrap-active .king-addons-overlay-scale-down,
+.king-addons-animation-enter > .king-addons-overlay-scale-down {
+    transform: scale(0.6);
+    opacity: 1;
+}

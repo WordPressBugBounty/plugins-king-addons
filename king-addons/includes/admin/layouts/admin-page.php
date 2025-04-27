@@ -21,7 +21,8 @@ $options = get_option('king_addons_options');
         overflow-x: hidden;
     }
 
-    html, #wpcontent {
+    html,
+    #wpcontent {
         background: #101112;
     }
 
@@ -37,13 +38,13 @@ $options = get_option('king_addons_options');
     $promo_enabled = false;
     if (!king_addons_freemius()->can_use_premium_code__premium_only()):
         if ($promo_enabled):
-            ?>
+    ?>
             <div class="kng-promo">
                 <div class="kng-promo-wrap">
                     <div class="kng-promo-wrap-icon">
                         <img width="50px"
-                             src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/unlock-v2.svg'; ?>"
-                             alt="<?php echo esc_html__('Unlock Icon', 'king-addons'); ?>">
+                            src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/unlock-v2.svg'; ?>"
+                            alt="<?php echo esc_html__('Unlock Icon', 'king-addons'); ?>">
                     </div>
                     <div class="kng-promo-wrap-1">
                         <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 600+ Templates Today!', 'king-addons'); ?></h1>
@@ -58,8 +59,8 @@ $options = get_option('king_addons_options');
                             <div class="kng-promo-btn-wrap">
                                 <a href="https://kingaddons.com/pricing/?rel=king-addons-dashboard" target="_blank">
                                     <img width="16px"
-                                         src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share.svg'; ?>"
-                                         alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
+                                        src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share.svg'; ?>"
+                                        alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
                                     <div class="kng-promo-btn-txt"><?php echo esc_html__('Learn More', 'king-addons'); ?></div>
                                 </a>
                             </div>
@@ -105,7 +106,7 @@ $options = get_option('king_addons_options');
                         <div class="kng-nav-item kng-nav-item-current-active">
                             <a href="<?php echo admin_url('admin.php?page=king-addons-templates'); ?>">
                                 <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-templates.svg'; ?>"
-                                     alt="<?php echo (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')); ?>">
+                                    alt="<?php echo (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')); ?>">
                                 <div class="kng-nav-item-txt"><?php echo (!king_addons_freemius()->can_use_premium_code() ?  esc_html__('Free Templates', 'king-addons') :  esc_html__('Templates Pro', 'king-addons')); ?></div>
                             </a>
                         </div>
@@ -116,7 +117,7 @@ $options = get_option('king_addons_options');
     </div>
     <?php
     if (king_addons_freemius()->can_use_premium_code__premium_only()):
-        ?>
+    ?>
         <div class="king-addons-special-animation">
             <div class="king-addons-special-animation-container">
                 <div class="king-addons-special-animation-colors">
@@ -168,7 +169,7 @@ $options = get_option('king_addons_options');
                 if (!empty($field['args']['class'])) {
                     $class = $field['args']['class'];
                 }
-                ?>
+        ?>
                 <tr class="<?php echo esc_attr($class); ?>">
                     <td>
                         <div class="kng-td-wrap-before-1"></div>
@@ -177,9 +178,9 @@ $options = get_option('king_addons_options');
                             <div class="kng-td">
                                 <div class="kng-td-icon">
                                     <img alt="<?php echo esc_attr($args['label_for']); ?>"
-                                         src="<?php echo esc_attr(KING_ADDONS_URL) . 'includes/admin/img/' . esc_attr($args['label_for']); ?>.svg?v=<?php echo esc_attr(KING_ADDONS_VERSION); ?>"
-                                         class="kng-item-icon"
-                                         width="80px"/>
+                                        src="<?php echo esc_attr(KING_ADDONS_URL) . 'includes/admin/img/' . esc_attr($args['label_for']); ?>.svg?v=<?php echo esc_attr(KING_ADDONS_VERSION); ?>"
+                                        class="kng-item-icon"
+                                        width="80px" />
                                 </div>
                                 <div class="kng-td-content">
                                     <h3><?php echo esc_attr($field['title']); ?></h3>
@@ -206,17 +207,16 @@ $options = get_option('king_addons_options');
                                         <div class="kng-settings-switch-box-wrap">
                                             <div class="kng-settings-switch-box">
                                                 <input type="hidden"
-                                                       name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
-                                                       value="disabled"/>
+                                                    name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
+                                                    value="disabled" />
                                                 <input type="checkbox"
-                                                       class="kng-settings-switch"
-                                                       id="<?php echo esc_attr($args['label_for']); ?>"
-                                                       name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
-                                                       value="enabled"
-                                                    <?php checked(isset($options[$args['label_for']]) && $options[$args['label_for']] === 'enabled'); ?>
-                                                />
+                                                    class="kng-settings-switch"
+                                                    id="<?php echo esc_attr($args['label_for']); ?>"
+                                                    name="king_addons_options[<?php echo esc_attr($args['label_for']); ?>]"
+                                                    value="enabled"
+                                                    <?php checked(isset($options[$args['label_for']]) && $options[$args['label_for']] === 'enabled'); ?> />
                                                 <label for="<?php echo esc_attr($args['label_for']); ?>"
-                                                       class="kng-settings-switch-label"></label>
+                                                    class="kng-settings-switch-label"></label>
                                             </div>
 
                                             <?php
@@ -224,7 +224,7 @@ $options = get_option('king_addons_options');
                                                 <div class="kng-settings-switch-notice">
                                                     &lt;- enable/disable this module
                                                 </div>
-                                                <?php
+                                            <?php
                                                 $first_item = false;
                                             endif;
                                             ?>
@@ -236,17 +236,44 @@ $options = get_option('king_addons_options');
                         </div>
                     </td>
                 </tr>
-                <?php
+        <?php
 
             }
 
             echo '</tbody></table>';
-
         }
         ?>
         <div class="kng-btn-submit-wrap">
-            <button type="submit" name="submit" id="submit" class="kng-btn-submit"
+            <div class="kng-master-switch-wrap">
+                <div class="kng-master-switch-notice">
+                    Master switch -&gt;
+                </div>
+                <button type="button" id="kng-enable-all" class="kng-master-btn"><?php echo esc_html__('Enable All', 'king-addons'); ?></button>
+                <button type="button" id="kng-disable-all" class="kng-master-btn"><?php echo esc_html__('Disable All', 'king-addons'); ?></button>
+            </div>
+            <div class="kng-settings-submit-wrap">
+                <button type="submit" name="submit" id="submit" class="kng-btn-submit"
                     value="submit"><?php echo esc_html__('SAVE SETTINGS', 'king-addons'); ?></button>
+            </div>
         </div>
     </form>
+    <script>
+        // JavaScript to toggle all setting switches
+        document.addEventListener('DOMContentLoaded', function() {
+            const enableAllBtn = document.getElementById('kng-enable-all');
+            const disableAllBtn = document.getElementById('kng-disable-all');
+            if (enableAllBtn && disableAllBtn) {
+                enableAllBtn.addEventListener('click', function() {
+                    document.querySelectorAll('.kng-settings-switch').forEach(function(cb) {
+                        cb.checked = true;
+                    });
+                });
+                disableAllBtn.addEventListener('click', function() {
+                    document.querySelectorAll('.kng-settings-switch').forEach(function(cb) {
+                        cb.checked = false;
+                    });
+                });
+            }
+        });
+    </script>
 </div>

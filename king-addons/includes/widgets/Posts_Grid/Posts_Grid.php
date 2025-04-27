@@ -1733,6 +1733,23 @@ class Posts_Grid extends Widget_Base
             ]
         );
 
+        /**
+         * Add a switcher control to allow users to hide the post thumbnail in the grid.
+         *
+         * @since 1.0.0
+         */
+        $this->add_control(
+            'hide_post_thumbnail',
+            [
+                'label' => esc_html__('Hide Post Thumbnail', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => '',
+                'return_value' => 'yes',
+                'separator' => 'before',
+                'description' => esc_html__('Completely hide the post featured image/thumbnail in the grid.', 'king-addons'),
+            ]
+        );
+
         $this->add_control(
             'layout_list_align',
             [
@@ -9588,6 +9605,25 @@ class Posts_Grid extends Widget_Base
 
     public function add_grid_settings($settings)
     {
+        // Prevent undefined index notices for lightbox popup settings.
+        $settings = wp_parse_args(
+            $settings,
+            [
+                'lightbox_popup_autoplay'           => 'true',
+                'lightbox_popup_pause'              => 5,
+                'lightbox_popup_progressbar'        => 'true',
+                'lightbox_popup_counter'            => 'true',
+                'lightbox_popup_arrows'             => 'true',
+                'lightbox_popup_captions'           => 'true',
+                'lightbox_popup_thumbnails'         => '',
+                'lightbox_popup_thumbnails_default' => '',
+                'lightbox_popup_sharing'            => '',
+                'lightbox_popup_zoom'               => 'true',
+                'lightbox_popup_fullscreen'         => 'true',
+                'lightbox_popup_download'           => 'true',
+            ]
+        );
+
         // If premium not available, fallback
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
             if ('pro-ms' === $settings['layout_select']) {
@@ -9699,6 +9735,25 @@ class Posts_Grid extends Widget_Base
 
     public function add_slider_settings($settings)
     {
+        // Prevent undefined index notices for lightbox popup settings.
+        $settings = wp_parse_args(
+            $settings,
+            [
+                'lightbox_popup_autoplay'           => 'true',
+                'lightbox_popup_pause'              => 5,
+                'lightbox_popup_progressbar'        => 'true',
+                'lightbox_popup_counter'            => 'true',
+                'lightbox_popup_arrows'             => 'true',
+                'lightbox_popup_captions'           => 'true',
+                'lightbox_popup_thumbnails'         => '',
+                'lightbox_popup_thumbnails_default' => '',
+                'lightbox_popup_sharing'            => '',
+                'lightbox_popup_zoom'               => 'true',
+                'lightbox_popup_fullscreen'         => 'true',
+                'lightbox_popup_download'           => 'true',
+            ]
+        );
+
         $slider_is_rtl = is_rtl();
         $slider_dir = $slider_is_rtl ? 'rtl' : 'ltr';
 
@@ -9796,7 +9851,7 @@ class Posts_Grid extends Widget_Base
                 $this->get_elements_by_location('above', $settings, get_the_ID());
 
                 // If has featured image, render
-                if (has_post_thumbnail()) {
+                if (has_post_thumbnail() && 'yes' !== $settings['hide_post_thumbnail']) {
                     echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '" data-overlay-link="' . esc_attr($settings['overlay_post_link']) . '">';
                     $this->render_post_thumbnail($settings);
 

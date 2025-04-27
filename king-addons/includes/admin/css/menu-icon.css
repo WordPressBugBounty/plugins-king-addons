@@ -52,3 +52,13 @@ ul#adminmenu > #toplevel_page_king-addons-templates > a.wp-has-current-submenu:a
 .king-addons-upgrade-notice .notice-dismiss {
     opacity: 0.4;
 }
+
+/* Style for Upgrade to Pro link in Plugins table */
+.king-addons-plugins-gopro {
+    color: #93003f;
+    font-weight: 700;
+}
+.king-addons-plugins-gopro:hover,
+.king-addons-plugins-gopro:focus {
+    color: #c60055;
+}

@@ -197,8 +197,8 @@ html,
 .kng-tr-timeline .kng-td-content h3:after,
 .kng-tr-progress-bar .kng-td-content h3:after,
 .kng-tr-form-styler .kng-td-content h3:after,
-    /*.kng-tr-content-flip-box .kng-td-content h3:after,*/
-    /*.kng-tr-styled-text-builder .kng-td-content h3:after,*/
+/*.kng-tr-content-flip-box .kng-td-content h3:after,*/
+/*.kng-tr-styled-text-builder .kng-td-content h3:after,*/
 .kng-tr-card-carousel .kng-td-content h3:after,
 .kng-tr-auto-scrolling-text .kng-td-content h3:after,
 .kng-tr-blog-posts .kng-td-content h3:after,
@@ -456,8 +456,15 @@ tr:after {
 }
 
 .kng-btn-submit-wrap {
-    margin-top: 20px;
+    margin-top: 40px;
+    /* padding: 20px; */
     text-align: right;
+    display: flex;
+    flex-flow: row;
+    justify-content: right;
+    align-items: center;
+    /* border: 2px solid #303131; */
+    border-radius: 12px;
 }
 
 .kng-btn-submit {
@@ -472,6 +479,7 @@ tr:after {
     border: none;
     border-radius: 12px;
     background: linear-gradient(45deg, #E1CBFF, #9B62FF 50%, #5B03FF);
+    height: 52px;
 }
 
 .kng-btn-submit:hover {
@@ -594,7 +602,7 @@ label.kng-settings-switch-label {
     background: #333333;
 }
 
-input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-label {
+input[type=checkbox]:checked.kng-settings-switch+label.kng-settings-switch-label {
     left: 27px;
     background: #f7f7f7;
 }
@@ -649,7 +657,7 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
     align-items: center;
     flex-flow: row;
     margin-right: 10px;
-    padding: 15px 25px;
+    padding: 18px 25px;
     text-decoration: none;
     border-radius: 12px;
     background: #262829;
@@ -856,4 +864,50 @@ input[type=checkbox]:checked.kng-settings-switch + label.kng-settings-switch-lab
 
 a:focus {
     box-shadow: none;
+}
+
+
+.kng-master-switch-wrap {
+    margin-right: 10px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgb(26 27 27 / 90%);
+    display: flex;
+    align-items: center;
+}
+
+.kng-master-btn {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 2;
+    padding: 8px 24px;
+    cursor: pointer;
+    transition: all 300ms;
+    letter-spacing: 1px;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 10%);
+    height: 52px;
+}
+
+#kng-enable-all {
+    margin-right: 10px;
+}
+
+.kng-master-btn:hover {
+    background: rgb(255 255 255 / 15%);
+    color: rgb(255 255 255 / 85%);
+}
+
+.kng-master-switch-notice {
+    display: block;
+    margin-right: 18px;
+    color: #646970;
+}
+
+.kng-settings-submit-wrap {
+    padding: 15px;
+    border-radius: 12px;
+    background: rgb(26 27 27 / 90%);
 }

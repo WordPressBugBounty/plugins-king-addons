@@ -769,6 +769,15 @@ class Mailchimp extends Widget_Base
             ]
         );
 
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'input_box_shadow',
+                'selector' => '{{WRAPPER}} .king-addons-mailchimp-fields input',
+                'separator' => 'after',
+            ]
+        );
+
         $this->end_controls_tab();
 
         $this->start_controls_tab(
@@ -826,18 +835,17 @@ class Mailchimp extends Widget_Base
             ]
         );
 
-        $this->end_controls_tab();
-
-        $this->end_controls_tabs();
-
         $this->add_group_control(
             Group_Control_Box_Shadow::get_type(),
             [
-                'name' => 'input_box_shadow',
-                'selector' => '{{WRAPPER}} .king-addons-mailchimp-fields input',
-                'separator' => 'after',
+                'name' => 'input_box_shadow_fc',
+                'selector' => '{{WRAPPER}} .king-addons-mailchimp-fields input:focus',
             ]
         );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
 
         $this->add_control(
             'input_transition_duration',

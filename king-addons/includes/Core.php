@@ -219,7 +219,7 @@ final class Core
         }
 
         // Check for required Elementor version
-        if (!version_compare(ELEMENTOR_VERSION, KING_ADDONS_MINIMUM_ELEMENTOR_VERSION, '>=')) {
+        if (!version_compare(ELEMENTOR_VERSION, '3.19.0', '>=')) {
             add_action('admin_notices', [$this, 'showAdminNotice_ElementorMinimumVersion']);
             return false;
         }
@@ -262,7 +262,7 @@ final class Core
             esc_html__('%1$s plugin requires %2$s plugin version %3$s or greater.', 'king-addons'),
             esc_html__('King Addons', 'king-addons'),
             esc_html__('Elementor', 'king-addons'),
-            KING_ADDONS_MINIMUM_ELEMENTOR_VERSION
+            '3.19.0'
         );
         echo '<div class="notice notice-error"><p>' . esc_html($message) . '</p></div>';
     }
