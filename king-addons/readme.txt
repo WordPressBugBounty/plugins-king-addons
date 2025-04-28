@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.78
+Stable tag: 24.12.79
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -49,7 +49,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 
 - **Templates Catalog** - Access over 600 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
 - **Popup Builder** - Customize eye-catching popups with the Popup Builder extension for Elementor. Ideal for announcements, promotional messages, or subscription forms. Adjust styles, animations, and triggers to boost conversions, capture attention, and enhance user experience.
-- **Header & Footer Builder** - Design fully customizable WordPress headers and footers with advanced display conditions for complete control over visibility. Easily create sticky headers, transparent menus, or fixed footers using Elementor’s drag-and-drop editor—no coding required. Apply custom conditions for specific pages, user roles, or devices to optimize navigation and user experience. Perfect for global site headers, landing pages, and membership sites, ensuring a consistent and flexible site structure.
+- **Header & Footer Builder** - Design fully customizable WordPress headers and footers with advanced display conditions for complete control over visibility. Easily create sticky headers, transparent menus, or fixed footers using Elementor's drag-and-drop editor—no coding required. Apply custom conditions for specific pages, user roles, or devices to optimize navigation and user experience. Perfect for global site headers, landing pages, and membership sites, ensuring a consistent and flexible site structure.
 
 ### FREE Elementor widgets, modules, elements
 
@@ -196,9 +196,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.12.79 - April 28, 2025 =
+* **Improved:** Import of templates works significantly faster now.
+
 = King Addons for Elementor version 24.12.78 - April 27, 2025 =
 * **New:** Added the master switch to on/off all elements/features in settings.
-* **New:** Posts Grid & Slider / Carousel - added feature to hide tbe post featured image or thumbnail in the grid.
+* **New:** Posts Grid & Slider / Carousel - added feature to hide the post featured image or thumbnail in the grid.
 * **Improved:** Posts Grid  & Slider / Carousel widget backend.
 * **Fix:** Posts Grid & Slider / Carousel - the scale down animation did not work.
 * **Fix:** MailChimp widget - the focus border color setting did not work.

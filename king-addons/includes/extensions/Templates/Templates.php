@@ -1,4 +1,6 @@
-<?php /** @noinspection SpellCheckingInspection, DuplicatedCode */
+<?php
+
+/** @noinspection SpellCheckingInspection, DuplicatedCode */
 
 namespace King_Addons;
 
@@ -32,7 +34,7 @@ final class Templates
         $is_premium_active = king_addons_freemius()->can_use_premium_code();
 
         // TODO: TEST: For UI testing, it doesn't enable the real premium
-//        $is_premium_active = false;
+        //        $is_premium_active = false;
 
         // Arrays for categories and tags
         $categories = [];
@@ -71,16 +73,16 @@ final class Templates
             wp_send_json_success(['grid_html' => $result['grid_html'], 'pagination_html' => $result['pagination_html']]);
         }
         if ($is_premium_active) {
-            ?>
+?>
             <script type="text/javascript">
-                (function () {
+                (function() {
                     window.kingAddons = window.kingAddons || {};
                     window.kingAddons.installId = <?php
-                    echo json_encode(king_addons_freemius()->get_site()->id);
-                    ?>;
+                                                    echo json_encode(king_addons_freemius()->get_site()->id);
+                                                    ?>;
                 })();
             </script>
-            <?php
+        <?php
         }
         ?>
         <div id="king-addons-templates-top"></div>
@@ -119,7 +121,7 @@ final class Templates
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a id="activate-license-btn">
                                         <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/up.svg'; ?>"
-                                             alt="<?php echo esc_html__('Activate License', 'king-addons'); ?>">
+                                            alt="<?php echo esc_html__('Activate License', 'king-addons'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Activate License', 'king-addons'); ?></div>
                                     </a>
                                 </div>
@@ -127,9 +129,9 @@ final class Templates
                             <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-top&utm_medium=plugin&utm_campaign=kng"
-                                       target="_blank">
+                                        target="_blank">
                                         <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                             alt="<?php echo esc_html__('Get Premium', 'king-addons'); ?>">
+                                            alt="<?php echo esc_html__('Get Premium', 'king-addons'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Get Premium', 'king-addons'); ?></div>
                                     </a>
                                 </div>
@@ -169,7 +171,7 @@ final class Templates
                             <?php foreach ($tags as $tag): ?>
                                 <label>
                                     <input type="checkbox"
-                                           value="<?php echo esc_attr($tag); ?>" <?php echo in_array($tag, $selected_tags) ? 'checked' : ''; ?>> <?php echo esc_html(ucwords(str_replace('-', ' ', $tag))); ?>
+                                        value="<?php echo esc_attr($tag); ?>" <?php echo in_array($tag, $selected_tags) ? 'checked' : ''; ?>> <?php echo esc_html(ucwords(str_replace('-', ' ', $tag))); ?>
                                 </label>
                             <?php endforeach; ?>
                         </div>
@@ -177,20 +179,19 @@ final class Templates
                         <?php if (!$is_premium_active): ?>
                             <div class="promo-wrapper">
                                 <div class="promo-txt"><?php
-                                    esc_html_e('Unlock Premium Templates', 'king-addons');
-                                    echo '<ul><li>$2/month</li>';
-                                    echo '<li>Unlimited Downloads</li>';
-                                    echo '<li>Keep Them Even After</li></ul>';
-                                    ?></div>
+                                                        esc_html_e('Unlock Premium Templates', 'king-addons');
+                                                        echo '<ul><li>$2/month</li>';
+                                                        echo '<li>Unlimited Downloads</li>';
+                                                        echo '<li>Keep Them Even After</li></ul>';
+                                                        ?></div>
                                 <a class="purchase-btn"
-                                   href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-side&utm_medium=plugin&utm_campaign=kng"
-                                   target="_blank">
+                                    href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-side&utm_medium=plugin&utm_campaign=kng"
+                                    target="_blank">
                                     <button class="promo-btn purchase-btn"
-                                            style="display: flex;align-items: center;"
-                                    >
+                                        style="display: flex;align-items: center;">
                                         <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                             style="margin-right: 5px;width: 14px;height: 14px;"
-                                             alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
+                                            style="margin-right: 5px;width: 14px;height: 14px;"
+                                            alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
                                     </button>
                                 </a>
                             </div>
@@ -200,7 +201,7 @@ final class Templates
                 <div class="templates-grid-wrapper">
                     <div class="search-wrapper">
                         <input type="text" id="template-search" value="<?php echo esc_attr($search_query); ?>"
-                               placeholder="<?php esc_attr_e('Search templates...', 'king-addons'); ?>">
+                            placeholder="<?php esc_attr_e('Search templates...', 'king-addons'); ?>">
                     </div>
                     <div class="templates-grid">
                         <?php echo $result['grid_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -216,7 +217,7 @@ final class Templates
                 <div class="popup-content">
                     <div class="popup-content-nav">
                         <button data-plan-active="<?php echo ($is_premium_active) ? 'premium' : 'free'; ?>"
-                                id="install-template">
+                            id="install-template">
                             <?php esc_html_e('Import Template', 'king-addons'); ?>
                         </button>
                         <a href="#" id="template-preview-link" target="_blank">
@@ -251,9 +252,9 @@ final class Templates
                     <div id="image-list"></div>
                     <div id="final_response"></div>
                     <button id="close-installing-popup"
-                            style="display:none;"><?php esc_html_e('Close', 'king-addons'); ?></button>
+                        style="display:none;"><?php esc_html_e('Close', 'king-addons'); ?></button>
                     <a href="#" id="go-to-imported-page"
-                       style="display:none;"><?php esc_html_e('Go to imported page', 'king-addons'); ?></a>
+                        style="display:none;"><?php esc_html_e('Go to imported page', 'king-addons'); ?></a>
                 </div>
             </div>
             <div id="license-activating-popup" style="display:none;">
@@ -271,21 +272,21 @@ final class Templates
                     <div class="premium-promo-popup-wrapper">
                         <div class="premium-promo-popup-txt"><?php
 
-                            echo '<span class="pr-popup-title">Want This Premium Template?</span>';
-                            echo '<br><span class="pr-popup-desc">';
-                            echo 'Get <span class="pr-popup-desc-b">unlimited downloads</span> for just';
-                            echo ' <span class="pr-popup-desc-b">$2/month';
-                            echo '</span> — keep them <span class="pr-popup-desc-b">even after</span> your subscription ends!';
-                            echo '</span>';
+                                                                echo '<span class="pr-popup-title">Want This Premium Template?</span>';
+                                                                echo '<br><span class="pr-popup-desc">';
+                                                                echo 'Get <span class="pr-popup-desc-b">unlimited downloads</span> for just';
+                                                                echo ' <span class="pr-popup-desc-b">$2/month';
+                                                                echo '</span> — keep them <span class="pr-popup-desc-b">even after</span> your subscription ends!';
+                                                                echo '</span>';
 
-                            ?></div>
+                                                                ?></div>
                         <a class="purchase-btn"
-                           href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng"
-                           target="_blank">
+                            href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng"
+                            target="_blank">
                             <button class="premium-promo-popup-purchase-btn purchase-btn">
                                 <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                     style="margin-right: 7px;width: 16px;height: 16px;"
-                                     alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
+                                    style="margin-right: 7px;width: 16px;height: 16px;"
+                                    alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
                             </button>
                         </a>
                         <button id="close-premium-promo-popup"><?php esc_html_e('Close', 'king-addons'); ?></button>
@@ -378,9 +379,9 @@ final class Templates
                                 break;
                             }
                         }
-//                        if (!$found_in_title && !$found_in_tags) {
-//                            continue;
-//                        }
+                        //                        if (!$found_in_title && !$found_in_tags) {
+                        //                            continue;
+                        //                        }
                     }
 
                     if ($selected_category && $template['category'] !== $selected_category) {
@@ -427,19 +428,19 @@ final class Templates
         } else {
             foreach ($paged_templates as $key => $template) {
                 $attr_key = ($has_search) ? $template['template_key'] : $key;
-                ?>
+        ?>
                 <div class="template-item"
-                     data-category="<?php echo esc_attr($template['category']); ?>"
-                     data-tags="<?php echo esc_attr(implode(',', $template['tags'])); ?>"
-                     data-template-key="<?php echo esc_attr($attr_key); ?>"
-                     data-template-plan="<?php echo esc_attr($template['plan']); ?>">
+                    data-category="<?php echo esc_attr($template['category']); ?>"
+                    data-tags="<?php echo esc_attr(implode(',', $template['tags'])); ?>"
+                    data-template-key="<?php echo esc_attr($attr_key); ?>"
+                    data-template-plan="<?php echo esc_attr($template['plan']); ?>">
                     <img class="kng-addons-template-thumbnail" loading="lazy"
-                         src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
-                         alt="<?php echo esc_attr($template['title']); ?>">
+                        src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
+                        alt="<?php echo esc_attr($template['title']); ?>">
                     <h3><?php echo esc_html($template['title']); ?></h3>
                     <div class="template-plan template-plan-<?php echo esc_html($template['plan']); ?>"><?php echo esc_html($template['plan']); ?></div>
                 </div>
-                <?php
+<?php
             }
         }
         $grid_html = ob_get_clean();
@@ -498,13 +499,37 @@ final class Templates
     public function __construct()
     {
         add_action('admin_enqueue_scripts', array($this, 'king_addons_enqueue_scripts'));
-        add_action('wp_ajax_import_elementor_page_with_images', array($this, 'import_elementor_page_with_images'));
-        add_action('wp_ajax_process_import_images', array($this, 'process_import_images'));
+
+        // Get the performance setting
+        $improve_import = get_option('king_addons_improve_import_performance', '1');
+
+        // Conditionally add time limit adjustments based on setting
+        if ($improve_import === '1') {
+            add_action('wp_ajax_import_elementor_page_with_images', function () {
+                @set_time_limit(300);
+            }, 0);
+
+            add_action('wp_ajax_process_import_images', function () {
+                @set_time_limit(300);
+            }, 0);
+        }
+
+        add_action(
+            'wp_ajax_import_elementor_page_with_images',
+            [$this, 'import_elementor_page_with_images']
+        );
+
+        add_action(
+            'wp_ajax_process_import_images',
+            [$this, 'process_import_images']
+        );
+
         add_action('wp_ajax_filter_templates', array($this, 'handle_filter_templates'));
         add_action('http_api_curl', array($this, 'set_custom_curl_options'), 10, 3);
     }
 
-    public function set_custom_curl_options($handle) {
+    public function set_custom_curl_options($handle)
+    {
         curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 30);
         curl_setopt($handle, CURLOPT_TIMEOUT, 30);
@@ -580,7 +605,8 @@ final class Templates
         }
     }
 
-    private function replace_image_data(array &$array, $old_url, $new_url, $old_id, $new_id) {
+    private function replace_image_data(array &$array, $old_url, $new_url, $old_id, $new_id)
+    {
         foreach ($array as &$value) {
             // If this is an array, check if it has both 'url' and 'id'
             if (is_array($value)) {
@@ -602,6 +628,12 @@ final class Templates
 
     public function process_import_images(): void
     {
+        // Conditionally increase execution time limit based on setting
+        $improve_import = get_option('king_addons_improve_import_performance', '1');
+        if ($improve_import === '1') {
+            @set_time_limit(300);
+        }
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error('The current user can not manage options and create pages. Please change it in the WordPress settings.');
             return;
@@ -713,7 +745,7 @@ final class Templates
     public function download_image_to_media_gallery($image_url, $image_retry_count)
     {
         try {
-            $response = wp_remote_get($image_url, [ 'timeout' => 30 ]);
+            $response = wp_remote_get($image_url, ['timeout' => 30]);
 
             if (is_wp_error($response)) {
                 throw new Exception('HTTP request error: ' . $response->get_error_message());
@@ -736,8 +768,8 @@ final class Templates
             $unique_image_name = $image_name . '-' . time() . '.' . $image_extension;
 
             $upload_dir = wp_upload_dir();
-            if ( ! file_exists( $upload_dir['path'] ) ) {
-                wp_mkdir_p( $upload_dir['path'] );
+            if (! file_exists($upload_dir['path'])) {
+                wp_mkdir_p($upload_dir['path']);
             }
             $image_file = $upload_dir['path'] . '/' . $unique_image_name;
 
@@ -755,16 +787,45 @@ final class Templates
 
             $attach_id = wp_insert_attachment($attachment, $image_file);
 
-            if ($image_retry_count > 1) {
-            add_filter('intermediate_image_sizes', '__return_empty_array', 999);
-            }
+            // Conditionally disable intermediate image sizes based on setting
+            $improve_import = get_option('king_addons_improve_import_performance', '1');
+            if ($improve_import === '1') {
+                // Disable ALL extra sizes and big-image scaling
+                add_filter('intermediate_image_sizes', '__return_empty_array', 999);
+                add_filter('big_image_size_threshold', '__return_false', 999);
 
-            require_once(ABSPATH . 'wp-admin/includes/image.php');
-            $attach_data = wp_generate_attachment_metadata($attach_id, $image_file);
-            wp_update_attachment_metadata($attach_id, $attach_data);
+                /* Save only the original file info — no thumbnails, no EXIF */
+                // Get image dimensions
+                $image_size = getimagesize($image_file);
+                $width = $image_size ? $image_size[0] : 0;
+                $height = $image_size ? $image_size[1] : 0;
+ 
+                $meta = [
+                    'file'       => wp_basename($image_file),
+                    'filesize'   => filesize($image_file),
+                    'width'      => $width,
+                    'height'     => $height,
+                    'sizes'      => [],
+                    'image_meta' => [],
+                ];
+                wp_update_attachment_metadata($attach_id, $meta);
 
-            if ($image_retry_count > 1) {
-            remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
+                // Clean up filters
+                remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
+                remove_filter('big_image_size_threshold', '__return_false', 999);
+            } else {
+                if ($image_retry_count > 1) {
+                    add_filter('intermediate_image_sizes', '__return_empty_array', 999);
+                }
+
+                // Generate default metadata if optimization is off
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+                $attach_data = wp_generate_attachment_metadata($attach_id, $image_file);
+                wp_update_attachment_metadata($attach_id, $attach_data);
+
+                if ($image_retry_count > 1) {
+                    remove_filter('intermediate_image_sizes', '__return_empty_array', 999);
+                }
             }
 
             return $attach_id;

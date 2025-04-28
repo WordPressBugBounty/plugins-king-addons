@@ -36,6 +36,10 @@ if (isset($_POST['king_addons_settings_submit_settings'])) {
     update_option('king_addons_lightbox_text_size', intval($_POST['king_addons_lightbox_text_size']));
     update_option('king_addons_lightbox_arrow_size', intval($_POST['king_addons_lightbox_arrow_size']));
 
+    // Import Performance
+    $improve_import = isset($_POST['king_addons_improve_import_performance']) ? '1' : '0';
+    update_option('king_addons_improve_import_performance', $improve_import);
+
     // Show a success message
     add_settings_error('king_addons_messages', 'king_addons_message', esc_html__('Settings Saved', 'king-addons'), 'updated');
     settings_errors('king_addons_messages');
@@ -47,6 +51,9 @@ $mailchimp_key = get_option('king_addons_mailchimp_api_key', '');
 $recaptcha_site_key = get_option('king_addons_recaptcha_v3_site_key', '');
 $recaptcha_secret_key = get_option('king_addons_recaptcha_v3_secret_key', '');
 $recaptcha_score_threshold = get_option('king_addons_recaptcha_v3_score_threshold', 0.5);
+
+// Import Performance
+$improve_import_performance = get_option('king_addons_improve_import_performance', '1');
 
 // Render the settings form
 ?>
@@ -365,6 +372,29 @@ $recaptcha_score_threshold = get_option('king_addons_recaptcha_v3_score_threshol
                         </td>
                     </tr>
 
+                </table>
+
+                <hr class="king-addons-settings-separator">
+
+                <h2 class="king-addons-settings-group-title"><?php esc_html_e('Import Templates', 'king-addons'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="king_addons_improve_import_performance"><?php echo esc_html__('Improve import on low-performance servers', 'king-addons'); ?></label>
+                        </th>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="king_addons_improve_import_performance"
+                                id="king_addons_improve_import_performance"
+                                value="1"
+                                <?php checked($improve_import_performance, '1'); ?>
+                            >
+                            <p class="description">
+                                <?php echo esc_html__('Enable this to apply optimizations like increased PHP execution time limits and disabling intermediate image generation during template import. Recommended for servers with limited resources. Enabled by default.', 'king-addons'); ?>
+                            </p>
+                        </td>
+                    </tr>
                 </table>
 
             </div>
