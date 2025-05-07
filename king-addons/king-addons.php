@@ -5,7 +5,7 @@
  * Description: 600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.12.79
+ * Version: 24.12.81
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 load_plugin_textdomain('king-addons');
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.12.79';
+const KING_ADDONS_VERSION = '24.12.81';
 
 /** DEFINES */
 define('KING_ADDONS_PATH', plugin_dir_path(__FILE__));
@@ -161,7 +161,7 @@ if (!function_exists('king_addons_hideAnotherNotices')) {
     function king_addons_hideAnotherNotices()
     {
         $current_screen = get_current_screen()->id;
-        //        error_log($current_screen);
+            //    error_log($current_screen);
         if (
             $current_screen == 'toplevel_page_king-addons' ||
             $current_screen == 'toplevel_page_king-addons-templates' ||
@@ -169,6 +169,7 @@ if (!function_exists('king_addons_hideAnotherNotices')) {
             $current_screen == 'edit-king-addons-el-hf' ||
             $current_screen == 'edit-king-addons-fb-sub' ||
             $current_screen == 'header-footer_page_king-addons-el-hf-settings' ||
+            $current_screen == 'king-addons_page_king-addons-ai-settings' ||
             $current_screen == 'king-addons_page_king-addons-settings'
         ) {
             // Remove all notices

@@ -1,14 +1,14 @@
-=== King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
+=== King Addons for Elementor – AI Features, Widgets & Templates ===
 Contributors: kingaddons, alxrlov, olgadev
-Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.79
+Tags: elementor, elementor addons, ai, elementor widgets, elementor templates
+Stable tag: 24.12.81
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+600+ Elementor templates, 60+ widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
@@ -28,6 +28,7 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - **Popup & Modal Builder**: Design attention-grabbing promotional popups, subscription forms, or announcements with full control over style and animations.
 - **Dynamic Search with AJAX**: Provide instant search results as users type, enhancing navigation and user experience.
 - **One Page Navigation**: Enable smooth scrolling for single-page sites, improving usability and user engagement.
+- **AI Content Tools**: Instantly generate and refine text using AI, enhancing your content creation workflow.
 - **Image Comparison Tool**: Highlight before-and-after visuals with a draggable slider, ideal for product showcases or design portfolios.
 - **Interactive Image Hotspots**: Add clickable areas to images, great for product details or engaging storytelling.
 - **Blog Posts Carousel**: Showcase recent or featured blog posts dynamically in an eye-catching carousel format.
@@ -44,6 +45,11 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - **Improve Website Speed**: Tools are optimized to ensure your website remains lightweight and performs smoothly.
 - **No Coding Required**: Customize your site effortlessly with user-friendly widgets and tools.
 - **Global Compatibility**: Ideal for users in any language or region, offering tools that adapt to diverse needs.
+
+### AI Features
+Enjoy all AI features at OpenAI cost, with no additional fees from us.
+- **AI Text Generation** – Instantly generate high-quality text for any Elementor field.
+- **AI Text Change** – Rewrite or improve existing text with AI-powered editing.
 
 ### FREE Elementor extensions & tools
 
@@ -195,6 +201,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.81 - May 8, 2025 =
+* **New:** AI Text Generation – Instantly generate high-quality text for any Elementor field using OpenAI.
+* **New:** AI Text Change – Rewrite or improve existing text with AI-powered editing.
+* **New:** Templates Catalog - 8 premium templates added.
 
 = King Addons for Elementor version 24.12.79 - April 28, 2025 =
 * **Improved:** Import of templates works significantly faster now.

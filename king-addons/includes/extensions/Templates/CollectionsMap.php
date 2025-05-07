@@ -82,6 +82,7 @@ final class CollectionsMap
             69 => 'Barber & Haircut',
             70 => 'Insurance Agency',
             71 => 'Gym & Fitness',
+            72 => 'Funeral Services',
         ];
     }
 }

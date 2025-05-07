@@ -1,0 +1,106 @@
+/* AI settings page styles */
+.king-addons-ai-usage-stats {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.king-addons-ai-usage-stats table {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.king-addons-ai-usage-stats table th {
+    text-align: left;
+    padding: 8px 0;
+    width: 40%;
+    font-weight: 500;
+}
+
+.king-addons-ai-usage-stats table td {
+    padding: 8px 0;
+}
+
+.king-addons-ai-usage-bar-container {
+    position: relative;
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 15px 0;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.king-addons-ai-usage-bar {
+    height: 100%;
+    background: linear-gradient(to right, #4CAF50, #8BC34A);
+    border-radius: 10px 0 0 10px;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Change color based on usage */
+.king-addons-ai-usage-bar[style*="width: 6"] {
+    background: linear-gradient(to right, #FFC107, #FF9800);
+}
+
+.king-addons-ai-usage-bar[style*="width: 7"] {
+    background: linear-gradient(to right, #FF9800, #FF5722);
+}
+
+.king-addons-ai-usage-bar[style*="width: 8"],
+.king-addons-ai-usage-bar[style*="width: 9"] {
+    background: linear-gradient(to right, #FF5722, #F44336);
+}
+
+/* Additional styles for token limit input */
+.daily-token-limit-wrap {
+    display: flex;
+    align-items: center;
+}
+
+input[name="king_addons_ai_options[daily_token_limit]"] {
+    width: 150px;
+    margin-right: 10px;
+}
+
+/* Info box */
+.king-addons-info-box {
+    background: #e7f3fe;
+    border-left: 4px solid #2196F3;
+    padding: 12px 15px;
+    margin: 15px 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.king-addons-info-box p {
+    margin: 0.5em 0 !important;
+    color: #084d7a;
+}
+
+.king-addons-info-box.warning {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+.king-addons-info-box.warning p {
+    color: #856404;
+}
+
+/* Refresh button styles */
+#king-addons-ai-refresh-models-button {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+#king-addons-ai-refresh-models-spinner {
+    float: none;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+#king-addons-ai-refresh-models-status {
+    margin-left: 5px;
+    vertical-align: middle;
+} 

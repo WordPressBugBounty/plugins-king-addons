@@ -108,7 +108,7 @@ final class Core
 
             // ADDITIONAL CLASSES
 
-
+            // TODO
 
             // END: ADDITIONAL CLASSES
 
@@ -131,6 +131,17 @@ final class Core
                 add_action('wp_ajax_king_addons_premium_notice_dismiss', [$this, 'king_addons_premium_notice_dismiss_callback']);
                 add_action('admin_notices', [$this, 'showNoticeUpgrade']);
             }
+
+            // Conditionally enqueue AI text-field enhancement script and styles in Elementor editor
+            $ai_options = get_option('king_addons_ai_options', []);
+            $enable_ai_buttons = isset($ai_options['enable_ai_buttons']) ? (bool) $ai_options['enable_ai_buttons'] : true;
+            if ( $enable_ai_buttons ) {
+                // Enqueue AI text-field enhancement script
+                add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiFieldScript' ]);
+                // Enqueue styles for AI prompt UI
+                add_action('elementor/editor/after_enqueue_styles', [ $this, 'enqueueAiFieldStyles' ]);
+            }
+            
         }
     }
 
@@ -1019,6 +1030,54 @@ final class Core
         $custom_css = "#lg-counter { color: $text_color !important; font-size: {$text_size}px !important; opacity: 0.9; } .lg-backdrop { background-color: $bg !important; } .lg-dropdown:after { border-bottom-color: $toolbar !important; } .lg-icon { color: $ui_color !important; font-size: {$icon_size}px !important; background-color: transparent !important; } .lg-icon.lg-toogle-thumb { font-size: {$icon_size_big}px !important; } .lg-icon:hover, .lg-dropdown-text:hover { color: $ui_hover !important; } .lg-prev, .lg-next { font-size: {$arrow_size}px !important; } .lg-progress { background-color: $progress_bar !important; } .lg-sub-html { background-color: $caption !important; } .lg-sub-html, .lg-dropdown-text { color: $text_color !important; font-size: {$text_size}px !important; } .lg-thumb-item { border-radius: 0 !important; border: none !important; opacity: 0.5; } .lg-thumb-item.active { opacity: 1; } .lg-thumb-outer, .lg-progress-bar { background-color: $gallery !important; } .lg-thumb-outer { padding: 0 10px; } .lg-toolbar, .lg-dropdown { background-color: $toolbar !important; }";
 
         wp_add_inline_style('king-addons-lightbox-dynamic-style', $custom_css);
+    }
+
+    /**
+     * Enqueues the AI button injection script in the Elementor editor panel.
+     *
+     * @return void
+     */
+    public function enqueueAiFieldScript(): void
+    {
+        wp_enqueue_script(
+            'king-addons-ai-field',
+            KING_ADDONS_URL . 'includes/admin/js/ai-textfield.js',
+            ['jquery', 'elementor-editor'],
+            KING_ADDONS_VERSION,
+            true
+        );
+        // Localize for AJAX
+        wp_localize_script(
+            'king-addons-ai-field',
+            'KingAddonsAiField',
+            [
+                'ajax_url'        => admin_url('admin-ajax.php'),
+                'generate_nonce'  => wp_create_nonce('king_addons_ai_generate_nonce'),
+                'change_nonce'    => wp_create_nonce('king_addons_ai_change_nonce'),
+                'generate_action' => 'king_addons_ai_generate_text',
+                'change_action'   => 'king_addons_ai_change_text',
+                'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
+                'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
+                'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
+                'plugin_url'      => KING_ADDONS_URL,
+            ]
+        );
+    }
+
+    /**
+     * Enqueues the styles for AI prompt UI in the Elementor editor panel.
+     *
+     * @return void
+     */
+    public function enqueueAiFieldStyles(): void
+    {
+        // Enqueue CSS for the AI prompt UI
+        wp_enqueue_style(
+            'king-addons-ai-field-css',
+            KING_ADDONS_URL . 'includes/admin/css/ai-textfield.css',
+            [],
+            KING_ADDONS_VERSION
+        );
     }
 }
 

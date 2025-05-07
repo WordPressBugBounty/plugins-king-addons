@@ -1,0 +1,54 @@
+/* Refined styles for AI prompt UI in Elementor editor */
+.ai-prompt-container {
+    display: inline-flex;
+    align-items: center;
+    margin: 8px 0; /* vertical spacing */
+    gap: 6px;
+}
+.ai-prompt-input {
+    background: #ffffff; /* white background */
+    color: #333333;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    flex: 1 1 auto;
+    max-width: 300px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.ai-prompt-input:focus {
+    border-color: #5B03FF;
+    box-shadow: 0 0 4px rgba(91,3,255,0.4);
+    outline: none;
+}
+.ai-prompt-submit,
+.ai-prompt-cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 32px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+    padding: 0; /* Reset default button padding */
+    margin: 0;  /* Reset any default margins */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.ai-prompt-submit {
+    background: linear-gradient(135deg, #E1CBFF, #5B03FF);
+    color: #ffffff;
+}
+.ai-prompt-submit:hover {
+    box-shadow: 0 0 8px rgba(91,3,255,0.6);
+}
+.ai-prompt-cancel {
+    background: #f5f5f5;
+    color: #333333;
+}
+.ai-prompt-cancel:hover {
+    background: #e0e0e0;
+    box-shadow: 0 0 6px rgba(0,0,0,0.15);
+} 
