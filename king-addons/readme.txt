@@ -1,7 +1,7 @@
 === King Addons for Elementor – AI Features, Widgets & Templates ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, ai, elementor widgets, elementor templates
-Stable tag: 24.12.81
+Stable tag: 24.12.82
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -12,15 +12,17 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 == Description ==
 
-**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **60+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
+600+ Elementor templates, 60+ widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds. 
+
+**King Addons for Elementor** empowers you to create stunning websites with **600+ professionally designed templates** and **60+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
+
+[**TEMPLATES CATALOG**](https://kingaddons.com/templates/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**ELEMENTS AND FEATURES**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**PRO VERSION**](https://kingaddons.com/pricing/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng)
 
 Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
 
 Perfect for creating **restaurant websites**, **online stores**, **portfolio pages**, and **business sites**, **King Addons** simplifies web design while ensuring your site remains lightweight and fast. **King Addons uses lightweight code** to ensure exceptional performance without compromising functionality. Trusted by thousands of websites worldwide and used by top WordPress developers and agencies, **King Addons** provides the flexibility and advanced WordPress customization needed to build exceptional websites.
 
 Try **King Addons** for free and explore its powerful features. Whether you are building a sleek single-page site or a feature-packed online store, **King Addons** is your ultimate website builder addon. It combines speed, flexibility, and advanced Elementor enhancements for exceptional design results.
-
-[**CHECK THE DEMOS**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) to see these features in action.
 
 ### **Key Features**
 
@@ -46,18 +48,19 @@ Try **King Addons** for free and explore its powerful features. Whether you are 
 - **No Coding Required**: Customize your site effortlessly with user-friendly widgets and tools.
 - **Global Compatibility**: Ideal for users in any language or region, offering tools that adapt to diverse needs.
 
-### AI Features
+### **AI Features**
 Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - **AI Text Generation** – Instantly generate high-quality text for any Elementor field.
 - **AI Text Change** – Rewrite or improve existing text with AI-powered editing.
+- **AI Image Generation** – Generate custom images for Elementor using OpenAI.
 
-### FREE Elementor extensions & tools
+### **Elementor Extensions & Tools**
 
 - **Templates Catalog** - Access over 600 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
 - **Popup Builder** - Customize eye-catching popups with the Popup Builder extension for Elementor. Ideal for announcements, promotional messages, or subscription forms. Adjust styles, animations, and triggers to boost conversions, capture attention, and enhance user experience.
 - **Header & Footer Builder** - Design fully customizable WordPress headers and footers with advanced display conditions for complete control over visibility. Easily create sticky headers, transparent menus, or fixed footers using Elementor's drag-and-drop editor—no coding required. Apply custom conditions for specific pages, user roles, or devices to optimize navigation and user experience. Perfect for global site headers, landing pages, and membership sites, ensuring a consistent and flexible site structure.
 
-### FREE Elementor widgets, modules, elements
+### **Elementor Widgets, Modules, Elements**
 
 - [**One Page Navigation**](https://kingaddons.com/elementor/one-page-navigation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Enhance single-page navigation with anchor links for smooth scrolling. Uses only CSS, ensuring optimal performance.
 - [**Off-Canvas Content**](https://kingaddons.com/elementor/off-canvas-content/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create slide-in panels for menus, widgets, or hidden content, accessible with simple user interactions.
@@ -110,8 +113,9 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
 - [**Pricing Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive pricing sliders that allow users to dynamically adjust parameters and instantly see matching features. Perfect for subscription services, product configurators, or membership plans. Compatible with WooCommerce and other pricing systems. Boosts conversions by providing visual, intuitive pricing comparisons.
 - [**Mega Menu**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create powerful navigation menus with support for dropdown menus, custom layouts, and responsive design. Perfect for creating professional website headers with both WordPress menus and custom navigation structures.
+- [**Team Members Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Boost your site credibility with a responsive Elementor Team Members Slider carousel widget. Showcase staff photos, names, roles, bios, and social links in a sleek, responsive slider for improved engagement and navigation.
 
-### FREE Elementor features
+### **Elementor Features**
 
 - [**Particles Background**](https://kingaddons.com/elementor/particles-background/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add animated particles for dynamic, engaging backgrounds.
 - [**Parallax Background**](https://kingaddons.com/elementor/parallax-background/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create immersive multi-layered scrolling backgrounds with lightweight JS.
@@ -201,6 +205,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.82 - May 13, 2025 =
+* **New:** Team Members Slider widget added.
+* **New:** AI Image Generation – Generate custom images for Elementor using OpenAI.
+* **Improved:** AI Text Generation feature.
 
 = King Addons for Elementor version 24.12.81 - May 8, 2025 =
 * **New:** AI Text Generation – Instantly generate high-quality text for any Elementor field using OpenAI.

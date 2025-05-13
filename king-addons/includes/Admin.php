@@ -220,6 +220,8 @@ final class Admin
     function enqueueAdminAssets(): void
     {
         wp_enqueue_style('king-addons-admin', KING_ADDONS_URL . 'includes/admin/css/admin.css', '', KING_ADDONS_VERSION);
+        // Styles for AI Image Generation controls in Elementor
+        wp_enqueue_style('king-addons-ai-imagefield', KING_ADDONS_URL . 'includes/admin/css/ai-imagefield.css', array('king-addons-admin'), KING_ADDONS_VERSION);
     }
 
     function enqueueSettingsAssets(): void
@@ -268,6 +270,15 @@ final class Admin
             'king_addons_ai_openai_section'
         );
 
+        // Add image model selector field
+        add_settings_field(
+            'openai_image_model',
+            esc_html__('OpenAI Image Model', 'king-addons'),
+            [$this, 'renderAiImageModelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section'
+        );
+
         // Add Editor Integration section and field
         add_settings_section(
             'king_addons_ai_editor_section',
@@ -279,6 +290,13 @@ final class Admin
             'enable_ai_buttons',
             esc_html__('AI Text Editing Buttons', 'king-addons'),
             [$this, 'renderAiEnableButtonsField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_editor_section'
+        );
+        add_settings_field(
+            'enable_ai_image_generation_button',
+            esc_html__('AI Image Generation Button', 'king-addons'),
+            [$this, 'renderAiImageGenerationField'],
             'king-addons-ai-settings',
             'king_addons_ai_editor_section'
         );
@@ -321,6 +339,12 @@ final class Admin
 
         // AJAX handler to check token usage limits
         add_action('wp_ajax_king_addons_ai_check_tokens', [$this, 'handleAiCheckTokens']);
+
+        // AJAX handler to check image generation limits
+        add_action('wp_ajax_king_addons_ai_image_check_limits', [$this, 'handleAiImageCheckLimits']);
+
+        // THIRD_EDIT: Register AJAX handler for AI image generation
+        add_action('wp_ajax_king_addons_ai_generate_image', [$this, 'handleAiGenerateImage']);
     }
 
     /**
@@ -338,6 +362,9 @@ final class Admin
         $sanitized['openai_model'] = isset($input['openai_model'])
             ? sanitize_text_field($input['openai_model'])
             : '';
+        $sanitized['openai_image_model'] = isset($input['openai_image_model'])
+            ? sanitize_text_field($input['openai_image_model'])
+            : 'gpt-image-1';
 
         // Sanitize Daily Token Limit.
         if (isset($input['daily_token_limit'])) {
@@ -349,6 +376,9 @@ final class Admin
 
         // Sanitize Enable AI Buttons option.
         $sanitized['enable_ai_buttons'] = ! empty($input['enable_ai_buttons']);
+
+        // Sanitize Enable AI Image Generation button option.
+        $sanitized['enable_ai_image_generation_button'] = ! empty($input['enable_ai_image_generation_button']);
 
         return $sanitized;
     }
@@ -1198,6 +1228,36 @@ final class Admin
         ]);
     }
 
+    /** 
+     * AJAX handler to check image generation limits.
+     *
+     * @return void
+     */
+    public function handleAiImageCheckLimits(): void
+    {
+        check_ajax_referer('king_addons_ai_generate_image_nonce', 'nonce');
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
+        }
+
+        $options = get_option('king_addons_ai_options', []);
+        $daily_limit = isset($options['daily_token_limit']) ? intval($options['daily_token_limit']) : self::DEFAULT_DAILY_TOKEN_LIMIT;
+        $daily_used = $this->getAiDailyUsage();
+        // Check if API key and model are set
+        $api_key = $options['openai_api_key'] ?? '';
+        $model   = $options['openai_model']    ?? '';
+        $api_key_valid = !empty($api_key) && !empty($model);
+
+        wp_send_json_success([
+            'daily_used'    => $daily_used,
+            'daily_limit'   => $daily_limit,
+            'limit_reached' => ($daily_limit > 0 && $daily_used >= $daily_limit),
+            'api_key_valid' => $api_key_valid,
+        ]);
+        
+    }
+
+
     /**
      * Renders the Editor Integration section description.
      *
@@ -1222,5 +1282,206 @@ final class Admin
             checked($enabled, true, false),
             esc_html__('Enable AI Text Editing Buttons in Elementor Editor', 'king-addons')
         );
+    }
+
+    /**
+     * Renders the Enable AI Image Generation checkbox field.
+     *
+     * @return void
+     */
+    public function renderAiImageGenerationField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $enabled = isset($options['enable_ai_image_generation_button']) ? (bool) $options['enable_ai_image_generation_button'] : true;
+        printf(
+            '<label><input type="checkbox" name="king_addons_ai_options[enable_ai_image_generation_button]" value="1" %s /> %s</label>',
+            checked($enabled, true, false),
+            esc_html__('Enable AI Image Generation Button in Elementor Editor', 'king-addons')
+        );
+    }
+
+
+    /**
+     * Renders the image model selection dropdown field.
+     *
+     * @return void
+     */
+    public function renderAiImageModelField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $selected = $options['openai_image_model'] ?? 'dall-e-3';
+        $models = [
+            'dall-e-3' => esc_html__('DALL·E 3', 'king-addons'),
+            'gpt-image-1' => esc_html__('GPT Image 1', 'king-addons'),
+        ];
+        printf(
+            '<select name="king_addons_ai_options[openai_image_model]" %s>',
+            ''
+        );
+        foreach ($models as $id => $label) {
+            printf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr($id),
+                selected($selected, $id, false),
+                esc_html($label)
+            );
+        }
+        echo '</select>';
+        echo '<p class="description">';
+        printf(
+            /* translators: %1$s: URL to OpenAI Organization Settings */
+            wp_kses(
+                __( 'Select the default model for AI image generation. By default, the model is DALL·E 3. For now, your organization must be verified to use the model GPT Image 1. Please go to <a href="%1$s" target="_blank" rel="noopener noreferrer">OpenAI Organization Settings</a> to verify. If you just verified, it can take up to 15 minutes for access to propagate.', 'king-addons' ),
+                [ 'a' => [ 'href' => [], 'target' => [], 'rel' => [] ] ]
+            ),
+            esc_url( 'https://platform.openai.com/settings/organization/general' )
+        );
+        echo '</p>';
+    }
+
+    /**
+     * AJAX handler to generate images using OpenAI.
+     *
+     * @return void
+     */
+    public function handleAiGenerateImage(): void
+    {
+        // Verify nonce and permissions
+        check_ajax_referer('king_addons_ai_generate_image_nonce', 'nonce');
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
+        }
+
+        // Gather input parameters
+        $prompt  = isset($_POST['prompt'])  ? sanitize_textarea_field(wp_unslash($_POST['prompt']))  : '';
+        $quality = isset($_POST['quality']) ? sanitize_text_field(wp_unslash($_POST['quality'])) : '';
+        $size    = isset($_POST['size'])    ? sanitize_text_field(wp_unslash($_POST['size']))    : '';
+        // Model from frontend selector
+        $model   = isset($_POST['model'])   ? sanitize_text_field(wp_unslash($_POST['model']))   : 'dall-e-3';
+
+        $options = get_option('king_addons_ai_options', []);
+        $api_key = $options['openai_api_key'] ?? '';
+        if (empty($api_key)) {
+            wp_send_json_error(['message' => esc_html__('OpenAI API key is not set.', 'king-addons')], 400);
+        }
+        if (empty($prompt)) {
+            wp_send_json_error(['message' => esc_html__('Please provide an image prompt.', 'king-addons')], 400);
+        }
+
+        // Build request body based on selected model
+        $body = [
+            'model'  => $model,
+            'prompt' => $prompt,
+            'size'   => $size,
+        ];
+        if ($model === 'dall-e-3') {
+            // DALL·E 3 parameters
+            $body['n']       = 1;
+            $body['quality'] = ($quality === 'hd') ? 'hd' : 'standard';
+        } elseif ($model === 'gpt-image-1') {
+            // GPT Image 1 parameters
+            // Only include background when transparent is requested
+            if ( ! empty($_POST['background']) && 'transparent' === sanitize_text_field(wp_unslash($_POST['background'])) ) {
+                $body['background'] = 'transparent';
+            }
+            $body['quality']    = in_array($quality, ['low','medium','high','auto'], true)
+                ? $quality
+                : 'auto';
+        }
+
+        add_action('http_api_curl', function ($handle, $r) {
+            // increase connect timeout to 60s, and total timeout to 5m
+            curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 60);
+            curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 300);
+            curl_setopt($handle, CURLOPT_TIMEOUT, 300);
+        }, 10, 2);
+
+        // Call OpenAI Image Generations API
+        $response = wp_remote_post(
+            'https://api.openai.com/v1/images/generations',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $api_key,
+                    'Content-Type'  => 'application/json',
+                ],
+                'body'    => wp_json_encode($body),
+                'timeout' => 300,
+            ]
+        );
+        if (is_wp_error($response)) {
+            wp_send_json_error(['message' => $response->get_error_message()], 500);
+        }
+
+        $image_url = '';
+
+        if ($model === 'gpt-image-1') {
+            // Grab and decode the base64
+
+            $data = json_decode(wp_remote_retrieve_body($response), true);
+
+            $image_base64 = $data['data'][0]['b64_json'];
+
+            $bytes = base64_decode($image_base64);
+            if (! $bytes) {
+                wp_send_json_error(['message' => 'Invalid image data from API.'], 500);
+            }
+
+            // Create a temp file and write it
+            $tmp = wp_tempnam('gpt-image-1.png');
+            if (! $tmp || ! file_put_contents($tmp, $bytes)) {
+                wp_send_json_error(['message' => 'Failed to write temp image file.'], 500);
+            }
+
+            // Prepare for sideload
+            $file = [
+                'name'     => sanitize_file_name($prompt) . '.png',
+                'tmp_name' => $tmp,
+            ];
+
+            // Make sure these are loaded
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+
+            // Sideload into the Media Library
+            $attach_id = media_handle_sideload($file, 0, $prompt);
+            if (is_wp_error($attach_id)) {
+                wp_send_json_error(['message' => $attach_id->get_error_message()], 500);
+            }
+
+            $url = wp_get_attachment_url($attach_id);
+            wp_send_json_success(['attachment_id' => $attach_id, 'url' => $url]);
+        } else {
+
+
+            $code = wp_remote_retrieve_response_code($response);
+            $data = json_decode(wp_remote_retrieve_body($response), true);
+            if ($code !== 200 || empty($data['data'][0]['url'])) {
+                $error_msg = $data['error']['message'] ?? esc_html__('AI image generation error.', 'king-addons');
+                wp_send_json_error(['message' => $error_msg], 500);
+            }
+
+            // Sideload image into media library
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+
+            if ($model === 'dall-e-3') {
+                $image_url = esc_url_raw($data['data'][0]['url']);
+            }
+
+            $attachment_id = media_sideload_image($image_url, 0, $prompt, 'id');
+
+            if (is_wp_error($attachment_id)) {
+                wp_send_json_error(['message' => $attachment_id->get_error_message()], 500);
+            }
+            $attachment_url = wp_get_attachment_url($attachment_id);
+
+            // Respond with attachment details
+            wp_send_json_success([
+                'attachment_id' => $attachment_id,
+                'url'           => $attachment_url,
+            ]);
+        }
     }
 }

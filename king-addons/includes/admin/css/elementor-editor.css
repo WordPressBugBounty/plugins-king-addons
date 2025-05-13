@@ -402,6 +402,10 @@
 /* END: FORM BUILDER PREVIEW */
 /* -------------- */
 
+.elementor-label-block .e-ai-button {
+    display: none !important;
+}
+
 .king-addons-icon.king-addons-image-hotspots {
     background-image: url(../img/image-hotspots.svg);
 }
@@ -530,6 +534,10 @@
     background-image: url(../img/team-member.svg);
 }
 
+.king-addons-icon.king-addons-team-member-slider {
+    background-image: url(../img/team-member-slider.svg);
+}
+
 .king-addons-icon.king-addons-share-buttons {
     background-image: url(../img/share-buttons.svg);
 }
@@ -632,6 +640,10 @@
 
 .king-addons-icon.king-addons-mega-menu {
     background-image: url(../img/mega-menu.svg);
+}
+
+.king-addons-icon.king-addons-filterable-image-gallery {
+    background-image: url(../img/filterable-image-gallery.svg);
 }
 
 /* for elementor icons */

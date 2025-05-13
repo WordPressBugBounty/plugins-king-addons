@@ -1,14 +1,11 @@
 (function($, elementor){
     'use strict';
 
-    console.log('King Addons: ai-textfield.js loaded');
     
     // Debug check for KingAddonsAiField
-    console.log('KingAddonsAiField object:', window.KingAddonsAiField);
     
     // Check if settings exist
     if (!window.KingAddonsAiField || typeof window.KingAddonsAiField !== 'object') {
-        console.error('King Addons: KingAddonsAiField is not defined properly');
         window.KingAddonsAiField = window.KingAddonsAiField || {
             ajax_url: ajaxurl || '',
             generate_action: 'king_addons_ai_generate_text',
@@ -56,7 +53,6 @@
                 tokenUsageData.limitReached = response.data.limit_reached === true;
                 tokenUsageData.apiKeyValid = response.data.api_key_valid === true;
 
-                console.log('King Addons: Token usage and API key validity loaded', tokenUsageData);
 
                 if (callback) {
                     callback({
@@ -93,7 +89,6 @@
             tokenUsageData.limitReached = 
                 tokenUsageData.dailyLimit > 0 && tokenUsageData.dailyUsed >= tokenUsageData.dailyLimit;
                 
-            console.log('King Addons: Token usage updated', tokenUsageData);
         }
     }
     
@@ -253,7 +248,6 @@
 
     // Function to inject AI buttons
     function injectAiButtons($container) {
-        console.log('King Addons: Injecting AI buttons');
         
         // Inject animation styles first
         injectAnimationStyles();
@@ -262,6 +256,14 @@
         $container.find('.elementor-control-type-text label.elementor-control-title, .elementor-control-type-textarea label.elementor-control-title').each(function(){
             var $label = $(this);
             var $ctrlWrap = $label.closest('.elementor-control');
+            // Skip CSS ID, CSS Classes, and inline-label controls
+            if (
+                $ctrlWrap.hasClass('elementor-control-_element_id') ||
+                $ctrlWrap.hasClass('elementor-control-_css_classes') ||
+                $ctrlWrap.hasClass('elementor-label-inline')
+            ) {
+                return;
+            }
             var $input = $ctrlWrap.find('input[type="text"], textarea');
             
             // Check if we already have buttons wrapper after this label
@@ -315,7 +317,8 @@
             color: '#ffffff',
             display: 'inline-flex',
             alignItems: 'center',
-            boxShadow: '0 0 6px rgba(225,203,255,0.7), 0 0 12px rgba(91,3,255,0.5)',
+            // boxShadow: '0 0 6px rgba(225,203,255,0.7), 0 0 12px rgba(91,3,255,0.5)',
+            boxShadow: 'none',
             transition: 'box-shadow 0.3s ease'
         });
         $btnLabel.append(
@@ -324,7 +327,7 @@
         );
         $btnLabel.hover(
             function() { $(this).css('boxShadow', '0 0 8px rgba(225,203,255,0.9), 0 0 16px rgba(91,3,255,0.7)'); },
-            function() { $(this).css('boxShadow', '0 0 6px rgba(225,203,255,0.7), 0 0 12px rgba(91,3,255,0.5)'); }
+            function() { $(this).css('boxShadow', 'none'); }
         );
 
         // Create "Change" button
@@ -337,7 +340,7 @@
         // Add hover effect to the change button - cloning doesn't preserve hover handlers
         $changeBtn.hover(
             function() { $(this).css('boxShadow', '0 0 8px rgba(225,203,255,0.9), 0 0 16px rgba(91,3,255,0.7)'); },
-            function() { $(this).css('boxShadow', '0 0 6px rgba(225,203,255,0.7), 0 0 12px rgba(91,3,255,0.5)'); }
+            function() { $(this).css('boxShadow', 'none'); }
         );
 
         // Add buttons to wrapper
@@ -355,7 +358,6 @@
             $attachTarget.before($buttonsWrapper);
         }
         
-        console.log('King Addons: AI buttons injected for', fieldName);
 
         // Attach "Generate" button click handler
         $btnLabel.on('click', function(e){
@@ -388,7 +390,6 @@
                     var settingsUrl = window.KingAddonsAiField && window.KingAddonsAiField.settings_url
                         ? window.KingAddonsAiField.settings_url
                         : '/wp-admin/admin.php?page=king-addons-ai-settings';
-                    console.log('Settings URL used for API key:', settingsUrl);
                     $errorMessage.html(
                         '<span>OpenAI API key is missing or invalid. Please configure your API key in AI Settings.</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
@@ -417,7 +418,6 @@
                     var settingsUrl = window.KingAddonsAiField && window.KingAddonsAiField.settings_url
                         ? window.KingAddonsAiField.settings_url
                         : '/wp-admin/admin.php?page=king-addons-ai-settings';
-                    console.log('Settings URL used for token limit:', settingsUrl);
                     $errorMessage.html(
                         '<span>Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
@@ -588,7 +588,6 @@
                     var settingsUrl = window.KingAddonsAiField && window.KingAddonsAiField.settings_url
                         ? window.KingAddonsAiField.settings_url
                         : '/wp-admin/admin.php?page=king-addons-ai-settings';
-                    console.log('Settings URL used for API key:', settingsUrl);
                     $errorMessage.html(
                         '<span>OpenAI API key is missing or invalid. Please configure your API key in AI Settings.</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
@@ -617,7 +616,6 @@
                     var settingsUrl = window.KingAddonsAiField && window.KingAddonsAiField.settings_url
                         ? window.KingAddonsAiField.settings_url
                         : '/wp-admin/admin.php?page=king-addons-ai-settings';
-                    console.log('Settings URL used for token limit:', settingsUrl);
                     $errorMessage.html(
                         '<span>Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
@@ -764,13 +762,11 @@
         var appendMode = response && response.data && response.data.append_mode === true;
         var originalContent = appendMode ? (response.data.original || '') : '';
         
-        console.log("King Addons: Operation mode:", appendMode ? "APPEND" : "REPLACE", "Response:", response?.data);
         
         if (isWysiwyg) {
             var editorId = $field.attr('id');
 
             // Log for debugging
-            console.log('King Addons: Updating WYSIWYG', editorId, appendMode ? 'appending new content' : 'replacing content');
 
             // Check if we have a valid editor ID
             if (!editorId) {
@@ -815,7 +811,6 @@
                         }).join('');
                     }
                     
-                    console.log('King Addons: Formatted content with paragraphs', value);
                 }
             }
 
@@ -825,7 +820,6 @@
                     var editor = tinymce.get(editorId);
                     
                     if (!editor.isHidden()) { // Visual mode
-                        console.log('King Addons: TinyMCE editor in visual mode - setting content');
                         
                         if (appendMode) {
                             // Get current content and append the new content
@@ -847,7 +841,6 @@
                         
                         editor.save(); // Sync with textarea
                     } else { // Text mode
-                        console.log('King Addons: TinyMCE editor in text mode - setting textarea value');
                         
                         if (appendMode) {
                             // Append the new content to the original with proper HTML separation
@@ -870,7 +863,6 @@
                     }
                 } else {
                     // TinyMCE not available or editor not initialized
-                    console.log('King Addons: TinyMCE not available for', editorId, '- setting textarea value directly');
                     
                     if (appendMode) {
                         // Append the new content to the original
@@ -937,17 +929,11 @@
         return $field.val();
     }
 
-    // Setup MutationObserver to detect controls changes 
+    // Function to setup MutationObserver to detect controls changes 
     function setupControlsObserver(panel) {
-        var $controlsContainer = panel.$el.find('#elementor-controls');
-        if (!$controlsContainer.length) {
-            console.log('King Addons: Controls container not found for observer');
-            // Fallback: try to inject into the panel directly if specific container is not found
-            // This might happen if the panel structure is different or loads asynchronously
-            $controlsContainer = panel.$el; 
-        }
-        
-        console.log('King Addons: Setting up observer for', $controlsContainer[0]);
+        // Observe the entire panel for any control changes (e.g., section tabs)
+        var $controlsContainer = panel.$el;
+
         
         activeObservers.forEach(function(observer) { observer.disconnect(); });
         activeObservers = [];
@@ -965,24 +951,21 @@
         // Initial injection, with a delay
         setTimeout(function() {
             injectAiButtons($controlsContainer);
-        }, 150); 
+        }, 150);
     }
 
     // On widget panel open, setup the observer
     elementor.hooks.addAction('panel/open_editor/widget', function(panel) {
-        console.log('King Addons: panel/open_editor/widget hook triggered', panel);
         setTimeout(function() { setupControlsObserver(panel); }, 250); // Increased delay for initial setup
     });
     
     // Also monitor section changes
     elementor.channels.editor.on('section:activated', function(sectionName, editor) {
-        console.log('King Addons: section:activated event', sectionName);
         var panel = editor.getOption('editedElementView').getContainer().panel;
         if (panel && panel.$el) {
-             // When section activates, re-run injection on the panel element directly.
-             // The observer should handle subsequent changes within the #elementor-controls.
-            setTimeout(function() {
-                injectAiButtons(panel.$el); 
+             // When a section is activated, reinitialize observer and injection
+             setTimeout(function() {
+                setupControlsObserver(panel);
             }, 150); // Delay for section rendering
         }
     });

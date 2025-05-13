@@ -1,0 +1,38 @@
+/* Team Member Slider Styles */
+.king-addons-team-member-slider {
+    position: relative;
+}
+.king-addons-team-member-slider .king-addons-tms-item {
+    text-align: center;
+    padding: 20px;
+}
+.king-addons-team-member-slider .king-addons-tms-photo img {
+    width: 100%;
+    height: auto;
+    /* default no rounding; use style settings to adjust */
+    border-radius: 0;
+}
+.king-addons-team-member-slider .king-addons-tms-name {
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+.king-addons-team-member-slider .king-addons-tms-role {
+    display: block;
+    color: #666;
+    margin-bottom: 10px;
+}
+.king-addons-team-member-slider .king-addons-tms-bio {
+    font-size: 14px;
+    color: #333;
+}
+/* Place navigation arrows outside */
+.king-addons-team-member-slider.arrows-outside .swiper-button-prev {
+    left: -20px;
+}
+.king-addons-team-member-slider.arrows-outside .swiper-button-next {
+    right: -20px;
+}
+/* Place pagination outside (below) */
+.king-addons-team-member-slider.pagination-outside .swiper-pagination {
+    bottom: -20px;
+}

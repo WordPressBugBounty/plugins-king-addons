@@ -1,0 +1,183 @@
+/* Styles for AI Image Generation controls in Elementor */
+.kng-ai-image-field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    width: 100%;
+}
+.kng-ai-image-btn-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+.kng-ai-image-btn-wrapper.is-processing .kng-ai-image-generate-btn {
+    opacity: 0.7;
+    cursor: default;
+    pointer-events: none;
+}
+.kng-ai-image-prompt-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin: 8px 0;
+}
+.kng-ai-image-prompt-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    min-height: 40px;
+}
+.kng-ai-image-prompt-submit,
+.kng-ai-image-prompt-cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+.kng-ai-image-prompt-submit img,
+.kng-ai-image-generate-btn img,
+.kng-ai-image-prompt-cancel img {
+    width: 16px;
+    height: 16px;
+}
+.kng-ai-image-prompt-submit:hover,
+.kng-ai-image-generate-btn:hover {
+    box-shadow: 0 0 8px rgba(91,3,255,0.6);
+}
+/* Border animation on preview during processing */
+.elementor-control-media__preview.king-addons-field-pulsing {
+    animation: kingAddonsPulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1) !important;
+    border: 2px solid #5B03FF !important;
+}
+/* Animations for AI Image Generation */
+@keyframes kingAddonsPulse {
+    0% { box-shadow: 0 0 0 0 rgba(91,3,255,0.4), inset 0 0 0 1px rgba(91,3,255,0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(91,3,255,0.2), inset 0 0 0 5px rgba(91,3,255,0.6); }
+    100% { box-shadow: 0 0 0 0 rgba(91,3,255,0.1), inset 0 0 0 1px rgba(91,3,255,0.4); }
+}
+@keyframes kingAddonsRotatePulse {
+    0% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+    50% { transform: scale(1.15) rotate(180deg); filter: brightness(1.2) drop-shadow(0 0 3px rgba(91,3,255,0.7)); }
+    100% { transform: scale(1) rotate(360deg); filter: brightness(1); }
+}
+/* Animate button icons when processing */
+.kng-ai-image-generate-btn.is-processing img,
+.kng-ai-image-prompt-submit.is-processing img {
+    animation: kingAddonsRotatePulse 2s infinite ease-in-out;
+}
+/* Copy AI Text Field button styles to Image Field */
+.kng-ai-image-generate-btn,
+.kng-ai-image-prompt-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+    padding: 0 12px;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100%;
+}
+.kng-ai-image-generate-btn,
+.kng-ai-image-prompt-submit {
+    background: linear-gradient(135deg, #E1CBFF, #5B03FF);
+    color: #ffffff;
+}
+.kng-ai-image-generate-btn:hover,
+.kng-ai-image-prompt-submit:hover {
+    box-shadow: 0 0 8px rgba(91,3,255,0.6);
+}
+.kng-ai-image-prompt-cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: 50px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+    padding: 0 12px;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #f5f5f5;
+    color: #333333;
+}
+.kng-ai-image-prompt-cancel:hover {
+    background: #e0e0e0;
+    box-shadow: 0 0 6px rgba(0,0,0,0.15);
+}
+/* Style selects in prompt container */
+.kng-ai-image-prompt-container select {
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+}
+/* Layout for each row in prompt UI */
+.kng-ai-image-field-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.kng-ai-image-field-row--buttons {
+    justify-content: flex-start;
+}
+/* Label for each control */
+.kng-ai-image-field-label {
+    width: 80px;
+    font-size: 12px;
+    color: #555;
+    flex-shrink: 0;
+}
+/* Active state for open button */
+.kng-ai-image-generate-btn.is-active {
+    background: #cccccc !important;
+    color: #666666 !important;
+    box-shadow: none !important;
+}
+/* Cancel cross icon styling */
+.kng-ai-image-prompt-cancel .kng-ai-image-cancel-icon {
+    font-size: 16px;
+    line-height: 1;
+    color: #555;
+}
+.kng-ai-image-prompt-cancel:hover .kng-ai-image-cancel-icon {
+    color: #333;
+} 
+
+.kng-ai-image-prompt-submit.is-processing,
+.kng-ai-image-prompt-submit::disabled {
+    color: #ffffff !important;
+}
+
+.kng-ai-image-bg-checkbox-label {
+    display: inline-flex;
+}
+
+.kng-ai-image-prompt-note {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    color: var(--e-a-color-txt-muted);
+    font-size: 11px;
+    font-style: italic;
+    line-height: 1.4;
+}

@@ -134,12 +134,19 @@ final class Core
 
             // Conditionally enqueue AI text-field enhancement script and styles in Elementor editor
             $ai_options = get_option('king_addons_ai_options', []);
-            $enable_ai_buttons = isset($ai_options['enable_ai_buttons']) ? (bool) $ai_options['enable_ai_buttons'] : true;
-            if ( $enable_ai_buttons ) {
+            $enable_ai_text_buttons = isset($ai_options['enable_ai_buttons']) ? (bool) $ai_options['enable_ai_buttons'] : true;
+            if ( $enable_ai_text_buttons ) {
                 // Enqueue AI text-field enhancement script
                 add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiFieldScript' ]);
                 // Enqueue styles for AI prompt UI
                 add_action('elementor/editor/after_enqueue_styles', [ $this, 'enqueueAiFieldStyles' ]);
+            }
+
+            $enable_ai_image_generation_button = isset($ai_options['enable_ai_image_generation_button']) ? (bool) $ai_options['enable_ai_image_generation_button'] : true;
+            if ( $enable_ai_image_generation_button ) {
+                add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiImageGenerationScript' ]);
+                // Enqueue styles for AI Image Generation controls
+                add_action('elementor/editor/after_enqueue_styles', [ $this, 'enqueueAiImageFieldStyles' ]);
             }
             
         }
@@ -1046,6 +1053,7 @@ final class Core
             KING_ADDONS_VERSION,
             true
         );
+
         // Localize for AJAX
         wp_localize_script(
             'king-addons-ai-field',
@@ -1056,6 +1064,38 @@ final class Core
                 'change_nonce'    => wp_create_nonce('king_addons_ai_change_nonce'),
                 'generate_action' => 'king_addons_ai_generate_text',
                 'change_action'   => 'king_addons_ai_change_text',
+                'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
+                'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
+                'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
+                'plugin_url'      => KING_ADDONS_URL,
+            ]
+        );
+    }
+
+    /**     
+     * Enqueues the AI image generation field script in the Elementor editor panel.
+     *
+     * @return void
+     */
+    public function enqueueAiImageGenerationScript(): void
+    {
+        wp_enqueue_script(
+            'king-addons-ai-image-field',
+            KING_ADDONS_URL . 'includes/admin/js/ai-imagefield.js',
+            ['jquery', 'elementor-editor'],
+            KING_ADDONS_VERSION,
+            true
+        );
+        
+        // Localize for AJAX
+        wp_localize_script(
+            'king-addons-ai-image-field',
+            'KingAddonsAiImageField',
+            [
+                'ajax_url'        => admin_url('admin-ajax.php'),
+                'generate_nonce'  => wp_create_nonce('king_addons_ai_generate_image_nonce'),
+                'generate_action' => 'king_addons_ai_generate_image',
+                'image_model'     => get_option('king_addons_ai_options')['openai_image_model'],
                 'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
                 'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
                 'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
@@ -1075,6 +1115,21 @@ final class Core
         wp_enqueue_style(
             'king-addons-ai-field-css',
             KING_ADDONS_URL . 'includes/admin/css/ai-textfield.css',
+            [],
+            KING_ADDONS_VERSION
+        );
+    }
+
+    /**
+     * Enqueues styles for AI Image Generation UI in the Elementor editor panel.
+     *
+     * @return void
+     */
+    public function enqueueAiImageFieldStyles(): void
+    {
+        wp_enqueue_style(
+            'king-addons-ai-imagefield',
+            KING_ADDONS_URL . 'includes/admin/css/ai-imagefield.css',
             [],
             KING_ADDONS_VERSION
         );

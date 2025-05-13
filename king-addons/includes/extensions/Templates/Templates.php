@@ -530,9 +530,9 @@ final class Templates
 
     public function set_custom_curl_options($handle)
     {
-        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 30);
-        curl_setopt($handle, CURLOPT_TIMEOUT, 30);
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 60);
+        curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 300);
+        curl_setopt($handle, CURLOPT_TIMEOUT, 300);
     }
 
     function handle_filter_templates(): void
