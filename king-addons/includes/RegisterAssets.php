@@ -62,6 +62,17 @@ final class RegisterAssets
                      ];
                      wp_localize_script($script_handle, 'king_addons_slider_vars', $localized_data);
                 }
+                
+                // Localize script for pricing-calculator
+                if ($widget_id === 'pricing-calculator' && $js === 'script') {
+                    $localized_data = [
+                        'ajaxurl' => admin_url('admin-ajax.php'),
+                        'add_to_cart_nonce' => wp_create_nonce('king_addons_add_to_cart_nonce'),
+                        'send_email_quote_nonce' => wp_create_nonce('king_addons_send_email_quote_nonce'),
+                        'view_cart_text' => esc_html__('View Cart', 'king-addons')
+                    ];
+                    wp_localize_script($script_handle, 'king_addons_calculator_vars', $localized_data);
+                }
             }
         }
 
@@ -77,8 +88,8 @@ final class RegisterAssets
 
         if(KING_ADDONS_WGT_FORM_BUILDER) {
             wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-script', 'KingAddonsFormBuilderData', [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('king_addons_fb_nonce'),
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce'   => wp_create_nonce('king-addons-js'),
                 'input_empty' => esc_html__('Please fill out this field', 'king-addons'),
                 'select_empty' => esc_html__('Nothing selected', 'king-addons'),
                 'file_empty' => esc_html__('Please upload a file', 'king-addons'),

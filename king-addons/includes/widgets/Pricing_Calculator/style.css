@@ -1,0 +1,410 @@
+/*
+ * Pricing Calculator
+ */
+
+.king-pricing-calculator {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+}
+
+.king-pricing-calculator__title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.king-pricing-calculator__description {
+    margin-bottom: 25px;
+    color: #666;
+}
+
+/* Fields */
+.king-pricing-calculator__field {
+    margin-bottom: 20px;
+}
+
+.king-pricing-calculator__field-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.king-pricing-calculator__field-description {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.king-pricing-calculator__field-input {
+    position: relative;
+}
+
+/* Number Field */
+.king-pricing-calculator__number-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.king-pricing-calculator__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.king-pricing-calculator__input:focus {
+    border-color: #6c757d;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.25);
+}
+
+.king-pricing-calculator__field-unit {
+    margin-left: 10px;
+    color: #6c757d;
+}
+
+/* Range Slider */
+.king-pricing-calculator__range-field {
+    padding: 10px 0;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* Base range styling */
+.king-pricing-calculator__range {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: var(--track-height, 8px);
+    border-radius: 5px;
+    background: var(--track-color, #e9ecef);
+    outline: none;
+    margin: 10px 0;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Progress track (colored part) - using multiple backgrounds for better browser support */
+.king-pricing-calculator__range {
+    background: linear-gradient(to right, 
+        var(--progress-color, #4a89dc) 0%, 
+        var(--progress-color, #4a89dc) var(--range-progress, 50%), 
+        var(--track-color, #e9ecef) var(--range-progress, 50%), 
+        var(--track-color, #e9ecef) 100%);
+}
+
+/* WebKit thumb (Chrome, Safari, Edge) */
+.king-pricing-calculator__range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--thumb-size, 22px);
+    height: var(--thumb-size, 22px);
+    border-radius: 50%;
+    background: var(--thumb-color, #4a89dc);
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out, transform 0.15s ease;
+    margin-top: calc((var(--thumb-size, 22px) - var(--track-height, 8px)) / -2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Firefox thumb */
+.king-pricing-calculator__range::-moz-range-thumb {
+    width: var(--thumb-size, 22px);
+    height: var(--thumb-size, 22px);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: var(--thumb-color, #4a89dc);
+    cursor: pointer;
+    transition: background 0.15s ease-in-out, transform 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* WebKit track */
+.king-pricing-calculator__range::-webkit-slider-runnable-track {
+    width: 100%;
+    height: var(--track-height, 8px);
+    cursor: pointer;
+    background: transparent; /* Using the parent background instead */
+    border-radius: 5px;
+}
+
+/* Firefox track */
+.king-pricing-calculator__range::-moz-range-track {
+    width: 100%;
+    height: var(--track-height, 8px);
+    cursor: pointer;
+    background: var(--track-color, #e9ecef);
+    border-radius: 5px;
+}
+
+/* Firefox progress bar */
+.king-pricing-calculator__range::-moz-range-progress {
+    background-color: var(--progress-color, #4a89dc);
+    height: var(--track-height, 8px);
+    border-radius: 5px;
+}
+
+/* Hover and focus states */
+.king-pricing-calculator__range:hover::-webkit-slider-thumb {
+    background: var(--thumb-color-hover, #3573c3);
+    transform: scale(1.1);
+}
+
+.king-pricing-calculator__range:hover::-moz-range-thumb {
+    background: var(--thumb-color-hover, #3573c3);
+    transform: scale(1.1);
+}
+
+.king-pricing-calculator__range:focus {
+    outline: none;
+}
+
+.king-pricing-calculator__range:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.3);
+}
+
+.king-pricing-calculator__range:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.3);
+}
+
+/* Value display */
+.king-pricing-calculator__range-value-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    font-weight: 500;
+    color: var(--value-color, #333);
+}
+
+/* For touch devices - increase touch target */
+@media (pointer: coarse) {
+    .king-pricing-calculator__range::-webkit-slider-thumb {
+        width: var(--thumb-size-touch, 28px);
+        height: var(--thumb-size-touch, 28px);
+        margin-top: calc((var(--thumb-size-touch, 28px) - var(--track-height, 8px)) / -2);
+    }
+    
+    .king-pricing-calculator__range::-moz-range-thumb {
+        width: var(--thumb-size-touch, 28px);
+        height: var(--thumb-size-touch, 28px);
+    }
+}
+
+/* Select Field */
+.king-pricing-calculator__select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+}
+
+.king-pricing-calculator__select:focus {
+    border-color: #6c757d;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.25);
+}
+
+/* Radio Buttons */
+.king-pricing-calculator__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.king-pricing-calculator__radio-option {
+    display: flex;
+    align-items: center;
+}
+
+.king-pricing-calculator__radio {
+    margin-right: 10px;
+}
+
+/* Checkbox & Switch */
+.king-pricing-calculator__checkbox-field {
+    display: flex;
+    align-items: center;
+}
+
+.king-pricing-calculator__checkbox {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Toggle Switch */
+.king-pricing-calculator__switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.king-pricing-calculator__switch-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.king-pricing-calculator__switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.king-pricing-calculator__switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.king-pricing-calculator__switch-input:checked + .king-pricing-calculator__switch-slider {
+    background-color: #4a89dc;
+}
+
+.king-pricing-calculator__switch-input:focus + .king-pricing-calculator__switch-slider {
+    box-shadow: 0 0 1px #4a89dc;
+}
+
+.king-pricing-calculator__switch-input:checked + .king-pricing-calculator__switch-slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Calculate Button */
+.king-pricing-calculator__calculate-button-wrapper {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.king-pricing-calculator__calculate-button {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.king-pricing-calculator__calculate-button:hover {
+    background-color: #449d44;
+}
+
+/* Summary */
+.king-pricing-calculator__summary {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.king-pricing-calculator__summary-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.king-pricing-calculator__summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+/* Total Price */
+.king-pricing-calculator__total {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.king-pricing-calculator__total-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.king-pricing-calculator__total-label {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.king-pricing-calculator__total-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4a89dc;
+}
+
+/* Pro Features Notice */
+.king-pricing-calculator__pro-features {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.king-pricing-calculator__pro-features a {
+    color: #4a89dc;
+    text-decoration: none;
+}
+
+.king-pricing-calculator__pro-features a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+    .king-pricing-calculator {
+        padding: 20px;
+    }
+    
+    .king-pricing-calculator__title {
+        font-size: 20px;
+    }
+    
+    .king-pricing-calculator__total-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+} 

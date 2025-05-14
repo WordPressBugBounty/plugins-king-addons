@@ -1,0 +1,417 @@
+.king-addons-submit-error {
+    position: absolute;
+    top: 100%;
+    margin: 0;
+}
+
+.king-addons-field-group .king-addons-submit-error {
+    position: absolute;
+    top: 100%;
+}
+
+.king-addons-field-group input {
+    margin: 0;
+}
+
+.king-addons-form-fields-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.king-addons-form-fields-wrap input[type="date"],
+.king-addons-form-fields-wrap input[type="time"] {
+    position: relative;
+}
+
+.king-addons-form-fields-wrap input[type="date"]::before,
+.king-addons-form-fields-wrap input[type="time"]::before {
+    font-family: "Font Awesome 5 Free", serif !important;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+.king-addons-form-fields-wrap input[type="date"]::before {
+    content: '\f073';
+}
+
+.king-addons-form-fields-wrap input[type="time"]::before {
+    content: '\f017';
+}
+
+.king-addons-form-fields-wrap .king-addons-form-field:focus {
+    box-shadow: none !important;
+}
+
+.king-addons-form-fields-wrap.king-addons-labels-above .king-addons-field-group .king-addons-field-sub-group,
+.king-addons-form-fields-wrap.king-addons-labels-above .king-addons-field-group > .king-addons-select-wrap,
+.king-addons-form-fields-wrap.king-addons-labels-above .king-addons-field-group > input,
+.king-addons-form-fields-wrap.king-addons-labels-above .king-addons-field-group > textarea,
+.king-addons-field-group .king-addons-button {
+    flex-basis: 100%;
+    max-width: 100%;
+}
+
+.king-addons-form-fields-wrap.king-addons-labels-inline > .king-addons-field-group > input,
+.king-addons-form-fields-wrap.king-addons-labels-inline > .king-addons-field-group .king-addons-select-wrap {
+    flex-grow: 1;
+}
+
+.king-addons-field-group {
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.king-addons-field-group.king-addons-form-field-type-submit {
+    align-items: flex-end;
+}
+
+.king-addons-field-group .king-addons-form-field-textual {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+    color: #373a3c;
+    border: 1px solid #818a91;
+    background-color: transparent;
+}
+
+.king-addons-field-group .king-addons-form-field-textual:focus {
+    outline: 0;
+    box-shadow: none;
+}
+
+.king-addons-field-group .king-addons-form-field-textual::placeholder {
+    font-family: inherit;
+    opacity: 0.6;
+    color: inherit;
+}
+
+.king-addons-field-group .king-addons-select-wrap {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+.king-addons-field-group .king-addons-select-wrap select {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    line-height: inherit;
+    flex-basis: 100%;
+    padding-right: 20px;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    appearance: none;
+}
+
+.king-addons-field-group .king-addons-select-wrap.king-addons-fi-svg-no:before {
+    font-family: "eicons", serif;
+    font-size: 15px;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    content: "\e92a";
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.king-addons-field-group.king-addons-form-field-type-select-multiple .king-addons-select-wrap:before {
+    content: "";
+}
+
+.king-addons-select-wrap svg {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.king-addons-select-wrap svg path {
+    width: 15px;
+    height: 15px;
+}
+
+.king-addons-field-sub-group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.king-addons-form-field-option {
+    display: inline-flex;
+    align-items: center;
+}
+
+.king-addons-field-sub-group .king-addons-form-field-option label {
+    display: inline-block;
+}
+
+.king-addons-field-sub-group:not(.king-addons-inline-sub-group) .king-addons-form-field-option {
+    flex-basis: 100%;
+}
+
+.king-addons-form-field-type-checkbox .king-addons-field-sub-group .king-addons-form-field-option input,
+.king-addons-form-field-type-checkbox .king-addons-field-sub-group .king-addons-form-field-option label,
+.king-addons-form-field-type-radio .king-addons-field-sub-group .king-addons-form-field-option input,
+.king-addons-form-field-type-radio .king-addons-field-sub-group .king-addons-form-field-option label,
+.king-addons-form-field-type-acceptance .king-addons-field-sub-group .king-addons-form-field-option input,
+.king-addons-form-field-type-acceptance .king-addons-field-sub-group .king-addons-form-field-option label {
+    display: inline;
+}
+
+.king-addons-custom-styles-yes .king-addons-form-field-type-checkbox input,
+.king-addons-custom-styles-yes .king-addons-form-field-type-radio input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.king-addons-custom-styles-yes .king-addons-form-field-type-radio .king-addons-form-field-option label,
+.king-addons-custom-styles-yes .king-addons-form-field-type-checkbox .king-addons-form-field-option label {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.king-addons-custom-styles-yes .king-addons-form-field-type-checkbox .king-addons-form-field-option label::before {
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    content: "" !important;
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.king-addons-custom-styles-yes .king-addons-gf-checkbox-group .king-addons-checked input[type="checkbox"] + label::before,
+.king-addons-custom-styles-yes .king-addons-form-field-type-checkbox .king-addons-form-field-option.king-addons-checked label::before {
+    content: "\2713" !important;
+}
+
+.king-addons-custom-styles-yes .king-addons-gf-checkbox-group input[type="radio"] + label::before,
+.king-addons-custom-styles-yes .king-addons-form-field-type-radio .king-addons-form-field-option label::before {
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    content: "" !important;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.king-addons-custom-styles-yes .king-addons-gf-checkbox-group .king-addons-checked input[type="radio"] + label::before,
+.king-addons-custom-styles-yes .king-addons-form-field-type-radio .king-addons-form-field-option.king-addons-checked label::before {
+    content: "⬤" !important;
+}
+
+.king-addons-file-type-error {
+    font-size: 13px;
+    flex-basis: 100%;
+    margin: 0 0 5px 0;
+    padding: 5px 0;
+    list-style-type: none;
+    color: red;
+}
+
+.king-addons-file-type-error li {
+    display: inline;
+    color: #000;
+}
+
+.king-addons-form-field-type-hidden {
+    display: none;
+}
+
+.king-addons-form-field-type-html {
+    display: inline-block;
+}
+
+.king-addons-form-field-label {
+    text-align: left;
+}
+
+.king-addons-form-field-type-recaptcha_v3 .king-addons-form-field-label {
+    display: none;
+}
+
+.king-addons-form-field-type-recaptcha_v3 .grecaptcha-badge {
+    z-index: 1;
+}
+
+.king-addons-required-mark .king-addons-form-field-label:after {
+    padding-left: 0.2em;
+    content: "*";
+    color: red;
+}
+
+.king-addons-column {
+    position: relative;
+    display: flex;
+    min-height: 1px;
+}
+
+.king-addons-fb-step-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.king-addons-fb-step-progress {
+    width: 100%;
+    height: auto;
+    background-color: black;
+}
+
+.king-addons-fb-step-progress-fill {
+    width: 0;
+    height: auto;
+    padding-right: 10px;
+    transition: width 0.5s;
+    text-align: right;
+    color: white;
+    background-color: red;
+}
+
+.king-addons-fb-step-content-layout-vertical .king-addons-fb-step-wrap {
+    align-items: flex-start;
+}
+
+.king-addons-fb-step-type-none .king-addons-fb-step-wrap {
+    align-items: center;
+}
+
+.king-addons-fb-step-tab {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.king-addons-fb-step-tab-hidden {
+    display: none;
+}
+
+.king-addons-fb-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    border: none;
+}
+
+.king-addons-fb-step-content-layout-vertical .king-addons-fb-step {
+    flex-direction: column;
+}
+
+.king-addons-fb-step-content-layout-horizontal .king-addons-fb-step {
+    flex-direction: row;
+}
+
+.king-addons-separator-off .king-addons-fb-step {
+    flex: 1;
+}
+
+.king-addons-fb-step.king-addons-fb-step-active {
+    opacity: 1;
+}
+
+/*noinspection CssUnresolvedCustomProperty*/
+.king-addons-fb-step-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: var(--king-addons-fb-steps-indicator-padding, 30px);
+    height: var(--king-addons-fb-steps-indicator-padding, 30px);
+}
+
+.king-addons-fb-step-content-layout-vertical .king-addons-fb-step-label {
+    width: 100%;
+}
+
+.king-addons-fb-step-main-label,
+.king-addons-fb-step-sub-label {
+    display: block;
+}
+
+.king-addons-form-field-type-step {
+    display: none;
+}
+
+.king-addons-form-field-type-recaptcha-v3 {
+    display: none;
+}
+
+.king-addons-step-buttons-wrap {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.king-addons-fb-step-sep,
+.king-addons-step-buttons-wrap .king-addons-button {
+    flex: 1;
+}
+
+.king-addons-fb-step-tab .king-addons-step-buttons-wrap .king-addons-button {
+    flex: 0 1 auto;
+}
+
+.king-addons-fb-step-sep:last-of-type {
+    display: none;
+}
+
+/*noinspection CssUnresolvedCustomProperty*/
+.king-addons-fb-step-sep {
+    height: var(--king-addons-fb-steps-divider-width, 1px);
+    background-color: lightgrey;
+}
+
+/*noinspection CssUnresolvedCustomProperty*/
+.king-addons-fb-step-content-layout-vertical:not(.king-addons-fb-step-type-none) .king-addons-fb-step-sep {
+    margin-top: calc(var(--king-addons-fb-steps-indicator-padding, 30px) / 2 - var(--king-addons-fb-steps-divider-width, 1px) / 2 + var(--king-addons-fb-steps-padding));
+}
+
+/*noinspection CssUnresolvedCustomProperty*/
+.king-addons-fb-step-content-layout-horizontal .king-addons-fb-step-sep {
+    top: 50%;
+    height: var(--king-addons-fb-steps-divider-width, 1px);
+    background-color: lightgrey;
+}
+
+.king-addons-form .king-addons-double-bounce {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.king-addons-loader-hidden {
+    display: none !important;
+}
+
+.king-addons-form .king-addons-double-bounce .king-addons-child {
+    background-color: white;
+}
+
+@keyframes king-addons-badgeFade {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    0% {
+        opacity: 1;
+    }
+}

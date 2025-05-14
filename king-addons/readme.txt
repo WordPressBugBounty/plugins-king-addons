@@ -1,22 +1,18 @@
-=== King Addons for Elementor – AI Features, Widgets & Templates ===
+=== King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
-Tags: elementor, elementor addons, ai, elementor widgets, elementor templates
-Stable tag: 24.12.82
+Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
+Stable tag: 24.12.85
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-600+ Elementor templates, 60+ widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
-600+ Elementor templates, 60+ widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds. 
-
-**King Addons for Elementor** empowers you to create stunning websites with **600+ professionally designed templates** and **60+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
-
-[**TEMPLATES CATALOG**](https://kingaddons.com/templates/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**ELEMENTS AND FEATURES**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**PRO VERSION**](https://kingaddons.com/pricing/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng)
+**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **60+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
 
 Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
 
@@ -24,35 +20,13 @@ Perfect for creating **restaurant websites**, **online stores**, **portfolio pag
 
 Try **King Addons** for free and explore its powerful features. Whether you are building a sleek single-page site or a feature-packed online store, **King Addons** is your ultimate website builder addon. It combines speed, flexibility, and advanced Elementor enhancements for exceptional design results.
 
-### **Key Features**
-
-- **Templates Catalog**: Access **600+ SEO-friendly templates** to create responsive, visually stunning pages, sections, and layouts in minutes.
-- **Popup & Modal Builder**: Design attention-grabbing promotional popups, subscription forms, or announcements with full control over style and animations.
-- **Dynamic Search with AJAX**: Provide instant search results as users type, enhancing navigation and user experience.
-- **One Page Navigation**: Enable smooth scrolling for single-page sites, improving usability and user engagement.
-- **AI Content Tools**: Instantly generate and refine text using AI, enhancing your content creation workflow.
-- **Image Comparison Tool**: Highlight before-and-after visuals with a draggable slider, ideal for product showcases or design portfolios.
-- **Interactive Image Hotspots**: Add clickable areas to images, great for product details or engaging storytelling.
-- **Blog Posts Carousel**: Showcase recent or featured blog posts dynamically in an eye-catching carousel format.
-- **Global Sections Management**: Save headers, footers, and CTAs for reuse, ensuring consistent design across your site.
-- **Price List & Menu**: Present prices or menu items stylishly, perfect for restaurants, cafes, or product listings.
-- **Testimonials & Reviews Carousel**: Build trust with dynamic sliders for customer testimonials and reviews.
-- **Vertical Scrollable Images**: Display infographics, timelines, or long images interactively without resizing.
-- **Customizable Buttons**: Drive conversions with engaging **Creative Buttons** and **Pulsing Buttons**.
-- **Parallax & Particle Backgrounds**: Add depth and motion to your pages with lightweight, visually stunning animations.
-- **Custom CSS**: Apply your own styles for full control over the appearance and layout of every element.
-- **Mobile-Friendly Features**: Ensure all widgets and designs look great on any device, providing a seamless user experience.
-- **Drag and Drop Integration**: All widgets are fully compatible with Elementor's drag-and-drop builder, making customization simple and intuitive.
-- **Responsive Design Tools**: Create layouts that automatically adapt to any screen size, ensuring your site looks stunning on desktop, tablet, and mobile.
-- **Improve Website Speed**: Tools are optimized to ensure your website remains lightweight and performs smoothly.
-- **No Coding Required**: Customize your site effortlessly with user-friendly widgets and tools.
-- **Global Compatibility**: Ideal for users in any language or region, offering tools that adapt to diverse needs.
+[**CHECK THE DEMOS**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) to see these features in action.
 
 ### **AI Features**
 Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - **AI Text Generation** – Instantly generate high-quality text for any Elementor field.
 - **AI Text Change** – Rewrite or improve existing text with AI-powered editing.
-- **AI Image Generation** – Generate custom images for Elementor using OpenAI.
+- **AI Image Generation** – Generate custom images for Elementor using OpenAI models - DALL·E 3 and GPT Image 1.
 
 ### **Elementor Extensions & Tools**
 
@@ -114,6 +88,8 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - [**Pricing Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive pricing sliders that allow users to dynamically adjust parameters and instantly see matching features. Perfect for subscription services, product configurators, or membership plans. Compatible with WooCommerce and other pricing systems. Boosts conversions by providing visual, intuitive pricing comparisons.
 - [**Mega Menu**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create powerful navigation menus with support for dropdown menus, custom layouts, and responsive design. Perfect for creating professional website headers with both WordPress menus and custom navigation structures.
 - [**Team Members Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Boost your site credibility with a responsive Elementor Team Members Slider carousel widget. Showcase staff photos, names, roles, bios, and social links in a sleek, responsive slider for improved engagement and navigation.
+- [**Form Builder**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Build custom forms with ease using the fully customizable Form Builder. Ideal for contact forms, surveys, or lead generation with responsive designs.
+- [**Pricing Сalculator**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.
 
 ### **Elementor Features**
 
@@ -135,7 +111,7 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 
 ### Keywords
 
-Before and after image sliders, WooCommerce pricing tools, advanced tools for professionals, custom form builder WordPress, speed-enhanced WordPress plugins, temp, WooCommerce product grid, advanced styling options, templ, bu, custom Elementor modules, responsive product galleries, AJAX-powered search, templa, build, MailChimp integration plugin, interactive blog grids, elimentr, elem, testimonials and reviews, addo, beginner-friendly plugins, a, drag and drop editor, Elementor plugin, dynamic content display, visual website builder, t, pag, widg, elemen, wid, e, template, interactive forms for Elementor, fr, business hours widget, fre, easy to use, blog post carousels, team member showcase, ele, call-to-action buttons, elementor, best Elementor widgets, extens, boost conversions with Elementor, te, tem, pricing tables WordPress, mobile-friendly WordPress addons, extensi, unyson, pricing calculator for services, engage visitors with interactive elements, element, customizable progress bars, WordPress page builder, lightweight Elementor tools, templat, exten, conditional logic for WordPress, add, WooCommerce Elementor widgets, ad, news ticker for WordPress, eleme, product showcases, Elementor addons, widge, bui, Elementor templates, elementr, ex, magazine-style layouts, free Elementor widgets, wi, uneson, WordPress charts plugin, elem, optimized Elementor widgets, w, alimentor, p, tem, data tables for Elementor, extensio, protected content WordPress, elementar, cross-domain copy-paste Elementor, no coding required, product sliders for WooCommerce, exte, content tickers for updates, f, responsive grid layouts, interactive sliders for Elementor, buil, elemento, lightweight WordPress plugins, sale countdown timer, ext, timeline widgets for WordPress, elimentor, SEO-friendly WordPress addons, responsive design tools, el, service comparison tables, pa, interactive pricing slider, create visually stunning designs, builde, b, advanced Elementor features, newsletter sign-up forms.
+Before and after image sliders, WooCommerce pricing tools, advanced tools for professionals, custom form builder WordPress, speed-enhanced WordPress plugins, temp, WooCommerce product grid, advanced styling options, templ, bu, form, se, wucomerce, ki, essent, ultimate, elim, ultimat, li, performan, c, live search, galle, websi, go, searc, aja, carous, par, parral, m, med, v, vid, butto, prod, cal, calen, calenda, jq, ta, gr, bo, popu, Elementor custom breakpoints, sticky header plugin, Elementor mega menu, custom Elementor modules, woocommerc, responsive product galleries, perfor, AJAX-powered search, templa, build, premium, MailChimp integration plugin, carou, interactive blog grids, elimentr, elem, perf, testimonials and reviews, addo, beginner-friendly plugins, a, drag and drop editor, woocomme, sl, slid, g, perfo, Elementor plugin, lite, dynamic content display,  ga, visual website builder, t, pag, widg, elemen, wid, e, template, interactive forms for Elementor, fr, paral, essentia, ai, woocommer, business hours widget, fre, easy to use, da, premi, wo, for, s, blog post carousels, parala, ima, team member showcase, ele, call-to-action buttons, gri, po, elementor, paralla, elime, best Elementor widgets, extens, d, boost conversions with Elementor, te, pricing tables WordPress, woocom, per, mobile-friendly WordPress addons, ulti, extensi, unyson, gallery, si, site, web, pricing calculator for services, parall, i,  caro, engage visitors with interactive elements, element, customizable progress bars, googl, sea, es, WordPress page builder, as, astr, woo, esse, lightweight Elementor tools, eli, templat, ast, k, prem, kin, ess, ult, l, webs, lit, pe, ultima,performa, dat, performanc, co, pre, sit, websit, goog, se, sear, aj, ca, carouse, parr, paralax, im, imag, me, medi, vi, vide, butt, produ, cale, b, calend, wu, wc, tabl, contact, Gutenberg bridging plugin, white label Elementor plugin, exten, conditional logic for WordPress, add, WooCommerce Elementor widgets, ad, news ticker for WordPress, eleme, product showcases, contac, pro, Elementor addons, widge, bui, Elementor templates, elementr, ex, magazine-style layouts, wooco, free Elementor widgets, wi, essen, uneson, astra, WordPress charts plugin, elem, optimized Elementor widgets, w, alimentor, p, tem, essential, data tables for Elementor, extensio, protected content WordPress, elementar, wucom, essenti, u, cross-domain copy-paste Elementor, s, ul, conta, pr, slide, gall, no coding required, wor, product sliders for WooCommerce, exte, content tickers for updates, f, responsive grid layouts, wooc, interactive sliders for Elementor, buil, elemento, lightweight WordPress plugins, woocomm, sale countdown timer, ext, sli, timeline widgets for WordPress, galler, s, elimentor, perform, SEO-friendly WordPress addons, con, premiu, fo, gal, responsive design tools, el, service comparison tables, pa, interactive pricing slider, create visually stunning designs, builde, advanced Elementor features, newsletter sign-up forms.
 
 == Installation ==
 
@@ -206,9 +182,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.12.85 - May 15, 2025 =
+* **New:** Form Builder widget added.
+* **New:** Pricing Calculator widget added.
+* **Improved:** Support for PHP versions lower than 8.0.
+
 = King Addons for Elementor version 24.12.82 - May 13, 2025 =
 * **New:** Team Members Slider widget added.
-* **New:** AI Image Generation – Generate custom images for Elementor using OpenAI.
+* **New:** AI Image Generation – Generate custom images for Elementor using OpenAI models - DALL·E 3 and GPT Image 1.
 * **Improved:** AI Text Generation feature.
 
 = King Addons for Elementor version 24.12.81 - May 8, 2025 =

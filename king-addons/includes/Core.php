@@ -183,13 +183,13 @@ final class Core
         }
 ?>
         <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
-            style="border-left: 4px solid #0073aa;padding: 10px 15px;">
+            style="border-left: 4px solid #FF4040;padding: 10px 15px;">
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
                 <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
                         style="font-weight: 700;">200+</strong> features for only $<strong
                         style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
                 <span>
-                    <a style="margin-left: 10px;font-size: 14px;padding: 3px 20px;display: flex;align-items: center;"
+                    <a style="margin-left: 10px;font-size: 14px;padding: 3px 20px;display: flex;align-items: center;background-image: linear-gradient(120deg, #A20BD8 0%, #FF4040 100%);border: none;"
                         href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
                         class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
                             src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
@@ -1079,6 +1079,8 @@ final class Core
      */
     public function enqueueAiImageGenerationScript(): void
     {
+        // Retrieve AI options and ensure it's an array to prevent warnings.
+        $ai_options = get_option('king_addons_ai_options', []);
         wp_enqueue_script(
             'king-addons-ai-image-field',
             KING_ADDONS_URL . 'includes/admin/js/ai-imagefield.js',
@@ -1095,7 +1097,7 @@ final class Core
                 'ajax_url'        => admin_url('admin-ajax.php'),
                 'generate_nonce'  => wp_create_nonce('king_addons_ai_generate_image_nonce'),
                 'generate_action' => 'king_addons_ai_generate_image',
-                'image_model'     => get_option('king_addons_ai_options')['openai_image_model'],
+                'image_model'     => sanitize_text_field( $ai_options['openai_image_model'] ?? '' ),
                 'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
                 'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
                 'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
