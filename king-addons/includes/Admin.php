@@ -1434,7 +1434,7 @@ final class Admin
 
             // Prepare for sideload
             $file = [
-                'name'     => sanitize_file_name($prompt) . '.png',
+                'name'     => substr(sanitize_file_name($prompt), 0, 100) . '.png',
                 'tmp_name' => $tmp,
             ];
 

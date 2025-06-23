@@ -491,9 +491,9 @@ final class Templates
                 'ajaxUrl' => admin_url('admin-ajax.php'),
             ));
         }
-        if ($screen->id === 'king-addons_page_king-addons-account') {
-            wp_enqueue_style('king-addons-account-style', KING_ADDONS_URL . 'includes/admin/css/account.css', '', KING_ADDONS_VERSION);
-        }
+        // if ($screen->id === 'king-addons_page_king-addons-account') {
+        //     wp_enqueue_style('king-addons-account-style', KING_ADDONS_URL . 'includes/admin/css/account.css', '', KING_ADDONS_VERSION);
+        // }
     }
 
     public function __construct()

@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.86
+Stable tag: 24.12.87
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -181,6 +181,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.87 - June 23, 2025 =
+* **Improved:** AI Image Generation feature.
+* **Improved:** Design of King Addons account page.
+* **Fix:** Form Builder submissions page display fixed when Pro version of the plugin not active.
+* **Fix:** Fix for WordPress 6.7+. For "PHP Notice: Function _load_textdomain_just_in_time was called incorrectly." notice.
 
 = King Addons for Elementor version 24.12.86 - June 4, 2025 =
 * **Improved:** AI Text Generation feature.

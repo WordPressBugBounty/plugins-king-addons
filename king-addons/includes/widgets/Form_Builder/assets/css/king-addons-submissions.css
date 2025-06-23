@@ -1,0 +1,76 @@
+#king_addons_submission_fields .king-addons-submissions-wrap {
+    margin-bottom: 10px;
+}
+
+.king-addons-submissions-wrap {
+    width: 50%;
+}
+
+.king-addons-submissions-wrap * {
+    width: 100%;
+}
+
+.king-addons-submissions-wrap input {
+    display: block;
+}
+
+.king-addons-submissions-wrap label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.king-addons-submissions-wrap p {
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 0 !important;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+}
+
+.king-addons-submissions-wrap .notice-error {
+    background: #f2dede;
+}
+
+.king-addons-submissions-wrap .notice-success {
+    background: #dff0d8;
+}
+
+.king-addons-submission-read {
+    opacity: 0.5;
+}
+
+.king-addons-submission-read,
+.king-addons-submission-unread {
+    cursor: pointer;
+}
+
+.king-addons-submissions-meta {
+    font-weight: 600;
+}
+
+.king-addons-submission-unread-column,
+.king-addons-submission-unread {
+    font-weight: bold;
+}
+
+#postbox-container-2 {
+    opacity: 0;
+}
+
+.king-addons-edit-submissions {
+    position: absolute;
+    right: 2%;
+    top: 2%;
+}
+
+.king-addons-submissions-wrap > *[readonly]:not(p) {
+    border: none;
+}
+
+.king-addons-inline {
+    display: inline-block !important;
+    width: auto;
+    margin-right: 10px;
+} 

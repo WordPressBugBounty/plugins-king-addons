@@ -12,29 +12,11 @@ class View_Submissions_Pro
 {
     public function __construct()
     {
-//        error_log('View_Submissions_Pro constructor called');
-//        add_menu_page('Submissions',
-//            'Submissions',
-//            'manage_options',
-//            'edit.php?post_type=king_addons_submissions',
-//            ''
-//        );
 
-//        add_action('admin_menu', function() {
-//            add_menu_page(
-//                'Submissions',
-//                'Submissions',
-//                'manage_options',
-//                'edit.php?post_type=king_addons_submissions',
-//                '', // Instead of callback it will open the list
-//                'dashicons-email' // for example
-//            );
-//        });
 
         add_action('admin_enqueue_scripts', [$this, 'enqueue_submissions_script']);
         add_action('init', [$this, 'register_post_type_king_addons_submissions']);
         add_action('in_admin_header', [$this, 'renderAdminCustomHeader']);
-//        add_action('admin_menu', [$this, 'reorder_king_addons_submissions_submenu'], 999);
 
         add_filter('manage_king-addons-fb-sub_posts_columns', [$this, 'king_addons_submissions_custom_columns']);
         add_action('manage_king-addons-fb-sub_posts_custom_column', [$this, 'king_addons_submissions_custom_column_content'], 10, 2);
@@ -46,16 +28,6 @@ class View_Submissions_Pro
         add_action('current_screen', [$this, 'king_addons_submissions_remove_bulk_edit_filter']);
 
         add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
-
-
-//        add_submenu_page('king-addons',
-//            'Submissions',
-//            'Submissions',
-//            'manage_options',
-//            'edit.php?post_type=king_addons_submissions',
-//            '',
-//        -1
-//        );
 
 
     }
@@ -99,33 +71,6 @@ class View_Submissions_Pro
         <?php
     }
 
-//    public function reorder_king_addons_submissions_submenu()
-//    {
-//        global $submenu;
-//
-//        $parent_slug = 'king-addons';
-//        $submenu_slug = 'edit.php?post_type=king-addons-fb-sub';
-//        $new_position = 10;
-//
-//        if (isset($submenu[$parent_slug])) {
-//            $submenu_items = $submenu[$parent_slug];
-//            $found_key = null;
-//
-//            foreach ($submenu_items as $key => $item) {
-//                if ($item[2] === $submenu_slug) {
-//                    $found_key = $key;
-//                    break;
-//                }
-//            }
-//
-//            if ($found_key !== null) {
-//                $item_to_move = $submenu[$parent_slug][$found_key];
-//                unset($submenu[$parent_slug][$found_key]);
-//                array_splice($submenu[$parent_slug], $new_position - 1, 0, [$item_to_move]);
-//            }
-//        }
-//    }
-
     public function enqueue_submissions_script($hook)
     {
 
@@ -137,9 +82,15 @@ class View_Submissions_Pro
 
 
             if (isset($post) && $post->post_type === $post_type) {
-// todo
-                wp_enqueue_style('king-addons-form-builder-submissions-css', KING_ADDONS_PRO_URL . 'assets/css/king-addons-submissions.css', [], KING_ADDONS_PRO_VERSION);
-                wp_enqueue_script('king-addons-form-builder-submissions-js', KING_ADDONS_PRO_URL . 'assets/js/king-addons-submissions.js', ['jquery'], KING_ADDONS_PRO_VERSION);
+                
+                // Check if Pro constants are defined before using them
+                if (defined('KING_ADDONS_PRO_URL') && defined('KING_ADDONS_PRO_VERSION')) {
+                    wp_enqueue_style('king-addons-form-builder-submissions-css', KING_ADDONS_PRO_URL . 'assets/css/king-addons-submissions.css', [], KING_ADDONS_VERSION);
+                    wp_enqueue_script('king-addons-form-builder-submissions-js', KING_ADDONS_PRO_URL . 'assets/js/king-addons-submissions.js', ['jquery'], KING_ADDONS_VERSION);
+                } else {
+                    wp_enqueue_style('king-addons-form-builder-submissions-css', KING_ADDONS_URL . 'includes/widgets/Form_Builder/assets/css/king-addons-submissions.css', [], KING_ADDONS_VERSION);
+                    wp_enqueue_script('king-addons-form-builder-submissions-js', KING_ADDONS_URL . 'includes/widgets/Form_Builder/assets/js/king-addons-submissions.js', ['jquery'], KING_ADDONS_VERSION);
+                }
 
                 wp_localize_script(
                     'king-addons-form-builder-submissions-js',

@@ -5,7 +5,7 @@
  * Description: 600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 24.12.86
+ * Version: 24.12.87
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 load_plugin_textdomain('king-addons');
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '24.12.86';
+const KING_ADDONS_VERSION = '24.12.87';
 
 /** DEFINES */
 define('KING_ADDONS_PATH', plugin_dir_path(__FILE__));
@@ -60,7 +60,7 @@ if (!function_exists('king_addons_freemius')) {
                 'menu' => array(
                     'slug' => 'king-addons',
                     'first-path' => 'plugins.php',
-                    'pricing' => false,
+                    'pricing' => true,
                     'contact' => false,
                     'support' => false,
                 ),
@@ -128,8 +128,8 @@ if (!function_exists('king_addons_doPlugin')) {
     {
         require_once(KING_ADDONS_PATH . 'includes/Core.php');
     }
-
-    add_action('plugins_loaded', 'king_addons_doPlugin');
+    // Using after_setup_theme to fix: PHP Notice:  Function _load_textdomain_just_in_time was called incorrectly.
+    add_action('after_setup_theme', 'king_addons_doPlugin');
 }
 
 /**
@@ -170,6 +170,7 @@ if (!function_exists('king_addons_hideAnotherNotices')) {
             $current_screen == 'edit-king-addons-fb-sub' ||
             $current_screen == 'header-footer_page_king-addons-el-hf-settings' ||
             $current_screen == 'king-addons_page_king-addons-ai-settings' ||
+            $current_screen == 'king-addons_page_king-addons-pricing' ||
             $current_screen == 'king-addons_page_king-addons-settings'
         ) {
             // Remove all notices
@@ -193,6 +194,9 @@ if (!function_exists('king_addons_styleMenuIcon')) {
     function king_addons_styleMenuIcon()
     {
         wp_enqueue_style('king-addons-plugin-style-menu-icon', plugin_dir_url(__FILE__) . 'includes/admin/css/menu-icon.css', '', KING_ADDONS_VERSION);
+        if (get_current_screen()->id == 'king-addons_page_king-addons-pricing') {
+            wp_enqueue_style('king-addons-plugin-style-pricing', plugin_dir_url(__FILE__) . 'includes/admin/css/pricing.css', '', KING_ADDONS_VERSION);
+        }
     }
 
     add_action('admin_enqueue_scripts', 'king_addons_styleMenuIcon');
