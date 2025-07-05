@@ -1,4 +1,6 @@
-<?php /** @noinspection SpellCheckingInspection, DuplicatedCode, PhpUnused */
+<?php
+
+/** @noinspection SpellCheckingInspection, DuplicatedCode, PhpUnused */
 
 namespace King_Addons;
 
@@ -46,11 +48,58 @@ class Styled_Text_Builder extends Widget_Base
 
     public function get_keywords(): array
     {
-        return ['image', 'images', 'txt', 'typography', 'text', 'animation', 'animated', 'build', 'complex', 'effect',
-            'interactive', 'click', 'target', 'point', 'builder', 'link', 'point', 'points', 'color', 'mouse', 'hover',
-            'over', 'hover over', 'picture', 'king', 'addons', 'kingaddons', 'king-addons', 'font', 'size', 'heading',
-            'header', 'paragraph', 'section', 'article', 'particle', 'document', 'writing', 'style', 'format', 'complex',
-            'auto', 'scroll', 'scrolling', 'auto-scroll', 'auto-scrolling', 'head', 'heading', 'title', 'subtitle'];
+        return [
+            'image',
+            'images',
+            'txt',
+            'typography',
+            'text',
+            'animation',
+            'animated',
+            'build',
+            'complex',
+            'effect',
+            'interactive',
+            'click',
+            'target',
+            'point',
+            'builder',
+            'link',
+            'point',
+            'points',
+            'color',
+            'mouse',
+            'hover',
+            'over',
+            'hover over',
+            'picture',
+            'king',
+            'addons',
+            'kingaddons',
+            'king-addons',
+            'font',
+            'size',
+            'heading',
+            'header',
+            'paragraph',
+            'section',
+            'article',
+            'particle',
+            'document',
+            'writing',
+            'style',
+            'format',
+            'complex',
+            'auto',
+            'scroll',
+            'scrolling',
+            'auto-scroll',
+            'auto-scrolling',
+            'head',
+            'heading',
+            'title',
+            'subtitle'
+        ];
     }
 
     public function get_custom_help_url(): string
@@ -917,27 +966,17 @@ class Styled_Text_Builder extends Widget_Base
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
-                'label' => esc_html__('Typography', 'king-addons'),
+                'label' => esc_html__('Item Typography', 'king-addons'),
                 'name' => 'kng_styled_txt_common_typography',
                 'selector' => '{{WRAPPER}} .king-addons-styled-text',
-                'fields_options' => [
-                    'font_size' => [
-                        'default' => [
-                            'size' => 50,
-                            'unit' => 'px'
-                        ],
-                    ],
-                    'typography' => [
-                        'default' => 'custom',
-                    ]
-                ],
+                
             ]
         );
 
         $this->add_control(
             'kng_styled_txt_common_color',
             [
-                'label' => esc_html__('Text Color', 'king-addons'),
+                'label' => esc_html__('Item Text Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-styled-text' => 'color: {{VALUE}};',
@@ -966,7 +1005,7 @@ class Styled_Text_Builder extends Widget_Base
         $this->add_responsive_control(
             'kng_styled_txt_common_items_margin',
             [
-                'label' => esc_html__('Items Margin', 'king-addons'),
+                'label' => esc_html__('Item Margin', 'king-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'default' => [
@@ -987,7 +1026,7 @@ class Styled_Text_Builder extends Widget_Base
         $this->add_responsive_control(
             'kng_styled_txt_common_items_padding',
             [
-                'label' => esc_html__('Items Padding', 'king-addons'),
+                'label' => esc_html__('Item Padding', 'king-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'default' => [
@@ -1006,14 +1045,160 @@ class Styled_Text_Builder extends Widget_Base
 
         $this->end_controls_section();
         /** END SECTION: Common Styles ===================== */
+
+        /** SECTION: Wrapper Settings ===================== */
+        $this->start_controls_section(
+            'kng_styled_txt_style_section_wrapper_settings',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Wrapper Tag Settings', 'king-addons'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        if (king_addons_freemius()->can_use_premium_code()) {
+            $this->add_control(
+                'kng_styled_txt_wrapper_html_tag',
+                [
+                    'label' => esc_html__('HTML Tag', 'king-addons'),
+                    'type' => Controls_Manager::SELECT,
+                    'options' => [
+                        'div' => 'div',
+                        'h1' => 'h1',
+                        'h2' => 'h2',
+                        'h3' => 'h3',
+                        'h4' => 'h4',
+                        'h5' => 'h5',
+                        'h6' => 'h6',
+                        'section' => 'section',
+                        'article' => 'article',
+                        'aside' => 'aside',
+                        'header' => 'header',
+                        'footer' => 'footer',
+                        'nav' => 'nav',
+                        'main' => 'main',
+                        'span' => 'span',
+                        'p' => 'p',
+                    ],
+                    'default' => 'div',
+                ]
+            );
+        } else {
+            $this->add_control(
+                'kng_styled_txt_wrapper_html_tag',
+                [
+                    'label' => esc_html__('HTML Tag', 'king-addons'),
+                    'type' => Controls_Manager::SELECT,
+                    'options' => [
+                        'div' => 'div',
+                        'p' => 'p',
+                        'section' => 'section',
+                        'article' => 'article',
+                        'aside' => 'aside',
+                        'header' => 'header',
+                        'footer' => 'footer',
+                        'nav' => 'nav',
+                        'main' => 'main',
+                        'span' => 'span',
+                    ],
+                    'default' => 'div',
+                ]
+            );
+
+            $this->add_control(
+                'kng_styled_txt_wrapper_html_tag_pro_notice',
+                [
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => 'H1, H2, H3, H4, H5, H6 tags are available in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-styled-txt-builder&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
+                    'content_classes' => 'king-addons-pro-notice',
+                ]
+            );
+        }
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'kng_styled_txt_wrapper_typography',
+                'label' => esc_html__('Tag Typography', 'king-addons'),
+                'description' => esc_html__('This is the typography for the wrapper tag. The Item Typography setting can override this.', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-addons-styled-text-builder-items',
+                'fields_options' => [
+                    'font_size' => [
+                        'default' => [
+                            'size' => 50,
+                            'unit' => 'px'
+                        ],
+                    ],
+                    'typography' => [
+                        'default' => 'custom',
+                    ]
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'kng_styled_txt_wrapper_color',
+            [
+                'label' => esc_html__('Tag Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-styled-text-builder-items' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'kng_styled_txt_wrapper_padding',
+            [
+                'label' => esc_html__('Tag Padding', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%', 'rem'],
+                'default' => [
+                    'top' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'left' => 0,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-styled-text-builder-items' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'kng_styled_txt_wrapper_margin',
+            [
+                'label' => esc_html__('Tag Margin', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%', 'rem'],
+                'default' => [
+                    'top' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'left' => 0,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-styled-text-builder-items' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+        /** END SECTION: Wrapper Settings ===================== */
         /** END TAB: STYLE ===================== */
     }
 
     protected function render(): void
     {
         $settings = $this->get_settings();
-        ?>
-        <div class="king-addons-styled-text-builder-items">
+
+        // Get the wrapper HTML tag, default to 'div' if not set
+        $wrapper_tag = isset($settings['kng_styled_txt_wrapper_html_tag']) ? $settings['kng_styled_txt_wrapper_html_tag'] : 'div';
+?>
+        <<?php echo esc_html($wrapper_tag); ?> class="king-addons-styled-text-builder-items">
             <?php
 
             $item_count = 0;
@@ -1041,7 +1226,6 @@ class Styled_Text_Builder extends Widget_Base
                         if ($item['kng_styled_txt_link']['nofollow']) {
                             $this->add_render_attribute('kng_styled_txt_content_inner_attribute' . $item_count, 'rel', 'nofollow');
                         }
-
                     }
                 }
 
@@ -1078,9 +1262,7 @@ class Styled_Text_Builder extends Widget_Base
 
                         echo '<span>' . wp_kses_post($item['kng_styled_txt_content']) . '</span>';
                         echo '</' . esc_attr($item_tag) . '></span>';
-
                     }
-
                 }
                 /** END: Text Item ===================== */
 
@@ -1108,15 +1290,13 @@ class Styled_Text_Builder extends Widget_Base
                         echo wp_kses($image_html, $allowed_tags);
 
                         echo '</' . esc_attr($item_tag) . '></span>';
-
                     }
-
                 }
                 /** END: Image Item ===================== */
 
                 $item_count++;
             } ?>
-        </div>
-        <?php
+        </<?php echo esc_html($wrapper_tag); ?>>
+<?php
     }
 }

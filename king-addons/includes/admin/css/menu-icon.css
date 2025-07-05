@@ -62,3 +62,25 @@ ul#adminmenu > #toplevel_page_king-addons-templates > a.wp-has-current-submenu:a
 .king-addons-plugins-gopro:focus {
     color: #c60055;
 }
+
+/* Upgrade menu link styles - Elementor style button */
+#adminmenu #toplevel_page_king-addons a[href="https://kingaddons.com/pricing/?utm_source=kng-top-menu&utm_medium=plugin&utm_campaign=kng"] {
+    background-color: #adff2f;
+    border-radius: 3px;
+/* background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%); */
+    color: #000 !important;
+    /* color: #fff !important; */
+    display: block;
+    font-weight: 600;
+    margin: 3px 10px 0;
+    text-align: center;
+    transition: all .3s;
+}
+
+#adminmenu #toplevel_page_king-addons a[href="https://kingaddons.com/pricing/?utm_source=kng-top-menu&utm_medium=plugin&utm_campaign=kng"]:hover,
+#adminmenu #toplevel_page_king-addons a[href="https://kingaddons.com/pricing/?utm_source=kng-top-menu&utm_medium=plugin&utm_campaign=kng"]:focus {
+    background-color: #9ee82f;
+    /* background: linear-gradient(45deg, #ff6b35, #ff6b35); */
+    color: #000 !important;
+    box-shadow: none;
+}

@@ -16,8 +16,10 @@ final class Admin
     {
         if (is_admin()) {
             add_action('admin_menu', [$this, 'addAdminMenu']);
+            add_action('admin_menu', [$this, 'addUpgradeMenu'], 999999999); // Highest priority to add at the very end
             add_action('admin_init', [$this, 'createSettings']);
             add_action('admin_init', [$this, 'createAiSettings']);
+            add_action('admin_enqueue_scripts', [$this, 'enqueueUpgradeLinkScript']);
         }
     }
 
@@ -81,6 +83,21 @@ final class Admin
             'king-addons-ai-settings',
             [$this, 'showAiSettingsPage']
         );
+    }
+
+    function addUpgradeMenu(): void
+    {
+        // Add Upgrade submenu under King Addons (only if premium is not active)
+        if (!king_addons_freemius()->can_use_premium_code()) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Get Premium', 'king-addons'),
+                esc_html__('Get Premium', 'king-addons'),
+                'manage_options',
+                'https://kingaddons.com/pricing/?utm_source=kng-top-menu&utm_medium=plugin&utm_campaign=kng',
+                ''
+            );
+        }
     }
 
     function showPopupBuilder(): void
@@ -222,6 +239,19 @@ final class Admin
         wp_enqueue_style('king-addons-admin', KING_ADDONS_URL . 'includes/admin/css/admin.css', '', KING_ADDONS_VERSION);
         // Styles for AI Image Generation controls in Elementor
         wp_enqueue_style('king-addons-ai-imagefield', KING_ADDONS_URL . 'includes/admin/css/ai-imagefield.css', array('king-addons-admin'), KING_ADDONS_VERSION);
+    }
+
+    function enqueueUpgradeLinkScript(): void
+    {
+        // Only add the script if premium is not active
+        if (!king_addons_freemius()->can_use_premium_code()) {
+            wp_enqueue_script('jquery');
+            wp_add_inline_script('jquery', "
+                jQuery(document).ready(function($) {
+                    $('#adminmenu #toplevel_page_king-addons a[href=\"https://kingaddons.com/pricing/?utm_source=kng-top-menu&utm_medium=plugin&utm_campaign=kng\"]').attr('target', '_blank');
+                });
+            ");
+        }
     }
 
     function enqueueSettingsAssets(): void
