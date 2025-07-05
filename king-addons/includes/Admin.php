@@ -16,7 +16,10 @@ final class Admin
     {
         if (is_admin()) {
             add_action('admin_menu', [$this, 'addAdminMenu']);
+
+            // Always add the action, but check conditions inside addUpgradeMenu
             add_action('admin_menu', [$this, 'addUpgradeMenu'], 999999999); // Highest priority to add at the very end
+
             add_action('admin_init', [$this, 'createSettings']);
             add_action('admin_init', [$this, 'createAiSettings']);
             add_action('admin_enqueue_scripts', [$this, 'enqueueUpgradeLinkScript']);
@@ -87,8 +90,18 @@ final class Admin
 
     function addUpgradeMenu(): void
     {
+        // Don't add menu if Freemius is showing opt-in/activation
+        $fs = king_addons_freemius();
+        
+        // Check if we're on any Freemius-related page
+        if (isset($_GET['fs_action']) || 
+            $fs->is_activation_mode() || 
+            (!$fs->is_registered() && !$fs->is_anonymous() && !$fs->is_tracking_prohibited())) {
+            return;
+        }
+        
         // Add Upgrade submenu under King Addons (only if premium is not active)
-        if (!king_addons_freemius()->can_use_premium_code()) {
+        if (!$fs->can_use_premium_code()) {
             add_submenu_page(
                 'king-addons',
                 esc_html__('Get Premium', 'king-addons'),

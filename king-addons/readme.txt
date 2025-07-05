@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.88
+Stable tag: 24.12.89
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -182,8 +182,8 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= King Addons for Elementor version 24.12.88 - July 5, 2025 =
-* *New:* Styled Text Builder element - Wrapper HTML Tag Settings added, you can now set the custom HTML tag for it, for example h1, h2, h3, etc.
+= King Addons for Elementor version 24.12.89 - July 6, 2025 =
+* `**New:**` Styled Text Builder element - Wrapper HTML Tag Settings added, you can now set the custom HTML tag for it, for example h1, h2, h3, etc.
 
 = King Addons for Elementor version 24.12.87 - June 23, 2025 =
 * **Improved:** AI Image Generation feature.
