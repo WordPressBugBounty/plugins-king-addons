@@ -969,7 +969,17 @@ class Styled_Text_Builder extends Widget_Base
                 'label' => esc_html__('Item Typography', 'king-addons'),
                 'name' => 'kng_styled_txt_common_typography',
                 'selector' => '{{WRAPPER}} .king-addons-styled-text',
-                
+                'fields_options' => [
+                    'font_size' => [
+                        'default' => [
+                            'size' => 50,
+                            'unit' => 'px'
+                        ],
+                    ],
+                    'typography' => [
+                        'default' => 'custom',
+                    ]
+                ],
             ]
         );
 
@@ -1121,17 +1131,6 @@ class Styled_Text_Builder extends Widget_Base
                 'label' => esc_html__('Tag Typography', 'king-addons'),
                 'description' => esc_html__('This is the typography for the wrapper tag. The Item Typography setting can override this.', 'king-addons'),
                 'selector' => '{{WRAPPER}} .king-addons-styled-text-builder-items',
-                'fields_options' => [
-                    'font_size' => [
-                        'default' => [
-                            'size' => 50,
-                            'unit' => 'px'
-                        ],
-                    ],
-                    'typography' => [
-                        'default' => 'custom',
-                    ]
-                ],
                 'separator' => 'before',
             ]
         );
