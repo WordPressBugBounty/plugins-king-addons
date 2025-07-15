@@ -158,4 +158,5 @@
         // Initialize custom menu handling
         setupMegaMenuItemsHandling();
     });
+
 }(jQuery));

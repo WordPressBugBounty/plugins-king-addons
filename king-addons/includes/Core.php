@@ -62,6 +62,10 @@ final class Core
                 require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/CollectionsMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/Templates.php');
+                
+                // Template Catalog Button for Elementor Editor
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Template_Catalog_Button/Template_Catalog_Button.php');
+                Template_Catalog_Button::instance();
             }
 
             // Header & Footer Builder
@@ -107,6 +111,10 @@ final class Core
             }
 
             // ADDITIONAL CLASSES
+
+            // Alt Text Generator for Media Library
+            require_once(KING_ADDONS_PATH . 'includes/extensions/alt-text-generator/Alt_Text_Generator.php');
+            new Alt_Text_Generator();
 
             // TODO
 
@@ -185,16 +193,20 @@ final class Core
         <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
             style="border-left: 4px solid #FF4040;padding: 10px 15px;">
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
-                <span>Get access to <strong style="font-weight: 700;">600+</strong> premium templates and <strong
-                        style="font-weight: 700;">200+</strong> features for only $<strong
-                        style="font-weight: 700;">2</strong>/month. Upgrade now and boost your website!</span>
-                <span>
-                    <a style="margin-left: 10px;font-size: 14px;padding: 3px 20px;display: flex;align-items: center;background-image: linear-gradient(120deg, #A20BD8 0%, #FF4040 100%);border: none;"
-                        href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
-                        class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
-                            src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                            alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
-                </span>
+                <span>Unlock <strong style="font-weight: 700;">650+</strong> premium templates and <strong
+                        style="font-weight: 700;">200+</strong> advanced features for only $<strong
+                        style="font-weight: 700;">4.99</strong>/month. Upgrade now and boost your website's performance!</span>
+            </p>
+            <p style="font-size: 14px; opacity: 0.6;">Trusted by 20,000+ users</p>
+            <p style="display: flex;">
+                    <a style="font-size: 14px;padding: 4px 22px;display: flex;align-items: center;background-image: linear-gradient(120deg, #A20BD8 0%, #FF4040 100%);border: none;"
+                       href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
+                       class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
+                                                          src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                                                          alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
+                <a style="margin-left: 20px;display: flex;align-items: center;"
+                   href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
+                   class="link">Learn More</a>
             </p>
         </div>
         <script>

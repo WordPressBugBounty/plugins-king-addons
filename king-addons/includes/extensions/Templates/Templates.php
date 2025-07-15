@@ -127,14 +127,16 @@ final class Templates
                                 </div>
                             <?php endif; ?>
                             <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
-                                <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
-                                    <a href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-top&utm_medium=plugin&utm_campaign=kng"
-                                        target="_blank">
-                                        <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                            alt="<?php echo esc_html__('Get Premium', 'king-addons'); ?>">
-                                        <div class="kng-nav-item-txt"><?php echo esc_html__('Get Premium', 'king-addons'); ?></div>
-                                    </a>
-                                </div>
+                                <div class="kng-promo-btn-wrap">
+                        <a href="https://kingaddons.com/pricing/?rel=king-addons-templates-catalog" target="_blank">
+                            <div class="kng-promo-btn-txt">
+                                <?php esc_html_e('Unlock Premium Features & 650+ Templates Today!', 'king-addons'); ?>
+                            </div>
+                            <img width="16px"
+                                 src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share-v2.svg'; ?>"
+                                 alt="<?php echo esc_html__('Open link in the new tab', 'king-addons'); ?>">
+                        </a>
+                    </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -180,9 +182,9 @@ final class Templates
                             <div class="promo-wrapper">
                                 <div class="promo-txt"><?php
                                                         esc_html_e('Unlock Premium Templates', 'king-addons');
-                                                        echo '<ul><li>$2/month</li>';
+                                                        echo '<ul><li>$4.99/month</li>';
                                                         echo '<li>Unlimited Downloads</li>';
-                                                        echo '<li>Keep Them Even After</li></ul>';
+                                                        echo '<li>Keep all templates forever</li></ul>';
                                                         ?></div>
                                 <a class="purchase-btn"
                                     href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-side&utm_medium=plugin&utm_campaign=kng"
@@ -275,10 +277,9 @@ final class Templates
                                                                 echo '<span class="pr-popup-title">Want This Premium Template?</span>';
                                                                 echo '<br><span class="pr-popup-desc">';
                                                                 echo 'Get <span class="pr-popup-desc-b">unlimited downloads</span> for just';
-                                                                echo ' <span class="pr-popup-desc-b">$2/month';
+                                                                echo ' <span class="pr-popup-desc-b">$4.99/month';
                                                                 echo '</span> — keep them <span class="pr-popup-desc-b">even after</span> your subscription ends!';
-                                                                echo '</span>';
-
+                                                                echo '</span><span class="pr-popup-desc" style="font-size: 16px;opacity: 0.6;">Trusted by 20,000+ users</span>';
                                                                 ?></div>
                         <a class="purchase-btn"
                             href="https://kingaddons.com/pricing/?utm_source=kng-templates-banner-pro&utm_medium=plugin&utm_campaign=kng"
@@ -286,7 +287,7 @@ final class Templates
                             <button class="premium-promo-popup-purchase-btn purchase-btn">
                                 <img src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
                                     style="margin-right: 7px;width: 16px;height: 16px;"
-                                    alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>"><?php esc_html_e('Upgrade Now', 'king-addons'); ?>
+                                    alt="<?php echo esc_html__('Unlock All Templates', 'king-addons'); ?>"><?php esc_html_e('Unlock All Templates', 'king-addons'); ?>
                             </button>
                         </a>
                         <button id="close-premium-promo-popup"><?php esc_html_e('Close', 'king-addons'); ?></button>

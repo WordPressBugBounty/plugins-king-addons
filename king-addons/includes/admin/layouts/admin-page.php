@@ -47,7 +47,7 @@ $options = get_option('king_addons_options');
                             alt="<?php echo esc_html__('Unlock Icon', 'king-addons'); ?>">
                     </div>
                     <div class="kng-promo-wrap-1">
-                        <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 600+ Templates Today!', 'king-addons'); ?></h1>
+                        <h1 class="kng-promo-title"><?php echo esc_html__('Unlock Premium Features &amp; 650+ Templates Today!', 'king-addons'); ?></h1>
                         <h2 class="kng-promo-subtitle">Upgrade to Premium and take your website design to the next
                             level.
                             Get advanced tools like Live Search, Popup Builder,

@@ -553,6 +553,29 @@ class Mailchimp extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-mailchimp-header i' => 'font-size: {{SIZE}}{{UNIT}};',
                     '{{WRAPPER}} .king-addons-mailchimp-header svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+                ]
+            ]
+        );
+
+        $this->add_responsive_control(
+            'header_icon_distance',
+            [
+                'label' => esc_html__('Icon Bottom Distance', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 15,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-mailchimp-header i' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-mailchimp-header svg' => 'margin-bottom: {{SIZE}}{{UNIT}};',
                 ],
                 'separator' => 'after'
             ]

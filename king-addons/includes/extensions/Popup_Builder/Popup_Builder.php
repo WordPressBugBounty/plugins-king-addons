@@ -419,7 +419,7 @@ final class Popup_Builder
                         <div class="kng-promo-btn-wrap">
                             <a href="https://kingaddons.com/pricing/?rel=king-addons-popup-builder" target="_blank">
                                 <div class="kng-promo-btn-txt">
-                                    <?php esc_html_e('Unlock Premium Features & 600+ Templates Today!', 'king-addons'); ?>
+                                    <?php esc_html_e('Unlock Premium Features & 650+ Templates Today!', 'king-addons'); ?>
                                 </div>
                                 <img width="16px"
                                      src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/share-v2.svg'; ?>"

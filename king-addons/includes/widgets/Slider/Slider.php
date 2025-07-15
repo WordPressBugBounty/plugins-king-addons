@@ -2836,11 +2836,6 @@ class Slider extends Widget_Base
             }
         }
 
-        $edit_link = sprintf(
-            '<span class="king-addons-template-edit-btn" data-permalink="%s">Edit Template</span>',
-            esc_url(get_permalink($id))
-        );
-
         $type = get_post_meta(get_the_ID(), '_king_addons_template_type', true);
         $has_css = (
             'internal' === get_option('elementor_css_print_method')
@@ -2848,7 +2843,7 @@ class Slider extends Widget_Base
         );
 
         // Return the rendered Elementor template plus an "Edit" link
-        return Elementor\Plugin::instance()->frontend->get_builder_content_for_display($id, $has_css) . $edit_link;
+        return Elementor\Plugin::instance()->frontend->get_builder_content_for_display($id, $has_css);
     }
 
     // Stub left intentionally for compatibility with the original code

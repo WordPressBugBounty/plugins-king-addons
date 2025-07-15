@@ -304,6 +304,22 @@
 /* END: NOTICES */
 /* -------------- */
 
+/* DARK MODE */
+
+@media (prefers-color-scheme: dark) {
+  .king-addons-pro-notice a {
+    color: #A08CFF;
+}
+.elementor-control.king-addons-pro-control label i {
+    color: #f0abfc;
+}
+.king-addons-pro-features-heading {
+        color: #DED6FA;
+}
+}
+
+/* END: DARK MODE */
+
 /* GRID PREVIEW */
 .elementor-control-king_addons_grid_layout_select.elementor-control .elementor-control-field {
     align-items: flex-start;

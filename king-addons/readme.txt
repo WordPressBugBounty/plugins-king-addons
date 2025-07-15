@@ -1,14 +1,14 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.90
+Stable tag: 24.12.91
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-600+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+650+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
@@ -181,6 +181,13 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.91 - July 15, 2025 =
+* **New:** AI Alt Text Generation for Images – Automatically and manually generate alternative text for images using AI. Great for SEO and accessibility.
+* **New:** MailChimp element - Added Icon Botttom Distance setting.
+* **Improved:** Dark mode support for Elementor editor.
+* **Improved:** Compatibility with WordPress 6.8.
+* **Improved:** Accordion, Slider and Tabs elements. Elementor template works better now.
 
 = King Addons for Elementor version 24.12.90 - July 7, 2025 =
 * **New:** Styled Text Builder element - Wrapper HTML Tag Settings added, you can now set the custom HTML tag for it, for example h1, h2, h3, etc.

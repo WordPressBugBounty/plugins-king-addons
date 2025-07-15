@@ -104,8 +104,8 @@ final class Admin
         if (!$fs->can_use_premium_code()) {
             add_submenu_page(
                 'king-addons',
-                esc_html__('Get Premium', 'king-addons'),
-                esc_html__('Get Premium', 'king-addons'),
+                esc_html__('Upgrade Now', 'king-addons'),
+                esc_html__('Upgrade Now', 'king-addons'),
                 'manage_options',
                 'https://kingaddons.com/pricing/?utm_source=kng-top-menu&utm_medium=plugin&utm_campaign=kng',
                 ''
@@ -344,6 +344,36 @@ final class Admin
             'king_addons_ai_editor_section'
         );
 
+        // Add Alt Text Settings section
+        add_settings_section(
+            'king_addons_ai_alt_text_section',
+            esc_html__('Alt Text Settings', 'king-addons'),
+            [$this, 'renderAiAltTextSection'],
+            'king-addons-ai-settings'
+        );
+        add_settings_field(
+            'enable_ai_alt_text_button',
+            esc_html__('AI Alt Text Button', 'king-addons'),
+            [$this, 'renderAiAltTextButtonField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_alt_text_section'
+        );
+
+        add_settings_field(
+            'enable_ai_alt_text_auto_generation',
+            ((king_addons_freemius()->can_use_premium_code()) ? esc_html__('Auto Generate Alt Text', 'king-addons') : esc_html__('Auto Generate Alt Text (PRO feature)', 'king-addons')),
+            [$this, 'renderAiAltTextAutoGenerationField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_alt_text_section'
+        );
+        add_settings_field(
+            'ai_alt_text_generation_interval',
+            esc_html__('Alt Text Generation Interval', 'king-addons'),
+            [$this, 'renderAiAltTextIntervalField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_alt_text_section'
+        );
+
         // Add Usage Quota Settings section and field
         add_settings_section(
             'king_addons_ai_quota_section',
@@ -422,6 +452,20 @@ final class Admin
 
         // Sanitize Enable AI Image Generation button option.
         $sanitized['enable_ai_image_generation_button'] = ! empty($input['enable_ai_image_generation_button']);
+
+        // Sanitize Enable AI Alt Text Button option.
+        $sanitized['enable_ai_alt_text_button'] = isset($input['enable_ai_alt_text_button']) ? ! empty($input['enable_ai_alt_text_button']) : true;
+
+        // Sanitize Enable AI Alt Text Auto Generation option.
+        $sanitized['enable_ai_alt_text_auto_generation'] = ! empty($input['enable_ai_alt_text_auto_generation']);
+
+        // Sanitize AI Alt Text Generation Interval.
+        if (isset($input['ai_alt_text_generation_interval'])) {
+            $interval = absint($input['ai_alt_text_generation_interval']);
+            $sanitized['ai_alt_text_generation_interval'] = max(10, min(3600, $interval)); // Between 10 seconds and 1 hour
+        } else {
+            $sanitized['ai_alt_text_generation_interval'] = 60; // Default to 60 seconds
+        }
 
         return $sanitized;
     }
@@ -532,7 +576,7 @@ final class Admin
             'API Keys'                => 'https://platform.openai.com/api-keys',
             'Usage Dashboard'         => 'https://platform.openai.com/account/usage',
             'Billing Overview'             => 'https://platform.openai.com/account/billing/overview',
-            'Rate Limits'         => 'https://platform.openai.com/account/billing/limits',
+            'Rate Limits'         => 'https://openai.com/pricing#rate-limits',
         ];
         foreach ($links as $label => $url) {
             printf(
@@ -723,7 +767,7 @@ final class Admin
 
         // Add format instruction for WYSIWYG
         if ($editor_type === 'wysiwyg') {
-            $messages[1]['content'] .= "\n\nOutput should be properly formatted HTML with <p> tags for paragraphs, maintaining good spacing and readability. Do NOT use code fences (``` or ```html) in your response - provide just the clean HTML.";
+            $messages[1]['content'] .= "\n\nOutput should be properly formatted HTML with <p> tags for paragraphs, maintaining good spacing and readability. Do NOT use code fences (```html or ```) in your response - provide just the clean HTML.";
         }
 
         $response = wp_remote_post(
@@ -1147,7 +1191,7 @@ final class Admin
             esc_html__('Tokens are the basic unit of text that the AI processes. As a rough guide:', 'king-addons') . '</p>';
         echo '<p>• ' . esc_html__('1 token ≈ 4 characters or 0.75 words in English', 'king-addons') . '</p>';
         echo '<p>• ' . esc_html__('A typical paragraph might use around 50-100 tokens', 'king-addons') . '</p>';
-        echo '<p>• ' . esc_html__('A full page of text (500 words) is approximately 750 tokens', 'king-addons') . '</p>';
+        echo '<p>• ' . esc_html__('A full page of text (500 words) is approximately 750 tokens', 'king_addons') . '</p>';
         echo '<p>• ' . esc_html__('Recommended daily limit: 10,000 - 50,000 tokens for moderate use', 'king-addons') . '</p>';
         echo '</div>';
     }
@@ -1312,6 +1356,16 @@ final class Admin
     }
 
     /**
+     * Renders description for Alt Text Settings section.
+     *
+     * @return void
+     */
+    public function renderAiAltTextSection(): void
+    {
+        echo '<p>' . esc_html__('Configure automatic alt text generation for images in Media Library.', 'king-addons') . '</p>';
+    }
+
+    /**
      * Renders the Enable AI Buttons checkbox field.
      *
      * @return void
@@ -1343,6 +1397,57 @@ final class Admin
         );
     }
 
+    /**
+     * Renders the Enable AI Alt Text Button checkbox field.
+     *
+     * @return void
+     */
+    public function renderAiAltTextButtonField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $enabled = isset($options['enable_ai_alt_text_button']) ? (bool) $options['enable_ai_alt_text_button'] : true;
+        printf(
+            '<label><input type="checkbox" name="king_addons_ai_options[enable_ai_alt_text_button]" value="1" %s /> %s</label>',
+            checked($enabled, true, false),
+            esc_html__('Enable AI Alt Text Generation Button in Media Library', 'king-addons')
+        );
+        echo '<p class="description">' . esc_html__('Show "Generate" button in Media Library to manually create alt text for images using AI.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the Enable AI Alt Text Auto Generation checkbox field.
+     *
+     * @return void
+     */
+    public function renderAiAltTextAutoGenerationField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $is_pro =  !king_addons_freemius()->can_use_premium_code();
+        $enabled = isset($options['enable_ai_alt_text_auto_generation']) ? (bool) $options['enable_ai_alt_text_auto_generation'] : false;
+        printf(
+            '<label><input type="checkbox"' . ($is_pro ? ' disabled' : '') . ' name="king_addons_ai_options[enable_ai_alt_text_auto_generation]" value="1" %s /> %s</label>',
+            checked($enabled, true, false),
+            esc_html__('Automatically Generate Alt Text for New Images' . ($is_pro ? ' (PRO feature)' : ''), 'king-addons')
+        );
+        echo '<p class="description">' . esc_html__('Automatically generate alt text when new images are uploaded to Media Library. Great for SEO.', 'king-addons') . '</p>';
+    }
+
+
+    /**
+     * Renders the AI Alt Text Generation Interval field.
+     *
+     * @return void
+     */
+    public function renderAiAltTextIntervalField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $interval = isset($options['ai_alt_text_generation_interval']) ? (int) $options['ai_alt_text_generation_interval'] : 60;
+        printf(
+            '<input type="number" name="king_addons_ai_options[ai_alt_text_generation_interval]" value="%d" min="10" max="3600" class="small-text" placeholder="60" />',
+            $interval
+        );
+        echo '<p class="description">' . esc_html__('How often (in seconds) the system should process alt text generation queue. Recommended: 60 seconds to avoid OpenAI API rate limits. Lower values may cause API errors during high usage periods. Range: 10-3600 seconds.', 'king-addons') . '</p>';
+    }
 
     /**
      * Renders the image model selection dropdown field.
