@@ -13,8 +13,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Video_Popup extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-video-popup';
@@ -52,9 +56,9 @@ class Video_Popup extends Widget_Base
             'youtube', 'vimeo', 'dailymotion', 'videopress', 'hosted', 'source', 'external', 'internal', 'hosting'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/video-popup/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

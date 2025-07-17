@@ -1,14 +1,14 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.91
+Stable tag: 24.12.92
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-650+ Elementor templates, 60+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+650+ Elementor templates, 70+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
 
 == Description ==
 
@@ -27,10 +27,11 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - **AI Text Generation** – Instantly generate high-quality text for any Elementor field.
 - **AI Text Change** – Rewrite or improve existing text with AI-powered editing.
 - **AI Image Generation** – Generate custom images for Elementor using OpenAI models - DALL·E 3 and GPT Image 1.
+- **AI Alt Text Generation** – Automatically and manually generate alternative text for images using AI. Great for SEO and accessibility.
 
 ### **Elementor Extensions & Tools**
 
-- **Templates Catalog** - Access over 600 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
+- **Templates Catalog** - Access over 650 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
 - **Popup Builder** - Customize eye-catching popups with the Popup Builder extension for Elementor. Ideal for announcements, promotional messages, or subscription forms. Adjust styles, animations, and triggers to boost conversions, capture attention, and enhance user experience.
 - **Header & Footer Builder** - Design fully customizable WordPress headers and footers with advanced display conditions for complete control over visibility. Easily create sticky headers, transparent menus, or fixed footers using Elementor's drag-and-drop editor—no coding required. Apply custom conditions for specific pages, user roles, or devices to optimize navigation and user experience. Perfect for global site headers, landing pages, and membership sites, ensuring a consistent and flexible site structure.
 
@@ -89,7 +90,8 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - [**Mega Menu**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create powerful navigation menus with support for dropdown menus, custom layouts, and responsive design. Perfect for creating professional website headers with both WordPress menus and custom navigation structures.
 - [**Team Members Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Boost your site credibility with a responsive Elementor Team Members Slider carousel widget. Showcase staff photos, names, roles, bios, and social links in a sleek, responsive slider for improved engagement and navigation.
 - [**Form Builder**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Build custom forms with ease using the fully customizable Form Builder. Ideal for contact forms, surveys, or lead generation with responsive designs.
-- [**Pricing Сalculator**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.
+- [**Pricing Calculator**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.
+- [**Login | Register Form**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.
 
 ### **Elementor Features**
 
@@ -181,6 +183,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 24.12.92 - July 17, 2025 =
+* **New:** Login | Register Form element - Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.
+* **New:** AI Alt Text Generation - Image Detail Level setting added.
+* **Fix:** Template Catalog popup in the editor fixed.
 
 = King Addons for Elementor version 24.12.91 - July 15, 2025 =
 * **New:** AI Alt Text Generation for Images – Automatically and manually generate alternative text for images using AI. Great for SEO and accessibility.

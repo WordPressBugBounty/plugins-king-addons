@@ -12,6 +12,8 @@ if (!defined('ABSPATH')) {
 
 class Charts extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -57,7 +59,7 @@ class Charts extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/charts/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_control_choose_chart_data_source()
@@ -2417,7 +2419,12 @@ class Charts extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     protected function render()

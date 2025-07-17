@@ -20,6 +20,8 @@ if (!defined('ABSPATH')) {
 
 class Posts_Grid extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -77,7 +79,7 @@ class Posts_Grid extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function is_reload_preview_required()
@@ -1068,7 +1070,12 @@ class Posts_Grid extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
         
     public function add_control_lightbox_popup_thumbnails()

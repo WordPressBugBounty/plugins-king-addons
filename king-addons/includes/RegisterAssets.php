@@ -73,6 +73,26 @@ final class RegisterAssets
                     ];
                     wp_localize_script($script_handle, 'king_addons_calculator_vars', $localized_data);
                 }
+
+                // Localize script for login-register-form
+                if ($widget_id === 'login-register-form' && $js === 'script') {
+                    wp_localize_script($script_handle, 'king_addons_login_register_vars', [
+                        'ajax_url' => admin_url('admin-ajax.php'),
+                        'login_nonce' => wp_create_nonce('king_addons_login_action'),
+                        'register_nonce' => wp_create_nonce('king_addons_register_action'),
+                        'lostpassword_nonce' => wp_create_nonce('king_addons_lostpassword_action'),
+                        'social_login_nonce' => wp_create_nonce('king_addons_social_login_action'),
+                        'strings' => [
+                            'loading' => esc_html__('Please wait...', 'king-addons'),
+                            'login_success' => esc_html__('Login successful! Redirecting...', 'king-addons'),
+                            'register_success' => esc_html__('Registration successful! Welcome!', 'king-addons'),
+                            'required_fields' => esc_html__('Please fill in all required fields.', 'king-addons'),
+                            'invalid_email' => esc_html__('Please enter a valid email address.', 'king-addons'),
+                            'password_mismatch' => esc_html__('Passwords do not match.', 'king-addons'),
+                            'network_error' => esc_html__('Network error. Please try again.', 'king-addons'),
+                        ]
+                    ]);
+                }
             }
         }
 
@@ -91,6 +111,20 @@ final class RegisterAssets
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'nonce'   => wp_create_nonce('king-addons-js'),
                 'input_empty' => esc_html__('Please fill out this field', 'king-addons'),
+                'select_empty' => esc_html__('Nothing selected', 'king-addons'),
+                'file_empty' => esc_html__('Please upload a file', 'king-addons'),
+                'recaptcha_v3_site_key' => get_option('king_addons_recaptcha_v3_site_key'),
+                'recaptcha_error' => esc_html__('Recaptcha Error', 'king-addons'),
+            ]);
+        }
+
+        // Localize form builder script
+        if (KING_ADDONS_WGT_FORM_BUILDER) {
+            wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-script', 'king_addons_form_builder_vars', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('king_addons_form_builder_nonce'),
+                'required_text' => esc_html__('This field is required', 'king-addons'),
+                'email_text' => esc_html__('Enter a valid email', 'king-addons'),
                 'select_empty' => esc_html__('Nothing selected', 'king-addons'),
                 'file_empty' => esc_html__('Please upload a file', 'king-addons'),
                 'recaptcha_v3_site_key' => get_option('king_addons_recaptcha_v3_site_key'),

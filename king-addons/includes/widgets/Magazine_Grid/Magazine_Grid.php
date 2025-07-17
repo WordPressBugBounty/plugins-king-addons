@@ -18,6 +18,8 @@ if (!defined('ABSPATH')) {
 
 class Magazine_Grid extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -70,7 +72,7 @@ class Magazine_Grid extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function has_widget_inner_wrapper(): bool
@@ -433,7 +435,12 @@ class Magazine_Grid extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     public function add_control_title_pointer_color_hr()

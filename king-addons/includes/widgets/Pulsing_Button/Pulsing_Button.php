@@ -13,8 +13,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Pulsing_Button extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-pulsing-button';
@@ -52,9 +56,9 @@ class Pulsing_Button extends Widget_Base
             'btn'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/pulsing-button/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

@@ -13,8 +13,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Creative_Button extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-creative-button';
@@ -51,9 +55,9 @@ class Creative_Button extends Widget_Base
             'creativity', 'move', 'moving', 'fill', 'btn'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/creative-button/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function has_widget_inner_wrapper(): bool {
@@ -770,7 +774,12 @@ class Creative_Button extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     protected function render(): void

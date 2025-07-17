@@ -373,6 +373,14 @@ final class Admin
             'king-addons-ai-settings',
             'king_addons_ai_alt_text_section'
         );
+        // Add Image Detail Level field
+        add_settings_field(
+            'ai_alt_text_image_detail_level',
+            esc_html__('Image Detail Level', 'king-addons'),
+            [$this, 'renderAiAltTextImageDetailLevelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_alt_text_section'
+        );
 
         // Add Usage Quota Settings section and field
         add_settings_section(
@@ -466,7 +474,11 @@ final class Admin
         } else {
             $sanitized['ai_alt_text_generation_interval'] = 60; // Default to 60 seconds
         }
-
+        // Sanitize Image Detail Level
+        $allowed_detail_levels = ['low', 'high'];
+        $sanitized['ai_alt_text_image_detail_level'] = in_array(($input['ai_alt_text_image_detail_level'] ?? 'low'), $allowed_detail_levels, true)
+            ? $input['ai_alt_text_image_detail_level']
+            : 'low';
         return $sanitized;
     }
 
@@ -1631,5 +1643,21 @@ final class Admin
                 'url'           => $attachment_url,
             ]);
         }
+    }
+
+    /**
+     * Renders the Image Detail Level dropdown for Alt Text Settings.
+     *
+     * @return void
+     */
+    public function renderAiAltTextImageDetailLevelField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $selected = $options['ai_alt_text_image_detail_level'] ?? 'low';
+        echo '<select name="king_addons_ai_options[ai_alt_text_image_detail_level]">';
+        echo '<option value="low"' . selected($selected, 'low', false) . '>' . esc_html__('Low', 'king-addons') . '</option>';
+        echo '<option value="high"' . selected($selected, 'high', false) . '>' . esc_html__('High', 'king-addons') . '</option>';
+        echo '</select>';
+        echo '<p class="description">' . esc_html__("Controls the detail level OpenAI uses to analyze images. 'Low' uses a fixed, lower token cost. 'High' uses more tokens based on image size (potentially more accurate analysis, but costs more). See OpenAI pricing for details.", 'king-addons') . '</p>';
     }
 }

@@ -12,8 +12,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Progress_Bar extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-progress-bar';
@@ -50,9 +54,9 @@ class Progress_Bar extends Widget_Base
             'bar chart', 'line', 'progress', 'king addons', 'king', 'addons', 'kingaddons', 'king-addons'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/progress-bar/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_control_layout()
@@ -1141,8 +1145,13 @@ class Progress_Bar extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     protected function render_progress_bar_circle($percent)

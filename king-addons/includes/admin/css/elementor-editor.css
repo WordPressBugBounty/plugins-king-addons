@@ -662,4 +662,8 @@
     background-image: url(../img/filterable-image-gallery.svg);
 }
 
+.king-addons-icon.king-addons-login-register-form {
+    background-image: url(../img/login-register-form.svg);
+}
+
 /* for elementor icons */

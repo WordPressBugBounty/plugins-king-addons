@@ -11,8 +11,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Share_Buttons extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-share-buttons';
@@ -44,9 +48,9 @@ class Share_Buttons extends Widget_Base
             'social sharing', 'sharing buttons', 'share buttons', 'king addons', 'king', 'addons', 'kingaddons', 'king-addons'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/share-buttons/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_repeater_args_share_custom_label(): array
@@ -692,8 +696,13 @@ class Share_Buttons extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     protected function render()

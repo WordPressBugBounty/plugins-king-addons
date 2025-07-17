@@ -128,6 +128,30 @@ final class Core
             add_action('elementor/controls/controls_registered', [$this, 'registerControls']);
 
             self::enableFeatures();
+            
+            // Load and register AJAX handlers for Login Register Form widget
+            require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Login_Register_Form_Ajax.php');
+            require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/User_Profile_Fields.php');
+            require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Email_Handler.php');
+            require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Social_Login_Handler.php');
+            add_action('wp_ajax_nopriv_king_addons_user_login', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_login_ajax']);
+            add_action('wp_ajax_king_addons_user_login', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_login_ajax']);
+            add_action('wp_ajax_nopriv_king_addons_user_register', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_register_ajax']);
+            add_action('wp_ajax_king_addons_user_register', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_register_ajax']);
+            add_action('wp_ajax_nopriv_king_addons_user_lostpassword', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_lostpassword_ajax']);
+            add_action('wp_ajax_king_addons_user_lostpassword', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_lostpassword_ajax']);
+            
+            // Initialize user profile fields
+            \King_Addons\Widgets\Login_Register_Form\User_Profile_Fields::init();
+            
+            // Initialize social login handler
+            \King_Addons\Widgets\Login_Register_Form\Social_Login_Handler::init();
+            
+            // Initialize Security Dashboard for admins
+            if (is_admin()) {
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Security_Dashboard.php');
+                \King_Addons\Widgets\Login_Register_Form\Security_Dashboard::init();
+            }
 
             new Admin();
 
@@ -488,6 +512,12 @@ final class Core
     function enqueueEditorScripts(): void
     {
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', KING_ADDONS_URL . 'includes/admin/js/elementor-editor.js', '', KING_ADDONS_VERSION);
+        
+        // Localize script with PRO status
+        wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', 'kingAddonsEditor', [
+            'isPro' => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false
+        ]);
+        
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-data-table-export', KING_ADDONS_URL . 'includes/widgets/Data_Table/preview-handler.js', '', KING_ADDONS_VERSION);
 
         if (KING_ADDONS_WGT_FORM_BUILDER) {

@@ -15,8 +15,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Image_Grid extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-image-grid';
@@ -58,9 +62,9 @@ class Image_Grid extends Widget_Base
             'king addons', 'testimonials', 'reviews', ' team memebers', 'drag', 'scroll', 'scrolling', 'tabs', 'tab'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/image-grid/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

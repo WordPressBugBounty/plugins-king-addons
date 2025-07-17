@@ -541,6 +541,16 @@ final class ModulesMap
                     'js' => ['script'],
                     'has-pro' => true,
                 ],
+                'login-register-form' => [
+                    'title' => esc_html__('Login | Register Form', 'king-addons'),
+                    'description' => esc_html__('Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.', 'king-addons'),
+                    'php-class' => 'Login_Register_Form',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    // 'demo-link' => 'https://kingaddons.com/elementor/login-register-form/',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                ],
                 // 'test' => [
                 //     'title' => esc_html__('Test Title', 'king-addons'),
                 //     'description' => esc_html__('Description', 'king-addons'),

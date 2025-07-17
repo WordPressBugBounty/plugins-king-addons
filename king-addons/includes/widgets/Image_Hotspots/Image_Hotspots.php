@@ -17,8 +17,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Image_Hotspots extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-image-hotspots';
@@ -51,9 +55,9 @@ class Image_Hotspots extends Widget_Base
             'over', 'hover over', 'picture', 'king', 'addons', 'kingaddons', 'king-addons', 'hot', 'hot spot'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/image-hotspots/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

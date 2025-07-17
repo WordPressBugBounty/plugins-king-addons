@@ -14,8 +14,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Hovering_Image_Stack extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-hovering-image-stack';
@@ -52,9 +56,9 @@ class Hovering_Image_Stack extends Widget_Base
             'layout', 'animated box', 'hover text', 'text box', 'text banner'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/hovering-image-stack/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function has_widget_inner_wrapper(): bool {

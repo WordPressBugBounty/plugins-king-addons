@@ -16,8 +16,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Team_Member extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-team-member';
@@ -54,9 +58,9 @@ class Team_Member extends Widget_Base
             'social media', 'links', 'social media links', 'king addons', 'king', 'addons', 'kingaddons', 'king-addons'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/team-member/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_section_layout()
@@ -182,7 +186,12 @@ class Team_Member extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     public function add_section_image_overlay()

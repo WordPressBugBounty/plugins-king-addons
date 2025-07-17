@@ -18,8 +18,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Styled_Text_Builder extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-styled-text-builder';
@@ -102,9 +106,9 @@ class Styled_Text_Builder extends Widget_Base
         ];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/styled-text-builder/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

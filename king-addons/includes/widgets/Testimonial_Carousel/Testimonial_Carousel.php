@@ -19,8 +19,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Testimonial_Carousel extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-testimonial-carousel';
@@ -58,9 +62,9 @@ class Testimonial_Carousel extends Widget_Base
             'king addons', 'king', 'addons', 'kingaddons', 'king-addons'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/testimonial-review-carousel/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

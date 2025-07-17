@@ -11,8 +11,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Flip_Countdown extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-flip-countdown';
@@ -51,9 +55,9 @@ class Flip_Countdown extends Widget_Base
             'flip-countdown', 'king addons', 'king', 'addons', 'kingaddons', 'king-addons'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/flip-countdown-timer/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void
@@ -366,8 +370,13 @@ class Flip_Countdown extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     protected function render(): void

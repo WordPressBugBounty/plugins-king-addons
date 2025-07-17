@@ -12,6 +12,8 @@ defined('ABSPATH') || die();
 
 class Data_Table extends Widget_Base
 {
+    
+
     public function get_name()
     {
         return 'king-addons-data-table';
@@ -58,7 +60,7 @@ class Data_Table extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_control_choose_table_type()

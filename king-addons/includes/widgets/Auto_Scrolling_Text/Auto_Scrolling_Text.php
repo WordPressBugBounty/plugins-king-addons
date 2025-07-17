@@ -16,8 +16,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Auto_Scrolling_Text extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-auto-scrolling-text';
@@ -59,9 +63,9 @@ class Auto_Scrolling_Text extends Widget_Base
             'auto', 'scroll', 'scrolling', 'auto-scroll', 'auto-scrolling', 'head', 'heading', 'title', 'subtitle'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/auto-scrolling-text/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

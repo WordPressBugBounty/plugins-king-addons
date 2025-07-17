@@ -19,7 +19,11 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Team_Member_Slider extends Widget_Base {
+    
+
     public function get_name(): string {
         return 'king-addons-team-member-slider';
     }
@@ -585,7 +589,12 @@ class Team_Member_Slider extends Widget_Base {
                 'title_field' => '{{{ name }}}',
             ]
         );
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     protected function render(): void {

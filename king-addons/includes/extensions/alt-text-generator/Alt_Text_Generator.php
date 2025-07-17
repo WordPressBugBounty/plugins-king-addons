@@ -404,6 +404,8 @@ class Alt_Text_Generator {
         $api_key = $options['openai_api_key'] ?? '';
         // Use the text model for vision analysis, not the image generation model
         $model = $options['openai_model'] ?? 'gpt-4o';
+        // Get image detail level from settings (default to 'low')
+        $image_detail_level = $options['ai_alt_text_image_detail_level'] ?? 'low';
 
         if (empty($api_key)) {
             $error_msg = esc_html__('OpenAI API key is missing.', 'king-addons');
@@ -457,7 +459,7 @@ class Alt_Text_Generator {
                             'type' => 'image_url',
                             'image_url' => array(
                                 'url' => $image_data_uri,
-                                'detail' => 'low'
+                                'detail' => $image_detail_level
                             )
                         )
                     )

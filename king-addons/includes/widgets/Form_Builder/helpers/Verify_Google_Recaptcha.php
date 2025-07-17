@@ -50,7 +50,7 @@ class Verify_Google_Recaptcha
         ));
 
         if (is_wp_error($response)) {
-            return false;
+            return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
         }
 
         $decoded_response = json_decode(wp_remote_retrieve_body($response), true);

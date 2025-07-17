@@ -17,6 +17,8 @@ if (!defined('ABSPATH')) {
 
 class Form_Builder extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -59,7 +61,7 @@ class Form_Builder extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function get_control_id($control_id)
@@ -503,8 +505,13 @@ class Form_Builder extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     public $last_prev_btn_text;

@@ -12,6 +12,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 /**
  * Class Mega_Menu
  *
@@ -23,6 +25,8 @@ if (!defined('ABSPATH')) {
  */
 class Mega_Menu extends Widget_Base
 {
+    
+
     /**
      * Get widget unique name.
      *
@@ -98,9 +102,9 @@ class Mega_Menu extends Widget_Base
      *
      * @return string Help URL.
      */
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/mega-menu/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     /**
@@ -511,7 +515,13 @@ class Mega_Menu extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+
+        
+        
 
         // Menu Items Style
         $this->start_controls_section(

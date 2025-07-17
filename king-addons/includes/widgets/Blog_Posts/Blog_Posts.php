@@ -16,8 +16,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Blog_Posts extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-blog-posts';
@@ -58,9 +62,9 @@ class Blog_Posts extends Widget_Base
             'testimonials', 'reviews', ' team memebers', 'drag', 'scroll', 'scrolling', 'tabs', 'tab'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/blog-posts-carousel/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls(): void

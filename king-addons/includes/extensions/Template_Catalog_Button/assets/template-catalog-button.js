@@ -70,7 +70,8 @@
             }
 
             // Try to add button to the content area where "Drag widget here" is shown
-            this.tryAddToContentArea() || this.tryAddToEmptyContainer();
+            this.tryAddToContentArea();
+            // || this.tryAddToEmptyContainer();
         }
 
         /**
@@ -84,25 +85,29 @@
             const previewDoc = preview.contentDocument || preview.contentWindow.document;
             if (!previewDoc) return false;
 
-            // Find the main content area or empty sections
-            const targetAreas = [
-                // Main content wrapper
+            // First, try to find the "Add New Section" element
+            const addNewSection = previewDoc.querySelector('#elementor-add-new-section');
+            if (addNewSection && addNewSection.parentNode) {
+                const buttonContainer = this.createContentAreaButton();
+                
+                // Insert after the "Add New Section" element
+                addNewSection.parentNode.insertBefore(buttonContainer, addNewSection.nextSibling);
+                return true;
+            }
+
+            // Fallback: Find other suitable areas but only if they're at the end of content
+            const mainContentAreas = [
                 previewDoc.querySelector('.elementor'),
                 previewDoc.querySelector('#elementor'),
                 previewDoc.querySelector('.elementor-inner'),
-                // Empty sections
-                ...previewDoc.querySelectorAll('.elementor-section-wrap'),
-                // Empty containers
-                ...previewDoc.querySelectorAll('.elementor-container'),
-                // Body as fallback
                 previewDoc.querySelector('body')
             ];
 
-            for (const area of targetAreas) {
+            for (const area of mainContentAreas) {
                 if (area && this.isAreaSuitableForButton(area)) {
                     const buttonContainer = this.createContentAreaButton();
                     
-                    // Add button at the bottom of the area
+                    // Add button at the very end of the area
                     area.appendChild(buttonContainer);
                     return true;
                 }
@@ -150,13 +155,26 @@
                 return false;
             }
             
+            // Don't add to areas that already have "Add New Section" button
+            if (element.querySelector('#elementor-add-new-section')) {
+                return false;
+            }
+            
             const rect = element.getBoundingClientRect();
             const style = getComputedStyle(element);
             
             // Area should be visible and have reasonable dimensions
-            return rect.width > 300 && 
-                   style.display !== 'none' && 
-                   style.visibility !== 'hidden';
+            const isVisible = rect.width > 300 && 
+                             style.display !== 'none' && 
+                             style.visibility !== 'hidden';
+            
+            // Check if this is a main content area (not a widget or inner element)
+            const isMainArea = element.classList.contains('elementor') ||
+                              element.classList.contains('elementor-inner') ||
+                              element.tagName.toLowerCase() === 'body' ||
+                              element.id === 'elementor';
+            
+            return isVisible && isMainArea;
         }
 
         /**
@@ -176,7 +194,7 @@
                 width: 100%;
                 max-width: 600px;
                 margin: 40px auto;
-                border: 3px dashed #93c5fd;
+                border: 3px solid #93c5fd;
                 border-radius: 16px;
                 background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
                 position: relative;
@@ -637,10 +655,38 @@
                 // Add button immediately when iframe loads
                 setTimeout(() => this.addButton(), 500);
 
-                const observer = new MutationObserver(() => {
-                    // Check if button is still present, if not re-add
-                    const existingButton = previewDoc.querySelector('.king-addons-template-catalog-content-area');
-                    if (!existingButton) {
+                const observer = new MutationObserver((mutations) => {
+                    let shouldReposition = false;
+                    
+                    mutations.forEach((mutation) => {
+                        // Check if "Add New Section" was added/removed
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach(node => {
+                                if (node.nodeType === 1 && 
+                                    (node.id === 'elementor-add-new-section' || 
+                                     node.querySelector && node.querySelector('#elementor-add-new-section'))) {
+                                    shouldReposition = true;
+                                }
+                            });
+                            
+                            mutation.removedNodes.forEach(node => {
+                                if (node.nodeType === 1 && 
+                                    (node.id === 'elementor-add-new-section' || 
+                                     node.querySelector && node.querySelector('#elementor-add-new-section'))) {
+                                    shouldReposition = true;
+                                }
+                            });
+                        }
+                    });
+                    
+                    if (shouldReposition) {
+                        // Remove existing button first
+                        const existingButton = previewDoc.querySelector('.king-addons-template-catalog-content-area');
+                        if (existingButton) {
+                            existingButton.remove();
+                        }
+                        
+                        // Re-add in correct position
                         setTimeout(() => this.addButton(), 200);
                     }
                 });
@@ -651,12 +697,23 @@
                 });
             });
 
-            // Also check periodically to ensure button is present
+            // Also check periodically to ensure button is in correct position
             setInterval(() => {
                 const previewDoc = preview.contentDocument || preview.contentWindow.document;
                 if (previewDoc) {
-                    const existingButton = previewDoc.querySelector('.king-addons-template-catalog-content-area, .king-addons-template-catalog-overlay');
-                    if (!existingButton) {
+                    const addNewSection = previewDoc.querySelector('#elementor-add-new-section');
+                    const existingButton = previewDoc.querySelector('.king-addons-template-catalog-content-area');
+                    
+                    // If "Add New Section" exists but button is not positioned after it
+                    if (addNewSection && existingButton) {
+                        const nextSibling = addNewSection.nextSibling;
+                        if (nextSibling !== existingButton) {
+                            existingButton.remove();
+                            this.addButton();
+                        }
+                    }
+                    // If no button exists at all
+                    else if (!existingButton) {
                         this.addButton();
                     }
                 }

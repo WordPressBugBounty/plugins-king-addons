@@ -13,8 +13,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Feature_List extends Widget_Base
 {
+    
+
 
     public function get_name(): string
     {
@@ -56,9 +60,9 @@ class Feature_List extends Widget_Base
         ];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/feature-list/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls()
@@ -885,7 +889,12 @@ class Feature_List extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     protected function render()

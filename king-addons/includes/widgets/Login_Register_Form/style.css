@@ -1,0 +1,762 @@
+/* ================================
+   King Addons Login Register Form
+   ================================ */
+
+.king-addons-login-register-form-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.king-addons-login-register-form {
+    transition: all 0.3s ease;
+}
+
+.king-addons-form-hidden {
+    display: none;
+}
+
+/* Form Titles */
+.king-addons-form-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333333;
+    text-align: center;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+}
+
+.king-addons-form-subtitle {
+    font-size: 14px;
+    color: #666666;
+    text-align: center;
+    margin: 0 0 25px 0;
+    line-height: 1.5;
+}
+
+/* Form Fields */
+.king-addons-form-field {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.king-addons-form-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    margin-bottom: 6px;
+}
+
+.king-addons-form-field input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333333;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.king-addons-form-field input:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.1);
+}
+
+.king-addons-form-field input::placeholder {
+    color: #999999;
+    opacity: 1;
+}
+
+/* Checkbox Fields */
+.king-addons-checkbox-field {
+    margin-bottom: 15px;
+}
+
+.king-addons-checkbox-field label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.king-addons-checkbox-field input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+    margin-bottom: 0;
+    transform: scale(1.1);
+}
+
+/* Form Buttons */
+.king-addons-form-button {
+    width: 100%;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #007cba;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: none;
+    letter-spacing: 0;
+    box-shadow: 0 2px 4px rgba(0, 124, 186, 0.2);
+}
+
+.king-addons-form-button:hover {
+    background-color: #005a87;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 124, 186, 0.3);
+}
+
+.king-addons-form-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 124, 186, 0.2);
+}
+
+.king-addons-form-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Form Links */
+.king-addons-form-links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.king-addons-form-link,
+.king-addons-form-toggle {
+    display: inline-block;
+    font-size: 14px;
+    color: #007cba;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin: 5px 0;
+}
+
+.king-addons-form-link:hover,
+.king-addons-form-toggle:hover {
+    color: #005a87;
+    text-decoration: underline;
+}
+
+.king-addons-form-links .king-addons-form-link + .king-addons-form-toggle,
+.king-addons-form-links .king-addons-form-toggle + .king-addons-form-link {
+    margin-left: 15px;
+}
+
+/* Messages */
+.king-addons-form-message {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    display: none;
+}
+
+.king-addons-form-message.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.king-addons-form-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.king-addons-form-message.show {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+}
+
+/* Loading State */
+.king-addons-form-loading .king-addons-form-button {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.king-addons-form-loading .king-addons-form-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Form Transitions */
+.king-addons-login-register-form-wrapper .king-addons-login-register-form {
+    transition: all 0.4s ease;
+}
+
+.king-addons-form-slide-out {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.king-addons-form-slide-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .king-addons-login-register-form {
+        padding: 25px 20px;
+        margin: 0 15px;
+    }
+    
+    .king-addons-form-title {
+        font-size: 22px;
+    }
+    
+    .king-addons-form-field input {
+        padding: 10px 12px;
+    }
+    
+    .king-addons-form-button {
+        padding: 10px 25px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .king-addons-login-register-form {
+        padding: 20px 15px;
+        margin: 0 10px;
+    }
+    
+    .king-addons-form-title {
+        font-size: 20px;
+    }
+    
+    .king-addons-form-subtitle {
+        font-size: 13px;
+    }
+    
+    .king-addons-form-field input {
+        padding: 9px 10px;
+        font-size: 13px;
+    }
+    
+    .king-addons-form-button {
+        padding: 9px 20px;
+        font-size: 14px;
+    }
+    
+    .king-addons-form-link,
+    .king-addons-form-toggle {
+        font-size: 13px;
+    }
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Focus States for Accessibility */
+.king-addons-form-button:focus,
+.king-addons-form-link:focus,
+.king-addons-form-toggle:focus {
+    outline: 2px solid #007cba;
+    outline-offset: 2px;
+}
+
+.king-addons-form-field input:focus {
+    outline: none;
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    .king-addons-login-register-form {
+        background: #2c2c2c;
+        border-color: #444444;
+        color: #ffffff;
+    }
+    
+    .king-addons-form-title {
+        color: #ffffff;
+    }
+    
+    .king-addons-form-subtitle {
+        color: #cccccc;
+    }
+    
+    .king-addons-form-field label {
+        color: #ffffff;
+    }
+    
+    .king-addons-form-field input {
+        background-color: #3c3c3c;
+        border-color: #555555;
+        color: #ffffff;
+    }
+    
+    .king-addons-form-field input::placeholder {
+        color: #999999;
+    }
+    
+    .king-addons-form-field input:focus {
+        border-color: #007cba;
+        box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .king-addons-form-field input {
+        border-width: 2px;
+    }
+    
+    .king-addons-form-button {
+        border: 2px solid #000000;
+    }
+    
+    .king-addons-form-link,
+    .king-addons-form-toggle {
+        text-decoration: underline;
+    }
+}
+
+/* Field Validation States */
+.king-addons-form-field.field-error input,
+.king-addons-form-field.field-error select,
+.king-addons-form-field.field-error textarea {
+    border-color: #f44336;
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+}
+
+.king-addons-form-field.field-success input,
+.king-addons-form-field.field-success select,
+.king-addons-form-field.field-success textarea {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.field-error-message {
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+    line-height: 1.3;
+}
+
+/* Info messages */
+.king-addons-form-message.info {
+    color: #1976d2;
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
+}
+
+/* Print Styles */
+/* Form Header Styles */
+.king-addons-form-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.king-addons-form-header-left,
+.king-addons-form-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.king-addons-form-header-left .king-addons-form-illustration {
+    order: -1;
+}
+
+.king-addons-form-header-right .king-addons-form-illustration {
+    order: 1;
+}
+
+.king-addons-form-header-top,
+.king-addons-form-header-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.king-addons-form-header-top .king-addons-form-illustration {
+    order: -1;
+    margin-bottom: 15px;
+}
+
+.king-addons-form-header-bottom .king-addons-form-illustration {
+    order: 1;
+    margin-top: 15px;
+}
+
+.king-addons-form-header-logo img,
+.king-addons-form-illustration img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Password Toggle Styles */
+.king-addons-password-field .king-addons-password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.king-addons-password-toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    padding: 5px;
+    line-height: 1;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.king-addons-password-toggle:hover {
+    color: #333;
+}
+
+.king-addons-password-toggle:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+.king-addons-password-field input[type="password"],
+.king-addons-password-field input[type="text"] {
+    padding-right: 40px;
+}
+
+/* Checkbox Field Styles */
+.king-addons-checkbox-field {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.king-addons-checkbox-field label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+.king-addons-checkbox-field input[type="checkbox"] {
+    margin: 0;
+    width: auto;
+    height: auto;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.king-addons-checkbox-field a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.king-addons-checkbox-field a:hover {
+    text-decoration: underline;
+}
+
+/* Select Field Styles */
+.king-addons-form-field select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    line-height: 1.4;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+.king-addons-form-field select:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+}
+
+/* reCAPTCHA Styles */
+.king-addons-recaptcha-field {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.king-addons-recaptcha-v2 {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+/* Hide reCAPTCHA v3 badge if configured */
+.king-addons-login-register-form-wrapper[data-recaptcha-hide-badge="true"] .grecaptcha-badge {
+    visibility: hidden;
+}
+
+/* Social Login Styles */
+.king-addons-social-login {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.king-addons-social-separator {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.king-addons-social-separator:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #ddd;
+    transform: translateY(-50%);
+}
+
+.king-addons-social-separator span {
+    background: #fff;
+    padding: 0 15px;
+    color: #666;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+.king-addons-social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.king-addons-social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.king-addons-social-button:hover {
+    border-color: #bbb;
+    background: #f9f9f9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.king-addons-social-button:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+.king-addons-google-login {
+    border-color: #4285F4;
+    color: #4285F4;
+}
+
+.king-addons-google-login:hover {
+    background: #4285F4;
+    color: #fff;
+}
+
+.king-addons-facebook-login {
+    border-color: #1877F2;
+    color: #1877F2;
+}
+
+.king-addons-facebook-login:hover {
+    background: #1877F2;
+    color: #fff;
+}
+
+.king-addons-facebook-login:hover svg path,
+.king-addons-google-login:hover svg path {
+    fill: currentColor;
+}
+
+/* Responsive Styles for New Elements */
+@media (max-width: 768px) {
+    .king-addons-form-header-left,
+    .king-addons-form-header-right {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .king-addons-form-illustration {
+        order: -1 !important;
+        margin-bottom: 15px;
+    }
+    
+    .king-addons-checkbox-field label {
+        font-size: 13px;
+    }
+    
+    .king-addons-social-buttons {
+        gap: 8px;
+    }
+    
+    .king-addons-social-button {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+    
+    .king-addons-field-half {
+        width: calc(50% - 10px);
+        display: inline-block;
+        margin-right: 20px;
+    }
+    
+    .king-addons-field-half:nth-child(even) {
+        margin-right: 0;
+    }
+}
+
+/* Custom Fields Styles */
+.king-addons-field-half {
+    width: calc(50% - 10px);
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+}
+
+.king-addons-field-half:nth-child(even) {
+    margin-right: 0;
+}
+
+.king-addons-checkbox-group,
+.king-addons-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.king-addons-checkbox-option,
+.king-addons-radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.king-addons-checkbox-option input,
+.king-addons-radio-option input {
+    margin: 0;
+    width: auto;
+    height: auto;
+}
+
+.king-addons-form-field textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    line-height: 1.4;
+    background-color: #fff;
+    color: #333;
+    resize: vertical;
+    min-height: 80px;
+    transition: all 0.3s ease;
+}
+
+.king-addons-form-field textarea:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+}
+
+.king-addons-form-field input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.king-addons-form-field input[type="file"]:hover {
+    border-color: #bbb;
+    background: #f5f5f5;
+}
+
+.king-addons-form-field input[type="file"]:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+}
+
+.required {
+    color: #d32f2f;
+    margin-left: 2px;
+}
+
+@media print {
+    .king-addons-login-register-form-wrapper {
+        box-shadow: none;
+        border: 1px solid #000000;
+    }
+    
+    .king-addons-form-button {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+    }
+} 

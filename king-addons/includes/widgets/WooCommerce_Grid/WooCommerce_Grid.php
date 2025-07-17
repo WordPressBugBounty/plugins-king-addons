@@ -20,6 +20,8 @@ if (!defined('ABSPATH')) {
 
 class WooCommerce_Grid extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -74,7 +76,7 @@ class WooCommerce_Grid extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_control_secondary_img_on_hover()

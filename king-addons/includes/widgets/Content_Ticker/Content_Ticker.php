@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
 
 class Content_Ticker extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -61,7 +63,7 @@ class Content_Ticker extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_control_post_type()
@@ -1830,7 +1832,12 @@ class Content_Ticker extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
 

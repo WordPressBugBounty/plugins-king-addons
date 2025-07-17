@@ -17,6 +17,8 @@ if (!defined('ABSPATH')) {
 
 class Countdown extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -59,7 +61,7 @@ class Countdown extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function is_reload_preview_required()
@@ -965,8 +967,13 @@ class Countdown extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     public function get_due_date_interval($date)

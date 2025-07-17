@@ -13,8 +13,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Pricing_Slider extends Widget_Base
 {
+    
+
     public function get_name(): string
     {
         return 'king-addons-pricing-slider';
@@ -63,9 +67,9 @@ class Pricing_Slider extends Widget_Base
         ];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/pricing-slider/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls()
@@ -2211,7 +2215,12 @@ class Pricing_Slider extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
     public function add_control_woocommerce_integration()

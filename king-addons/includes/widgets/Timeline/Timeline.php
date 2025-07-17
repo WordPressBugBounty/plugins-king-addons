@@ -15,6 +15,8 @@ use WP_Query;
 
 class Timeline extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -70,7 +72,7 @@ class Timeline extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     /** @noinspection PhpMissingFieldTypeInspection */
@@ -4981,8 +4983,13 @@ class Timeline extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     public function get_tax_query_args()

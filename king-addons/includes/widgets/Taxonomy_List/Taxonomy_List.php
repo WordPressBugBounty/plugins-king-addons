@@ -11,8 +11,12 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+
+
 class Taxonomy_List extends Widget_Base
 {
+    
+
 
     public function get_name(): string
     {
@@ -47,9 +51,9 @@ class Taxonomy_List extends Widget_Base
             'custom post types', 'taxonomies', 'sub', 'sub child'];
     }
 
-    public function get_custom_help_url(): string
+    public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/elementor/taxonomy-list/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public function add_section_style_toggle_icon()

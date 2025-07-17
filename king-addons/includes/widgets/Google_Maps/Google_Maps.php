@@ -13,6 +13,8 @@ if (!defined('ABSPATH')) {
 
 class Google_Maps extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -52,7 +54,7 @@ class Google_Maps extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     protected function register_controls()
@@ -629,8 +631,13 @@ class Google_Maps extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
 
+$this->end_controls_section();
+
+    
+        
     }
 
     public function get_map_settings($settings) {

@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) exit;
 
 class Image_Accordion extends Widget_Base
 {
+    
+
 
     public function get_name()
     {
@@ -65,7 +67,7 @@ class Image_Accordion extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'https://kingaddons.com/';
+        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
     }
 
     public ?string $item_bg_image_url;
@@ -2112,7 +2114,12 @@ class Image_Accordion extends Widget_Base
             ]
         );
 
-        $this->end_controls_section();
+        
+        
+
+$this->end_controls_section();
+    
+        
     }
 
 

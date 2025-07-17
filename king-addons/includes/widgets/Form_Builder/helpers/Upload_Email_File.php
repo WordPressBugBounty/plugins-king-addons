@@ -97,7 +97,7 @@ class Upload_Email_File
         }
 
         if (!wp_check_filetype($file['name'])['ext']) {
-            return false;
+            return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
         }
 
         $f_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
