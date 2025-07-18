@@ -172,6 +172,8 @@ final class Core
                 add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiFieldScript' ]);
                 // Enqueue styles for AI prompt UI
                 add_action('elementor/editor/after_enqueue_styles', [ $this, 'enqueueAiFieldStyles' ]);
+                // Enqueue AI page translator script
+                add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiTranslatorScript' ]);
             }
 
             $enable_ai_image_generation_button = isset($ai_options['enable_ai_image_generation_button']) ? (bool) $ai_options['enable_ai_image_generation_button'] : true;
@@ -1110,6 +1112,9 @@ final class Core
                 'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
                 'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
                 'plugin_url'      => KING_ADDONS_URL,
+                'is_pro'          => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
+                'premium_active'  => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
+                'translator_enabled' => isset($ai_options['enable_ai_page_translator']) ? (bool) $ai_options['enable_ai_page_translator'] : true,
             ]
         );
     }
@@ -1177,6 +1182,34 @@ final class Core
             [],
             KING_ADDONS_VERSION
         );
+    }
+
+    /**
+     * Enqueues the AI page translator script in the Elementor editor panel.
+     *
+     * @return void
+     */
+    public function enqueueAiTranslatorScript(): void
+    {
+        // Check if AI Page Translator is enabled in settings
+        $ai_options = get_option('king_addons_ai_options', []);
+        $translator_enabled = isset($ai_options['enable_ai_page_translator']) ? (bool) $ai_options['enable_ai_page_translator'] : true;
+        
+        if (!$translator_enabled) {
+            return; // Don't load script if translator is disabled
+        }
+        
+        wp_enqueue_script(
+            'king-addons-ai-translator',
+            KING_ADDONS_URL . 'includes/admin/js/ai-page-translator.js',
+            ['jquery', 'elementor-editor'],
+            KING_ADDONS_VERSION,
+            true
+        );
+
+        // Note: Using existing KingAddonsAiField localization
+        // The translator script will use the same AJAX endpoints and settings
+        // No need for separate localization as it reuses existing AI infrastructure
     }
 }
 

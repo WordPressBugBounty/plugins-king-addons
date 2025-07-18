@@ -2,6 +2,34 @@
     'use strict';
 
     $(function() {
+        // Initialize modern animations and interactions
+        initModernAnimations();
+        
+        // Auto-save feedback for AI settings form specifically
+        $('.king-addons-settings-form').on('submit', function(e) {
+            // Ensure the form is not prevented from submitting
+            showSaveAnimation();
+            
+            // Explicitly allow form submission
+            return true;
+        });
+        
+        // Input focus animations
+        $('input, select, textarea').on('focus', function() {
+            $(this).closest('tr').addClass('focused');
+        }).on('blur', function() {
+            $(this).closest('tr').removeClass('focused');
+        });
+        
+        // Checkbox animations
+        $('input[type="checkbox"]').on('change', function() {
+            if ($(this).is(':checked')) {
+                $(this).addClass('checked-animation');
+                setTimeout(() => $(this).removeClass('checked-animation'), 300);
+            }
+        });
+        
+        // Initialize existing functionality
         var $refreshButton = $('#king-addons-ai-refresh-models-button');
         var $spinner = $('#king-addons-ai-refresh-models-spinner');
         var $statusSpan = $('#king-addons-ai-refresh-models-status');
@@ -66,5 +94,48 @@
                 $modelSelect.prop('disabled', false);
             });
         });
+        
+        // Modern animation functions
+        function initModernAnimations() {
+            // Stagger animation for form sections
+            $('.king-addons-ai-settings h2').each(function(index) {
+                $(this).css({
+                    'animation-delay': (index * 0.1) + 's',
+                    'animation-fill-mode': 'forwards'
+                }).addClass('slide-in-from-left');
+            });
+            
+            // Stagger animation for form rows
+            $('.king-addons-ai-settings .form-table tr').each(function(index) {
+                $(this).css({
+                    'animation-delay': (index * 0.05) + 's',
+                    'animation-fill-mode': 'forwards'
+                }).addClass('fade-in-up');
+            });
+            
+            // Header icon rotation on hover
+            $('.king-addons-settings-header-icon').on('mouseenter', function() {
+                $(this).css('transform', 'rotate(10deg) scale(1.05)');
+            }).on('mouseleave', function() {
+                $(this).css('transform', 'rotate(0deg) scale(1)');
+            });
+        }
+        
+        function showSaveAnimation() {
+            var $saveButton = $('.king-addons-save-button');
+            
+            // Only show animation if button exists and is not already disabled
+            if ($saveButton.length && !$saveButton.prop('disabled')) {
+                // Show saving state immediately
+                $saveButton.text('Saving...')
+                          .prop('disabled', true)
+                          .css({
+                              'opacity': '0.8',
+                              'transform': 'scale(0.98)'
+                          });
+            }
+            
+            // No need for timeouts since page will reload on successful save
+        }
     });
 })(jQuery); 

@@ -382,6 +382,22 @@ final class Admin
             'king_addons_ai_alt_text_section'
         );
 
+        // Add Translation Settings section
+        add_settings_section(
+            'king_addons_ai_translation_section',
+            esc_html__('Translation Settings', 'king-addons'),
+            [$this, 'renderAiTranslationSection'],
+            'king-addons-ai-settings'
+        );
+
+        add_settings_field(
+            'enable_ai_page_translator',
+            esc_html__('AI Page Translator Button', 'king-addons'),
+            [$this, 'renderAiPageTranslatorField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_translation_section'
+        );
+
         // Add Usage Quota Settings section and field
         add_settings_section(
             'king_addons_ai_quota_section',
@@ -426,6 +442,9 @@ final class Admin
 
         // THIRD_EDIT: Register AJAX handler for AI image generation
         add_action('wp_ajax_king_addons_ai_generate_image', [$this, 'handleAiGenerateImage']);
+
+        // AJAX handler for AI page translation
+        add_action('wp_ajax_king_addons_ai_translate_text', [$this, 'handleAiTranslateText']);
     }
 
     /**
@@ -462,7 +481,7 @@ final class Admin
         $sanitized['enable_ai_image_generation_button'] = ! empty($input['enable_ai_image_generation_button']);
 
         // Sanitize Enable AI Alt Text Button option.
-        $sanitized['enable_ai_alt_text_button'] = isset($input['enable_ai_alt_text_button']) ? ! empty($input['enable_ai_alt_text_button']) : true;
+        $sanitized['enable_ai_alt_text_button'] = ! empty($input['enable_ai_alt_text_button']);
 
         // Sanitize Enable AI Alt Text Auto Generation option.
         $sanitized['enable_ai_alt_text_auto_generation'] = ! empty($input['enable_ai_alt_text_auto_generation']);
@@ -479,6 +498,10 @@ final class Admin
         $sanitized['ai_alt_text_image_detail_level'] = in_array(($input['ai_alt_text_image_detail_level'] ?? 'low'), $allowed_detail_levels, true)
             ? $input['ai_alt_text_image_detail_level']
             : 'low';
+
+        // Sanitize Enable AI Page Translator option
+        $sanitized['enable_ai_page_translator'] = ! empty($input['enable_ai_page_translator']);
+
         return $sanitized;
     }
 
@@ -513,10 +536,13 @@ final class Admin
      */
     public function enqueueAiSettingsAssets(): void
     {
+        // Enqueue admin base styles first for proper theming
+        wp_enqueue_style('king-addons-admin', KING_ADDONS_URL . 'includes/admin/css/admin.css', '', KING_ADDONS_VERSION);
+        
         wp_enqueue_style(
             'king-addons-ai-settings',
             KING_ADDONS_URL . 'includes/admin/css/ai-settings.css',
-            [],
+            ['king-addons-admin'], // Depend on admin base styles
             KING_ADDONS_VERSION
         );
 
@@ -1190,7 +1216,7 @@ final class Admin
 
         echo '<div class="daily-token-limit-wrap">';
         printf(
-            '<input type="number" name="king_addons_ai_options[daily_token_limit]" value="%s" class="regular-text" min="0" step="1000" />',
+            '<input type="number" name="king_addons_ai_options[daily_token_limit]" value="%s" class="regular-text" min="0" step="1000" style="margin-right: 10px;" />',
             esc_attr($daily_token_limit)
         );
         echo '<span>' . esc_html__('tokens', 'king-addons') . '</span>';
@@ -1385,7 +1411,8 @@ final class Admin
     public function renderAiEnableButtonsField(): void
     {
         $options = get_option('king_addons_ai_options', []);
-        $enabled = isset($options['enable_ai_buttons']) ? (bool) $options['enable_ai_buttons'] : true;
+        // Default to true if option has never been saved, otherwise use saved value
+        $enabled = array_key_exists('enable_ai_buttons', $options) ? (bool) $options['enable_ai_buttons'] : true;
         printf(
             '<label><input type="checkbox" name="king_addons_ai_options[enable_ai_buttons]" value="1" %s /> %s</label>',
             checked($enabled, true, false),
@@ -1401,7 +1428,8 @@ final class Admin
     public function renderAiImageGenerationField(): void
     {
         $options = get_option('king_addons_ai_options', []);
-        $enabled = isset($options['enable_ai_image_generation_button']) ? (bool) $options['enable_ai_image_generation_button'] : true;
+        // Default to true if option has never been saved, otherwise use saved value
+        $enabled = array_key_exists('enable_ai_image_generation_button', $options) ? (bool) $options['enable_ai_image_generation_button'] : true;
         printf(
             '<label><input type="checkbox" name="king_addons_ai_options[enable_ai_image_generation_button]" value="1" %s /> %s</label>',
             checked($enabled, true, false),
@@ -1417,7 +1445,8 @@ final class Admin
     public function renderAiAltTextButtonField(): void
     {
         $options = get_option('king_addons_ai_options', []);
-        $enabled = isset($options['enable_ai_alt_text_button']) ? (bool) $options['enable_ai_alt_text_button'] : true;
+        // Default to true if option has never been saved, otherwise use saved value
+        $enabled = array_key_exists('enable_ai_alt_text_button', $options) ? (bool) $options['enable_ai_alt_text_button'] : true;
         printf(
             '<label><input type="checkbox" name="king_addons_ai_options[enable_ai_alt_text_button]" value="1" %s /> %s</label>',
             checked($enabled, true, false),
@@ -1435,7 +1464,8 @@ final class Admin
     {
         $options = get_option('king_addons_ai_options', []);
         $is_pro =  !king_addons_freemius()->can_use_premium_code();
-        $enabled = isset($options['enable_ai_alt_text_auto_generation']) ? (bool) $options['enable_ai_alt_text_auto_generation'] : false;
+        // Default to false if option has never been saved, otherwise use saved value
+        $enabled = array_key_exists('enable_ai_alt_text_auto_generation', $options) ? (bool) $options['enable_ai_alt_text_auto_generation'] : false;
         printf(
             '<label><input type="checkbox"' . ($is_pro ? ' disabled' : '') . ' name="king_addons_ai_options[enable_ai_alt_text_auto_generation]" value="1" %s /> %s</label>',
             checked($enabled, true, false),
@@ -1455,7 +1485,7 @@ final class Admin
         $options = get_option('king_addons_ai_options', []);
         $interval = isset($options['ai_alt_text_generation_interval']) ? (int) $options['ai_alt_text_generation_interval'] : 60;
         printf(
-            '<input type="number" name="king_addons_ai_options[ai_alt_text_generation_interval]" value="%d" min="10" max="3600" class="small-text" placeholder="60" />',
+            '<input type="number" name="king_addons_ai_options[ai_alt_text_generation_interval]" value="%d" min="10" max="3600" placeholder="60" />',
             $interval
         );
         echo '<p class="description">' . esc_html__('How often (in seconds) the system should process alt text generation queue. Recommended: 60 seconds to avoid OpenAI API rate limits. Lower values may cause API errors during high usage periods. Range: 10-3600 seconds.', 'king-addons') . '</p>';
@@ -1659,5 +1689,236 @@ final class Admin
         echo '<option value="high"' . selected($selected, 'high', false) . '>' . esc_html__('High', 'king-addons') . '</option>';
         echo '</select>';
         echo '<p class="description">' . esc_html__("Controls the detail level OpenAI uses to analyze images. 'Low' uses a fixed, lower token cost. 'High' uses more tokens based on image size (potentially more accurate analysis, but costs more). See OpenAI pricing for details.", 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the Translation Settings section description.
+     *
+     * @return void
+     */
+    public function renderAiTranslationSection(): void
+    {
+        echo '<p>' . esc_html__('Configure AI Page Translator settings for Elementor editor.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the Enable AI Page Translator checkbox field.
+     *
+     * @return void
+     */
+    public function renderAiPageTranslatorField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        // Default to true if option has never been saved, otherwise use saved value
+        $enabled = array_key_exists('enable_ai_page_translator', $options) ? (bool) $options['enable_ai_page_translator'] : true;
+        printf(
+            '<label><input type="checkbox" name="king_addons_ai_options[enable_ai_page_translator]" value="1" %s /> %s</label>',
+            checked($enabled, true, false),
+            esc_html__('Show AI Page Translator button in Elementor editor toolbar', 'king-addons')
+        );
+        echo '<p class="description">' . esc_html__('When enabled, adds an AI Page Translator button to the Elementor editor top toolbar that allows you to translate entire pages with one click. Automatically detects and translates all text content in widgets including advanced repeater fields.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * AJAX handler to translate text using OpenAI.
+     *
+     * @return void
+     */
+    public function handleAiTranslateText(): void
+    {
+        check_ajax_referer('king_addons_ai_generate_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
+        }
+
+        $text = isset($_POST['text']) ? sanitize_textarea_field(wp_unslash($_POST['text'])) : '';
+        $from_lang = isset($_POST['from_lang']) ? sanitize_text_field(wp_unslash($_POST['from_lang'])) : 'auto';
+        $to_lang = isset($_POST['to_lang']) ? sanitize_text_field(wp_unslash($_POST['to_lang'])) : 'en';
+
+        $options = get_option('king_addons_ai_options', []);
+        $api_key = $options['openai_api_key'] ?? '';
+        $model = $options['openai_model'] ?? '';
+
+        if (empty($api_key) || empty($model)) {
+            wp_send_json_error(['message' => esc_html__('API key or model not set.', 'king-addons')], 400);
+        }
+
+        if (empty($text)) {
+            wp_send_json_error(['message' => esc_html__('No text provided for translation.', 'king-addons')], 400);
+        }
+
+        // Check daily token limit
+        $daily_limit = isset($options['daily_token_limit']) ? intval($options['daily_token_limit']) : self::DEFAULT_DAILY_TOKEN_LIMIT;
+        $current_usage = $this->getAiDailyUsage();
+
+        if ($daily_limit > 0 && $current_usage >= $daily_limit) {
+            wp_send_json_error([
+                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons')
+            ], 429);
+        }
+
+        // Prepare translation prompt
+        $from_lang_name = ($from_lang === 'auto') ? 'auto-detected language' : $this->getLanguageName($from_lang);
+        $to_lang_name = $this->getLanguageName($to_lang);
+        
+        // Enhanced system message for better custom language and prompt handling
+        $system_message = 'You are a professional translator with expertise in languages, dialects, writing styles, and custom translation approaches. You can handle:
+        
+        1. Standard languages (English, Spanish, etc.)
+        2. Fictional/constructed languages (Klingon, Dothraki, Elvish, etc.)
+        3. Historical language variants (Old English, Latin, etc.)
+        4. Writing styles and tones (formal, casual, academic, business, etc.)
+        5. Special communication styles (pirate speak, baby talk, technical jargon, etc.)
+        
+        When translating:
+        - Maintain the original meaning, tone, and formatting
+        - Preserve HTML tags exactly as they appear
+        - For custom languages, apply consistent linguistic rules
+        - For style prompts, adapt the tone and vocabulary appropriately
+        - Only return the translated/adapted text without explanations
+        
+        If the target is a style rather than a language, transform the text to match that style while keeping the same language.';
+        
+        // Enhanced user message with better context for custom languages and prompts
+        if ($from_lang === 'auto') {
+            $user_message = "Transform the following text to {$to_lang_name}:\n\n{$text}";
+        } else {
+            // Check if it looks like a style prompt rather than a language
+            $is_style_prompt = $this->isStylePrompt($to_lang_name);
+            
+            if ($is_style_prompt) {
+                $user_message = "Transform the following text from {$from_lang_name} using this style/approach: {$to_lang_name}:\n\n{$text}";
+            } else {
+                $user_message = "Translate the following text from {$from_lang_name} to {$to_lang_name}:\n\n{$text}";
+            }
+        }
+
+        $messages = [
+            ['role' => 'system', 'content' => $system_message],
+            ['role' => 'user', 'content' => $user_message]
+        ];
+
+        $response = wp_remote_post(
+            'https://api.openai.com/v1/chat/completions',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $api_key,
+                    'Content-Type' => 'application/json',
+                ],
+                'body' => wp_json_encode([
+                    'model' => $model,
+                    'messages' => $messages,
+                    'max_tokens' => 1000,
+                    'temperature' => 0.3, // Lower temperature for more consistent translations
+                ]),
+                'timeout' => 30,
+            ]
+        );
+
+        if (is_wp_error($response)) {
+            wp_send_json_error(['message' => $response->get_error_message()], 500);
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+        $data = json_decode(wp_remote_retrieve_body($response), true);
+
+        if ($code !== 200 || empty($data['choices'][0]['message']['content'])) {
+            $error_msg = $data['error']['message'] ?? esc_html__('AI translation error.', 'king-addons');
+            wp_send_json_error(['message' => $error_msg], 500);
+        }
+
+        $translated_text = trim($data['choices'][0]['message']['content']);
+
+        // Update token usage statistics if present in the response
+        if (isset($data['usage']['total_tokens'])) {
+            $this->incrementAiDailyUsage(intval($data['usage']['total_tokens']));
+        }
+
+        wp_send_json_success([
+            'translated_text' => $translated_text,
+            'usage' => [
+                'tokens_used' => $data['usage']['total_tokens'] ?? 0,
+                'daily_used' => $this->getAiDailyUsage(),
+                'daily_limit' => $daily_limit,
+            ]
+        ]);
+    }
+
+    /**
+     * Get language name by code
+     *
+     * @param string $code Language code
+     * @return string Language name
+     */
+    private function getLanguageName(string $code): string
+    {
+        $languages = [
+            'en' => 'English',
+            'es' => 'Spanish',
+            'fr' => 'French',
+            'de' => 'German',
+            'it' => 'Italian',
+            'pt' => 'Portuguese',
+            'ru' => 'Russian',
+            'ja' => 'Japanese',
+            'ko' => 'Korean',
+            'zh' => 'Chinese',
+            'ar' => 'Arabic',
+            'hi' => 'Hindi',
+            'nl' => 'Dutch',
+            'pl' => 'Polish',
+            'tr' => 'Turkish',
+            'uk' => 'Ukrainian',
+            'cs' => 'Czech',
+            'sv' => 'Swedish',
+            'no' => 'Norwegian',
+            'da' => 'Danish',
+            'fi' => 'Finnish'
+        ];
+
+        return $languages[$code] ?? $code;
+    }
+
+    /**
+     * Check if the given text appears to be a style prompt rather than a language
+     *
+     * @param string $text The text to check
+     * @return bool True if it looks like a style prompt
+     */
+    private function isStylePrompt(string $text): bool
+    {
+        $text_lower = strtolower($text);
+        
+        // Common style/tone indicators
+        $style_indicators = [
+            'formal', 'casual', 'professional', 'business', 'academic', 'technical',
+            'friendly', 'serious', 'humorous', 'dramatic', 'poetic', 'simple',
+            'complex', 'detailed', 'brief', 'conversational', 'literary',
+            'scientific', 'medical', 'legal', 'marketing', 'sales',
+            'tone', 'style', 'manner', 'approach', 'way', 'voice',
+            'pirate', 'shakespeare', 'baby', 'child', 'elderly',
+            'slang', 'jargon', 'dialect', 'accent'
+        ];
+        
+        // Check if any style indicators are present
+        foreach ($style_indicators as $indicator) {
+            if (strpos($text_lower, $indicator) !== false) {
+                return true;
+            }
+        }
+        
+        // Check if it contains descriptive phrases
+        $descriptive_patterns = [
+            'for ', 'like ', 'as if ', 'in the style of', 'in a ', 'with a ',
+            'using ', 'speaking ', 'written ', 'sound like', 'talk like'
+        ];
+        
+        foreach ($descriptive_patterns as $pattern) {
+            if (strpos($text_lower, $pattern) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

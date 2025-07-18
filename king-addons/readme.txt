@@ -1,7 +1,7 @@
 === King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.92
+Stable tag: 24.12.93
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -12,18 +12,21 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 == Description ==
 
-**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **600+ professionally designed templates** and **60+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
+**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **650+ professionally designed templates** and **70+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
 
 Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
+
+[**CHECK THE DEMOS**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) to see these features in action.
 
 Perfect for creating **restaurant websites**, **online stores**, **portfolio pages**, and **business sites**, **King Addons** simplifies web design while ensuring your site remains lightweight and fast. **King Addons uses lightweight code** to ensure exceptional performance without compromising functionality. Trusted by thousands of websites worldwide and used by top WordPress developers and agencies, **King Addons** provides the flexibility and advanced WordPress customization needed to build exceptional websites.
 
 Try **King Addons** for free and explore its powerful features. Whether you are building a sleek single-page site or a feature-packed online store, **King Addons** is your ultimate website builder addon. It combines speed, flexibility, and advanced Elementor enhancements for exceptional design results.
 
-[**CHECK THE DEMOS**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) to see these features in action.
+[**TEMPLATES CATALOG**](https://kingaddons.com/templates/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**ELEMENTS AND FEATURES**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**PRO VERSION**](https://kingaddons.com/pricing/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng)
 
 ### **AI Features**
 Enjoy all AI features at OpenAI cost, with no additional fees from us.
+- **AI Page Translator** – Translate entire Elementor pages with one click. Automatically detects and translates all text content in widgets, including advanced repeater fields. Features smart progress tracking, real-time translation updates, and comprehensive results statistics. Works with any language supported by OpenAI GPT models.
 - **AI Text Generation** – Instantly generate high-quality text for any Elementor field.
 - **AI Text Change** – Rewrite or improve existing text with AI-powered editing.
 - **AI Image Generation** – Generate custom images for Elementor using OpenAI models - DALL·E 3 and GPT Image 1.
@@ -79,19 +82,19 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - [**Slider**](https://kingaddons.com/elementor/slider/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create engaging sliders with images, text, or multimedia. Fully customizable and responsive, it is perfect for hero sections or featured content displays.
 - [**Data Table**](https://kingaddons.com/elementor/data-table/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Present data effectively with customizable tables. Perfect for pricing comparisons, schedules, or detailed information in a responsive and user-friendly layout.
 - [**Countdown & Timer**](https://kingaddons.com/elementor/countdown-timer/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add urgency to your promotions or events. Perfect for sales, launches, or special events in a fully customizable and responsive format. It also has an Evergreen Timer, which continuously resets for each visitor, providing a customized countdown clock that never truly expires.
-- [**Lottie Animations**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.
-- [**Google Maps**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Perfect for displaying business locations, contact details, or navigation routes, this widget allows you to adjust styles, markers, and layouts. Ideal for enhancing user experience with responsive and visually appealing map designs.
-- [**MailChimp**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Easily integrate MailChimp forms into your website. Perfect for growing your email list with customizable and responsive sign-up forms.
-- [**Posts Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts in grids, sliders, or carousels with fully customizable layouts. Perfect for showcasing blog content, news, or articles in a responsive and visually appealing format.
-- [**Image Grid & Slider / Carousel/Gallery**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create stunning media galleries with grids, sliders, or carousels. Perfect for showcasing images or videos in a fully customizable and responsive format.
-- [**Magazine Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
-- [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
-- [**Pricing Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive pricing sliders that allow users to dynamically adjust parameters and instantly see matching features. Perfect for subscription services, product configurators, or membership plans. Compatible with WooCommerce and other pricing systems. Boosts conversions by providing visual, intuitive pricing comparisons.
-- [**Mega Menu**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create powerful navigation menus with support for dropdown menus, custom layouts, and responsive design. Perfect for creating professional website headers with both WordPress menus and custom navigation structures.
-- [**Team Members Slider**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Boost your site credibility with a responsive Elementor Team Members Slider carousel widget. Showcase staff photos, names, roles, bios, and social links in a sleek, responsive slider for improved engagement and navigation.
-- [**Form Builder**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Build custom forms with ease using the fully customizable Form Builder. Ideal for contact forms, surveys, or lead generation with responsive designs.
-- [**Pricing Calculator**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.
-- [**Login | Register Form**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.
+- [**Lottie Animations**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.
+- [**Google Maps**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Perfect for displaying business locations, contact details, or navigation routes, this widget allows you to adjust styles, markers, and layouts. Ideal for enhancing user experience with responsive and visually appealing map designs.
+- [**MailChimp**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Easily integrate MailChimp forms into your website. Perfect for growing your email list with customizable and responsive sign-up forms.
+- [**Posts Grid & Slider / Carousel**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display posts in grids, sliders, or carousels with fully customizable layouts. Perfect for showcasing blog content, news, or articles in a responsive and visually appealing format.
+- [**Image Grid & Slider / Carousel/Gallery**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create stunning media galleries with grids, sliders, or carousels. Perfect for showcasing images or videos in a fully customizable and responsive format.
+- [**Magazine Grid & Slider / Carousel**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Design magazine-style layouts with grids or sliders to display posts, news, or articles. Ideal for blogs or online publications with responsive and dynamic designs.
+- [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Showcase WooCommerce products in grids, sliders, or carousels with customizable styles. Ideal for creating responsive, engaging product displays for online stores.
+- [**Pricing Slider**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create interactive pricing sliders that allow users to dynamically adjust parameters and instantly see matching features. Perfect for subscription services, product configurators, or membership plans. Compatible with WooCommerce and other pricing systems. Boosts conversions by providing visual, intuitive pricing comparisons.
+- [**Mega Menu**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create powerful navigation menus with support for dropdown menus, custom layouts, and responsive design. Perfect for creating professional website headers with both WordPress menus and custom navigation structures.
+- [**Team Members Slider**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Boost your site credibility with a responsive Elementor Team Members Slider carousel widget. Showcase staff photos, names, roles, bios, and social links in a sleek, responsive slider for improved engagement and navigation.
+- [**Form Builder**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Build custom forms with ease using the fully customizable Form Builder. Ideal for contact forms, surveys, or lead generation with responsive designs.
+- [**Pricing Calculator**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.
+- [**Login | Register Form**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.
 
 ### **Elementor Features**
 
@@ -184,6 +187,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 24.12.93 - July 18, 2025 =
+* **New:** AI Page Translator – Translate entire Elementor pages with one click. Automatically detects and translates all text content in widgets, including advanced repeater fields. Features smart progress tracking, real-time translation updates, and comprehensive results statistics. Works with any language supported by OpenAI GPT models.
+* **Improved:** AI Settings Page improved.
+
 = King Addons for Elementor version 24.12.92 - July 17, 2025 =
 * **New:** Login | Register Form element - Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.
 * **New:** AI Alt Text Generation - Image Detail Level setting added.
@@ -191,7 +198,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 = King Addons for Elementor version 24.12.91 - July 15, 2025 =
 * **New:** AI Alt Text Generation for Images – Automatically and manually generate alternative text for images using AI. Great for SEO and accessibility.
-* **New:** MailChimp element - Added Icon Botttom Distance setting.
+* **New:** MailChimp element - Added Icon Bottom Distance setting.
 * **Improved:** Dark mode support for Elementor editor.
 * **Improved:** Compatibility with WordPress 6.8.
 * **Improved:** Accordion, Slider and Tabs elements. Elementor template works better now.
