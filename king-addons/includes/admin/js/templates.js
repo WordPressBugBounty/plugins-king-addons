@@ -245,6 +245,7 @@ jQuery(document).ready(function ($) {
                             retryTimeout = 1000;
                             processNextImage();
                         } else {
+                            // Both templates and sections from main admin catalog create new pages
                             document.getElementById('final_response').innerText = data.data.message;
                             document.getElementById('progress').innerText = 'Import completed.';
                             document.getElementById('progress-bar').style.width = '100%';
@@ -373,4 +374,484 @@ jQuery(document).ready(function ($) {
         $('#template-tags input:checked').prop('checked', false);
         filterTemplates();
     });
+
+    // Load sections count on page load
+    if ($('#sections-count').length) {
+        loadSectionsCount();
+    }
+
+    // ===== TABS FUNCTIONALITY =====
+    
+    // Tab switching
+    $('.king-addons-tab-button').on('click', function() {
+        var tabId = $(this).data('tab');
+        
+        // Remove active class from all tabs and content
+        $('.king-addons-tab-button').removeClass('active');
+        $('.king-addons-tab-content').removeClass('active');
+        
+        // Add active class to clicked tab and corresponding content
+        $(this).addClass('active');
+        $('#' + tabId + '-catalog').addClass('active');
+        
+        // Load sections on first visit to sections tab
+        if (tabId === 'sections' && !window.sectionsLoaded) {
+            loadSections();
+        }
+    });
+
+    // ===== SECTIONS FUNCTIONALITY =====
+    
+    window.sectionsLoaded = false;
+    window.sectionsData = null;
+    window.sectionsPage = 1;
+    window.sectionsFilters = {};
+
+    function loadSections(page = 1) {
+        if (!window.kingAddonsData || !window.kingAddonsData.ajaxUrl) {
+            console.error('King Addons data not available');
+            return;
+        }
+
+        var searchQuery = $('#sections-search').val() || '';
+        var selectedCategory = $('#sections-category').val() || '';
+        var selectedType = $('#sections-type').val() || '';
+        var selectedPlan = $('#sections-plan').val() || '';
+
+        $('.sections-grid').html(`
+            <div class="sections-loading">
+                Loading sections...
+            </div>
+        `);
+
+        $.ajax({
+            url: window.kingAddonsData.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'king_addons_get_sections_catalog',
+                nonce: window.kingAddonsData.nonce || '',
+                search: searchQuery,
+                category: selectedCategory,
+                section_type: selectedType,
+                plan: selectedPlan,
+                page: page
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Scroll to top after new content is loaded with admin bar offset (same as templates)
+                    const scrollOffset = $('#king-addons-templates-top').offset().top - 32; // Subtract 32px for admin bar
+                    $('html, body').animate({scrollTop: scrollOffset}, 0);
+
+                    window.sectionsData = response.data;
+                    window.sectionsLoaded = true;
+                    renderSections();
+                    updateSectionsFilters();
+                    updateSectionsCount();
+                } else {
+                    $('.sections-grid').html(`
+                        <div class="sections-loading">
+                            Error loading sections: ${response.data || 'Unknown error'}
+                        </div>
+                    `);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error loading sections:', status, error);
+                $('.sections-grid').html(`
+                    <div class="sections-loading">
+                        Failed to load sections. Please try again.
+                    </div>
+                `);
+            }
+        });
+    }
+
+    function renderSections() {
+        if (!window.sectionsData || !window.sectionsData.sections) {
+            $('.sections-grid').html(`
+                <div class="sections-loading">
+                    <p>No sections found. Try adjusting your search or filters to find more sections.</p>
+                </div>
+            `);
+            return;
+        }
+
+        var sectionsHtml = '';
+        var sections = window.sectionsData.sections;
+
+        sections.forEach(function(section) {
+            // Use the correct screenshot URL pattern with plan-based paths
+            var screenshotUrl = `https://thumbnails.kingaddons.com/sections/${section.plan}/${section.section_key}.png?v=4`;
+            
+            sectionsHtml += `
+                <div class="section-item" 
+                     data-section-key="${section.section_key}" 
+                     data-section-plan="${section.plan}"
+                     data-category="${section.category || ''}"
+                     data-tags="${(section.tags || []).join(',')}"
+                     data-section-type="${section.section_type || ''}">
+                    <img class="kng-addons-section-thumbnail" loading="lazy"
+                         src="${screenshotUrl}" 
+                         alt="${section.title}"
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGY5ZmEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU3ZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iNzAiIHI9IjE2IiBmaWxsPSIjOWNhM2FmIiBvcGFjaXR5PSIwLjQiLz48cmVjdCB4PSIxMzQiIHk9Ijg2IiB3aWR0aD0iMzIiIGhlaWdodD0iNCIgZmlsbD0iIzljYTNhZiIgb3BhY2l0eT0iMC40IiByeD0iMiIvPjxyZWN0IHg9IjEyNiIgeT0iOTQiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0IiBmaWxsPSIjOWNhM2FmIiBvcGFjaXR5PSIwLjMiIHJ4PSIyIi8+PHRleHQgeD0iNTAlIiB5PSIxMjAiIGZvbnQtZmFtaWx5PSItYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2Yjc1ODQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNyI+U2VjdGlvbiBQcmV2aWV3PC90ZXh0Pjwvc3ZnPg=='">
+                    <div class="section-content">
+                        <h3>${section.title}</h3>
+                        <div class="section-plan section-plan-${section.plan}">${section.plan}</div>
+                    </div>
+                    <div class="section-overlay">
+                        <div class="section-actions">
+                            <button class="section-import-btn" data-section-key="${section.section_key}" data-section-plan="${section.plan}">
+                                Import Section
+                            </button>
+                            <a href="https://sections.kingaddons.com/${section.section_key}" class="section-preview-btn" target="_blank">
+                                Live Preview
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        $('.sections-grid').html(sectionsHtml);
+        
+        // Render pagination if available
+        if (window.sectionsData.pagination) {
+            renderSectionsPagination();
+        }
+    }
+
+
+
+    function renderSectionsPagination() {
+        var pagination = window.sectionsData.pagination;
+        var paginationHtml = '';
+
+        if (pagination.total_pages > 1) {
+            paginationHtml += '<div class="pagination-inner">';
+            
+            var current = pagination.current_page;
+            var total = pagination.total_pages;
+            var endSize = 3;  // Show 3 pages at beginning and end
+            var midSize = 2;  // Show 2 pages around current
+            
+            // Previous page
+            if (current > 1) {
+                paginationHtml += `<a class="page-numbers" href="#" data-page="${current - 1}">&larr; Previous</a>`;
+            }
+            
+            // Smart pagination logic with proper ellipsis
+            var pages = [];
+            
+            // Always show first pages
+            for (var i = 1; i <= Math.min(endSize, total); i++) {
+                pages.push(i);
+            }
+            
+            // Calculate middle range around current page
+            var start = Math.max(current - midSize, 1);
+            var end = Math.min(current + midSize, total);
+            
+            // Add first ellipsis if there's a gap
+            if (start > endSize + 1) {
+                pages.push('...');
+            }
+            
+            // Add middle pages around current (avoid duplicates with start/end)
+            for (var i = Math.max(start, endSize + 1); i <= Math.min(end, total - endSize); i++) {
+                if (pages.indexOf(i) === -1) {
+                    pages.push(i);
+                }
+            }
+            
+            // Add second ellipsis if there's a gap
+            if (end < total - endSize) {
+                pages.push('...');
+            }
+            
+            // Always show last pages (avoid duplicates)
+            for (var i = Math.max(total - endSize + 1, endSize + 1); i <= total; i++) {
+                if (pages.indexOf(i) === -1) {
+                    pages.push(i);
+                }
+            }
+            
+            // Render pages
+            pages.forEach(function(page) {
+                if (page === '...') {
+                    paginationHtml += `<span class="page-numbers dots">…</span>`;
+                } else if (page === current) {
+                    paginationHtml += `<span class="page-numbers current">${page}</span>`;
+                } else {
+                    paginationHtml += `<a class="page-numbers" href="#" data-page="${page}">${page}</a>`;
+                }
+            });
+            
+            // Next page
+            if (current < total) {
+                paginationHtml += `<a class="page-numbers" href="#" data-page="${current + 1}">Next &rarr;</a>`;
+            }
+            
+            paginationHtml += '</div>';
+        }
+
+        $('.sections-pagination').html(paginationHtml);
+    }
+
+    function updateSectionsFilters() {
+        if (!window.sectionsData) return;
+
+        // Update categories dropdown
+        var categoriesHtml = '<option value="">All Categories</option>';
+        if (window.sectionsData.categories) {
+            window.sectionsData.categories.forEach(function(category) {
+                var displayName = category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ');
+                categoriesHtml += `<option value="${category}">${displayName}</option>`;
+            });
+        }
+        $('#sections-category').html(categoriesHtml);
+
+        // Update types dropdown
+        var typesHtml = '<option value="">All Types</option>';
+        if (window.sectionsData.section_types) {
+            window.sectionsData.section_types.forEach(function(type) {
+                var displayName = type.charAt(0).toUpperCase() + type.slice(1).replace(/-/g, ' ');
+                typesHtml += `<option value="${type}">${displayName}</option>`;
+            });
+        }
+        $('#sections-type').html(typesHtml);
+    }
+
+    function updateSectionsCount() {
+        if (window.sectionsData && window.sectionsData.pagination) {
+            $('#sections-count').text(window.sectionsData.pagination.total_sections);
+        }
+    }
+
+    // Sections filters event handlers - Same logic as templates
+    var sectionsSearch = $('#sections-search');
+    var sectionsCategory = $('#sections-category');
+    var sectionsType = $('#sections-type');
+    var sectionsPlan = $('#sections-plan');
+
+    sectionsSearch.on('keyup', function() {
+        // Reset other filters when searching (same as templates)
+        sectionsCategory.val('');
+        sectionsType.val('');
+        sectionsPlan.val('');
+        
+        clearTimeout(window.sectionsSearchTimeout);
+        window.sectionsSearchTimeout = setTimeout(function() {
+            loadSections(1);
+        }, 500);
+    });
+
+    sectionsCategory.on('change', function() {
+        // Reset search and other filters (same as templates)
+        sectionsSearch.val('');
+        sectionsType.val('');
+        sectionsPlan.val('');
+        loadSections(1);
+    });
+
+    sectionsType.on('change', function() {
+        // Reset search and other filters (same as templates)
+        sectionsSearch.val('');
+        sectionsCategory.val('');
+        sectionsPlan.val('');
+        loadSections(1);
+    });
+
+    sectionsPlan.on('change', function() {
+        // Reset search and other filters (same as templates)
+        sectionsSearch.val('');
+        sectionsCategory.val('');
+        sectionsType.val('');
+        loadSections(1);
+    });
+
+    $('#sections-reset-filters').on('click', function() {
+        sectionsSearch.val('');
+        sectionsCategory.val('');
+        sectionsType.val('');
+        sectionsPlan.val('');
+        loadSections(1);
+    });
+
+    // Sections pagination handler
+    $(document).on('click', '.sections-pagination .page-numbers', function(e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        if (page) {
+            loadSections(page);
+        }
+    });
+
+    // Section import button handler
+    $(document).on('click', '.section-import-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent triggering parent click
+        
+        var sectionKey = $(this).data('section-key');
+        var sectionPlan = $(this).data('section-plan');
+        
+        // Check if this is a premium section and user doesn't have premium
+        var planActive = $('#install-template').attr('data-plan-active');
+        
+        if (sectionPlan === 'premium' && planActive !== 'premium') {
+            // Show premium promo popup
+            $('#templates-catalog').addClass('kng-whole-overlay');
+            $('#premium-promo-popup').fadeIn();
+            return;
+        }
+        
+        // For free sections or premium sections with premium license, trigger import
+        if (confirm('Import this section?\n\nSection: ' + sectionKey + '\nPlan: ' + sectionPlan + '\n\nNote: This will be added to your current page in Elementor.')) {
+            importSection(sectionKey, sectionPlan);
+        }
+    });
+
+    // Section preview button handler (handled by href, but we can add tracking here)
+    $(document).on('click', '.section-preview-btn', function(e) {
+        e.stopPropagation(); // Prevent triggering parent click
+        // The link will open in new tab automatically due to target="_blank"
+    });
+
+    // Section item click handler - now only for general clicks (not on buttons)
+    $(document).on('click', '.section-item', function(e) {
+        // Don't trigger if clicking on buttons or overlay
+        if ($(e.target).closest('.section-overlay, .section-import-btn, .section-preview-btn').length) {
+            return;
+        }
+        
+        var sectionKey = $(this).data('section-key');
+        var sectionPlan = $(this).data('section-plan');
+        
+        // Check if this is a premium section and user doesn't have premium
+        var planActive = $('#install-template').attr('data-plan-active');
+        
+        if (sectionPlan === 'premium' && planActive !== 'premium') {
+            // Show premium promo popup
+            $('#templates-catalog').addClass('kng-whole-overlay');
+            $('#premium-promo-popup').fadeIn();
+            return;
+        }
+        
+        // For free sections or premium sections with premium license, trigger import
+        if (confirm('Import this section?\n\nSection: ' + sectionKey + '\nPlan: ' + sectionPlan + '\n\nNote: This will be added to your current page in Elementor.')) {
+            importSection(sectionKey, sectionPlan);
+        }
+    });
+
+    // Function to import section from main catalog
+    function importSection(sectionKey, sectionPlan) {
+        // Show importing popup
+        $('#templates-catalog').addClass('kng-whole-overlay');
+        $('#template-installing-popup').fadeIn();
+        
+        // Initialize progress
+        document.getElementById('progress').innerText = 'Loading section data...';
+        document.getElementById('progress-bar').style.width = '5%';
+        document.getElementById('progress-bar').innerText = '5%';
+
+        // Get section data
+        $.ajax({
+            url: window.kingAddonsData.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'king_addons_import_section_admin',
+                nonce: window.kingAddonsData.nonce,
+                section_key: sectionKey,
+                section_plan: sectionPlan
+            },
+            success: function(response) {
+                if (response.success) {
+                    var sectionData = response.data.section_data;
+                    var imageCount = sectionData.images ? sectionData.images.length : 0;
+                    
+                    document.getElementById('progress').innerText = 'Section loaded! Found ' + imageCount + ' images to process...';
+                    document.getElementById('progress-bar').style.width = '25%';
+                    document.getElementById('progress-bar').innerText = '25%';
+                    
+                    // Process section import (use existing system)
+                    processSectionImport(sectionData);
+                } else {
+                    document.getElementById('progress').innerText = 'Error: ' + (response.data || 'Failed to load section');
+                    $('#close-installing-popup').fadeIn();
+                }
+            },
+            error: function(xhr, status, error) {
+                document.getElementById('progress').innerText = 'Network error: ' + error;
+                $('#close-installing-popup').fadeIn();
+            }
+        });
+    }
+
+    // Process section import using existing Templates system
+    function processSectionImport(sectionData) {
+        document.getElementById('progress').innerText = 'Preparing section import...';
+        document.getElementById('progress-bar').style.width = '45%';
+        document.getElementById('progress-bar').innerText = '45%';
+
+        // Use existing Templates import system
+        var importData = {
+            content: sectionData.content,
+            images: sectionData.images || [],
+            title: sectionData.title || 'Imported Section',
+            elementor_version: sectionData.elementor_version || '3.0.0',
+            existing_page_id: 0, 
+            create_new_page: true  // Create new page for sections from main admin catalog
+        };
+
+        // Call Templates import system
+        $.ajax({
+            url: window.kingAddonsData.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'import_elementor_page_with_images',
+                data: JSON.stringify(importData)
+            },
+            success: function(result) {
+                if (result.success) {
+                    document.getElementById('progress').innerText = 'Section import initialized! Processing images...';
+                    document.getElementById('progress-bar').style.width = '65%';
+                    document.getElementById('progress-bar').innerText = '65%';
+                    
+                    // Start processing images using existing system
+                    processNextImage();
+                } else {
+                    document.getElementById('progress').innerText = 'Error: ' + (result.data || 'Failed to initialize section import');
+                    $('#close-installing-popup').fadeIn();
+                }
+            },
+            error: function(xhr, status, error) {
+                document.getElementById('progress').innerText = 'Import error: ' + error;
+                $('#close-installing-popup').fadeIn();
+            }
+        });
+    }
+
+    // Load sections count for tab
+    function loadSectionsCount() {
+        $.ajax({
+            url: window.kingAddonsData.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'king_addons_get_sections_catalog',
+                nonce: window.kingAddonsData.nonce || '',
+                search: '',
+                category: '',
+                section_type: '',
+                plan: '',
+                page: 1
+            },
+            success: function(response) {
+                if (response.success && response.data.pagination) {
+                    $('#sections-count').text(response.data.pagination.total_sections);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('Failed to load sections count:', error);
+            }
+        });
+    }
 });

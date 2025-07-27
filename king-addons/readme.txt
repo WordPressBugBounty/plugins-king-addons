@@ -1,18 +1,18 @@
-=== King Addons for Elementor – Free Elements, Widgets, Templates, and Features for Elementor ===
+=== King Addons for Elementor – 4,000+ ready Elementor sections, 650+ templates, 70+ FREE widgets for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 24.12.93
+Stable tag: 51.1.2
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-650+ Elementor templates, 70+ FREE widgets, and features like Live Search, Popups, Carousels, Image Hotspots, and Parallax Backgrounds.
+AI Tools, Mega Menu, Popup Builder, Forms, Carousels, Live Search, Parallax Background, Global Sections, Header & Footer, Image Hotspots, WooCommerce.
 
 == Description ==
 
-**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **650+ professionally designed templates** and **70+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
+**King Addons for [Elementor](https://wordpress.org/plugins/elementor/)** empowers you to create stunning websites with **650+ professionally designed templates**, **4,000+ ready-made sections** and **70+ FREE widgets**. Build fast, responsive, and mobile-friendly websites effortlessly, whether you are a beginner or an expert. Designed to extend **Elementor's** capabilities further, this easy-to-use Elementor toolkit and WordPress addon offers advanced features and a lightweight approach.
 
 Highlight user engagement with tools like **Dynamic Search with AJAX**, **Popup Builder**, and **One Page Navigation**, designed to streamline navigation, boost interaction, and enhance design flexibility. Popular widgets like **Image Comparison**, **Interactive Image Hotspots**, and **Blog Posts Carousel** help you create visually captivating and interactive user experiences. All tools are fully compatible with Elementor's drag-and-drop editor, making customization intuitive, with no coding required.
 
@@ -35,6 +35,7 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 ### **Elementor Extensions & Tools**
 
 - **Templates Catalog** - Access over 650 Elementor-ready templates to build pages, sections, or entire layouts with professional designs. Featuring attention-grabbing and SEO-optimized templates, this tool is perfect for creating cohesive, visually appealing sites quickly and efficiently.
+- **Sections Catalog** - Collection of 4,000+ ready-made sections to build pages in seconds.
 - **Popup Builder** - Customize eye-catching popups with the Popup Builder extension for Elementor. Ideal for announcements, promotional messages, or subscription forms. Adjust styles, animations, and triggers to boost conversions, capture attention, and enhance user experience.
 - **Header & Footer Builder** - Design fully customizable WordPress headers and footers with advanced display conditions for complete control over visibility. Easily create sticky headers, transparent menus, or fixed footers using Elementor's drag-and-drop editor—no coding required. Apply custom conditions for specific pages, user roles, or devices to optimize navigation and user experience. Perfect for global site headers, landing pages, and membership sites, ensuring a consistent and flexible site structure.
 
@@ -179,13 +180,18 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Screenshots ==
 
-1. King Addons for Elementor - Dashboard
-2. King Addons for Elementor - Dashboard
-3. King Addons for Elementor - Dashboard
-4. King Addons for Elementor - Dashboard
-5. King Addons for Elementor - Elementor Templates Catalog
+1. King Addons for Elementor - Elementor Widgets and Features Dashboard
+2. King Addons for Elementor - Elementor Widgets and Features Dashboard
+3. King Addons for Elementor - Elementor Widgets and Features Dashboard
+4. King Addons for Elementor - Elementor Widgets and Features Dashboard
+5. King Addons for Elementor - Elementor Templates and Sections Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.2 - July 27, 2025 =
+* **New:** Sections Catalog - Collection of 4,000+ ready-made sections to build pages in seconds.
+* **New:** The new popup to import templates and sections in Elementor editor.
+* **Fix:** Template & Sections Catalog popup in the Elementor editor displays only once now.
 
 = King Addons for Elementor version 24.12.93 - July 18, 2025 =
 * **New:** AI Page Translator – Translate entire Elementor pages with one click. Automatically detects and translates all text content in widgets, including advanced repeater fields. Features smart progress tracking, real-time translation updates, and comprehensive results statistics. Works with any language supported by OpenAI GPT models.

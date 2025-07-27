@@ -910,3 +910,86 @@ a:focus {
     border-radius: 12px;
     background: rgb(26 27 27 / 90%);
 }
+
+/* Section Hover Effects */
+.section-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.section-content {
+    position: relative;
+    z-index: 1;
+}
+
+.section-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.section-item:hover .section-overlay {
+    opacity: 1;
+}
+
+.section-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.section-import-btn,
+.section-preview-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 140px;
+    text-align: center;
+    display: inline-block;
+}
+
+.section-import-btn {
+    background: #6366f1;
+    color: white;
+}
+
+.section-import-btn:hover {
+    background: #5855eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.section-preview-btn {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.section-preview-btn:hover {
+    background: white;
+    color: #333;
+    transform: translateY(-2px);
+    text-decoration: none;
+}

@@ -142,7 +142,24 @@ final class Templates
                     </div>
                 </div>
             </div>
-            <div id="templates-catalog">
+            <!-- Catalog Tabs -->
+            <div class="king-addons-catalog-tabs">
+                <button class="king-addons-tab-button active" data-tab="templates">
+                    <i class="eicon-document-file"></i>
+                    <?php esc_html_e('Templates', 'king-addons'); ?>
+                    <span class="tab-count"><?php echo count($templates['templates']); ?></span>
+                </button>
+                <?php if (KING_ADDONS_EXT_SECTIONS_CATALOG): ?>
+                <button class="king-addons-tab-button" data-tab="sections">
+                    <i class="eicon-section"></i>
+                    <?php esc_html_e('Sections', 'king-addons'); ?>
+                    <span class="tab-count" id="sections-count">0</span>
+                </button>
+                <?php endif; ?>
+            </div>
+
+            <!-- Templates Tab Content -->
+            <div id="templates-catalog" class="king-addons-tab-content active">
                 <div class="filters-wrapper">
                     <div class="filters">
                         <select id="template-category">
@@ -215,6 +232,42 @@ final class Templates
                     </div>
                 </div>
             </div>
+
+            <!-- Sections Tab Content -->
+            <?php if (KING_ADDONS_EXT_SECTIONS_CATALOG): ?>
+            <div id="sections-catalog" class="king-addons-tab-content">
+                <div class="filters-wrapper">
+                    <div class="filters">
+                        <select id="sections-category">
+                            <option value=""><?php esc_html_e('All Categories', 'king-addons'); ?></option>
+                        </select>
+                        <select id="sections-type">
+                            <option value=""><?php esc_html_e('All Types', 'king-addons'); ?></option>
+                        </select>
+                        <select id="sections-plan">
+                            <option value=""><?php esc_html_e('All Plans', 'king-addons'); ?></option>
+                            <option value="free"><?php esc_html_e('Free', 'king-addons'); ?></option>
+                            <?php if ($is_premium_active): ?>
+                            <option value="premium"><?php esc_html_e('Premium', 'king-addons'); ?></option>
+                            <?php endif; ?>
+                        </select>
+                        <button id="sections-reset-filters"><?php esc_html_e('Reset Search & Filters', 'king-addons'); ?></button>
+                    </div>
+                </div>
+                <div class="sections-grid-wrapper">
+                    <div class="search-wrapper">
+                        <input type="text" id="sections-search" placeholder="<?php esc_attr_e('Search sections...', 'king-addons'); ?>">
+                    </div>
+                    <div class="sections-grid">
+                        <div class="sections-loading">
+                            <?php esc_html_e('Loading sections...', 'king-addons'); ?>
+                        </div>
+                    </div>
+                    <div class="sections-pagination"></div>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <div id="template-preview-popup" style="display:none;">
                 <div class="popup-content">
                     <div class="popup-content-nav">
@@ -490,6 +543,7 @@ final class Templates
             wp_localize_script('king-addons-templates-script', 'kingAddonsData', array(
                 'adminUrl' => admin_url('admin-post.php'),
                 'ajaxUrl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('kingAddonsNonce'),
             ));
         }
         // if ($screen->id === 'king-addons_page_king-addons-account') {
@@ -526,6 +580,11 @@ final class Templates
         );
 
         add_action('wp_ajax_filter_templates', array($this, 'handle_filter_templates'));
+        
+        // Sections catalog endpoints
+        add_action('wp_ajax_king_addons_get_sections_catalog', array($this, 'handle_get_sections_catalog'));
+        add_action('wp_ajax_king_addons_import_section_admin', array($this, 'handle_import_section_to_page'));
+        
         add_action('http_api_curl', array($this, 'set_custom_curl_options'), 10, 3);
     }
 
@@ -580,6 +639,10 @@ final class Templates
 
             $page_title = sanitize_text_field($import_data['title']);
             $elementor_version = sanitize_text_field($import_data['elementor_version']);
+            
+            // Check if this is for existing page (from popup import)
+            $existing_page_id = isset($import_data['existing_page_id']) ? intval($import_data['existing_page_id']) : 0;
+            $create_new_page = isset($import_data['create_new_page']) ? (bool)$import_data['create_new_page'] : true;
 
             delete_transient('elementor_import_content');
             delete_transient('elementor_import_images');
@@ -588,6 +651,8 @@ final class Templates
             delete_transient('elementor_import_image_retry_count');
             delete_transient('elementor_import_page_title');
             delete_transient('elementor_import_elementor_version');
+            delete_transient('elementor_import_existing_page_id');
+            delete_transient('elementor_import_create_new_page');
 
             set_transient('elementor_import_content', $content, 60 * 60);
             set_transient('elementor_import_images', $image_data, 60 * 60);
@@ -596,10 +661,16 @@ final class Templates
             set_transient('elementor_import_image_retry_count', [], 60 * 60);
             set_transient('elementor_import_page_title', $page_title, 60 * 60);
             set_transient('elementor_import_elementor_version', $elementor_version, 60 * 60);
+            set_transient('elementor_import_existing_page_id', $existing_page_id, 60 * 60);
+            set_transient('elementor_import_create_new_page', $create_new_page, 60 * 60);
+
+            error_log('King Addons Import: Initialized ' . ($create_new_page ? 'new page' : 'existing page') . ' import. Existing page ID: ' . $existing_page_id);
 
             wp_send_json_success([
                 'message' => 'Import initialized.',
-                'images' => $image_data
+                'images' => $image_data,
+                'existing_page_id' => $existing_page_id,
+                'create_new_page' => $create_new_page
             ]);
         } else {
             wp_send_json_error('Invalid import data.');
@@ -608,21 +679,56 @@ final class Templates
 
     private function replace_image_data(array &$array, $old_url, $new_url, $old_id, $new_id)
     {
-        foreach ($array as &$value) {
-            // If this is an array, check if it has both 'url' and 'id'
+        foreach ($array as $key => &$value) {
             if (is_array($value)) {
+                // Standard structure with both 'url' and 'id'
                 if (
                     isset($value['url'], $value['id']) &&
                     $value['url'] === $old_url &&
                     $value['id'] === $old_id
                 ) {
-                    // Both url and id match => replace them
                     $value['url'] = $new_url;
                     $value['id'] = $new_id;
+                }
+                
+                // Background image structure (common in Elementor)
+                if (
+                    isset($value['url']) &&
+                    $value['url'] === $old_url &&
+                    (!isset($value['id']) || $value['id'] === $old_id)
+                ) {
+                    $value['url'] = $new_url;
+                    if (isset($value['id'])) {
+                        $value['id'] = $new_id;
+                    }
                 }
 
                 // Recursively check deeper nested arrays
                 $this->replace_image_data($value, $old_url, $new_url, $old_id, $new_id);
+            } elseif (is_string($value)) {
+                // Direct URL string replacement
+                if ($value === $old_url) {
+                    $array[$key] = $new_url;
+                }
+                
+                // CSS background-image style replacement
+                if (strpos($value, 'background-image:') !== false && strpos($value, $old_url) !== false) {
+                    $array[$key] = str_replace($old_url, $new_url, $value);
+                }
+                
+                // URL() function replacement in CSS
+                if (strpos($value, 'url(') !== false && strpos($value, $old_url) !== false) {
+                    $array[$key] = str_replace($old_url, $new_url, $value);
+                }
+                
+                // JSON string containing URLs (for widget settings)
+                if (strpos($value, '{') === 0 && strpos($value, $old_url) !== false) {
+                    $decoded = json_decode($value, true);
+                    if (is_array($decoded)) {
+                        $this->replace_image_data($decoded, $old_url, $new_url, $old_id, $new_id);
+                        $array[$key] = json_encode($decoded);
+                    }
+                }
             }
         }
     }
@@ -650,6 +756,8 @@ final class Templates
         $image_retry_count = get_transient('elementor_import_image_retry_count');
         $page_title = get_transient('elementor_import_page_title');
         $elementor_version = get_transient('elementor_import_elementor_version');
+        $existing_page_id = get_transient('elementor_import_existing_page_id');
+        $create_new_page = get_transient('elementor_import_create_new_page');
 
         if (!is_array($image_retry_count)) {
             $image_retry_count = [];
@@ -703,38 +811,57 @@ final class Templates
                 ]);
             }
         } else {
-            $new_post_id = wp_insert_post([
-                'post_title' => $page_title,
-                'post_content' => '',
-                'post_status' => 'publish',
-                'post_type' => 'page',
-            ]);
-
-            if ($new_post_id) {
-                update_post_meta($new_post_id, '_elementor_data', wp_slash(json_encode($content)));
-                update_post_meta($new_post_id, '_elementor_edit_mode', 'builder');
-                update_post_meta($new_post_id, '_elementor_template_type', 'page');
-                update_post_meta($new_post_id, '_elementor_version', $elementor_version);
-
-                update_post_meta($new_post_id, '_wp_page_template', 'elementor_canvas');
-
-                update_post_meta($new_post_id, '_wp_gutenberg_disable', '1');
-                update_post_meta($new_post_id, '_wp_gutenberg_enabled', '0');
-
-                delete_transient('elementor_import_content');
-                delete_transient('elementor_import_images');
-                delete_transient('elementor_import_total_images');
-                delete_transient('elementor_import_images_processed');
-                delete_transient('elementor_import_image_retry_count');
-                delete_transient('elementor_import_page_title');
-                delete_transient('elementor_import_elementor_version');
-
-                wp_send_json_success([
-                    'message' => "Page imported successfully!",
-                    'page_url' => get_permalink($new_post_id),
+            // All images processed
+            if ($create_new_page) {
+                // Original behavior - create new page
+                $new_post_id = wp_insert_post([
+                    'post_title' => $page_title,
+                    'post_content' => '',
+                    'post_status' => 'publish',
+                    'post_type' => 'page',
                 ]);
+
+                if ($new_post_id) {
+                    update_post_meta($new_post_id, '_elementor_data', wp_slash(json_encode($content)));
+                    update_post_meta($new_post_id, '_elementor_edit_mode', 'builder');
+                    update_post_meta($new_post_id, '_elementor_template_type', 'page');
+                    update_post_meta($new_post_id, '_elementor_version', $elementor_version);
+
+                    update_post_meta($new_post_id, '_wp_page_template', 'elementor_canvas');
+
+                    update_post_meta($new_post_id, '_wp_gutenberg_disable', '1');
+                    update_post_meta($new_post_id, '_wp_gutenberg_enabled', '0');
+
+                    delete_transient('elementor_import_content');
+                    delete_transient('elementor_import_images');
+                    delete_transient('elementor_import_total_images');
+                    delete_transient('elementor_import_images_processed');
+                    delete_transient('elementor_import_image_retry_count');
+                    delete_transient('elementor_import_page_title');
+                    delete_transient('elementor_import_elementor_version');
+                    delete_transient('elementor_import_existing_page_id');
+                    delete_transient('elementor_import_create_new_page');
+
+                    wp_send_json_success([
+                        'message' => "Page imported successfully!",
+                        'page_url' => get_permalink($new_post_id),
+                    ]);
+                } else {
+                    wp_send_json_error('Failed to import page.');
+                }
             } else {
-                wp_send_json_error('Failed to import page.');
+                // New behavior - for existing page, just signal completion
+                // Content and images are processed and stored in transients
+                // Will be merged by king_addons_merge_with_existing_page endpoint
+                
+                error_log('King Addons Import: Image processing completed for existing page. Content ready for merge.');
+                
+                wp_send_json_success([
+                    'message' => "Image processing completed! Content ready for merge.",
+                    'images_processed' => $images_processed,
+                    'existing_page_id' => $existing_page_id,
+                    'processing_complete' => true
+                ]);
             }
         }
 
@@ -834,6 +961,206 @@ final class Templates
             error_log('[KING_ADDONS_ERROR] ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * AJAX handler for getting sections catalog data
+     */
+    public function handle_get_sections_catalog(): void
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+            return;
+        }
+
+        // Check nonce - handle both admin area and popup
+        if (isset($_POST['nonce'])) {
+            $valid_nonce = wp_verify_nonce($_POST['nonce'], 'kingAddonsNonce') || 
+                          wp_verify_nonce($_POST['nonce'], 'king_addons_template_catalog');
+            
+            if (!$valid_nonce) {
+                wp_send_json_error('Invalid nonce');
+                return;
+            }
+        }
+
+        if (!class_exists('King_Addons\\SectionsMap')) {
+            require_once KING_ADDONS_PATH . 'includes/SectionsMap.php';
+        }
+
+        $sections_map = SectionsMap::getSectionsMapArray();
+        $sections = $sections_map['sections'] ?? [];
+        
+        $is_premium_active = function_exists('king_addons_freemius') && king_addons_freemius()->can_use_premium_code();
+        
+        // Get filters from request
+        $search_query = sanitize_text_field($_POST['search'] ?? '');
+        $selected_category = sanitize_text_field($_POST['category'] ?? '');
+        $selected_type = sanitize_text_field($_POST['section_type'] ?? '');
+        $selected_plan = sanitize_text_field($_POST['plan'] ?? '');
+        $current_page = max(1, intval($_POST['page'] ?? 1));
+
+        // Get categories and section types for filters
+        $categories = [];
+        $section_types = [];
+
+        foreach ($sections as $section_key => $section) {
+            if (!in_array($section['category'], $categories)) {
+                $categories[] = $section['category'];
+            }
+            if (!in_array($section['section_type'], $section_types)) {
+                $section_types[] = $section['section_type'];
+            }
+        }
+
+        sort($categories);
+        sort($section_types);
+
+        // Filter sections
+        $filtered_sections = [];
+
+        foreach ($sections as $section_key => $section) {
+            // Add section key for frontend
+            $section['section_key'] = $section_key;
+            
+            // Note: Premium sections are shown but restricted for import if no premium license
+            
+            // Apply search filter
+            if (!empty($search_query)) {
+                $found_in_title = stripos($section['title'], $search_query) !== false;
+                $found_in_tags = false;
+                
+                foreach ($section['tags'] ?? [] as $tag) {
+                    if (stripos($tag, $search_query) !== false) {
+                        $found_in_tags = true;
+                        break;
+                    }
+                }
+                
+                if (!$found_in_title && !$found_in_tags) {
+                    continue;
+                }
+            }
+            
+            // Apply category filter
+            if (!empty($selected_category) && $section['category'] !== $selected_category) {
+                continue;
+            }
+            
+            // Apply section type filter
+            if (!empty($selected_type) && $section['section_type'] !== $selected_type) {
+                continue;
+            }
+            
+            // Apply plan filter
+            if (!empty($selected_plan) && $section['plan'] !== $selected_plan) {
+                continue;
+            }
+            
+            $filtered_sections[] = $section;
+        }
+
+        // Pagination
+        $items_per_page = 20;
+        $total_sections = count($filtered_sections);
+        $total_pages = ceil($total_sections / $items_per_page);
+        $offset = ($current_page - 1) * $items_per_page;
+        $paged_sections = array_slice($filtered_sections, $offset, $items_per_page);
+
+        wp_send_json_success([
+            'sections' => $paged_sections,
+            'categories' => $categories,
+            'section_types' => $section_types,
+            'pagination' => [
+                'current_page' => $current_page,
+                'total_pages' => $total_pages,
+                'total_sections' => $total_sections,
+                'items_per_page' => $items_per_page
+            ],
+            'is_premium_active' => $is_premium_active
+        ]);
+    }
+
+    /**
+     * AJAX handler for importing section to current page (from main admin catalog)
+     */
+    public function handle_import_section_to_page(): void
+    {
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Insufficient permissions');
+            return;
+        }
+
+        if (!wp_verify_nonce($_POST['nonce'], 'kingAddonsNonce')) {
+            wp_send_json_error('Invalid nonce');
+            return;
+        }
+
+        $section_key = sanitize_text_field($_POST['section_key']);
+        $section_plan = sanitize_text_field($_POST['section_plan']);
+        $is_premium_active = function_exists('king_addons_freemius') && king_addons_freemius()->can_use_premium_code();
+
+        // Determine API URL and install ID (same logic as templates)
+        if ($is_premium_active && $section_plan === 'premium') {
+            $api_url = 'https://api.kingaddons.com/get-section.php';
+            
+            // Use the same method as original templates catalog
+            if (function_exists('king_addons_freemius')) {
+                $freemius_site = king_addons_freemius()->get_site();
+                $install_id = $freemius_site ? $freemius_site->id : 0;
+            } else {
+                $install_id = 0;
+            }
+            
+            error_log('King Addons Premium Section: Using install_id: ' . $install_id . ' for premium section: ' . $section_key);
+        } elseif ($section_plan === 'free') {
+            $api_url = 'https://api.kingaddons.com/get-section-free.php';
+            $install_id = 0;
+            error_log('King Addons Free Section: Fetching free section: ' . $section_key);
+        } else {
+            error_log('King Addons Section Error: Premium section requires premium license. Section: ' . $section_key . ', Plan: ' . $section_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
+            wp_send_json_error('Premium section requires premium license');
+            return;
+        }
+
+        // Get section data from API (same as templates)
+        $response = wp_remote_post($api_url, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'body' => json_encode([
+                'key' => $section_key,
+                'install' => $install_id,
+            ]),
+            'timeout' => 60
+        ]);
+
+        if (is_wp_error($response)) {
+            wp_send_json_error('Failed to fetch section: ' . $response->get_error_message());
+            return;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
+        error_log('King Addons Section API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
+        
+        if (!$data) {
+            error_log('King Addons Section Error: Failed to decode JSON response');
+            wp_send_json_error('Invalid JSON response from section API');
+            return;
+        }
+
+        if (!isset($data['success']) || !$data['success']) {
+            $error_message = isset($data['message']) ? $data['message'] : 'Unknown API error';
+            error_log('King Addons Section Error: API returned error: ' . $error_message);
+            wp_send_json_error('Section API error: ' . $error_message);
+            return;
+        }
+
+        // Return section data for frontend processing (adjust format from your API)
+        wp_send_json_success([
+            'section_data' => $data['section'],  // Your API returns 'section' not 'landing'
+            'message' => 'Section data retrieved successfully'
+        ]);
     }
 }
 

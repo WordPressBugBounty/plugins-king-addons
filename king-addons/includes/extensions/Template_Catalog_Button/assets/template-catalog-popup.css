@@ -1,0 +1,946 @@
+/* King Addons Template Catalog Popup Styles */
+
+.king-addons-template-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: king-addons-popup-fade-in 0.3s ease-out;
+}
+
+@keyframes king-addons-popup-fade-in {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(5px);
+    }
+}
+
+.king-addons-template-popup.show {
+    display: flex;
+}
+
+.king-addons-template-popup-content {
+    background: #ffffff;
+    width: 95%;
+    max-width: 1400px;
+    height: 95vh;
+    max-height: 900px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.king-addons-template-popup-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e1e8ed;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.king-addons-template-popup-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #23282d;
+    margin: 0;
+}
+
+.king-addons-template-popup-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+}
+
+.king-addons-template-popup-header-content {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.king-addons-template-popup-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    position: absolute;
+    line-height: 1;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    right: 15px;
+    width: 34px;
+}
+
+.king-addons-template-popup-close:hover {
+    background: #f1f1f1;
+    color: #23282d;
+}
+
+/* Popup Tabs */
+.king-addons-popup-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e1e8ed;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.king-addons-popup-tab-button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 18px 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+    position: relative;
+    border-bottom: 3px solid transparent;
+}
+
+.king-addons-popup-tab-button:hover {
+    background: rgba(138, 43, 226, 0.1);
+    color: #8a2be2;
+}
+
+.king-addons-popup-tab-button.active {
+    background: #fff;
+    color: #8a2be2;
+    border-bottom: 3px solid #8a2be2;
+}
+
+.king-addons-popup-tab-button i {
+    font-size: 16px;
+}
+
+.popup-tab-count {
+    background: #8a2be2;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.king-addons-popup-tab-button.active .popup-tab-count {
+    background: #8a2be2;
+}
+
+/* Tab Content */
+.king-addons-popup-tab-content {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+}
+
+.king-addons-popup-tab-content.active {
+    display: flex;
+    overflow-y: scroll;
+}
+
+.king-addons-template-popup-filters {
+    padding: 15px 25px;
+    border-bottom: 1px solid #e1e8ed;
+    background: #f8f9fa;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto auto;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.king-addons-template-popup-search,
+.king-addons-sections-popup-search {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.king-addons-template-popup-search:focus,
+.king-addons-sections-popup-search:focus {
+    outline: none;
+    border-color: #8a2be2;
+    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+}
+
+.king-addons-template-popup-select {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    min-width: 140px;
+    transition: border-color 0.2s ease;
+    height: auto;
+}
+
+.king-addons-template-popup-select:focus {
+    outline: none;
+    border-color: #8a2be2;
+    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+}
+
+/* Reset filters button */
+.king-addons-reset-filters-btn {
+    padding: 10px 16px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.king-addons-reset-filters-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.king-addons-reset-filters-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.king-addons-reset-filters-btn i {
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.king-addons-template-popup-body,
+.king-addons-sections-popup-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 25px 30px;
+    background: #ffffff;
+    min-height: 0; /* Important: allows flex item to shrink below content size */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Custom scrollbar styles */
+.king-addons-template-popup-body::-webkit-scrollbar,
+.king-addons-sections-popup-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.king-addons-template-popup-body::-webkit-scrollbar-track,
+.king-addons-sections-popup-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.king-addons-template-popup-body::-webkit-scrollbar-thumb,
+.king-addons-sections-popup-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.king-addons-template-popup-body::-webkit-scrollbar-thumb:hover,
+.king-addons-sections-popup-body::-webkit-scrollbar-thumb:hover {
+    background: #8a2be2;
+}
+
+.king-addons-template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.king-addons-sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.king-addons-template-item {
+    background: #ffffff;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.king-addons-template-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: #0073aa;
+}
+
+.king-addons-template-item-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.king-addons-template-item-content {
+    padding: 15px;
+}
+
+.king-addons-template-item-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #23282d;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.king-addons-template-item-plan {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.king-addons-template-item-plan.free {
+    background: #d4edda;
+    color: #155724;
+}
+
+.king-addons-template-item-plan.premium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.king-addons-template-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+    padding: 20px 0;
+    border-top: 1px solid #e1e8ed;
+}
+
+.king-addons-template-pagination button,
+.king-addons-template-pagination a,
+.king-addons-template-pagination span {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #23282d;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    text-align: center;
+}
+
+.king-addons-template-pagination button:hover,
+.king-addons-template-pagination a:hover {
+    background: #8a2be2;
+    color: white;
+    border-color: #8a2be2;
+    transform: translateY(-1px);
+}
+
+.king-addons-template-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.king-addons-template-pagination button.active,
+.king-addons-template-pagination .current {
+    background: #8a2be2;
+    color: white;
+    border-color: #8a2be2;
+}
+
+.king-addons-template-pagination-info {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0 15px;
+}
+
+.king-addons-template-popup-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.king-addons-template-popup-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.king-addons-template-popup-error {
+    text-align: center;
+    padding: 40px 20px;
+    color: #dc3545;
+    font-size: 16px;
+}
+
+/* Loading spinner */
+.king-addons-template-spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0073aa;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: king-addons-spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes king-addons-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Import progress popup */
+.king-addons-import-progress-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-import-progress-popup.show {
+    display: flex;
+}
+
+.king-addons-import-progress-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.king-addons-import-progress-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #23282d;
+    margin: 0 0 20px 0;
+}
+
+.king-addons-import-progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #f1f1f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.king-addons-import-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0073aa, #00a0d2);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.king-addons-import-progress-text {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 10px 0;
+}
+
+.king-addons-import-success {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.king-addons-import-error {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Premium promo popup styles */
+.king-addons-premium-promo-popup {
+    position: fixed;
+    z-index: 9999999999;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    max-width: 569px;
+    height: 300px;
+    padding: 20px 50px;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 11px 34px 0 rgb(0 0 0 / 5%);
+    border-radius: 20px;
+    display: none;
+    align-items: center;
+}
+
+.king-addons-premium-promo-popup.show {
+    display: flex;
+}
+
+.king-addons-premium-promo-popup-content {
+    text-align: center;
+    width: 100%;
+}
+
+.king-addons-premium-promo-popup-wrapper {
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.king-addons-premium-promo-popup-txt {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+.king-addons-pr-popup-title {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.king-addons-pr-popup-desc {
+    margin-top: 10px;
+    display: block;
+    font-weight: 400;
+}
+
+.king-addons-pr-popup-desc-b {
+    font-weight: 700;
+}
+
+.king-addons-premium-promo-popup-purchase-btn {
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    flex-flow: row;
+    margin-top: 10px;
+    padding: 15px 30px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(120.55deg, #A20BD8 18.56%, #FF4040 98.01%);
+    transition: all 600ms ease;
+    font-size: 16px;
+}
+
+.king-addons-premium-promo-popup-purchase-btn:hover {
+    transform: scale(1.05);
+}
+
+.king-addons-premium-promo-popup-purchase-btn img {
+    margin-right: 7px;
+    width: 16px;
+    height: 16px;
+}
+
+.king-addons-close-premium-promo-popup {
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    flex-flow: row;
+    margin-top: 10px;
+    padding: 15px 25px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #191919;
+    border: none;
+    border-radius: 12px;
+    background: #f2f4f5;
+    margin-left: 10px;
+}
+
+.king-addons-close-premium-promo-popup:hover {
+    background: #e8eaed;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .king-addons-template-popup-filters {
+        grid-template-columns: 1fr auto auto;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .king-addons-template-popup-filters {
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+    }
+    
+    .king-addons-template-grid,
+    .king-addons-sections-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .king-addons-template-popup-content {
+        width: 98%;
+        height: 95vh;
+        border-radius: 8px;
+    }
+    
+    .king-addons-template-popup-header,
+    .king-addons-template-popup-body {
+        padding: 15px 20px;
+    }
+    
+    .king-addons-template-popup-filters {
+        padding: 12px 20px;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .king-addons-template-grid,
+    .king-addons-sections-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .king-addons-template-popup-search,
+    .king-addons-template-popup-select,
+    .king-addons-reset-filters-btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .king-addons-premium-promo-popup {
+        width: 90%;
+        max-width: 400px;
+        height: auto;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .king-addons-template-grid,
+    .king-addons-sections-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .king-addons-template-popup-title {
+        font-size: 18px;
+    }
+    
+    .king-addons-template-popup-content {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .king-addons-template-popup-body {
+        padding: 15px;
+    }
+    
+    .king-addons-popup-tab-button {
+        padding: 15px 10px;
+        font-size: 14px;
+        gap: 6px;
+    }
+    
+    .popup-tab-count {
+        font-size: 11px;
+        padding: 1px 6px;
+    }
+}
+
+/* Additional Sections Grid Styles (body container) */
+.king-addons-sections-popup-body .king-addons-sections-grid {
+    padding: 0; /* Remove extra padding as it's already in body */
+    min-height: 400px;
+}
+
+.king-addons-section-item {
+    position: relative;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.king-addons-section-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: #8a2be2;
+}
+
+.king-addons-section-item:hover .king-addons-section-item-overlay {
+    opacity: 1;
+}
+
+.king-addons-section-item-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: #f5f5f5;
+    object-position: top;
+}
+
+.king-addons-section-item-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.king-addons-section-item-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: #333;
+    line-height: 1.3;
+    height: 2.6em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.king-addons-section-item-plan {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.king-addons-section-item-plan.free {
+    background: #28a745;
+    color: white;
+}
+
+.king-addons-section-item-plan.premium {
+    background: #8a2be2;
+    color: white;
+}
+
+.king-addons-section-item-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.king-addons-section-item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.king-addons-section-import-btn,
+.king-addons-section-preview-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.king-addons-section-import-btn {
+    background: #8a2be2;
+    color: white;
+}
+
+.king-addons-section-import-btn:hover {
+    background: #7a1ec7;
+    color: white;
+}
+
+.king-addons-section-preview-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+}
+
+.king-addons-section-preview-btn:hover {
+    background: white;
+    color: #333;
+}
+
+/* Sections body container */
+.king-addons-sections-popup-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.king-addons-sections-popup-loading {
+    padding: 60px;
+    text-align: center;
+    color: #666;
+}
+
+.king-addons-sections-popup-empty {
+    padding: 60px;
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+}
+
+.king-addons-sections-pagination {
+    padding: 20px 30px;
+    border-top: 1px solid #e1e8ed;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.king-addons-sections-pagination .pagination-inner {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.king-addons-sections-pagination a,
+.king-addons-sections-pagination span {
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #666;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.king-addons-sections-pagination a:hover {
+    background: #8a2be2;
+    color: white;
+    border-color: #8a2be2;
+}
+
+.king-addons-sections-pagination .current {
+    background: #8a2be2;
+    color: white;
+    border-color: #8a2be2;
+}
+
+/* Update template items to support new actions */
+.king-addons-template-item {
+    position: relative;
+}
+
+.king-addons-template-item:hover .king-addons-template-item-overlay {
+    opacity: 1;
+}
+
+.king-addons-template-item-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.king-addons-template-item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.king-addons-template-import-btn,
+.king-addons-template-preview-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.king-addons-template-import-btn {
+    background: #8a2be2;
+    color: white;
+}
+
+.king-addons-template-import-btn:hover {
+    background: #7a1ec7;
+    color: white;
+}
+
+.king-addons-template-preview-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+}
+
+.king-addons-template-preview-btn:hover {
+    background: white;
+    color: #333;
+} 

@@ -68,6 +68,12 @@ final class Core
                 Template_Catalog_Button::instance();
             }
 
+            // Sections Catalog
+            // if (KING_ADDONS_EXT_SECTIONS_CATALOG) {
+            //     require_once(KING_ADDONS_PATH . 'includes/extensions/Sections_Catalog/Sections_Catalog.php');
+            //     Sections_Catalog::instance();
+            // }
+
             // Header & Footer Builder
             if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/Header_Footer_Builder.php');
@@ -116,7 +122,11 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/extensions/alt-text-generator/Alt_Text_Generator.php');
             new Alt_Text_Generator();
 
-            // TODO
+
+            // Screenshot Generator
+            // require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/screenshot-generator.php');
+            // require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/screenshot-admin-page.php');
+            // new King_Addons\KingAddons\ScreenshotAdmin();
 
             // END: ADDITIONAL CLASSES
 
