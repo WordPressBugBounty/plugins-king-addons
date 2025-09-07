@@ -10,6 +10,7 @@ use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Css_Filter;
 use Elementor\Utils;
 
 if (!defined('ABSPATH')) {
@@ -849,6 +850,25 @@ $this->end_controls_section();
                     '{{WRAPPER}} .king-addons-member-media' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
                 'separator' => 'before',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Css_Filter::get_type(),
+            [
+                'name' => 'kng_image_css_filters',
+                'label' => esc_html__('CSS Filters', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-addons-member-media img',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Css_Filter::get_type(),
+            [
+                'name' => 'kng_image_css_filters_hover',
+                'label' => esc_html__('CSS Filters on Hover', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-addons-member-media:hover img',
             ]
         );
 

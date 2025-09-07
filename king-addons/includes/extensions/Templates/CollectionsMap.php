@@ -83,6 +83,7 @@ final class CollectionsMap
             70 => 'Insurance Agency',
             71 => 'Gym & Fitness',
             72 => 'Funeral Services',
+            73 => 'Tattoo & Piercing Studio',
         ];
     }
 }

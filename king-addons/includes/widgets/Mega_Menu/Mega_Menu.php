@@ -241,11 +241,46 @@ class Mega_Menu extends Widget_Base
         $this->add_control(
             'logo_position',
             [
-                'label' => esc_html__('Logo Position', 'king-addons'),
+                'label' => esc_html__('Logo Position (Desktop)', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'left',
                 'options' => [
                     'left' => esc_html__('Left', 'king-addons'),
+                    'center' => esc_html__('Center Between', 'king-addons'),
+                    'right' => esc_html__('Right', 'king-addons'),
+                ],
+                'condition' => [
+                    'show_logo' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'logo_position_tablet',
+            [
+                'label' => esc_html__('Logo Position (Tablet)', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'left',
+                'options' => [
+                    'left' => esc_html__('Left', 'king-addons'),
+                    'center' => esc_html__('Center', 'king-addons'),
+                    'right' => esc_html__('Right', 'king-addons'),
+                ],
+                'condition' => [
+                    'show_logo' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'logo_position_mobile',
+            [
+                'label' => esc_html__('Logo Position (Mobile)', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'left',
+                'options' => [
+                    'left' => esc_html__('Left', 'king-addons'),
+                    'center' => esc_html__('Center', 'king-addons'),
                     'right' => esc_html__('Right', 'king-addons'),
                 ],
                 'condition' => [
@@ -264,6 +299,43 @@ class Mega_Menu extends Widget_Base
                 ],
                 'condition' => [
                     'show_logo' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'center_logo_split_at',
+            [
+                'label' => esc_html__('Split Menu After Item', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 2,
+                'min' => 1,
+                'max' => 10,
+                'description' => esc_html__('Logo will be placed after this menu item number (e.g., 2 = after 2nd menu item)', 'king-addons'),
+                'condition' => [
+                    'show_logo' => 'yes',
+                    'logo_position' => 'center',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'center_logo_menu_alignment',
+            [
+                'label' => esc_html__('Menu Items Vertical Alignment', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'center',
+                'options' => [
+                    'start' => esc_html__('Top', 'king-addons'),
+                    'center' => esc_html__('Center', 'king-addons'),
+                    'end' => esc_html__('Bottom', 'king-addons'),
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-logo-position-center.king-addons-mega-menu-horizontal .king-addons-menu-items' => 'align-items: {{VALUE}};',
+                ],
+                'condition' => [
+                    'show_logo' => 'yes',
+                    'logo_position' => 'center',
                 ],
             ]
         );
@@ -290,6 +362,9 @@ class Mega_Menu extends Widget_Base
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-mega-menu-logo img' => 'max-width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-mega-menu-logo .king-addons-lottie-animations' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-mega-menu-logo .king-addons-lottie-animations svg' => 'width: 100% !important; height: 100% !important;',
+                    '{{WRAPPER}} .king-addons-mega-menu-logo .king-addons-lottie-animations canvas' => 'width: 100% !important; height: 100% !important;',
                 ],
                 'condition' => [
                     'show_logo' => 'yes',
@@ -467,10 +542,32 @@ class Mega_Menu extends Widget_Base
         $this->add_control(
             'menu_background',
             [
-                'label' => esc_html__('Background', 'king-addons'),
+                'label' => esc_html__('Background (Desktop)', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-mega-menu' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'menu_background_tablet',
+            [
+                'label' => esc_html__('Background (Tablet)', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '(tablet){{WRAPPER}} .king-addons-mega-menu' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'menu_background_mobile',
+            [
+                'label' => esc_html__('Background (Mobile)', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '(mobile){{WRAPPER}} .king-addons-mega-menu' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -887,6 +984,50 @@ $this->end_controls_section();
         );
 
         $this->add_control(
+            'mobile_toggle_hover_color',
+            [
+                'label' => esc_html__('Toggle Button Hover Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-mobile-menu-toggle:hover' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'mobile_toggle_hover_background',
+            [
+                'label' => esc_html__('Toggle Button Hover Background', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-mobile-menu-toggle:hover' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'mobile_toggle_active_color',
+            [
+                'label' => esc_html__('Toggle Button Active Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-mobile-menu-toggle.active' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'mobile_toggle_active_background',
+            [
+                'label' => esc_html__('Toggle Button Active Background', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-mobile-menu-toggle.active' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
             'mobile_menu_background',
             [
                 'label' => esc_html__('Menu Background', 'king-addons'),
@@ -903,7 +1044,8 @@ $this->end_controls_section();
                 'label' => esc_html__('Text Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-mobile-menu a' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .king-addons-mobile-menu .king-addons-menu-items a' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .king-addons-mobile-menu .king-addons-menu-items li a' => 'color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -914,7 +1056,8 @@ $this->end_controls_section();
                 'label' => esc_html__('Text Hover Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-mobile-menu a:hover' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .king-addons-mobile-menu .king-addons-menu-items a:hover' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .king-addons-mobile-menu .king-addons-menu-items li a:hover' => 'color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -1030,27 +1173,37 @@ $this->end_controls_section();
         $settings = $this->get_settings_for_display();
         $menu_layout = $settings['menu_layout'];
         $logo_position = $settings['logo_position'];
+        $logo_position_tablet = !empty($settings['logo_position_tablet']) ? $settings['logo_position_tablet'] : $logo_position;
+        $logo_position_mobile = !empty($settings['logo_position_mobile']) ? $settings['logo_position_mobile'] : $logo_position;
         $logo_html = '';
 
         if ($settings['show_logo'] === 'yes') {
-            $logo_url = !empty($settings['custom_logo']['url']) ? $settings['custom_logo']['url'] : get_custom_logo();
             $site_url = get_home_url();
+            $logo_content = '';
 
-            if (!empty($logo_url)) {
-                $logo_html = '<div class="king-addons-mega-menu-logo king-addons-logo-position-' . esc_attr($logo_position) . '">';
-                $logo_html .= '<a href="' . esc_url($site_url) . '">';
-
-                if (!empty($settings['custom_logo']['url'])) {
-                    $logo_html .= '<img src="' . esc_url($settings['custom_logo']['url']) . '" alt="' . esc_attr(get_bloginfo('name')) . '">';
+            // Generate logo content
+            if (!empty($settings['custom_logo']['url'])) {
+                // Custom logo uploaded via Elementor
+                $logo_content = '<img src="' . esc_url($settings['custom_logo']['url']) . '" alt="' . esc_attr(get_bloginfo('name')) . '">';
+            } else {
+                // Use WordPress theme logo
+                $custom_logo_id = get_theme_mod('custom_logo');
+                if ($custom_logo_id) {
+                    $logo_content = wp_get_attachment_image($custom_logo_id, 'full');
                 } else {
-                    $custom_logo_id = get_theme_mod('custom_logo');
-                    if ($custom_logo_id) {
-                        $logo_html .= wp_get_attachment_image($custom_logo_id, 'full');
-                    } else {
-                        $logo_html .= '<span class="site-title">' . esc_html(get_bloginfo('name')) . '</span>';
-                    }
+                    $logo_content = '<span class="site-title">' . esc_html(get_bloginfo('name')) . '</span>';
                 }
+            }
 
+            if (!empty($logo_content)) {
+                $logo_classes = 'king-addons-mega-menu-logo';
+                $logo_classes .= ' king-addons-logo-position-' . esc_attr($logo_position);
+                $logo_classes .= ' king-addons-logo-position-tablet-' . esc_attr($logo_position_tablet);
+                $logo_classes .= ' king-addons-logo-position-mobile-' . esc_attr($logo_position_mobile);
+                
+                $logo_html = '<div class="' . esc_attr($logo_classes) . '">';
+                $logo_html .= '<a href="' . esc_url($site_url) . '">';
+                $logo_html .= $logo_content;
                 $logo_html .= '</a>';
                 $logo_html .= '</div>';
             }
@@ -1058,6 +1211,8 @@ $this->end_controls_section();
 
         $menu_source = $settings['menu_source'];
         $menu_html = '';
+        $menu_html_left = '';
+        $menu_html_right = '';
 
         if ($menu_source === 'wordpress' && !empty($settings['wp_menu'])) {
             $args = [
@@ -1072,6 +1227,12 @@ $this->end_controls_section();
             ];
 
             $menu_html = wp_nav_menu($args);
+
+            // Store split position for center logo (will be handled by JavaScript)
+            if ($logo_position === 'center' && !empty($logo_html)) {
+                $split_at = isset($settings['center_logo_split_at']) ? (int)$settings['center_logo_split_at'] : 2;
+                // We'll let JavaScript handle the splitting for more reliable results
+            }
         }
 
         // Mobile menu toggle button
@@ -1091,14 +1252,34 @@ $this->end_controls_section();
             $horizontal_alignment_attr = ' data-horizontal-align="' . esc_attr($settings['horizontal_alignment']) . '"';
         }
 
-        // Add data-dropdown-animation attribute to main menu wrapper
+        // Add data attributes to main menu wrapper
         $dropdown_animation = !empty($settings['dropdown_animation']) ? $settings['dropdown_animation'] : 'fade';
         $dropdown_animation_attr = ' data-dropdown-animation="' . esc_attr($dropdown_animation) . '"';
+        
+        // Add center logo data attributes for responsive positions
+        $center_logo_attrs = '';
+        $has_center_logo = ($logo_position === 'center' || $logo_position_tablet === 'center' || $logo_position_mobile === 'center');
+        
+        if ($has_center_logo && !empty($logo_html)) {
+            $split_at = isset($settings['center_logo_split_at']) ? (int)$settings['center_logo_split_at'] : 2;
+            $center_logo_attrs = ' data-center-logo="true" data-split-at="' . esc_attr($split_at) . '"';
+            $center_logo_attrs .= ' data-logo-position-desktop="' . esc_attr($logo_position) . '"';
+            $center_logo_attrs .= ' data-logo-position-tablet="' . esc_attr($logo_position_tablet) . '"';
+            $center_logo_attrs .= ' data-logo-position-mobile="' . esc_attr($logo_position_mobile) . '"';
+        }
 
 ?>
-        <div class="king-addons-mega-menu king-addons-mega-menu-<?php echo esc_attr($menu_layout); ?>" <?php echo $vertical_alignment_attr . $horizontal_alignment_attr . $dropdown_animation_attr; ?>>
+        <div class="king-addons-mega-menu king-addons-mega-menu-<?php echo esc_attr($menu_layout); ?> king-addons-logo-position-<?php echo esc_attr($logo_position); ?> king-addons-logo-position-tablet-<?php echo esc_attr($logo_position_tablet); ?> king-addons-logo-position-mobile-<?php echo esc_attr($logo_position_mobile); ?>" <?php echo $vertical_alignment_attr . $horizontal_alignment_attr . $dropdown_animation_attr . $center_logo_attrs; ?>>
+            
             <?php if ($logo_position === 'left' && !empty($logo_html)) : ?>
                 <?php echo $logo_html; ?>
+            <?php endif; ?>
+
+            <?php if (!empty($logo_html) && ($logo_position === 'center' || $logo_position_tablet === 'center' || $logo_position_mobile === 'center')) : ?>
+                <!-- Center logo will be positioned by JavaScript -->
+                <div class="king-addons-center-logo-placeholder" style="display: none;">
+                    <?php echo $logo_html; ?>
+                </div>
             <?php endif; ?>
 
             <nav class="king-addons-menu-container" <?php echo $vertical_alignment_style; ?>>

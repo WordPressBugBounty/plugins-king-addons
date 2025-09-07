@@ -1,0 +1,687 @@
+/**
+ * Dynamic Posts Grid Widget Styles
+ * King Addons for Elementor
+ */
+
+/* Wrapper */
+.king-addons-dpg-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+/* Elementor Editor Wrapper Fixes */
+/* .elementor-editor-active .king-addons-dpg-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+
+.elementor-editor-active .elementor-widget-king-addons-dynamic-posts-grid {
+    width: 100% !important;
+}
+
+.elementor-editor-active .elementor-widget-king-addons-dynamic-posts-grid .elementor-widget-container {
+    width: 100% !important;
+    overflow: visible !important;
+} */
+
+/* Filter Bar Styles */
+.king-addons-dpg-filter-bar {
+    /* Margin controlled by Elementor - see Filter Section Spacing */
+}
+
+.king-addons-dpg-filter-header {
+    /* Margin controlled by Elementor - see Filter Section Spacing */
+}
+
+.king-addons-dpg-filter-title {
+    /* Styles controlled by Elementor - see Filter Title style section */
+}
+
+.king-addons-dpg-filter-controls {
+    display: flex;
+    align-items: center;
+    /* Gap controlled by Elementor - see Filter Section Spacing */
+    flex-wrap: wrap;
+}
+
+.king-addons-dpg-filter-dropdown {
+    position: relative;
+}
+
+.king-addons-dpg-posts-filter {
+    /* Main styles controlled by Elementor - see Filter Controls style section */
+    cursor: pointer;
+    min-width: 200px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.king-addons-dpg-posts-filter:focus {
+    outline: none;
+    border-color: #D1D5DB;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom dropdown icon */
+.king-addons-dpg-filter-dropdown .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6B7280;
+}
+
+.king-addons-dpg-filter-dropdown .dropdown-icon svg,
+.king-addons-dpg-filter-dropdown .dropdown-icon i {
+    color: currentColor;
+    fill: currentColor;
+}
+
+/* Custom dropdown image */
+.king-addons-dpg-filter-dropdown .dropdown-image {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px; /* Default size, overridden by Elementor */
+    height: 16px; /* Default size, overridden by Elementor */
+    flex-shrink: 0;
+}
+
+.king-addons-dpg-filter-dropdown .dropdown-image img {
+    object-fit: contain;
+    opacity: 0.8;
+    max-width: 100%;
+    max-height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+/* Hide default arrow when using custom icon or image */
+.king-addons-dpg-filter-dropdown.has-custom-icon .king-addons-dpg-posts-filter {
+    background-image: none;
+}
+
+/* Search Input */
+.king-addons-dpg-search-input {
+    /* Main styles controlled by Elementor - see Filter Controls style section */
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    min-width: 350px;
+}
+
+.king-addons-dpg-search-input:focus-within {
+    border-color: #D1D5DB;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.king-addons-dpg-posts-search {
+    /* Main styles controlled by Elementor - see Filter Controls style section */
+    border: none !important;
+    background: transparent;
+    flex: 1;
+    min-width: 280px;
+}
+
+.king-addons-dpg-posts-search:focus {
+    outline: none;
+}
+
+.king-addons-dpg-posts-search::placeholder {
+    /* Placeholder color controlled by Elementor */
+    font-weight: 400;
+}
+
+.king-addons-dpg-search-btn {
+    /* Styles controlled by Elementor - see Filter Controls > Search Button section */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0;
+}
+
+.king-addons-dpg-search-btn:hover {
+    /* Hover styles controlled by Elementor - see Filter Controls > Search Button section */
+}
+
+.king-addons-dpg-search-btn svg {
+    fill: currentColor;
+    width: 18px;
+    height: 18px;
+}
+
+.king-addons-dpg-search-btn i {
+    /* Icon styles controlled by Elementor - see Filter Controls > Search Button Icon section */
+    font-size: 18px;
+    color: currentColor;
+}
+
+/* Grid Styles */
+.king-addons-dpg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    /* Margin controlled by Elementor - see Grid Spacing section */
+}
+
+/* Elementor Editor Compatibility */
+/* .elementor-editor-active .king-addons-dpg-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 24px !important;
+} */
+
+/* Elementor Preview Mode */
+.elementor-device-desktop .king-addons-dpg-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.elementor-device-tablet .king-addons-dpg-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.elementor-device-mobile .king-addons-dpg-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+/* Force Grid Layout in Editor (override Isotope) */
+/* .elementor-editor-active .king-addons-dpg-grid .king-addons-dpg-item {
+    position: static !important;
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+    left: auto !important;
+    top: auto !important;
+}
+
+/* Disable Isotope animations in editor */
+/* .elementor-editor-active .king-addons-dpg-grid {
+    height: auto !important;
+}
+
+.elementor-editor-active .king-addons-dpg-grid .king-addons-dpg-card {
+    position: static !important;
+    transform: none !important;
+} */ 
+
+/* Grid Item (Card) Styles */
+.king-addons-dpg-card {
+    /* Main styles controlled by Elementor - see Cards style section */
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Elementor Editor Card Fixes */
+/* .elementor-editor-active .king-addons-dpg-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.elementor-editor-active .king-addons-dpg-item {
+    width: 100% !important;
+    display: block !important;
+}
+
+/* Fix content distribution in editor */
+/* .elementor-editor-active .king-addons-dpg-content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.elementor-editor-active .king-addons-dpg-cta {
+    margin-top: auto !important;
+}  */
+
+.king-addons-dpg-card:hover {
+    /* Hover styles controlled by Elementor - see Card Hover Effects section */
+}
+
+/* Card clickable styles */
+.king-addons-dpg-cards-clickable .king-addons-dpg-card {
+    cursor: pointer;
+}
+
+.king-addons-dpg-cards-clickable .king-addons-dpg-card:hover {
+    /* Enhanced interaction feedback when clickable */
+}
+
+/* Ensure buttons and links inside clickable cards still have proper cursor */
+.king-addons-dpg-cards-clickable .king-addons-dpg-card a,
+.king-addons-dpg-cards-clickable .king-addons-dpg-card button {
+    cursor: pointer;
+}
+
+/* Post Type Header */
+.king-addons-dpg-header {
+    /* Padding controlled by Elementor - see Card Header style section */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Icon Position - Left (default) */
+.king-addons-icon-left .king-addons-dpg-header {
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+/* Icon Position - Right */
+.king-addons-icon-right .king-addons-dpg-header {
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    gap: 12px;
+}
+
+.king-addons-dpg-icon {
+    /* Styles controlled by Elementor - see Card Header style section */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.king-addons-dpg-icon svg {
+    /* Size and color controlled by Elementor */
+    opacity: 0.8;
+}
+
+.king-addons-dpg-icon i {
+    /* Size and color controlled by Elementor */
+    opacity: 0.8;
+}
+
+.king-addons-dpg-icon img {
+    /* Size controlled by Elementor */
+    object-fit: contain;
+}
+
+/* Category icon and image styles */
+.king-addons-dpg-icon .category-icon {
+    /* Icon styles controlled by Elementor - see Card Header style section */
+    opacity: 0.8;
+}
+
+.king-addons-dpg-icon .category-image {
+    /* Image styles controlled by Elementor - see Card Header style section */
+    object-fit: contain;
+    border-radius: 2px;
+}
+
+.king-addons-dpg-label {
+    /* Typography and color controlled by Elementor - see Card Header style section */
+    opacity: 0.9;
+}
+
+/* Category Color Variations - Dynamic styles set via Elementor controls */
+.king-addons-dpg-category-default {
+    background: #F8F9FA;
+    border-left: 4px solid #DEE2E6;
+}
+
+.king-addons-dpg-category-default .king-addons-dpg-header {
+    background: #E9ECEF;
+}
+
+.king-addons-dpg-category-default .king-addons-dpg-icon,
+.king-addons-dpg-category-default .king-addons-dpg-label {
+    color: #6C757D;
+}
+
+/* Common Category Colors (fallback if Elementor colors not applied) */
+.king-addons-dpg-card.king-addons-dpg-category-uncategorized,
+.king-addons-dpg-card.filter-uncategorized {
+    background: #F3F4F6;
+}
+
+.king-addons-dpg-card.king-addons-dpg-category-surfing,
+.king-addons-dpg-card.filter-surfing {
+    background: #DBEAFE;
+}
+
+.king-addons-dpg-card.king-addons-dpg-category-diving-experience,
+.king-addons-dpg-card.filter-diving-experience {
+    background: #FEF3C7;
+}
+
+.king-addons-dpg-card.king-addons-dpg-category-events,
+.king-addons-dpg-card.filter-events {
+    background: #FBCFE8;
+}
+
+.king-addons-dpg-card.king-addons-dpg-category-surfing-tips,
+.king-addons-dpg-card.filter-surfing-tips {
+    background: #FEE2E2;
+}
+
+.king-addons-dpg-card.king-addons-dpg-category-kayaking,
+.king-addons-dpg-card.filter-kayaking {
+    background: #FEF3C7;
+}
+
+.king-addons-dpg-card.king-addons-dpg-category-diving-tips,
+.king-addons-dpg-card.filter-diving-tips {
+    background: #DBEAFE;
+}
+
+/* Dynamic category classes will be generated with inline styles via selectors */
+
+/* Post Content */
+.king-addons-dpg-content {
+    /* Padding and alignment controlled by Elementor - see Card Content style section */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.king-addons-dpg-title {
+    /* Typography controlled by Elementor - see Card Content style section */
+    margin: 0 0 0 0;
+}
+
+/* Excerpt - controlled by PHP conditional rendering */
+.king-addons-dpg-excerpt {
+    /* Styles controlled by Elementor - see Card Content > Excerpt section */
+}
+
+.king-addons-dpg-title a {
+    /* Color controlled by Elementor - see Card Content style section */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: block;
+}
+
+.king-addons-dpg-title a:hover {
+    /* Hover color controlled by Elementor */
+}
+
+.king-addons-dpg-excerpt {
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    display: none; /* Hidden in this design */
+}
+
+/* CTA Button */
+.king-addons-dpg-cta {
+    /* Padding controlled by Elementor - see Card Button style section */
+    margin-top: auto;
+}
+
+.king-addons-dpg-button {
+    /* All styles controlled by Elementor - see Card Button style section */
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+}
+
+.king-addons-dpg-button:hover {
+    /* Hover styles controlled by Elementor */
+    transform: translateY(-1px);
+}
+
+/* Load More Section */
+.king-addons-dpg-pagination {
+    text-align: center;
+    /* Margin controlled by Elementor - see Pagination section */
+}
+
+.king-addons-dpg-load-more-btn {
+    /* All styles controlled by Elementor - see Load More Button style section */
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.king-addons-dpg-load-more-btn:hover {
+    /* Hover styles controlled by Elementor */
+    transform: translateY(-2px);
+}
+
+.king-addons-dpg-load-more-btn:active {
+    transform: translateY(0);
+}
+
+.king-addons-dpg-load-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.king-addons-dpg-pagination-loading {
+    /* Color controlled by Elementor - see Pagination section */
+    font-style: italic;
+    margin: 20px 0;
+}
+
+.king-addons-dpg-pagination-finish {
+    /* Styles controlled by Elementor - see Pagination section */
+    text-align: center;
+}
+
+.king-addons-dpg-current-count,
+.king-addons-dpg-total-count {
+    /* Color controlled by Elementor - see Pagination section */
+    font-weight: 600;
+}
+
+.king-addons-dpg-pagination-info {
+    /* Styles controlled by Elementor - see Pagination section */
+    text-align: center;
+}
+
+/* No Posts Message */
+.king-addons-dpg-no-posts {
+    /* All styles controlled by Elementor - see Messages section */
+    text-align: center;
+}
+
+/* Error Message */
+.king-addons-dpg-error-message {
+    /* All styles controlled by Elementor - see Messages section */
+}
+
+/* Animation Classes */
+.king-addons-dpg-zero-opacity {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.king-addons-dpg-fade-in {
+    animation: kingAddonsDpgFadeIn 0.6s ease-out;
+}
+
+@keyframes kingAddonsDpgFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading Animation */
+.king-addons-dpg-loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #6c5ce7;
+    border-radius: 50%;
+    animation: kingAddonsSpinner 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes kingAddonsSpinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .king-addons-dpg-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .king-addons-dpg-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .king-addons-dpg-filter-title {
+        font-size: 28px;
+    }
+    
+    .king-addons-dpg-filter-controls {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .king-addons-dpg-posts-filter,
+    .king-addons-dpg-search-input {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .king-addons-dpg-posts-search {
+        min-width: auto;
+    }
+    
+    .king-addons-dpg-title {
+        font-size: 17px;
+    }
+    
+    .king-addons-dpg-card {
+        min-height: 240px;
+    }
+    
+    .king-addons-dpg-content {
+        padding: 0 20px 20px 20px;
+    }
+    
+    .king-addons-dpg-cta {
+        padding: 0 20px 20px 20px;
+    }
+    
+    .king-addons-dpg-header {
+        padding: 16px 20px 12px 20px;
+    }
+    
+    .king-addons-dpg-search-input {
+        min-width: 100%;
+    }
+    
+    .king-addons-dpg-posts-filter {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .king-addons-dpg-filter-title {
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+    
+    .king-addons-dpg-grid {
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+    
+    .king-addons-dpg-card {
+        min-height: 240px;
+    }
+    
+    .king-addons-dpg-title {
+        font-size: 16px;
+    }
+    
+    .king-addons-dpg-load-more-btn {
+        padding: 14px 32px;
+        font-size: 13px;
+    }
+    
+    .king-addons-dpg-pagination-info {
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] .king-addons-dpg-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .king-addons-dpg-posts-filter {
+    background-position: left 10px center;
+    padding: 10px 15px 10px 40px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .king-addons-dpg-card {
+        border-width: 2px;
+    }
+    
+    .king-addons-dpg-title a {
+        color: #000;
+    }
+    
+    .king-addons-dpg-button {
+        border-width: 3px;
+    }
+}
+
+/* Reduced Motion */
+/* @media (prefers-reduced-motion: reduce) {
+    .king-addons-dpg-card,
+    .king-addons-dpg-button,
+    .king-addons-dpg-load-more-btn {
+        transition: none;
+    }
+    
+    .king-addons-dpg-card:hover {
+        transform: none !important;
+    }
+    
+    .king-addons-dpg-fade-in {
+        animation: none;
+    }
+}  */

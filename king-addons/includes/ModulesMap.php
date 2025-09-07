@@ -120,6 +120,16 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                 ],
+                'dynamic-posts-grid' => [
+                    'title' => esc_html__('Dynamic Posts Grid', 'king-addons'),
+                    'description' => esc_html__('Create dynamic, filterable grids of posts with AJAX search and load more functionality. Features color-coded post types, responsive design, and smooth animations. Perfect for resource centers, portfolios, and content libraries with advanced filtering capabilities.', 'king-addons'),
+                    'php-class' => 'Dynamic_Posts_Grid',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                    // 'has-pro' => true,
+                ],
                 'business-hours' => [
                     'title' => esc_html__('Business Hours', 'king-addons'),
                     'description' => esc_html__('Display your business hours, also known as opening hours or working hours, clearly and attractively. Customize the layout and style to match your website design, ensuring your customers always know when you are open. Perfect for restaurants, shops, and any business that wants to communicate their hours effectively.', 'king-addons'),

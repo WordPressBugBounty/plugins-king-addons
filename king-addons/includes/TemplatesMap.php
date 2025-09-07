@@ -4765,6 +4765,80 @@ final class TemplatesMap
                     'subcategory' => 'adventure',
                     'tags' => ['accommodation', 'adventure', 'adventure tours', 'adventure travel', 'booking', 'camp', 'camper', 'camping', 'cottages', 'facilities', 'hiking', 'outdoor', 'summer camp', 'travel'],
                 ],
+
+                't73-ink-with-integrity' => [
+                    'title' => esc_html__('Ink with Integrity', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-stories-on-skin' => [
+                    'title' => esc_html__('Stories on Skin', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-precision-art-safe-piercing' => [
+                    'title' => esc_html__('Precision Art, Safe Piercing', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-unforgettable-body-art' => [
+                    'title' => esc_html__('Unforgettable Body Art', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-about-us' => [
+                    'title' => esc_html__('About Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-our-services' => [
+                    'title' => esc_html__('Our Services', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-our-artists' => [
+                    'title' => esc_html__('Our Artists', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-our-works' => [
+                    'title' => esc_html__('Our Works', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+                't73-contact-us' => [
+                    'title' => esc_html__('Contact Us', 'king-addons'),
+                    'plan' => 'premium',
+                    'collection' => 73,
+                    'category' => 'health & beauty',
+                    'subcategory' => 'tattoo',
+                    'tags' => ['piercing studio', 'body art', 'ink', 'inked', 'piercing', 'piercing shop', 'piercing theme', 'studio', 'tattoo', 'tattoo artist', 'tattoo salon', 'tattoo shop', 'tattoo studio'],
+                ],
+
                 't63-fresh-flowers-fresh-smiles' => [
                     'title' => esc_html__('Fresh Flowers, Fresh Smiles', 'king-addons'),
                     'plan' => 'premium',
@@ -5217,6 +5291,8 @@ final class TemplatesMap
                     'subcategory' => 'fitness',
                     'tags' => ['bodybuilding', 'class', 'trainer', 'coach', 'fitness', 'fitness gym', 'gym', 'health', 'martial arts', 'personal trainer', 'sport', 'sports', 'training', 'workout'],
                 ],
+
+                // t74 is the next
 
                 /* ================================= */
                 /* ================================= */

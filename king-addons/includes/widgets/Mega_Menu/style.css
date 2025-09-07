@@ -36,6 +36,64 @@
     height: auto;
 }
 
+/* Center Logo Layout */
+.king-addons-logo-position-center.king-addons-mega-menu-horizontal .king-addons-menu-items {
+    display: flex;
+    align-items: center; /* Default value, overridden by Elementor control */
+    flex-wrap: wrap;
+}
+
+.king-addons-logo-position-center .king-addons-center-logo-placeholder {
+    display: none;
+}
+
+.king-addons-center-logo-inserted {
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+    flex-shrink: 0;
+}
+
+.king-addons-center-logo-inserted .king-addons-mega-menu-logo {
+    margin: 0;
+}
+
+.king-addons-center-logo-active.king-addons-mega-menu-horizontal {
+    justify-content: center;
+}
+
+.king-addons-center-logo-active .king-addons-menu-container {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Lottie Logo Styles */
+.king-addons-mega-menu-logo .king-addons-lottie-animations {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.king-addons-logo-type-lottie .king-addons-lottie-animations svg,
+.king-addons-logo-type-lottie .king-addons-lottie-animations canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Center logo Lottie sizing */
+.king-addons-center-logo-inserted .king-addons-lottie-animations {
+    width: inherit;
+    height: inherit;
+}
+
+.king-addons-center-logo-inserted .king-addons-lottie-animations svg,
+.king-addons-center-logo-inserted .king-addons-lottie-animations canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
+}
+
 /* Menu Container */
 .king-addons-menu-container {
     flex: 1;
@@ -425,7 +483,15 @@
     margin-left: auto;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease, background-color 0.3s ease, border-radius 0.3s ease;
+    transition: color 0.3s ease, background-color 0.3s ease, border-radius 0.3s ease, transform 0.3s ease;
+}
+
+.king-addons-mobile-menu-toggle:hover {
+    transform: scale(1.05);
+}
+
+.king-addons-mobile-menu-toggle.active {
+    transform: rotate(90deg);
 }
 
 .king-addons-mobile-menu {
@@ -464,6 +530,8 @@
 .king-addons-mobile-menu .king-addons-menu-items a {
     padding: 10px 0;
     width: 100%;
+    color: inherit; /* Ensure color inheritance */
+    text-decoration: none;
 }
 
 .king-addons-mobile-menu .king-addons-menu-items ul.sub-menu,
@@ -667,6 +735,8 @@
     .king-addons-mobile-menu .king-addons-menu-items a {
         padding: 10px 0;
         width: 100%; /* Occupy the entire available width */
+        color: inherit; /* Ensure color inheritance */
+        text-decoration: none;
     }
 
     .king-addons-menu-items > li > ul.sub-menu, 
@@ -675,6 +745,75 @@
         transform: none !important;
     }
 
+    /* Responsive Logo Positioning - Mobile */
+    
+    /* Left position on mobile */
+    .king-addons-logo-position-mobile-left .king-addons-center-logo-placeholder {
+        display: none;
+    }
+    
+    .king-addons-logo-position-mobile-left .king-addons-mega-menu-logo {
+        order: -2; /* Before mobile toggle */
+    }
+    
+    /* Right position on mobile */
+    .king-addons-logo-position-mobile-right .king-addons-center-logo-placeholder {
+        display: none;
+    }
+    
+    .king-addons-logo-position-mobile-right .king-addons-mega-menu-logo {
+        order: 2; /* After mobile toggle */
+        margin-left: auto;
+    }
+    
+    /* Center position on mobile */
+    .king-addons-logo-position-mobile-center .king-addons-center-logo-placeholder {
+        display: block;
+        order: -3; /* Top of mobile layout */
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .king-addons-center-logo-inserted {
+        display: none; /* Hide JavaScript-inserted logo on mobile when center */
+    }
+
+}
+
+/* Responsive Logo Positioning - Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+    
+    /* Left position on tablet */
+    .king-addons-logo-position-tablet-left .king-addons-center-logo-placeholder {
+        display: none;
+    }
+    
+    .king-addons-logo-position-tablet-left .king-addons-mega-menu-logo {
+        order: -1;
+        margin-right: auto;
+    }
+    
+    /* Right position on tablet */
+    .king-addons-logo-position-tablet-right .king-addons-center-logo-placeholder {
+        display: none;
+    }
+    
+    .king-addons-logo-position-tablet-right .king-addons-mega-menu-logo {
+        order: 1;
+        margin-left: auto;
+    }
+    
+    /* Center position on tablet - center within bar (not between items) */
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder {
+        display: block;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+    }
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-inserted {
+        display: none !important;
+    }
 }
 
 /* Additional Styles for Customization */
@@ -1459,6 +1598,47 @@
 .menu-item-has-children.king-addons-mobile-menu__item--open > a .king-addons-dropdown-icon {
     transform: rotate(180deg);
 }
+
+/* Responsive Menu Bar Background Support */
+@media (max-width: 1024px) {
+    .king-addons-mega-menu {
+        padding: 10px 15px; /* Default padding for tablet/mobile menu bar */
+        min-height: 60px; /* Minimum height for tablet/mobile menu bar */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Center logo in the bar on tablet/mobile (not between items) */
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-mobile-center .king-addons-center-logo-placeholder {
+        display: block;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+    }
+
+    /* Hide JS-inserted center logo on tablet/mobile to avoid duplicates */
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-inserted,
+    .king-addons-logo-position-mobile-center .king-addons-center-logo-inserted {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .king-addons-mega-menu {
+        padding: 8px 15px; /* Smaller padding for mobile */
+        min-height: 50px; /* Smaller height for mobile */
+    }
+}
 .menu-item-has-children:hover > a .king-addons-dropdown-icon {
     transform: rotate(180deg);
+}
+
+.king-addons-mega-menu-logo .king-addons-lottie-animations svg {
+    overflow: visible;
 }

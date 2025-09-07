@@ -1,7 +1,7 @@
 === King Addons for Elementor – 4,000+ ready Elementor sections, 650+ templates, 70+ FREE widgets for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 51.1.2
+Stable tag: 51.1.14
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -96,6 +96,7 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - [**Form Builder**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Build custom forms with ease using the fully customizable Form Builder. Ideal for contact forms, surveys, or lead generation with responsive designs.
 - [**Pricing Calculator**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.
 - [**Login | Register Form**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create beautiful login and registration forms with AJAX submission, form validation, and seamless user experience. Perfect for membership sites, user portals, and customer areas with customizable styling options.
+- [**Dynamic Posts Grid**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Create dynamic, filterable grids of posts with AJAX search and load more functionality. Features color-coded post types, responsive design, and smooth animations. Perfect for resource centers, portfolios, and content libraries with advanced filtering capabilities.
 
 ### **Elementor Features**
 
@@ -187,6 +188,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. King Addons for Elementor - Elementor Templates and Sections Catalog
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.14 - September 7, 2025 =
+* **New:** Templates Catalog - 9 premium templates added.
+
+= King Addons for Elementor version 51.1.5 - July 27, 2025 =
+* **New:** Dynamic Posts Grid widget - Create dynamic, filterable grids of posts with AJAX search and load more functionality. Features color-coded post types, responsive design, and smooth animations. Perfect for resource centers, portfolios, and content libraries with advanced filtering capabilities.
+* **Improved:** Team Member widget - CSS filters settings added.
+* **Improved:** Team Member Slider widget - CSS filters settings added.
 
 = King Addons for Elementor version 51.1.2 - July 27, 2025 =
 * **New:** Sections Catalog - Collection of 4,000+ ready-made sections to build pages in seconds.

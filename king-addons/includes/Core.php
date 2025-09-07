@@ -122,6 +122,9 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/extensions/alt-text-generator/Alt_Text_Generator.php');
             new Alt_Text_Generator();
 
+            // Dynamic Posts Grid AJAX Helper
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Dynamic_Posts_Grid_Ajax.php');
+            new Dynamic_Posts_Grid_Ajax();
 
             // Screenshot Generator
             // require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/screenshot-generator.php');

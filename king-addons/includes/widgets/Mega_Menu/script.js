@@ -150,6 +150,12 @@
                     $parent.siblings('.menu-item-has-children').removeClass('king-addons-mobile-menu__item--open')
                         .children('ul.sub-menu, ul.king-addons-submenu, .king-addons-template-content').slideUp(250);
                 });
+
+                // Initialize center logo positioning
+                kingAddonsCenterLogoPositioning($mainMenu);
+
+                // Initialize Lottie animations for logos (with library loading wait)
+                waitForLottieAndInitialize($mainMenu);
             }
         );
     });
@@ -262,4 +268,230 @@
     }
     window.addEventListener('DOMContentLoaded', kingAddonsObserveDropdowns);
     window.addEventListener('resize', kingAddonsObserveDropdowns);
+
+    /**
+     * Handle center logo positioning by inserting logo between menu items
+     * Supports responsive positioning (desktop/tablet/mobile)
+     */
+    function kingAddonsCenterLogoPositioning($mainMenu) {
+        const centerLogo = $mainMenu.attr('data-center-logo');
+        if (centerLogo !== 'true') return;
+
+        // Get responsive logo positions
+        const logoPositionDesktop = $mainMenu.attr('data-logo-position-desktop') || 'left';
+        const logoPositionTablet = $mainMenu.attr('data-logo-position-tablet') || logoPositionDesktop;
+        const logoPositionMobile = $mainMenu.attr('data-logo-position-mobile') || logoPositionDesktop;
+
+        // Determine current device and position
+        let currentPosition = logoPositionDesktop;
+        if (window.innerWidth <= 767) {
+            currentPosition = logoPositionMobile;
+        } else if (window.innerWidth <= 1024) {
+            currentPosition = logoPositionTablet;
+        }
+
+        // Remove any existing center logo
+        $mainMenu.find('.king-addons-center-logo-inserted').remove();
+        $mainMenu.removeClass('king-addons-center-logo-active');
+
+        // Only proceed if current position is center
+        if (currentPosition !== 'center') return;
+
+        const splitAt = parseInt($mainMenu.attr('data-split-at')) || 2;
+        const $menuItems = $mainMenu.find('.king-addons-menu-items > li');
+        const $logoPlaceholder = $mainMenu.find('.king-addons-center-logo-placeholder');
+        
+        if ($menuItems.length > splitAt && $logoPlaceholder.length) {
+            // Clone logo and insert it after the split position
+            const $logoClone = $logoPlaceholder.children().first().clone();
+            $logoClone.addClass('king-addons-center-logo-inserted');
+            
+            // Insert logo after the specified menu item
+            $menuItems.eq(splitAt - 1).after($logoClone);
+            
+            // Add special class to menu for center layout
+            $mainMenu.addClass('king-addons-center-logo-active');
+        }
+    }
+
+    /**
+     * Check if Lottie library is available under different global names
+     */
+    function getLottieLibrary() {
+        // Check common global names for lottie library
+        if (typeof lottie !== 'undefined') {
+            return lottie;
+        }
+        if (typeof window.lottie !== 'undefined') {
+            return window.lottie;
+        }
+        if (typeof window.Lottie !== 'undefined') {
+            return window.Lottie;
+        }
+        if (typeof window.bodymovin !== 'undefined') {
+            return window.bodymovin;
+        }
+        return null;
+    }
+
+    /**
+     * Wait for Lottie library to load and then initialize animations
+     */
+    function waitForLottieAndInitialize($mainMenu) {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait
+        
+        function checkLottie() {
+            const lottieLib = getLottieLibrary();
+            if (lottieLib) {
+                console.log('Lottie library found, initializing animations');
+                kingAddonsInitializeLottieLogos($mainMenu);
+            } else if (attempts < maxAttempts) {
+                attempts++;
+                setTimeout(checkLottie, 100);
+            } else {
+                console.log('Lottie library not loaded after 5 seconds');
+                // Try one more time with alternative approach
+                tryAlternativeLottieInit($mainMenu);
+            }
+        }
+        
+        checkLottie();
+    }
+
+    /**
+     * Alternative initialization approach for edge cases
+     */
+    function tryAlternativeLottieInit($mainMenu) {
+        // Wait for window load event
+        if (document.readyState === 'complete') {
+            setTimeout(function() {
+                const lottieLib = getLottieLibrary();
+                if (lottieLib) {
+                    console.log('Lottie library found on window load, initializing');
+                    kingAddonsInitializeLottieLogos($mainMenu);
+                }
+            }, 500);
+        } else {
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    const lottieLib = getLottieLibrary();
+                    if (lottieLib) {
+                        console.log('Lottie library found after window load, initializing');
+                        kingAddonsInitializeLottieLogos($mainMenu);
+                    }
+                }, 500);
+            });
+        }
+    }
+
+    /**
+     * Initialize Lottie animations for logos
+     */
+    function kingAddonsInitializeLottieLogos($mainMenu) {
+        const $lottieElements = $mainMenu.find('.king-addons-lottie-animations');
+        
+        if ($lottieElements.length === 0) return;
+        
+        $lottieElements.each(function() {
+            const $element = $(this);
+            const settings = $element.data('settings');
+            const jsonUrl = $element.data('json-url');
+            
+            if (!jsonUrl) return;
+            
+            // Skip if already initialized
+            if ($element.data('lottie-initialized')) return;
+            
+            try {
+                // Check if lottie is available
+                const lottieLib = getLottieLibrary();
+                if (lottieLib) {
+                    const animationSettings = {
+                        container: this,
+                        renderer: settings.lottie_renderer || 'svg',
+                        loop: settings.loop === 'yes',
+                        autoplay: settings.autoplay === 'yes',
+                        path: jsonUrl,
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    };
+
+                    const animation = lottieLib.loadAnimation(animationSettings);
+                    
+                    // Store animation instance
+                    $element.data('lottie-animation', animation);
+                    $element.data('lottie-initialized', true);
+                    
+                    // Set speed if specified
+                    if (settings.speed) {
+                        animation.setSpeed(parseFloat(settings.speed));
+                    }
+                    
+                    // Set direction if reversed
+                    if (settings.reverse === 'true') {
+                        animation.setDirection(-1);
+                    }
+                    
+                    // Handle triggers
+                    if (settings.trigger === 'hover') {
+                        $element.on('mouseenter', function() {
+                            animation.play();
+                        });
+                        $element.on('mouseleave', function() {
+                            animation.pause();
+                        });
+                    } else if (settings.trigger === 'viewport') {
+                        // Simple viewport detection
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    animation.play();
+                                } else {
+                                    animation.pause();
+                                }
+                            });
+                        });
+                        observer.observe(this);
+                    }
+                    
+                    console.log('Lottie animation initialized for:', jsonUrl);
+                } else {
+                    console.log('Lottie library not available');
+                }
+            } catch (error) {
+                console.log('Lottie initialization failed:', error);
+            }
+        });
+    }
+
+    // Handle center logo repositioning on window resize
+    $(window).on('resize', function() {
+        $('.king-addons-mega-menu[data-center-logo="true"]').each(function() {
+            kingAddonsCenterLogoPositioning($(this));
+        });
+    });
+
+    // Additional Lottie initialization fallback
+    // This handles cases where Lottie loads after our initial check
+    $(document).ready(function() {
+        // Wait a bit for all scripts to load, then try Lottie initialization again
+        setTimeout(function() {
+            $('.king-addons-mega-menu').each(function() {
+                const $menu = $(this);
+                const $lottieElements = $menu.find('.king-addons-lottie-animations');
+                
+                // Only initialize elements that haven't been initialized yet
+                $lottieElements.each(function() {
+                    const $element = $(this);
+                    const lottieLib = getLottieLibrary();
+                    if (!$element.data('lottie-initialized') && lottieLib) {
+                        kingAddonsInitializeLottieLogos($menu);
+                    }
+                });
+            });
+        }, 1000);
+    });
+
 })(jQuery);

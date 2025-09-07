@@ -11,6 +11,7 @@ use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Css_Filter;
 use Elementor\Repeater;
 use Elementor\Utils;
 use Elementor\Widget_Base;
@@ -344,6 +345,26 @@ class Team_Member_Slider extends Widget_Base {
                 'selector' => '{{WRAPPER}} .king-addons-tms-photo img',
             ]
         );
+
+        $this->add_group_control(
+            Group_Control_Css_Filter::get_type(),
+            [
+                'name' => 'kng_photo_css_filters',
+                'label' => esc_html__('CSS Filters', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-addons-tms-photo img',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Css_Filter::get_type(),
+            [
+                'name' => 'kng_photo_css_filters_hover',
+                'label' => esc_html__('CSS Filters on Hover', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-addons-tms-photo:hover img',
+            ]
+        );
+
         $this->end_controls_section();
 
         // Style: Name
