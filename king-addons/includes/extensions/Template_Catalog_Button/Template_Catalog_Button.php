@@ -46,6 +46,11 @@ class Template_Catalog_Button
             return;
         }
 
+        // Check if template catalog button is disabled by premium user
+        if ($this->is_template_catalog_disabled()) {
+            return;
+        }
+
         // Hook into Elementor editor
         add_action('elementor/editor/before_enqueue_scripts', [$this, 'enqueue_editor_scripts'], 10);
         add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueue_editor_styles'], 10);
@@ -93,6 +98,7 @@ class Template_Catalog_Button
             [
                 'templateCatalogUrl' => admin_url('admin.php?page=king-addons-templates'),
                 'templatesEnabled' => KING_ADDONS_EXT_TEMPLATES_CATALOG,
+                'buttonEnabled' => !$this->is_template_catalog_disabled(), // If script loaded, button is enabled
                 'buttonText' => $this->get_button_text(),
                 'nonce' => wp_create_nonce('king_addons_template_catalog'),
                 'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -115,6 +121,21 @@ class Template_Catalog_Button
             [],
             KING_ADDONS_VERSION
         );
+    }
+
+    /**
+     * Check if template catalog button is disabled by premium user
+     */
+    private function is_template_catalog_disabled(): bool
+    {
+        // Only premium users can disable the template catalog button
+        if (!function_exists('king_addons_freemius') || !king_addons_freemius()->can_use_premium_code()) {
+            return false;
+        }
+
+        // Check if setting exists and is enabled (1 = disabled)
+        $disabled = get_option('king_addons_disable_template_catalog_button', '0');
+        return $disabled === '1';
     }
 
     /**
@@ -347,8 +368,10 @@ class Template_Catalog_Button
             return;
         }
 
-        $template_data = json_decode(stripslashes($_POST['template_data']), true);
-        $page_id = intval($_POST['page_id']);
+        // Security fix: Sanitize template data input
+        $raw_template_data = sanitize_textarea_field(stripslashes($_POST['template_data'] ?? ''));
+        $template_data = json_decode($raw_template_data, true);
+        $page_id = intval($_POST['page_id'] ?? 0);
 
         error_log('King Addons Template Import: Starting import for page ID: ' . $page_id);
         error_log('King Addons Template Import: Template data keys: ' . json_encode(array_keys($template_data ?: [])));
@@ -454,7 +477,17 @@ class Template_Catalog_Button
     private function download_and_import_image($image_url): ?int
     {
         try {
-            $response = wp_remote_get($image_url, ['timeout' => 30]);
+            // Security fix: Validate URL to prevent SSRF attacks
+            if (!$this->is_safe_image_url($image_url)) {
+                error_log('King Addons Security: Blocked unsafe image URL: ' . $image_url);
+                return null;
+            }
+            
+            $response = wp_remote_get($image_url, [
+                'timeout' => 30,
+                'user-agent' => 'King Addons Template Import/1.0',
+                'redirection' => 2 // Limit redirects
+            ]);
 
             if (is_wp_error($response)) {
                 return null;
@@ -470,8 +503,17 @@ class Template_Catalog_Button
                 return null;
             }
 
-            $image_name = pathinfo(basename($image_url), PATHINFO_FILENAME);
-            $image_extension = pathinfo(basename($image_url), PATHINFO_EXTENSION);
+            // Security fix: Sanitize filename components
+            $image_name = sanitize_file_name(pathinfo(basename($image_url), PATHINFO_FILENAME));
+            $image_extension = sanitize_file_name(pathinfo(basename($image_url), PATHINFO_EXTENSION));
+            
+            // Validate file extension
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array(strtolower($image_extension), $allowed_extensions, true)) {
+                error_log('King Addons Security: Invalid image extension: ' . $image_extension);
+                return null;
+            }
+            
             $unique_image_name = $image_name . '-' . time() . '.' . $image_extension;
 
             $upload_dir = wp_upload_dir();
@@ -883,5 +925,67 @@ class Template_Catalog_Button
             'section_data' => $data['section'],  // Your API returns 'section' not 'landing'
             'message' => 'Section data retrieved successfully'
         ]);
+    }
+
+    /**
+     * Validate image URL for security (prevent SSRF attacks)
+     * @param string $url The URL to validate
+     * @return bool True if URL is safe, false otherwise
+     */
+    private function is_safe_image_url(string $url): bool
+    {
+        // Parse URL
+        $parsed_url = parse_url($url);
+        if (!$parsed_url || !isset($parsed_url['scheme']) || !isset($parsed_url['host'])) {
+            return false;
+        }
+
+        // Only allow HTTP/HTTPS
+        if (!in_array($parsed_url['scheme'], ['http', 'https'], true)) {
+            return false;
+        }
+
+        // Block local/private IP addresses to prevent SSRF
+        $host = $parsed_url['host'];
+        
+        // Check if it's an IP address
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            // Block private/reserved IP ranges
+            if (!filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                return false;
+            }
+        }
+
+        // Block localhost and common local domains
+        $blocked_hosts = [
+            'localhost',
+            '127.0.0.1',
+            '::1',
+            'metadata.google.internal',
+            '169.254.169.254', // AWS metadata
+        ];
+        
+        if (in_array(strtolower($host), $blocked_hosts, true)) {
+            return false;
+        }
+
+        // Only allow images from trusted domains (King Addons CDN)
+        $allowed_domains = [
+            'api.kingaddons.com',
+            'cdn.kingaddons.com',
+            'templates.kingaddons.com',
+            'images.kingaddons.com'
+        ];
+
+        $is_allowed_domain = false;
+        foreach ($allowed_domains as $allowed_domain) {
+            if (strtolower($host) === strtolower($allowed_domain) || 
+                str_ends_with(strtolower($host), '.' . strtolower($allowed_domain))) {
+                $is_allowed_domain = true;
+                break;
+            }
+        }
+
+        return $is_allowed_domain;
     }
 }

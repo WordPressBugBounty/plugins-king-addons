@@ -334,8 +334,10 @@ final class Popup_Builder
             exit;
         }
 
-        if (isset($_POST['king_addons_pb_popup_conditions'])) {
-            update_option('king_addons_pb_popup_conditions', $this->sanitize_conditions($_POST['king_addons_pb_popup_conditions']));  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        if (isset($_POST['king_addons_pb_popup_conditions']) && isset($_POST['king_addons_popup_nonce'])) {
+            if (wp_verify_nonce($_POST['king_addons_popup_nonce'], 'king_addons_popup_settings')) {
+                update_option('king_addons_pb_popup_conditions', $this->sanitize_conditions($_POST['king_addons_pb_popup_conditions']));  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            }
         }
     }
 
@@ -432,6 +434,7 @@ final class Popup_Builder
             <div class="king-addons-pb-settings-page">
                 <!--suppress HtmlUnknownTarget -->
                 <form method="post" action="options.php">
+                    <?php wp_nonce_field('king_addons_popup_settings', 'king_addons_popup_nonce'); ?>
                     <input type="hidden" name="king_addons_pb_template" id="king_addons_pb_template" value="">
                     <?php self::render_conditions_popup(); ?>
                     <?php self::render_create_template_popup(); ?>
@@ -962,7 +965,7 @@ final class Popup_Builder
                 if (class_exists('WooCommerce')) {
                     if (function_exists('is_shop')) {
                         /** @noinspection PhpUndefinedFunctionInspection */
-                        if (is_shop()) {
+                        if (function_exists('is_shop') && is_shop()) {
                             if (isset($conditions['archive/product'])) {
                                 self::display_popups_by_location($conditions, 'archive/product');
                             }

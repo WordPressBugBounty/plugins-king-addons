@@ -139,8 +139,17 @@ class Security_Manager
             ];
         }
 
-        // Check for malicious content in text files
+        // Check for malicious content in text files (limit file size to prevent DoS)
         if (in_array($file_type['type'], ['text/plain', 'application/pdf'])) {
+            // Security fix: Check file size before reading to prevent DoS
+            $file_size = filesize($file_data['tmp_name']);
+            if ($file_size > 1024 * 1024) { // 1MB limit for content scanning
+                return [
+                    'valid' => false,
+                    'error' => esc_html__('File too large for content scanning.', 'king-addons')
+                ];
+            }
+
             $content = file_get_contents($file_data['tmp_name']);
             if (self::contains_malicious_content($content)) {
                 return [

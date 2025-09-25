@@ -40,6 +40,12 @@ if (isset($_POST['king_addons_settings_submit_settings'])) {
     $improve_import = isset($_POST['king_addons_improve_import_performance']) ? '1' : '0';
     update_option('king_addons_improve_import_performance', $improve_import);
 
+    // Template Catalog Button (Premium only)
+    if (function_exists('king_addons_freemius') && king_addons_freemius()->can_use_premium_code()) {
+        $disable_template_catalog = isset($_POST['king_addons_disable_template_catalog_button']) ? '1' : '0';
+        update_option('king_addons_disable_template_catalog_button', $disable_template_catalog);
+    }
+
     // Show a success message
     add_settings_error('king_addons_messages', 'king_addons_message', esc_html__('Settings Saved', 'king-addons'), 'updated');
     settings_errors('king_addons_messages');
@@ -54,6 +60,9 @@ $recaptcha_score_threshold = get_option('king_addons_recaptcha_v3_score_threshol
 
 // Import Performance
 $improve_import_performance = get_option('king_addons_improve_import_performance', '1');
+
+// Template Catalog Button (Premium only)
+$disable_template_catalog_button = get_option('king_addons_disable_template_catalog_button', '0');
 
 // Render the settings form
 ?>
@@ -97,6 +106,7 @@ $improve_import_performance = get_option('king_addons_improve_import_performance
         margin-bottom: 20px;
         padding: 0;
         background: linear-gradient(45deg, #E1CBFF, #9B62FF 50%, #5B03FF);
+        background-clip: text; /* Standard property for compatibility */
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -135,6 +145,21 @@ $improve_import_performance = get_option('king_addons_improve_import_performance
         color: white;
         border: 1px solid #484c4e;
         padding: 3px 14px;
+    }
+
+    .king-addons-premium-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        background-clip: padding-box; /* Standard property for compatibility */
+        -webkit-background-clip: padding-box;
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 1px 3px rgba(255, 107, 53, 0.3);
     }
 </style>
 <div class="wrap">
@@ -395,6 +420,27 @@ $improve_import_performance = get_option('king_addons_improve_import_performance
                             </p>
                         </td>
                     </tr>
+                    <?php if (function_exists('king_addons_freemius') && king_addons_freemius()->can_use_premium_code()) : ?>
+                    <tr>
+                        <th scope="row">
+                            <label for="king_addons_disable_template_catalog_button"><?php echo esc_html__('Disable Template Catalog Button in Elementor Editor', 'king-addons'); ?>
+                                <span class="king-addons-premium-badge"><?php echo esc_html__('PREMIUM', 'king-addons'); ?></span>
+                            </label>
+                        </th>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="king_addons_disable_template_catalog_button"
+                                id="king_addons_disable_template_catalog_button"
+                                value="1"
+                                <?php checked($disable_template_catalog_button, '1'); ?>
+                            >
+                            <p class="description">
+                                <?php echo esc_html__('Check this to hide the "Start with a Template" button that appears in the Elementor editor. This is useful if you prefer a cleaner editing interface without template suggestions.', 'king-addons'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
                 </table>
 
             </div>

@@ -82,6 +82,11 @@ final class Header_Footer_Builder
 
     function king_addons_el_hf_get_posts_by_query()
     {
+        // Security fix: Add authorization check
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Insufficient permissions');
+            return;
+        }
 
         check_ajax_referer('king-addons-el-hf-get-posts-by-query', 'nonce');
 
@@ -846,14 +851,20 @@ final class Header_Footer_Builder
 
     public static function getHeaderContent()
     {
-        echo self::$elementor_instance->frontend->get_builder_content_for_display(self::getHeaderID()); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        $header_id = self::getHeaderID();
+        if ($header_id) {
+            echo self::$elementor_instance->frontend->get_builder_content_for_display($header_id); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        }
     }
 
     public static function getFooterContent()
     {
-        echo '<div style="width: 100%;">';
-        echo self::$elementor_instance->frontend->get_builder_content_for_display(self::getFooterID()); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo '</div>';
+        $footer_id = self::getFooterID();
+        if ($footer_id) {
+            echo '<div style="width: 100%;">';
+            echo self::$elementor_instance->frontend->get_builder_content_for_display($footer_id); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo '</div>';
+        }
     }
 
     public static function getHeaderID()
@@ -928,7 +939,6 @@ final class Header_Footer_Builder
             if (get_post_meta(absint($template['id']), 'king_addons_el_hf_template_type', true) === $type) {
                 // Polylang check - https://polylang.pro/doc/function-reference/
                 if (function_exists('pll_current_language')) {
-                    /** @noinspection PhpUndefinedFunctionInspection */
                     if (pll_current_language('slug') == pll_get_post_language($template['id'], 'slug')) {
                         return $template['id'];
                     }
@@ -946,7 +956,11 @@ final class Header_Footer_Builder
         global $wpdb;
         global $post;
 
-        $post_type = $post_type ? esc_sql($post_type) : esc_sql($post->post_type);
+        // Security fix: Validate and sanitize post_type
+        $post_type = $post_type ? sanitize_key($post_type) : sanitize_key($post->post_type);
+        if (empty($post_type)) {
+            return [];
+        }
 
         if (is_array(self::$current_page_data) && isset(self::$current_page_data[$post_type])) {
             return apply_filters('king_addons_el_hf_get_display_posts_by_conditions', self::$current_page_data[$post_type], $post_type);
@@ -960,11 +974,11 @@ final class Header_Footer_Builder
         $meta_header = self::getMetaOptionPost($post_type, $option);
 
         if (false === $meta_header) {
-            $current_post_type = esc_sql(get_post_type());
+            $current_post_type = sanitize_key(get_post_type());
             $current_post_id = false;
             $q_obj = get_queried_object();
 
-            $current_id = esc_sql(get_the_id());
+            $current_id = absint(get_the_id());
 
             // Check if WPML is active. Find WPML Object ID for current page.
             /** @noinspection SpellCheckingInspection */
@@ -978,79 +992,125 @@ final class Header_Footer_Builder
                 }
             }
 
-            $location = isset($option['location']) ? esc_sql($option['location']) : '';
+            // Security fix: Sanitize location parameter
+            $location = isset($option['location']) ? sanitize_key($option['location']) : '';
+            if (empty($location)) {
+                return [];
+            }
 
-            $query = "SELECT p.ID, pm.meta_value FROM $wpdb->postmeta as pm
-						INNER JOIN $wpdb->posts as p ON pm.post_id = p.ID
-						WHERE pm.meta_key = '$location'
-						AND p.post_type = '$post_type'
-						AND p.post_status = 'publish'";
+            // Security fix: Use prepared statement to prevent SQL injection
+            $query = $wpdb->prepare(
+                "SELECT p.ID, pm.meta_value FROM {$wpdb->postmeta} as pm
+                INNER JOIN {$wpdb->posts} as p ON pm.post_id = p.ID
+                WHERE pm.meta_key = %s
+                AND p.post_type = %s
+                AND p.post_status = 'publish'",
+                $location,
+                $post_type
+            );
 
             $orderby = ' ORDER BY p.post_date DESC';
 
-            $meta_args = "pm.meta_value LIKE '%\"basic-global\"%'";
+            // Security fix: Build meta_args using safe placeholders and prepared statements
+            $meta_conditions = ["pm.meta_value LIKE %s"];
+            $meta_values = ['%"basic-global"%'];
 
             switch ($current_page_type) {
                 case 'is_404':
-                    $meta_args .= " OR pm.meta_value LIKE '%\"special-404\"%'";
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"special-404"%';
                     break;
                 case 'is_search':
-                    $meta_args .= " OR pm.meta_value LIKE '%\"special-search\"%'";
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"special-search"%';
                     break;
                 case 'is_archive':
                 case 'is_tax':
                 case 'is_date':
                 case 'is_author':
-                    $meta_args .= " OR pm.meta_value LIKE '%\"basic-archives\"%'";
-                    $meta_args .= " OR pm.meta_value LIKE '%\"$current_post_type|all|archive\"%'";
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"basic-archives"%';
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"' . sanitize_key($current_post_type) . '|all|archive"%';
+                    
                     if ('is_tax' == $current_page_type && (is_category() || is_tag() || is_tax())) {
-                        if (is_object($q_obj)) {
-                            $meta_args .= " OR pm.meta_value LIKE '%\"$current_post_type|all|taxarchive|$q_obj->taxonomy\"%'";
-                            $meta_args .= " OR pm.meta_value LIKE '%\"tax-$q_obj->term_id\"%'";
+                        if (is_object($q_obj) && isset($q_obj->taxonomy) && isset($q_obj->term_id)) {
+                            $meta_conditions[] = "pm.meta_value LIKE %s";
+                            $meta_values[] = '%"' . sanitize_key($current_post_type) . '|all|taxarchive|' . sanitize_key($q_obj->taxonomy) . '"%';
+                            $meta_conditions[] = "pm.meta_value LIKE %s";
+                            $meta_values[] = '%"tax-' . absint($q_obj->term_id) . '"%';
                         }
                     } elseif ('is_date' == $current_page_type) {
-                        $meta_args .= " OR pm.meta_value LIKE '%\"special-date\"%'";
+                        $meta_conditions[] = "pm.meta_value LIKE %s";
+                        $meta_values[] = '%"special-date"%';
                     } elseif ('is_author' == $current_page_type) {
-                        $meta_args .= " OR pm.meta_value LIKE '%\"special-author\"%'";
+                        $meta_conditions[] = "pm.meta_value LIKE %s";
+                        $meta_values[] = '%"special-author"%';
                     }
                     break;
                 case 'is_home':
-                    $meta_args .= " OR pm.meta_value LIKE '%\"special-blog\"%'";
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"special-blog"%';
                     break;
                 case 'is_front_page':
                     $current_post_id = $current_id;
-                    $meta_args .= " OR pm.meta_value LIKE '%\"special-front\"%'";
-                    $meta_args .= " OR pm.meta_value LIKE '%\"$current_post_type|all\"%'";
-                    $meta_args .= " OR pm.meta_value LIKE '%\"post-$current_id\"%'";
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"special-front"%';
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"' . sanitize_key($current_post_type) . '|all"%';
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"post-' . absint($current_id) . '"%';
                     break;
                 case 'is_singular':
                     $current_post_id = $current_id;
-                    $meta_args .= " OR pm.meta_value LIKE '%\"basic-singulars\"%'";
-                    $meta_args .= " OR pm.meta_value LIKE '%\"$current_post_type|all\"%'";
-                    $meta_args .= " OR pm.meta_value LIKE '%\"post-$current_id\"%'";
-                    $taxonomies = get_object_taxonomies($q_obj->post_type);
-                    $terms = wp_get_post_terms($q_obj->ID, $taxonomies);
-                    foreach ($terms as $term) {
-                        $meta_args .= " OR pm.meta_value LIKE '%\"tax-$term->term_id-single-$term->taxonomy\"%'";
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"basic-singulars"%';
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"' . sanitize_key($current_post_type) . '|all"%';
+                    $meta_conditions[] = "pm.meta_value LIKE %s";
+                    $meta_values[] = '%"post-' . absint($current_id) . '"%';
+                    
+                    if (is_object($q_obj) && isset($q_obj->post_type) && isset($q_obj->ID)) {
+                        $taxonomies = get_object_taxonomies($q_obj->post_type);
+                        $terms = wp_get_post_terms($q_obj->ID, $taxonomies);
+                        foreach ($terms as $term) {
+                            if (isset($term->term_id) && isset($term->taxonomy)) {
+                                $meta_conditions[] = "pm.meta_value LIKE %s";
+                                $meta_values[] = '%"tax-' . absint($term->term_id) . '-single-' . sanitize_key($term->taxonomy) . '"%';
+                            }
+                        }
                     }
                     break;
                 case 'is_woo_shop_page':
-                    $meta_args .= " OR pm.meta_value LIKE '%\"special-woocommerce-shop\"%'";
+                    if (function_exists('is_shop')) {
+                        $meta_conditions[] = "pm.meta_value LIKE %s";
+                        $meta_values[] = '%"special-woocommerce-shop"%';
+                    }
                     break;
                 case '':
                     $current_post_id = $current_id;
                     break;
             }
+            
+            // Build the final meta_args string using prepare
+            $meta_args = '(' . implode(' OR ', $meta_conditions) . ')';
 
-            // @codingStandardsIgnoreStart
-            $posts = $wpdb->get_results($query . ' AND (' . $meta_args . ')' . $orderby);
-            // @codingStandardsIgnoreEnd
+            // Security fix: Use prepared statement for the complete query
+            $full_query = $wpdb->prepare(
+                $query . ' AND ' . $meta_args . $orderby,
+                ...$meta_values
+            );
+            
+            $posts = $wpdb->get_results($full_query);
 
             foreach ($posts as $local_post) {
-                self::$current_page_data[$post_type][$local_post->ID] = array(
-                    'id' => $local_post->ID,
-                    'location' => unserialize($local_post->meta_value),
-                );
+                $unserialized_location = maybe_unserialize($local_post->meta_value);
+                if ($unserialized_location !== false) {
+                    self::$current_page_data[$post_type][$local_post->ID] = array(
+                        'id' => $local_post->ID,
+                        'location' => $unserialized_location,
+                    );
+                }
             }
 
             $option['current_post_id'] = $current_post_id;
@@ -1221,7 +1281,6 @@ final class Header_Footer_Builder
 
                     case 'special-woocommerce-shop':
                         if (function_exists('is_shop')) {
-                            /** @noinspection PhpUndefinedFunctionInspection */
                             if (is_shop()) {
                                 $display = true;
                             }

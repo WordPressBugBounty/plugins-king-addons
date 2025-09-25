@@ -1136,15 +1136,17 @@ class Auto_Scrolling_Text extends Widget_Base
         </div>
         <?php
 
+        // Security fix: Escape content before using innerHTML
+        $escaped_content = esc_js($settings['auto_scroll_text']);
         $js_auto_scroll_text = "if (document.readyState === 'complete') {
                 const marquee = document.querySelector('.king-addons-auto-scrolling-text-wrapper-" . esc_attr($this_ID) . "');
-                const texts = marquee.innerHTML;
+                const texts = '{$escaped_content}';
                 marquee.innerHTML += texts;
                 marquee.innerHTML += texts;
             } else {
                 window.addEventListener('load', function () {
                     const marquee = document.querySelector('.king-addons-auto-scrolling-text-wrapper-" . esc_attr($this_ID) . "');
-                    const texts = marquee.innerHTML;
+                    const texts = '{$escaped_content}';
                     marquee.innerHTML += texts;
                     marquee.innerHTML += texts;
                 });

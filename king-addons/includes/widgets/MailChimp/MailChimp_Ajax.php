@@ -42,7 +42,7 @@ class MailChimp_Ajax
             'https://%s.api.mailchimp.com/3.0/lists/%s/members/%s',
             explode('-', $api_key)[1],
             $list_id,
-            md5(strtolower($email))
+            wp_hash(strtolower($email))
         );
 
         // Set up request args
@@ -70,7 +70,8 @@ class MailChimp_Ajax
                 if (isset($body->status) && $body->status === 'subscribed') {
                     wp_send_json(['status' => 'subscribed']);
                 } else {
-                    wp_send_json(['status' => $body->title ?? '']);
+                    // Security fix: Sanitize title from remote API response to prevent XSS
+                    wp_send_json(['status' => esc_html($body->title ?? '')]);
                 }
             }
         }

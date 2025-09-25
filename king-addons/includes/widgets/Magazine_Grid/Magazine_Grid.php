@@ -5270,7 +5270,7 @@ $this->end_controls_section();
 
         echo "<div class=\"$class\">";
         echo '<div class="inner-block">';
-        echo wp_kses_post(get_the_content());
+        echo wp_kses_post(apply_filters('the_content', get_the_content()));
         echo '</div></div>';
     }
 

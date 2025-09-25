@@ -84,6 +84,11 @@
                 return;
             }
 
+            // Check if button is enabled (premium setting)
+            if (window.kingAddonsTemplateCatalog.buttonEnabled === false) {
+                return;
+            }
+
             // Check if button was already created in this session
             if (this.buttonCreated) {
                 return;
@@ -121,7 +126,7 @@
                 return false;
             }
 
-            // First, try to find the "Add New Section" element
+            // Only try to find the "Add New Section" element - no fallback methods
             const addNewSection = previewDoc.querySelector('#elementor-add-new-section');
             if (addNewSection && addNewSection.parentNode) {
                 const buttonContainer = this.createContentAreaButton();
@@ -131,59 +136,11 @@
                 return true;
             }
 
-            // Fallback: Find other suitable areas but only if they're at the end of content
-            const mainContentAreas = [
-                previewDoc.querySelector('.elementor'),
-                previewDoc.querySelector('#elementor'),
-                previewDoc.querySelector('.elementor-inner'),
-                previewDoc.querySelector('body')
-            ];
-
-            for (const area of mainContentAreas) {
-                if (area && this.isAreaSuitableForButton(area)) {
-                    const buttonContainer = this.createContentAreaButton();
-                    
-                    // Add button at the very end of the area
-                    area.appendChild(buttonContainer);
-                    return true;
-                }
-            }
-
+            // If no "Add New Section" element found, don't add button
             return false;
         }
 
-        /**
-         * Check if area is suitable for bottom button placement
-         */
-        isAreaSuitableForButton(element) {
-            if (!element) return false;
-            
-            // Check if button already exists in this area
-            if (element.querySelector('.king-addons-template-catalog-content-area')) {
-                return false;
-            }
-            
-            // Don't add to areas that already have "Add New Section" button
-            if (element.querySelector('#elementor-add-new-section')) {
-                return false;
-            }
-            
-            const rect = element.getBoundingClientRect();
-            const style = getComputedStyle(element);
-            
-            // Area should be visible and have reasonable dimensions
-            const isVisible = rect.width > 300 && 
-                             style.display !== 'none' && 
-                             style.visibility !== 'hidden';
-            
-            // Check if this is a main content area (not a widget or inner element)
-            const isMainArea = element.classList.contains('elementor') ||
-                              element.classList.contains('elementor-inner') ||
-                              element.tagName.toLowerCase() === 'body' ||
-                              element.id === 'elementor';
-            
-            return isVisible && isMainArea;
-        }
+
 
         /**
          * Create button for content area placement
@@ -1667,12 +1624,19 @@
                         const nextSibling = addNewSection.nextSibling;
                         if (nextSibling !== existingButton) {
                             existingButton.remove();
+                            this.resetButtonFlag();
                             this.addButton();
                         }
                     }
-                    // If no button exists at all
-                    else if (!existingButton) {
+                    // If "Add New Section" exists but no button exists, add it
+                    else if (addNewSection && !existingButton) {
+                        this.resetButtonFlag();
                         this.addButton();
+                    }
+                    // If no "Add New Section" exists but button exists, remove button
+                    else if (!addNewSection && existingButton) {
+                        existingButton.remove();
+                        this.resetButtonFlag();
                     }
                 }
             }, 3000);

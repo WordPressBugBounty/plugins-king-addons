@@ -1277,7 +1277,7 @@ $this->end_controls_section();
 
             <?php if (!empty($logo_html) && ($logo_position === 'center' || $logo_position_tablet === 'center' || $logo_position_mobile === 'center')) : ?>
                 <!-- Center logo will be positioned by JavaScript -->
-                <div class="king-addons-center-logo-placeholder" style="display: none;">
+                <div class="king-addons-center-logo-placeholder">
                     <?php echo $logo_html; ?>
                 </div>
             <?php endif; ?>

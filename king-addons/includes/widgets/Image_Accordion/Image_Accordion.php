@@ -2324,11 +2324,21 @@ $this->end_controls_section();
             } else {
                 $this->item_bg_image_url = esc_url(Utils::get_placeholder_image_src());
             }
+            // Security fix: Validate and sanitize URLs to prevent XSS
+            $overlay_link = '';
+            if ('yes' === $item['wrapper_link'] && isset($item['accordion_btn_url'])) {
+                $raw_url = $item['accordion_btn_url']['url'];
+                // Block javascript: and data: URLs that could contain malicious code
+                if (!preg_match('/^(javascript|data|vbscript):/i', $raw_url)) {
+                    $overlay_link = esc_url_raw($raw_url);
+                }
+            }
+            
             $layout['activeItem'] = [
                 'activeWidth' => $settings['accordion_active_item_style']['size'],
                 'defaultActive' => $settings['default_active'],
                 'interaction' => $premium ? $settings['accordion_interaction'] : 'hover',
-                'overlayLink' => ('yes' === $item['wrapper_link'] && isset($item['accordion_btn_url'])) ? $item['accordion_btn_url']['url'] : '',
+                'overlayLink' => $overlay_link,
                 'overlayLinkTarget' => (isset($item['accordion_btn_url']) && $item['accordion_btn_url']['is_external'] === 'on') ? '_blank' : '_self'
             ];
             $this->add_render_attribute('accordion-settings' . $key, [

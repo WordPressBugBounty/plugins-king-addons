@@ -551,11 +551,45 @@
                         } else if (formulaType === 'custom') {
                             var customCode = $calculator.data('customFormula') || '';
                             try {
+                                // Security fix: Only allow safe mathematical operations
+                                if (!isCustomFormulaSafe(customCode)) {
+                                    console.error('Custom formula contains unsafe code');
+                                    return;
+                                }
                                 // Pass both the full field map and user-friendly aliases
                                 var fn = new Function('fields', 'basePrice', 'aliases', customCode);
                                 newTotal = fn(fieldsMap, basePrice, aliasMap);
                             } catch (e) {
                                 console.error('Custom formula error:', e);
+                            }
+
+                            function isCustomFormulaSafe(formula) {
+                                // Only allow safe mathematical operations
+                                var safePatterns = [
+                                    /^[0-9+\-*/().\s]+$/, // Basic math
+                                    /Math\.(abs|round|ceil|floor|min|max|pow|sqrt|sin|cos|tan|log|exp|PI|E)/g, // Safe Math functions
+                                ];
+
+                                for (var i = 0; i < safePatterns.length; i++) {
+                                    if (safePatterns[i].test(formula)) {
+                                        return true;
+                                    }
+                                }
+
+                                // Check for dangerous patterns
+                                var dangerousPatterns = [
+                                    /eval|Function|new|this|window|document|script|alert|prompt|confirm/g,
+                                    /[\[\]{}]/g, // Object/array notation
+                                    /\w+\s*\(/g, // Function calls (except Math functions already checked)
+                                ];
+
+                                for (var i = 0; i < dangerousPatterns.length; i++) {
+                                    if (dangerousPatterns[i].test(formula)) {
+                                        return false;
+                                    }
+                                }
+
+                                return true;
                             }
                         }
                         // Override total with formula result

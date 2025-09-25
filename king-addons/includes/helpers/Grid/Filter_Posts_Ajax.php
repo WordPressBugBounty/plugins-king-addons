@@ -430,7 +430,7 @@ HTML;
             $class .= ' king-addons-enable-dropcap';
         }
         echo '<div class="' . esc_attr($class) . '"><div class="inner-block">'
-            . wp_kses_post(get_the_content())
+            . wp_kses_post(apply_filters('the_content', get_the_content()))
             . '</div></div>';
     }
 
@@ -747,7 +747,7 @@ HTML;
                 $bg_color = get_term_meta($term->term_id, $_POST['grid_settings']['tax1_custom_color_field_bg'] ?? '', true);
                 if ($text_color || $bg_color) {
                     $custom_style = "color:{$text_color}; background-color:{$bg_color}; border-color:{$bg_color};";
-                    $selector = '.elementor-element' . $this->get_unique_selector() . ' .king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . esc_attr($term->term_id);
+                    $selector = '.king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . esc_attr($term->term_id);
                     echo '<style>' . $selector . '{' . $custom_style . '}</style>';
                 }
             }

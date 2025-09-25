@@ -132,7 +132,7 @@
 
 .king-addons-dpg-posts-search {
     /* Main styles controlled by Elementor - see Filter Controls style section */
-    border: none !important;
+    border: none;
     background: transparent;
     flex: 1;
     min-width: 280px;

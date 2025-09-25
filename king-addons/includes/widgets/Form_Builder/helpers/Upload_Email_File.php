@@ -22,6 +22,13 @@ class Upload_Email_File
             ));
         }
 
+        // Add capability check
+        if (!current_user_can('upload_files')) {
+            wp_send_json_error(array(
+                'message' => esc_html__('Insufficient permissions to upload files.', 'king-addons'),
+            ));
+        }
+
         $max_file_size = isset($_POST['max_file_size']) ? floatval(sanitize_text_field($_POST['max_file_size'])) : 0;
         if ($max_file_size <= 0) {
             $max_file_size = wp_max_upload_size() / pow(1024, 2);
@@ -45,6 +52,30 @@ class Upload_Email_File
                 wp_send_json_error(array(
                     'cause' => 'filetype',
                     'message' => esc_html__('File type is not valid.', 'king-addons')
+                ));
+            }
+
+            // Additional MIME type validation
+            $allowed_mime_types = [
+                'image/jpeg', 'image/jpg', 'image/png', 'image/gif',
+                'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'application/vnd.oasis.opendocument.text', 'video/avi', 'audio/ogg', 'video/mp4', 'audio/mp3',
+                'video/mpeg', 'audio/wav', 'video/x-ms-wmv', 'text/plain'
+            ];
+
+            if (!in_array($file['type'], $allowed_mime_types)) {
+                wp_send_json_error(array(
+                    'cause' => 'mime_type',
+                    'message' => esc_html__('File MIME type is not allowed.', 'king-addons')
+                ));
+            }
+
+            // Security check: Scan file content for malicious patterns
+            if (!$this->is_file_safe($file['tmp_name'])) {
+                wp_send_json_error(array(
+                    'cause' => 'security',
+                    'message' => esc_html__('File contains potentially malicious content.', 'king-addons')
                 ));
             }
 
@@ -154,6 +185,68 @@ class Upload_Email_File
         }
 
         return $exclusionlist;
+    }
+
+    /**
+     * Check if uploaded file is safe from malicious content
+     *
+     * @param string $file_path Path to the uploaded file
+     * @return bool True if file is safe, false if potentially malicious
+     */
+    private function is_file_safe($file_path)
+    {
+        // Only check text-based files for malicious content
+        $text_mime_types = ['text/plain', 'application/json', 'text/html', 'text/css', 'text/javascript'];
+
+        if (!in_array($this->get_file_mime_type($file_path), $text_mime_types)) {
+            return true; // Non-text files are considered safe for this check
+        }
+
+        if (!file_exists($file_path)) {
+            return false;
+        }
+
+        $content = file_get_contents($file_path);
+        if ($content === false) {
+            return false;
+        }
+
+        // Check for common malicious patterns
+        $malicious_patterns = [
+            '/<\?php/i',           // PHP opening tag
+            '/eval\s*\(/i',        // eval() function
+            '/base64_decode/i',    // Base64 decode
+            '/system\s*\(/i',      // system() function
+            '/exec\s*\(/i',        // exec() function
+            '/shell_exec/i',       // shell_exec function
+            '/passthru/i',         // passthru function
+            '/<\?=/i',             // PHP short tag
+            '/<script/i',          // JavaScript tags
+            '/javascript:/i',      // JavaScript protocol
+            '/on\w+\s*=/i',        // Event handlers
+        ];
+
+        foreach ($malicious_patterns as $pattern) {
+            if (preg_match($pattern, $content)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get file MIME type from file path
+     *
+     * @param string $file_path Path to the file
+     * @return string MIME type
+     */
+    private function get_file_mime_type($file_path)
+    {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $file_path);
+        finfo_close($finfo);
+        return $mime_type;
     }
 }
 

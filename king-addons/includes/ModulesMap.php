@@ -128,7 +128,7 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => ['script'],
-                    // 'has-pro' => true,
+                    'has-pro' => true,
                 ],
                 'business-hours' => [
                     'title' => esc_html__('Business Hours', 'king-addons'),
@@ -509,17 +509,17 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                 ],
-                               'pricing-calculator' => [
-                                   'title' => esc_html__('Pricing Calculator', 'king-addons'),
-                                   'description' => esc_html__('Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.', 'king-addons'),
-                                   'php-class' => 'Pricing_Calculator',
-                                   'has-pro' => true,
-                                   'docs-link' => '',
-                //                    'demo-link' => 'https://kingaddons.com/elementor/pricing-calculator/',
-                                   'demo-link' => '',
-                                   'css' => ['style'],
-                                   'js' => ['script'],
-                               ],
+                'pricing-calculator' => [
+                    'title' => esc_html__('Pricing Calculator', 'king-addons'),
+                    'description' => esc_html__('Add interactive pricing calculators to your website. Perfect for service-based businesses, product customization, or quote estimations with responsive and customizable layouts.', 'king-addons'),
+                    'php-class' => 'Pricing_Calculator',
+                    'has-pro' => true,
+                    'docs-link' => '',
+                    //                    'demo-link' => 'https://kingaddons.com/elementor/pricing-calculator/',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                ],
                 'lottie-animations' => [
                     'title' => esc_html__('Lottie Animations', 'king-addons'),
                     'description' => esc_html__('Add lightweight and scalable animations to your website. Perfect for creating engaging, interactive elements, it supports customization of animation speed, loop settings, and triggers. Enhance user experience with modern, responsive designs.', 'king-addons'),
@@ -686,6 +686,15 @@ final class ModulesMap
                     'demo-link' => 'https://kingaddons.com/elementor/duplicator/',
                     'css' => [],
                     'js' => []
+                ],
+                'collapse-expand-text' => [
+                    'title' => esc_html__('Collapse & Expand Text', 'king-addons'),
+                    'description' => esc_html__('Adds collapse and expand functionality to text elements, allowing users to show/hide content with smooth animations. Perfect for long text content and improved user experience.', 'king-addons'),
+                    'php-class' => 'Collapse_Expand_Text',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script', 'preview-handler']
                 ],
             ]
         ];

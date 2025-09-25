@@ -97,27 +97,7 @@
                     }
                 });
 
-                // Responsive logo alignment
-                const applyLogoAlignment = () => {
-                    $mainMenu.each(function () {
-                        const $menu = $(this);
-                        const breakpoint = parseInt($menu.data('mobile-breakpoint') || '1024', 10);
-                        if (window.innerWidth > breakpoint) {
-                            $menu.find('.king-addons-mega-menu-logo').css('justify-content', '');
-                        } else {
-                            const $logo = $menu.find('.king-addons-mega-menu-logo');
-                            if ($logo.hasClass('king-addons-logo-mobile-alignment-left')) {
-                                $logo.css('justify-content', 'flex-start');
-                            } else if ($logo.hasClass('king-addons-logo-mobile-alignment-center')) {
-                                $logo.css('justify-content', 'center');
-                            } else if ($logo.hasClass('king-addons-logo-mobile-alignment-right')) {
-                                $logo.css('justify-content', 'flex-end');
-                            }
-                        }
-                    });
-                };
-                $(window).on('resize', applyLogoAlignment);
-                applyLogoAlignment();
+
 
                 // Mobile menu toggle logic
                 const $mobileToggle = $scope.find('.king-addons-mobile-menu-toggle');
@@ -296,6 +276,7 @@
 
         // Only proceed if current position is center
         if (currentPosition !== 'center') return;
+        if (window.innerWidth <= 1024) return;
 
         const splitAt = parseInt($mainMenu.attr('data-split-at')) || 2;
         const $menuItems = $mainMenu.find('.king-addons-menu-items > li');
@@ -303,7 +284,17 @@
         
         if ($menuItems.length > splitAt && $logoPlaceholder.length) {
             // Clone logo and insert it after the split position
-            const $logoClone = $logoPlaceholder.children().first().clone();
+            const $logoClone = $logoPlaceholder.children().first().clone(true, true);
+
+            // Clean any previously injected Lottie DOM from the clone
+            // (cloning after Lottie init copies <svg>/<canvas> which would produce duplicates)
+            $logoClone.find('.king-addons-lottie-animations').each(function() {
+                const $container = jQuery(this);
+                // Remove any rendered content and runtime flags
+                $container.empty();
+                $container.removeData('lottie-initialized');
+                $container.removeData('lottie-animation');
+            });
             $logoClone.addClass('king-addons-center-logo-inserted');
             
             // Insert logo after the specified menu item
@@ -311,6 +302,18 @@
             
             // Add special class to menu for center layout
             $mainMenu.addClass('king-addons-center-logo-active');
+
+            // Ensure Lottie animations are initialized for cloned logo, if any
+            try {
+                // Initialize Lottie only for not-yet-initialized elements to avoid duplicates
+                $mainMenu.find('.king-addons-lottie-animations').each(function() {
+                    const $el = jQuery(this);
+                    if (!$el.data('lottie-initialized')) {
+                        kingAddonsInitializeLottieLogos($mainMenu);
+                        return false; // one pass is enough; internal init loops through all
+                    }
+                });
+            } catch (e) {}
         }
     }
 
@@ -436,24 +439,40 @@
                     
                     // Handle triggers
                     if (settings.trigger === 'hover') {
+                        const isInNavigation = $element.closest('.king-addons-mega-menu').length > 0;
                         $element.on('mouseenter', function() {
                             animation.play();
                         });
                         $element.on('mouseleave', function() {
+                            // Do not pause on mouseleave while a King Addons popup is open
+                            if (isInNavigation && document.querySelector('.king-addons-pb-template-popup.king-addons-pb-popup-open')) {
+                                animation.play();
+                                return;
+                            }
                             animation.pause();
                         });
                     } else if (settings.trigger === 'viewport') {
-                        // Simple viewport detection
-                        const observer = new IntersectionObserver((entries) => {
-                            entries.forEach(entry => {
-                                if (entry.isIntersecting) {
-                                    animation.play();
-                                } else {
-                                    animation.pause();
-                                }
+                        // For navigation logos, viewport trigger should be more permissive
+                        // Check if element is in navigation context
+                        const isInNavigation = $element.closest('.king-addons-mega-menu').length > 0;
+                        
+                        if (isInNavigation) {
+                            // For navigation logos, just start playing and keep playing
+                            // Navigation is typically always visible
+                            animation.play();
+                        } else {
+                            // For non-navigation elements, use standard viewport detection
+                            const observer = new IntersectionObserver((entries) => {
+                                entries.forEach(entry => {
+                                    if (entry.isIntersecting) {
+                                        animation.play();
+                                    } else {
+                                        animation.pause();
+                                    }
+                                });
                             });
-                        });
-                        observer.observe(this);
+                            observer.observe(this);
+                        }
                     }
                     
                     console.log('Lottie animation initialized for:', jsonUrl);
@@ -469,7 +488,25 @@
     // Handle center logo repositioning on window resize
     $(window).on('resize', function() {
         $('.king-addons-mega-menu[data-center-logo="true"]').each(function() {
-            kingAddonsCenterLogoPositioning($(this));
+            const $menu = $(this);
+            kingAddonsCenterLogoPositioning($menu);
+            // Ensure cloned logo does not carry previous rendered SVG/canvas
+            $menu.find('.king-addons-center-logo-inserted .king-addons-lottie-animations').each(function() {
+                const $container = jQuery(this);
+                if (!$container.data('lottie-initialized')) {
+                    $container.empty();
+                }
+            });
+            // Re-initialize Lottie only for missing instances
+            try {
+                $menu.find('.king-addons-lottie-animations').each(function() {
+                    const $el = jQuery(this);
+                    if (!$el.data('lottie-initialized')) {
+                        kingAddonsInitializeLottieLogos($menu);
+                        return false;
+                    }
+                });
+            } catch (e) {}
         });
     });
 
@@ -493,5 +530,39 @@
             });
         }, 1000);
     });
+
+    // Resume navigation logo Lottie animations when a King Addons popup opens
+    function kingAddonsKeepNavLottieRunning() {
+        const resumeAll = () => {
+            document.querySelectorAll('.king-addons-mega-menu .king-addons-lottie-animations').forEach(function(el) {
+                const $el = jQuery(el);
+                const anim = $el.data('lottie-animation');
+                if (anim) {
+                    anim.play();
+                }
+            });
+        };
+        // Resume when class changes on popups (open/close)
+        const popups = document.querySelectorAll('.king-addons-pb-template-popup');
+        popups.forEach(function(popup) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'class') {
+                        resumeAll();
+                    }
+                });
+            });
+            observer.observe(popup, { attributes: true, attributeFilter: ['class'] });
+        });
+        // Resume on resize (desktop breakpoint changes)
+        window.addEventListener('resize', function() {
+            resumeAll();
+        });
+        // Resume on scroll (in case of transient viewport observers)
+        window.addEventListener('scroll', function() {
+            resumeAll();
+        }, { passive: true });
+    }
+    document.addEventListener('DOMContentLoaded', kingAddonsKeepNavLottieRunning);
 
 })(jQuery);

@@ -166,7 +166,10 @@ class Dynamic_Posts_Grid extends Widget_Base
             ]
         );
 
-        // Post Types
+        // PRO: Widget Mode Control
+        $this->add_control_widget_mode();
+
+        // Post Types (shown only in Default mode)
         $this->add_control(
             'kng_dynamic_posts_post_types',
             [
@@ -176,8 +179,14 @@ class Dynamic_Posts_Grid extends Widget_Base
                 'options' => $this->get_post_types(),
                 'default' => ['post'],
                 'description' => esc_html__('Select post types to display', 'king-addons'),
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => ['', 'default'],
+                ],
             ]
         );
+
+        // PRO: Custom Post Types Control
+        $this->add_control_custom_post_types();
 
         // Posts per page
         $this->add_control(
@@ -265,7 +274,7 @@ class Dynamic_Posts_Grid extends Widget_Base
             ]
         );
 
-        // Filter taxonomy
+        // Filter taxonomy (shown only in Default mode)
         $this->add_control(
             'kng_dynamic_posts_filter_taxonomy',
             [
@@ -275,6 +284,7 @@ class Dynamic_Posts_Grid extends Widget_Base
                 'default' => 'category',
                 'condition' => [
                     'kng_dynamic_posts_enable_filters' => 'yes',
+                    'kng_dynamic_posts_widget_mode' => ['', 'default'],
                 ],
             ]
         );
@@ -446,6 +456,46 @@ class Dynamic_Posts_Grid extends Widget_Base
             ]
         );
 
+        // PRO: Pagination Type Control
+        $this->add_control_pagination_type();
+
+        // PRO: Scroll Threshold Control
+        $this->add_control_scroll_threshold();
+
+        $this->end_controls_section();
+
+        // PRO: CPT Actions Section  
+        $this->start_controls_section(
+            'kng_dynamic_posts_cpt_actions_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('CPT Action Types', 'king-addons') . ' ' . esc_html__('(PRO)', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => 'custom_cpt',
+                ],
+            ]
+        );
+
+        // PRO: CPT Actions Control
+        $this->add_control_cpt_actions();
+
+        $this->end_controls_section();
+
+        // PRO: Meta Fields Section
+        $this->start_controls_section(
+            'kng_dynamic_posts_meta_fields_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Meta Fields', 'king-addons') . ' ' . esc_html__('(PRO)', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        // PRO: Show Meta Control
+        $this->add_control_show_meta();
+
+        // PRO: Meta Fields Control
+        $this->add_control_meta_fields();
+
         $this->end_controls_section();
 
         // Category Colors Section
@@ -454,6 +504,9 @@ class Dynamic_Posts_Grid extends Widget_Base
             [
                 'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Category Colors', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => ['', 'default']
+                ]
             ]
         );
 
@@ -462,16 +515,53 @@ class Dynamic_Posts_Grid extends Widget_Base
 
         $this->end_controls_section();
 
+        // CPT Colors Section (PRO)
+        $this->start_controls_section(
+            'kng_dynamic_posts_cpt_colors_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('CPT Colors', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => 'custom_cpt'
+                ]
+            ]
+        );
+
+        // PRO: CPT Colors
+        $this->add_control_cpt_colors();
+
+        $this->end_controls_section();
+
         $this->start_controls_section(
             'kng_dynamic_posts_category_button_colors_section',
             [
                 'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Category Button Colors', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => ['', 'default']
+                ]
             ]
         );
 
         // Dynamic category button colors
         $this->add_dynamic_category_button_colors();
+
+        $this->end_controls_section();
+
+        // CPT Button Colors Section (PRO)
+        $this->start_controls_section(
+            'kng_dynamic_posts_cpt_button_colors_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('CPT Button Colors', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => 'custom_cpt'
+                ]
+            ]
+        );
+
+        // PRO: CPT Button Colors
+        $this->add_control_cpt_button_colors();
 
         $this->end_controls_section();
 
@@ -483,11 +573,31 @@ class Dynamic_Posts_Grid extends Widget_Base
             [
                 'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Category Button Text', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => ['', 'default']
+                ]
             ]
         );
 
         // Get categories dynamically
         $this->add_dynamic_category_ctas();
+
+        $this->end_controls_section();
+
+        // CPT Button Text Section (PRO)
+        $this->start_controls_section(
+            'kng_dynamic_posts_cpt_ctas_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('CPT Button Text', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => 'custom_cpt'
+                ]
+            ]
+        );
+
+        // PRO: CPT Button Text
+        $this->add_control_cpt_ctas();
 
         $this->end_controls_section();
 
@@ -497,11 +607,31 @@ class Dynamic_Posts_Grid extends Widget_Base
             [
                 'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Category Icons', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => ['', 'default']
+                ]
             ]
         );
 
         // Get categories dynamically
         $this->add_dynamic_category_icons();
+
+        $this->end_controls_section();
+
+        // CPT Icons Section (PRO)
+        $this->start_controls_section(
+            'kng_dynamic_posts_cpt_icons_section',
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('CPT Icons', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'kng_dynamic_posts_widget_mode' => 'custom_cpt'
+                ]
+            ]
+        );
+
+        // PRO: CPT Icons
+        $this->add_control_cpt_icons();
 
         $this->end_controls_section();
 
@@ -518,6 +648,9 @@ class Dynamic_Posts_Grid extends Widget_Base
                 'Author-based Filtering'
             ]);
         }
+
+        // PRO extension point to append content controls without duplicating base controls
+        // Pro content controls are added via add_control_* method calls above
     }
 
     /**
@@ -1423,10 +1556,10 @@ class Dynamic_Posts_Grid extends Widget_Base
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'default' => [
-                    'top' => 12,
-                    'right' => 16,
-                    'bottom' => 12,
-                    'left' => 16,
+                    'top' => 8,
+                    'right' => 12,
+                    'bottom' => 8,
+                    'left' => 12,
                     'unit' => 'px',
                 ],
                 'selectors' => [
@@ -3186,7 +3319,7 @@ class Dynamic_Posts_Grid extends Widget_Base
      *
      * @return array Post types array.
      */
-    private function get_post_types(): array
+    protected function get_post_types(): array
     {
         $post_types = get_post_types(['public' => true], 'objects');
         $options = [];
@@ -3203,7 +3336,7 @@ class Dynamic_Posts_Grid extends Widget_Base
      *
      * @return array Taxonomies array.
      */
-    private function get_taxonomies(): array
+    protected function get_taxonomies(): array
     {
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         $options = [];
@@ -3218,7 +3351,7 @@ class Dynamic_Posts_Grid extends Widget_Base
     /**
      * Add dynamic category color controls.
      */
-    private function add_dynamic_category_colors(): void
+    protected function add_dynamic_category_colors(): void
     {
         // Get taxonomy from filter settings (default to category)
         $taxonomy = 'category';
@@ -3312,7 +3445,7 @@ class Dynamic_Posts_Grid extends Widget_Base
     /**
      * Add dynamic category icon controls.
      */
-    private function add_dynamic_category_icons(): void
+    protected function add_dynamic_category_icons(): void
     {
         // Get taxonomy from filter settings (default to category)
         $taxonomy = 'category';
@@ -3504,7 +3637,7 @@ class Dynamic_Posts_Grid extends Widget_Base
     /**
      * Add dynamic category CTA controls.
      */
-    private function add_dynamic_category_ctas(): void
+    protected function add_dynamic_category_ctas(): void
     {
         // Get taxonomy from filter settings (default to category)
         $taxonomy = 'category';
@@ -3588,7 +3721,7 @@ class Dynamic_Posts_Grid extends Widget_Base
     /**
      * Add dynamic category button color controls.
      */
-    private function add_dynamic_category_button_colors(): void
+    protected function add_dynamic_category_button_colors(): void
     {
         // Get taxonomy from filter settings (default to category)
         $taxonomy = 'category';
@@ -4047,6 +4180,7 @@ class Dynamic_Posts_Grid extends Widget_Base
         // Wrapper attributes
         $this->add_render_attribute('wrapper', 'class', 'king-addons-dpg-wrapper');
         $this->add_render_attribute('wrapper', 'data-widget-id', $widget_id);
+        $this->add_render_attribute('wrapper', 'data-widget-mode', 'default'); // Set default mode for Free version
         $this->add_render_attribute('wrapper', 'data-posts-per-page', $settings['kng_dynamic_posts_per_page']);
         $this->add_render_attribute('wrapper', 'data-post-types', wp_json_encode($settings['kng_dynamic_posts_post_types']));
         $this->add_render_attribute('wrapper', 'data-orderby', $settings['kng_dynamic_posts_orderby']);
@@ -4057,6 +4191,10 @@ class Dynamic_Posts_Grid extends Widget_Base
         if ($settings['kng_dynamic_posts_enable_filters'] === 'yes') {
             $this->add_render_attribute('wrapper', 'data-filter-taxonomy', $settings['kng_dynamic_posts_filter_taxonomy']);
         }
+
+        // CPT-related attributes (empty for Free version, but needed for JS compatibility)
+        $this->add_render_attribute('wrapper', 'data-cpt-actions', '');
+        $this->add_render_attribute('wrapper', 'data-cpt-icons', '');
 ?>
 
         <div <?php echo $this->get_render_attribute_string('wrapper'); ?>>
@@ -4205,9 +4343,7 @@ class Dynamic_Posts_Grid extends Widget_Base
 
                 <!-- CTA Button -->
                 <div class="king-addons-dpg-cta">
-                    <a href="<?php echo esc_url(get_permalink()); ?>" class="king-addons-dpg-button">
-                        <?php echo esc_html($cta_text); ?>
-                    </a>
+                    <?php echo $this->get_cta_button_html($post, $settings, $cta_text); ?>
                 </div>
 
             </div>
@@ -4215,4 +4351,162 @@ class Dynamic_Posts_Grid extends Widget_Base
 <?php
         endwhile;
     }
+
+    /**
+     * Build WP_Query args. Pro overrides to support Custom CPT mode.
+     *
+     * @param array $settings Widget settings.
+     * @return array
+     */
+    protected function build_query_args(array $settings): array
+    {
+        return [
+            'post_type' => $settings['kng_dynamic_posts_post_types'],
+            'posts_per_page' => $settings['kng_dynamic_posts_per_page'],
+            'orderby' => $settings['kng_dynamic_posts_orderby'],
+            'order' => $settings['kng_dynamic_posts_order'],
+            'post_status' => 'publish',
+        ];
+    }
+
+    /**
+     * Build filter terms data for filter bar. Pro overrides for CPT/tabs.
+     *
+     * @param array $settings Widget settings.
+     * @return array
+     */
+    protected function get_filter_terms(array $settings): array
+    {
+        if (($settings['kng_dynamic_posts_enable_filters'] ?? '') !== 'yes') {
+            return [];
+        }
+
+        $taxonomy = $settings['kng_dynamic_posts_filter_taxonomy'] ?? 'category';
+        $terms = get_terms([
+            'taxonomy' => $taxonomy,
+            'hide_empty' => true,
+        ]);
+
+        return is_wp_error($terms) ? [] : $terms;
+    }
+
+    /**
+     * Render filter bar wrapper. Pro overrides for advanced UI.
+     *
+     * @param array $settings Widget settings.
+     * @param array $filter_terms Terms list or structured data.
+     */
+    protected function render_filter_bar(array $settings, array $filter_terms): void
+    {
+        if (($settings['kng_dynamic_posts_enable_filters'] ?? '') !== 'yes' && ($settings['kng_dynamic_posts_enable_search'] ?? '') !== 'yes') {
+            return;
+        }
+        ?>
+        <div class="king-addons-dpg-filter-bar">
+            <div class="king-addons-dpg-filter-header">
+                <h2 class="king-addons-dpg-filter-title"><?php echo esc_html($settings['kng_dynamic_posts_filter_title_text'] ?? ''); ?></h2>
+            </div>
+
+            <div class="king-addons-dpg-filter-controls">
+                <?php if (($settings['kng_dynamic_posts_enable_filters'] ?? '') === 'yes' && !empty($filter_terms)): ?>
+                    <div class="king-addons-dpg-filter-dropdown<?php 
+                        $has_custom = !empty($settings['kng_dynamic_posts_filter_dropdown_use_custom']) && $settings['kng_dynamic_posts_filter_dropdown_use_custom'] === 'yes';
+                        $has_icon = $has_custom && ($settings['kng_dynamic_posts_filter_dropdown_type'] ?? 'icon') === 'icon' && !empty($settings['kng_dynamic_posts_filter_dropdown_custom_icon']['value'] ?? '');
+                        $has_image = $has_custom && ($settings['kng_dynamic_posts_filter_dropdown_type'] ?? 'icon') === 'image' && !empty($settings['kng_dynamic_posts_filter_dropdown_custom_image']['url'] ?? '');
+                        echo ($has_custom && ($has_icon || $has_image)) ? ' has-custom-icon' : '';
+                    ?>">
+                        <select class="king-addons-dpg-posts-filter" data-taxonomy="<?php echo esc_attr($settings['kng_dynamic_posts_filter_taxonomy'] ?? 'category'); ?>">
+                            <option value="*">&nbsp;<?php echo esc_html__('All resources types', 'king-addons'); ?></option>
+                            <?php foreach ($filter_terms as $term): ?>
+                                <option value="<?php echo esc_attr($term->slug); ?>"><?php echo esc_html($term->name); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if ($has_icon): ?>
+                            <span class="dropdown-icon">
+                                <?php \Elementor\Icons_Manager::render_icon($settings['kng_dynamic_posts_filter_dropdown_custom_icon'], ['class' => 'dropdown-custom-icon']); ?>
+                            </span>
+                        <?php elseif ($has_image): ?>
+                            <span class="dropdown-image">
+                                <img src="<?php echo esc_url($settings['kng_dynamic_posts_filter_dropdown_custom_image']['url']); ?>" alt="<?php echo esc_attr__('Dropdown icon', 'king-addons'); ?>" />
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (($settings['kng_dynamic_posts_enable_search'] ?? '') === 'yes'): ?>
+                    <div class="king-addons-dpg-search-input">
+                        <input type="text" class="king-addons-dpg-posts-search" placeholder="<?php echo esc_attr($settings['kng_dynamic_posts_search_placeholder'] ?? ''); ?>">
+                        <button class="king-addons-dpg-search-btn" type="button">
+                            <?php if (!empty($settings['kng_dynamic_posts_search_use_custom_icon']) && $settings['kng_dynamic_posts_search_use_custom_icon'] === 'yes' && !empty($settings['kng_dynamic_posts_search_custom_icon']['value'] ?? '')): ?>
+                                <?php \Elementor\Icons_Manager::render_icon($settings['kng_dynamic_posts_search_custom_icon'], ['class' => 'king-addons-dpg-search-custom-icon']); ?>
+                            <?php else: ?>
+                                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" /></svg>
+                            <?php endif; ?>
+                        </button>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render pagination wrapper. Pro overrides for advanced types.
+     *
+     * @param array     $settings
+     * @param \WP_Query $posts_query
+     */
+    protected function render_pagination(array $settings, \WP_Query $posts_query): void
+    {
+        if (($settings['kng_dynamic_posts_enable_load_more'] ?? '') !== 'yes') {
+            return;
+        }
+        ?>
+        <div class="king-addons-dpg-pagination">
+            <div class="king-addons-dpg-pagination-info">
+                <?php echo esc_html__('Showing', 'king-addons'); ?> <span class="king-addons-dpg-current-count"><?php echo (int) $posts_query->post_count; ?></span> <?php echo esc_html__('of', 'king-addons'); ?> <span class="king-addons-dpg-total-count"><?php echo (int) $posts_query->found_posts; ?></span> <?php echo esc_html__('items', 'king-addons'); ?>
+            </div>
+            <div class="king-addons-dpg-pagination-loading" style="display: none;">
+                <?php echo esc_html($settings['kng_dynamic_posts_loading_text'] ?? 'Loading...'); ?>
+            </div>
+            <?php if ($posts_query->max_num_pages > 1): ?>
+                <button class="king-addons-dpg-load-more-btn" data-page="1" data-max-pages="<?php echo esc_attr($posts_query->max_num_pages); ?>">
+                    <?php echo esc_html($settings['kng_dynamic_posts_load_more_text'] ?? 'LOAD MORE'); ?>
+                </button>
+            <?php endif; ?>
+            <div class="king-addons-dpg-pagination-finish" style="display: none;">
+                <?php echo esc_html__('All items loaded', 'king-addons'); ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render CTA button HTML. Pro overrides to inject action button behaviors.
+     *
+     * @param \WP_Post $post
+     * @param array    $settings
+     * @param string   $cta_text
+     * @return string
+     */
+    protected function get_cta_button_html($post, array $settings, string $cta_text): string
+    {
+        return '<a href="' . esc_url(get_permalink($post)) . '" class="king-addons-dpg-button">' . esc_html($cta_text) . '</a>';
+    }
+
+    /**
+     * Extension points for Pro controls (content/style). Intentionally empty in Free.
+     */
+    // PRO Control Methods (empty in Free, overridden in Pro)
+    public function add_control_widget_mode() {}
+    public function add_control_custom_post_types() {}
+    public function add_control_pagination_type() {}
+    public function add_control_scroll_threshold() {}
+    public function add_control_show_meta() {}
+    public function add_control_meta_fields() {}
+    public function add_control_cpt_actions() {}
+    public function add_control_cpt_colors() {}
+    public function add_control_cpt_button_colors() {}
+    public function add_control_cpt_ctas() {}
+    public function add_control_cpt_icons() {}
 }

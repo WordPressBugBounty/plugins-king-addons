@@ -1,7 +1,7 @@
 === King Addons for Elementor – 4,000+ ready Elementor sections, 650+ templates, 70+ FREE widgets for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 51.1.14
+Stable tag: 51.1.35
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -109,6 +109,7 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Apply lightweight CSS-based rotating effects to elements.
 - [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Wrap sections or elements in clickable links.
 - [**Duplicator**](https://kingaddons.com/elementor/duplicator/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Duplicate posts, pages, or templates effortlessly.
+- [**Collapse & Expand Text**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Adds controls to collapse and expand long text.
 
 ### Happy User of King Addons?
 
@@ -189,13 +190,26 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.35 - September 25, 2025 =
+This major update includes many improvements for widgets and security. If you encounter any issues, please email us at contact@kingaddons.com. We will continue improving the plugin step by step this autumn (fall) and adding new widgets, templates, and features.
+* **New:** Dynamic Posts Grid widget – Create dynamic, filterable grids of posts with AJAX search and Load More functionality. Features color-coded post types, responsive design, and smooth animations. Ideal for resource centers, portfolios, and content libraries with advanced filtering.
+* **New:** Mega Menu – Added a new layout with a centered logo between menu items. If you notice any issues, please contact us.
+* **New:** Mega Menu – Added Lottie support for the logo.
+* **New:** Collapse and Expand Text feature – Adds controls to collapse and expand long text in the Elementor Text Editor widget and King Addons Styled Text Builder widget. Uses lightweight inline CSS/JS to toggle visibility with Read more / Read less controls.
+* **Improved:** Team Member widget – Added CSS filter settings.
+* **Improved:** Team Member Slider widget – Added CSS filter settings.
+* **Improved:** Security enhancements across the plugin.
+* **Improved:** Premium version – further performance and security improvements.
+* **Fix:** Popup close button display issue resolved.
+* **Fix:** Rare issue with activation of premium version.
+* **Coming soon:** Many new widgets for WooCommerce, grid widgets for content organization, and new design features.  
+* **Coming soon:** WooCommerce layout builder.
+* **Coming soon:** New 50+ premium templates.
+* **Coming soon:** Visability manager for widgets.
+* **Coming soon:** Scrolling animations builder.
+
 = King Addons for Elementor version 51.1.14 - September 7, 2025 =
 * **New:** Templates Catalog - 9 premium templates added.
-
-= King Addons for Elementor version 51.1.5 - July 27, 2025 =
-* **New:** Dynamic Posts Grid widget - Create dynamic, filterable grids of posts with AJAX search and load more functionality. Features color-coded post types, responsive design, and smooth animations. Perfect for resource centers, portfolios, and content libraries with advanced filtering capabilities.
-* **Improved:** Team Member widget - CSS filters settings added.
-* **Improved:** Team Member Slider widget - CSS filters settings added.
 
 = King Addons for Elementor version 51.1.2 - July 27, 2025 =
 * **New:** Sections Catalog - Collection of 4,000+ ready-made sections to build pages in seconds.

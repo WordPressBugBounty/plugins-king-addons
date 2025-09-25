@@ -588,7 +588,8 @@ class Popup extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '#000000',
                 'selectors' => [
-                    '.king-addons-popup-close-button-{{ID}}' => 'color: {{VALUE}};',
+                    '.king-addons-popup-close-button-{{ID}}' => 'color: {{VALUE}}; fill: {{VALUE}};',
+                    '.king-addons-popup-close-button-{{ID}} svg' => 'color: {{VALUE}}; fill: {{VALUE}};',
                 ],
             ]
         );
@@ -603,7 +604,7 @@ class Popup extends Widget_Base
                 'default' => 20,
                 'separator' => 'before',
                 'selectors' => [
-                    '.king-addons-popup-close-button-{{ID}}' => 'font-size: {{VALUE}}px;',
+                    '.king-addons-popup-close-button-{{ID}}' => 'font-size: {{VALUE}}px; width: {{VALUE}}px; height: {{VALUE}}px;',
                 ],
             ]
         );

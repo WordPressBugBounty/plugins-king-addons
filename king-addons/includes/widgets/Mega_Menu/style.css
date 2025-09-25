@@ -43,9 +43,9 @@
     flex-wrap: wrap;
 }
 
-.king-addons-logo-position-center .king-addons-center-logo-placeholder {
+/* .king-addons-logo-position-center .king-addons-center-logo-placeholder {
     display: none;
-}
+} */
 
 .king-addons-center-logo-inserted {
     display: flex;
@@ -745,20 +745,9 @@
         transform: none !important;
     }
 
-    /* Responsive Logo Positioning - Mobile */
-    
-    /* Left position on mobile */
-    .king-addons-logo-position-mobile-left .king-addons-center-logo-placeholder {
-        display: none;
-    }
     
     .king-addons-logo-position-mobile-left .king-addons-mega-menu-logo {
         order: -2; /* Before mobile toggle */
-    }
-    
-    /* Right position on mobile */
-    .king-addons-logo-position-mobile-right .king-addons-center-logo-placeholder {
-        display: none;
     }
     
     .king-addons-logo-position-mobile-right .king-addons-mega-menu-logo {
@@ -767,26 +756,80 @@
     }
     
     /* Center position on mobile */
+    .king-addons-mega-menu .king-addons-center-logo-placeholder {
+        display: flex; /* default hidden on mobile */
+        order: 1; /* place between left area and the toggle */
+        flex: 1 1 auto; /* fill all available space up to the toggle */
+        align-items: center;
+        margin: 0; /* remove extra spacing that pushed it to a new line */
+        min-width: 0; /* allow contents to shrink within the row */
+    }
+
+    /* Show placeholder only when mobile center is selected and align it */
     .king-addons-logo-position-mobile-center .king-addons-center-logo-placeholder {
-        display: block;
-        order: -3; /* Top of mobile layout */
-        text-align: center;
-        margin-bottom: 10px;
+        display: flex;
+    }
+    .king-addons-logo-position-mobile-left .king-addons-center-logo-placeholder {
+        justify-content: flex-start;
+    }
+    .king-addons-logo-position-mobile-center .king-addons-center-logo-placeholder {
+        justify-content: center;
+    }
+    .king-addons-logo-position-mobile-right .king-addons-center-logo-placeholder {
+        justify-content: flex-end;
     }
     
     .king-addons-center-logo-inserted {
         display: none; /* Hide JavaScript-inserted logo on mobile when center */
     }
 
+    .king-addons-logo-position-mobile-left {
+        justify-content: flex-start;
+    }
+    
+    .king-addons-logo-position-mobile-center {
+        justify-content: center;
+    }
+    
+    .king-addons-logo-position-mobile-right {
+        justify-content: flex-end;
+    }
+
+}
+
+@media (min-width: 1025px) { 
+    .king-addons-logo-position-mobile-center .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-center .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-tablet-left .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-tablet-right .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-mobile-left .king-addons-center-logo-placeholder,
+    .king-addons-logo-position-mobile-right .king-addons-center-logo-placeholder {
+        display: none;
+    }
 }
 
 /* Responsive Logo Positioning - Tablet */
 @media (min-width: 768px) and (max-width: 1024px) {
     
-    /* Left position on tablet */
-    .king-addons-logo-position-tablet-left .king-addons-center-logo-placeholder {
-        display: none;
+
+    .king-addons-logo-position-tablet-left {
+        justify-content: flex-start;
     }
+    
+    .king-addons-logo-position-tablet-center {
+        justify-content: center;
+    }
+    
+    .king-addons-logo-position-tablet-right {
+        justify-content: flex-end;
+    }
+
+
+    /* Left position on tablet */
+    /* .king-addons-logo-position-tablet-left .king-addons-center-logo-placeholder {
+        display: none;
+    } */
     
     .king-addons-logo-position-tablet-left .king-addons-mega-menu-logo {
         order: -1;
@@ -794,9 +837,9 @@
     }
     
     /* Right position on tablet */
-    .king-addons-logo-position-tablet-right .king-addons-center-logo-placeholder {
+    /* .king-addons-logo-position-tablet-right .king-addons-center-logo-placeholder {
         display: none;
-    }
+    } */
     
     .king-addons-logo-position-tablet-right .king-addons-mega-menu-logo {
         order: 1;
@@ -804,15 +847,38 @@
     }
     
     /* Center position on tablet - center within bar (not between items) */
-    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder {
+    /* .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder {
         display: block;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         margin: 0;
-    }
+    } */
     .king-addons-logo-position-tablet-center .king-addons-center-logo-inserted {
         display: none !important;
+    }
+
+    /* Default hide placeholder on tablet */
+    /* .king-addons-center-logo-placeholder {
+        display: none;
+    } */
+
+    /* On tablet, when using center layout, place the placeholder in the bar and align by control */
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder {
+        display: flex;
+        order: 1;
+        flex: 1 1 auto;
+        align-items: center;
+        min-width: 0;
+    }
+    .king-addons-logo-position-tablet-left .king-addons-center-logo-placeholder {
+        justify-content: flex-start;
+    }
+    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder {
+        justify-content: center;
+    }
+    .king-addons-logo-position-tablet-right .king-addons-center-logo-placeholder {
+        justify-content: flex-end;
     }
 }
 
@@ -1070,7 +1136,7 @@
 }
 
 /* Styles for logo alignment on mobile devices */
-.king-addons-logo-mobile-alignment-left {
+/* .king-addons-logo-mobile-alignment-left {
     justify-content: flex-start;
 }
 
@@ -1080,7 +1146,7 @@
 
 .king-addons-logo-mobile-alignment-right {
     justify-content: flex-end;
-}
+} */
 
 /* Styles for hover effects */
 .king-addons-menu-items > li > a {
@@ -1613,14 +1679,14 @@
     }
 
     /* Center logo in the bar on tablet/mobile (not between items) */
-    .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder,
+    /* .king-addons-logo-position-tablet-center .king-addons-center-logo-placeholder,
     .king-addons-logo-position-mobile-center .king-addons-center-logo-placeholder {
         display: block;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         margin: 0;
-    }
+    } */
 
     /* Hide JS-inserted center logo on tablet/mobile to avoid duplicates */
     .king-addons-logo-position-tablet-center .king-addons-center-logo-inserted,

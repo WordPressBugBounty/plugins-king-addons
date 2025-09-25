@@ -156,7 +156,10 @@ class Login_Register_Form_Ajax
         $confirm_password = $_POST['confirm_password'];
         
         // Additional fields - moved user_role here to fix undefined variable error
-        $user_role = isset($_POST['user_role']) ? sanitize_text_field($_POST['user_role']) : 'subscriber';
+        // Security fix: Only allow specific roles to prevent privilege escalation
+        $allowed_roles = ['subscriber', 'customer']; // Add more safe roles as needed
+        $requested_role = isset($_POST['user_role']) ? sanitize_text_field($_POST['user_role']) : 'subscriber';
+        $user_role = in_array($requested_role, $allowed_roles, true) ? $requested_role : 'subscriber';
         $first_name = isset($_POST['first_name']) ? sanitize_text_field($_POST['first_name']) : '';
         $last_name = isset($_POST['last_name']) ? sanitize_text_field($_POST['last_name']) : '';
         $website = isset($_POST['website']) ? esc_url_raw($_POST['website']) : '';

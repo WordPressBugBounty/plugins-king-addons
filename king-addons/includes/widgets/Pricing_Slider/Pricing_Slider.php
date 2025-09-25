@@ -2035,9 +2035,9 @@ class Pricing_Slider extends Widget_Base
             'custom_prices' => isset($settings['custom_prices']) ? $settings['custom_prices'] : [],
             'currency_position' => $settings['currency_position'],
             'currency_symbol' => $currency_symbol,
-            'price_prefix' => $settings['price_prefix'],
-            'price_suffix' => $settings['price_suffix'],
-            'period' => $settings['period'],
+            'price_prefix' => esc_html($settings['price_prefix']),
+            'price_suffix' => esc_html($settings['price_suffix']),
+            'period' => esc_html($settings['period']),
         ];
 
         // Add Pro-version formula parameters if they exist

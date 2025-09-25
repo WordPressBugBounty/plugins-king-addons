@@ -131,10 +131,20 @@ class Social_Login_Handler
      */
     private static function verify_google_token($token, $client_id)
     {
-        $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . $token;
+        // Security fix: Validate token format
+        if (empty($token) || strlen($token) > 2048) {
+            return false;
+        }
         
-        $response = wp_remote_get($url);
+        $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($token);
+        
+        $response = wp_remote_get($url, [
+            'timeout' => 15,
+            'user-agent' => 'King Addons Social Login/1.0'
+        ]);
+        
         if (is_wp_error($response)) {
+            error_log('King Addons Social Login: Google token verification failed: ' . $response->get_error_message());
             return false;
         }
 
@@ -162,11 +172,24 @@ class Social_Login_Handler
      */
     private static function verify_facebook_token($token, $app_id, $app_secret)
     {
-        // First, verify the token
-        $verify_url = "https://graph.facebook.com/debug_token?input_token={$token}&access_token={$app_id}|{$app_secret}";
+        // Security fix: Validate inputs
+        if (empty($token) || empty($app_id) || empty($app_secret) || strlen($token) > 1024) {
+            return false;
+        }
         
-        $response = wp_remote_get($verify_url);
+        // First, verify the token
+        $verify_url = "https://graph.facebook.com/debug_token?" . http_build_query([
+            'input_token' => $token,
+            'access_token' => $app_id . '|' . $app_secret
+        ]);
+        
+        $response = wp_remote_get($verify_url, [
+            'timeout' => 15,
+            'user-agent' => 'King Addons Social Login/1.0'
+        ]);
+        
         if (is_wp_error($response)) {
+            error_log('King Addons Social Login: Facebook token verification failed: ' . $response->get_error_message());
             return false;
         }
 
@@ -176,10 +199,18 @@ class Social_Login_Handler
         }
 
         // Get user data
-        $user_url = "https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture&access_token={$token}";
+        $user_url = "https://graph.facebook.com/me?" . http_build_query([
+            'fields' => 'id,name,email,first_name,last_name,picture',
+            'access_token' => $token
+        ]);
         
-        $user_response = wp_remote_get($user_url);
+        $user_response = wp_remote_get($user_url, [
+            'timeout' => 15,
+            'user-agent' => 'King Addons Social Login/1.0'
+        ]);
+        
         if (is_wp_error($user_response)) {
+            error_log('King Addons Social Login: Facebook user data request failed: ' . $user_response->get_error_message());
             return false;
         }
 
@@ -228,9 +259,9 @@ class Social_Login_Handler
             wp_set_current_user($user->ID);
             wp_set_auth_cookie($user->ID);
             
-            // Update social provider info
-            update_user_meta($user->ID, 'king_addons_social_provider', $provider);
-            update_user_meta($user->ID, 'king_addons_social_provider_id', $user_data['provider_id']);
+            // Update social provider info with sanitized data
+            update_user_meta($user->ID, 'king_addons_social_provider', sanitize_text_field($provider));
+            update_user_meta($user->ID, 'king_addons_social_provider_id', sanitize_text_field($sanitized_data['provider_id']));
             
         } else {
             // Create new user with sanitized data

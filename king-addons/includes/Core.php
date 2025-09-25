@@ -51,6 +51,7 @@ final class Core
     {
         require_once(KING_ADDONS_PATH . 'includes/ModulesMap.php');
         require_once(KING_ADDONS_PATH . 'includes/LibrariesMap.php');
+        require_once(KING_ADDONS_PATH . 'includes/SectionsMap.php');
 
         if ($this->hasElementorCompatibility()) {
 
@@ -62,7 +63,7 @@ final class Core
                 require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/CollectionsMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/Templates.php');
-                
+
                 // Template Catalog Button for Elementor Editor
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Template_Catalog_Button/Template_Catalog_Button.php');
                 Template_Catalog_Button::instance();
@@ -122,9 +123,10 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/extensions/alt-text-generator/Alt_Text_Generator.php');
             new Alt_Text_Generator();
 
-            // Dynamic Posts Grid AJAX Helper
+            // Dynamic Posts Grid AJAX Helper - Initialize regardless of Elementor compatibility
+            // This is needed for AJAX functionality to work even when PRO version is disabled
             require_once(KING_ADDONS_PATH . 'includes/helpers/Dynamic_Posts_Grid_Ajax.php');
-            new Dynamic_Posts_Grid_Ajax();
+            \King_Addons\Dynamic_Posts_Grid_Ajax::get_instance();
 
             // Screenshot Generator
             // require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/screenshot-generator.php');
@@ -141,7 +143,7 @@ final class Core
             add_action('elementor/controls/controls_registered', [$this, 'registerControls']);
 
             self::enableFeatures();
-            
+
             // Load and register AJAX handlers for Login Register Form widget
             require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Login_Register_Form_Ajax.php');
             require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/User_Profile_Fields.php');
@@ -153,13 +155,13 @@ final class Core
             add_action('wp_ajax_king_addons_user_register', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_register_ajax']);
             add_action('wp_ajax_nopriv_king_addons_user_lostpassword', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_lostpassword_ajax']);
             add_action('wp_ajax_king_addons_user_lostpassword', ['King_Addons\Widgets\Login_Register_Form\Login_Register_Form_Ajax', 'handle_lostpassword_ajax']);
-            
+
             // Initialize user profile fields
             \King_Addons\Widgets\Login_Register_Form\User_Profile_Fields::init();
-            
+
             // Initialize social login handler
             \King_Addons\Widgets\Login_Register_Form\Social_Login_Handler::init();
-            
+
             // Initialize Security Dashboard for admins
             if (is_admin()) {
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Security_Dashboard.php');
@@ -180,22 +182,21 @@ final class Core
             // Conditionally enqueue AI text-field enhancement script and styles in Elementor editor
             $ai_options = get_option('king_addons_ai_options', []);
             $enable_ai_text_buttons = isset($ai_options['enable_ai_buttons']) ? (bool) $ai_options['enable_ai_buttons'] : true;
-            if ( $enable_ai_text_buttons ) {
+            if ($enable_ai_text_buttons) {
                 // Enqueue AI text-field enhancement script
-                add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiFieldScript' ]);
+                add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueueAiFieldScript']);
                 // Enqueue styles for AI prompt UI
-                add_action('elementor/editor/after_enqueue_styles', [ $this, 'enqueueAiFieldStyles' ]);
+                add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueueAiFieldStyles']);
                 // Enqueue AI page translator script
-                add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiTranslatorScript' ]);
+                add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueueAiTranslatorScript']);
             }
 
             $enable_ai_image_generation_button = isset($ai_options['enable_ai_image_generation_button']) ? (bool) $ai_options['enable_ai_image_generation_button'] : true;
-            if ( $enable_ai_image_generation_button ) {
-                add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueueAiImageGenerationScript' ]);
+            if ($enable_ai_image_generation_button) {
+                add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueueAiImageGenerationScript']);
                 // Enqueue styles for AI Image Generation controls
-                add_action('elementor/editor/after_enqueue_styles', [ $this, 'enqueueAiImageFieldStyles' ]);
+                add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueueAiImageFieldStyles']);
             }
-            
         }
     }
 
@@ -238,14 +239,14 @@ final class Core
             </p>
             <p style="font-size: 14px; opacity: 0.6;">Trusted by 20,000+ users</p>
             <p style="display: flex;">
-                    <a style="font-size: 14px;padding: 4px 22px;display: flex;align-items: center;background-image: linear-gradient(120deg, #A20BD8 0%, #FF4040 100%);border: none;"
-                       href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
-                       class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
-                                                          src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                                                          alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
+                <a style="font-size: 14px;padding: 4px 22px;display: flex;align-items: center;background-image: linear-gradient(120deg, #A20BD8 0%, #FF4040 100%);border: none;"
+                    href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
+                    class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
+                        src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
+                        alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
                 <a style="margin-left: 20px;display: flex;align-items: center;"
-                   href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
-                   class="link">Learn More</a>
+                    href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
+                    class="link">Learn More</a>
             </p>
         </div>
         <script>
@@ -527,12 +528,12 @@ final class Core
     function enqueueEditorScripts(): void
     {
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', KING_ADDONS_URL . 'includes/admin/js/elementor-editor.js', '', KING_ADDONS_VERSION);
-        
+
         // Localize script with PRO status
         wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-editor', 'kingAddonsEditor', [
             'isPro' => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false
         ]);
-        
+
         wp_enqueue_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-data-table-export', KING_ADDONS_URL . 'includes/widgets/Data_Table/preview-handler.js', '', KING_ADDONS_VERSION);
 
         if (KING_ADDONS_WGT_FORM_BUILDER) {
@@ -1122,7 +1123,7 @@ final class Core
                 'generate_action' => 'king_addons_ai_generate_text',
                 'change_action'   => 'king_addons_ai_change_text',
                 'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
-                'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
+                'rewrite_icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
                 'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
                 'plugin_url'      => KING_ADDONS_URL,
                 'is_pro'          => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
@@ -1148,7 +1149,7 @@ final class Core
             KING_ADDONS_VERSION,
             true
         );
-        
+
         // Localize for AJAX
         wp_localize_script(
             'king-addons-ai-image-field',
@@ -1157,9 +1158,9 @@ final class Core
                 'ajax_url'        => admin_url('admin-ajax.php'),
                 'generate_nonce'  => wp_create_nonce('king_addons_ai_generate_image_nonce'),
                 'generate_action' => 'king_addons_ai_generate_image',
-                'image_model'     => sanitize_text_field( $ai_options['openai_image_model'] ?? '' ),
+                'image_model'     => sanitize_text_field($ai_options['openai_image_model'] ?? ''),
                 'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
-                'rewrite_icon_url'=> KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
+                'rewrite_icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
                 'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
                 'plugin_url'      => KING_ADDONS_URL,
             ]
@@ -1207,11 +1208,11 @@ final class Core
         // Check if AI Page Translator is enabled in settings
         $ai_options = get_option('king_addons_ai_options', []);
         $translator_enabled = isset($ai_options['enable_ai_page_translator']) ? (bool) $ai_options['enable_ai_page_translator'] : true;
-        
+
         if (!$translator_enabled) {
             return; // Don't load script if translator is disabled
         }
-        
+
         wp_enqueue_script(
             'king-addons-ai-translator',
             KING_ADDONS_URL . 'includes/admin/js/ai-page-translator.js',

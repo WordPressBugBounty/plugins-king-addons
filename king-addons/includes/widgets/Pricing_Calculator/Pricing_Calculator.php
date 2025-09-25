@@ -1605,8 +1605,9 @@ $this->end_controls_section();
     protected function format_number($number, $settings)
     {
         $decimal_places = intval($settings['decimal_places']);
-        $thousand_separator = $settings['thousand_separator'];
-        $decimal_separator = $settings['decimal_separator'];
+        // Sanitize separators to prevent XSS
+        $thousand_separator = wp_strip_all_tags($settings['thousand_separator']);
+        $decimal_separator = wp_strip_all_tags($settings['decimal_separator']);
         
         return number_format($number, $decimal_places, $decimal_separator, $thousand_separator);
     }
@@ -1890,10 +1891,10 @@ $this->end_controls_section();
             'class' => $calculator_classes,
             'data-base-price' => floatval($settings['base_price']),
             'data-decimal-places' => intval($settings['decimal_places']),
-            'data-thousand-separator' => $settings['thousand_separator'],
-            'data-decimal-separator' => $settings['decimal_separator'],
-            'data-price-prefix' => $settings['price_prefix'],
-            'data-price-suffix' => $settings['price_suffix'],
+            'data-thousand-separator' => esc_attr($settings['thousand_separator']),
+            'data-decimal-separator' => esc_attr($settings['decimal_separator']),
+            'data-price-prefix' => esc_attr($settings['price_prefix']),
+            'data-price-suffix' => esc_attr($settings['price_suffix']),
         ]);}
 
         ?>

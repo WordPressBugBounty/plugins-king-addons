@@ -28,11 +28,16 @@ class Send_Email
 
         $message_body = [];
 
-        foreach ($_POST['form_content'] as $field) {
+        // Security fix: Validate and sanitize form_content array
+        $form_content = isset($_POST['form_content']) && is_array($_POST['form_content']) ? $_POST['form_content'] : [];
+        
+        foreach ($form_content as $field) {
+            if (!is_array($field) || count($field) < 2) {
+                continue; // Skip malformed fields
+            }
+            
             if ($field[0] === 'email') {
-                if (!is_email($field[1])) {
-
-
+                if (!is_email(sanitize_email($field[1]))) {
                     wp_send_json_error(array(
                         'action' => 'king_addons_form_builder_email',
                         'message' => esc_html__('Email provided is invalid', 'king-addons'),
@@ -52,13 +57,14 @@ class Send_Email
         if ($email_fields === '[all-fields]' || str_contains($email_fields, '[all-fields]')) {
 
 
-            $replace_shortcode_with_value = function ($matches) {
-                $field_id = $matches[1];
-                foreach ($_POST['form_content'] as $key => $value) {
+            $replace_shortcode_with_value = function ($matches) use ($form_content) {
+                $field_id = sanitize_text_field($matches[1]);
+                foreach ($form_content as $key => $value) {
                     $key_parts = explode('-', $key);
                     $last_part = end($key_parts);
                     if ($last_part === $field_id) {
-                        return is_array($value[1]) ? implode("\n", $value[1]) : $value[1];
+                        // Security fix: Sanitize form field values before using in email
+                        return is_array($value[1]) ? implode("\n", array_map('sanitize_text_field', $value[1])) : sanitize_text_field($value[1]);
                     }
                 }
                 return '';
@@ -67,8 +73,14 @@ class Send_Email
 
             $all_fields_content = [];
 
-            foreach ($_POST['form_content'] as $key => $value) {
-                $all_fields_content[] = is_array($value[1]) ? trim($value[2]) . ': ' . implode("\n", $value[1]) : trim($value[2]) . ': ' . $value[1];
+            foreach ($form_content as $key => $value) {
+                if (!is_array($value) || count($value) < 3) {
+                    continue; // Skip malformed fields
+                }
+                // Security fix: Sanitize all field data before using in email
+                $field_label = sanitize_text_field($value[2]);
+                $field_value = is_array($value[1]) ? implode("\n", array_map('sanitize_text_field', $value[1])) : sanitize_text_field($value[1]);
+                $all_fields_content[] = $field_label . ': ' . $field_value;
             }
             $all_fields_content = implode("\n", $all_fields_content);
 
@@ -83,13 +95,19 @@ class Send_Email
         } else {
 
 
-            $replace_shortcode_with_value = function ($matches) {
-                $field_id = $matches[1];
-                foreach ($_POST['form_content'] as $key => $value) {
+            $replace_shortcode_with_value = function ($matches) use ($form_content) {
+                $field_id = sanitize_text_field($matches[1]);
+                foreach ($form_content as $key => $value) {
+                    if (!is_array($value) || count($value) < 3) {
+                        continue; // Skip malformed fields
+                    }
                     $key_parts = explode('-', $key);
                     $last_part = end($key_parts);
                     if ($last_part === $field_id) {
-                        return is_array($value[1]) ? trim($value[2]) . ': ' . implode("\n", $value[1]) : trim($value[2]) . ': ' . $value[1];
+                        // Security fix: Sanitize form field data
+                        $field_label = sanitize_text_field($value[2]);
+                        $field_value = is_array($value[1]) ? implode("\n", array_map('sanitize_text_field', $value[1])) : sanitize_text_field($value[1]);
+                        return $field_label . ': ' . $field_value;
                     }
                 }
                 return '';
@@ -245,22 +263,26 @@ class Send_Email
             preg_match_all('/id="([^"]+)"/', get_option('king_addons_email_from_' . $_POST['king_addons_form_id']), $matche);
             $email_from_field_id = $matche[1];
 
-            foreach ($_POST['form_content'] as $key => $value) {
-                $key_parts = explode('-', $key);
-                $last_part = end($key_parts);
-
-                if (in_array($last_part, $reply_to_field_id)) {
-                    $reply_to_address = $value[1];
-                }
-
-                if (in_array($last_part, $email_from_name_field_id)) {
-                    $email_from_name = $value[1];
-                }
-
-                if (in_array($last_part, $email_from_field_id)) {
-                    $email_from_mail = $value[1];
-                }
+        foreach ($form_content as $key => $value) {
+            if (!is_array($value) || count($value) < 2) {
+                continue; // Skip malformed fields
             }
+            
+            $key_parts = explode('-', $key);
+            $last_part = end($key_parts);
+
+            if (in_array($last_part, $reply_to_field_id)) {
+                $reply_to_address = sanitize_email($value[1]);
+            }
+
+            if (in_array($last_part, $email_from_name_field_id)) {
+                $email_from_name = sanitize_text_field($value[1]);
+            }
+
+            if (in_array($last_part, $email_from_field_id)) {
+                $email_from_mail = sanitize_email($value[1]);
+            }
+        }
 
             if (!$reply_to_address) {
                 $reply_to_address = get_option('king_addons_reply_to_' . $_POST['king_addons_form_id']);
@@ -288,27 +310,34 @@ class Send_Email
             wp_send_json_success(array(
                 'action' => 'king_addons_form_builder_email',
                 'message' => esc_html__('Message sent successfully', 'king-addons'),
-                'status' => 'success',
-                'details' => json_encode($message_body)
+                'status' => 'success'
+                // Security fix: Removed potentially unsafe details from response
             ));
         } else {
             wp_send_json_error(array(
                 'action' => 'king_addons_form_builder_email',
                 'message' => esc_html__('Message could not be sent', 'king-addons'),
-                'status' => 'error',
-                'details' => json_encode($message_body)
+                'status' => 'error'
+                // Security fix: Removed potentially unsafe details from response
             ));
         }
     }
 
     public function get_field_value($field_id)
     {
-        foreach ($_POST['form_content'] as $key => $field) {
+        // Security fix: Use sanitized form_content instead of $_POST directly
+        $form_content = isset($_POST['form_content']) && is_array($_POST['form_content']) ? $_POST['form_content'] : [];
+        
+        foreach ($form_content as $key => $field) {
+            if (!is_array($field) || count($field) < 2) {
+                continue; // Skip malformed fields
+            }
+            
             $key_parts = explode('-', $key);
             $last_part = end($key_parts);
 
             if ($last_part === $field_id) {
-                return $field[1];
+                return sanitize_text_field($field[1]);
             }
         }
         return '';

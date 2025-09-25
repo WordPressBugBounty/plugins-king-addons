@@ -34,25 +34,25 @@ class Search_Ajax
 
         $tax_query = '';
 
-        if ($_POST['king_addons_category'] && $_POST['king_addons_category'] != '') {
+        if (isset($_POST['king_addons_category']) && $_POST['king_addons_category'] != '') {
             $tax_query = array(
                 array(
-                    'taxonomy' => $_POST['king_addons_option_post_type'],
+                    'taxonomy' => sanitize_text_field($_POST['king_addons_option_post_type'] ?? ''),
                     'field' => 'term_id',
                     'terms' => sanitize_text_field($_POST['king_addons_category']),
                 ),
             );
-        } else if ($_POST['king_addons_category'] == 0 && $_POST['king_addons_query_type'] != 'all') {
+        } else if (isset($_POST['king_addons_category']) && $_POST['king_addons_category'] == 0 && isset($_POST['king_addons_query_type']) && $_POST['king_addons_query_type'] != 'all') {
             if (!empty($_POST['king_addons_option_post_type'])) {
                 $tax_query = array(
                     array(
-                        'taxonomy' => $_POST['king_addons_option_post_type'],
+                        'taxonomy' => sanitize_text_field($_POST['king_addons_option_post_type']),
                         'field' => 'term_id',
                         'terms' => sanitize_text_field($_POST['king_addons_category']),
                     ),
                 );
             } else {
-                $taxonomy_type_string = $_POST['king_addons_taxonomy_type'];
+                $taxonomy_type_string = sanitize_text_field($_POST['king_addons_taxonomy_type'] ?? '');
 
                 if (strpos($taxonomy_type_string, ' ') !== false) {
                     $taxonomy_types = explode(' ', $taxonomy_type_string);
@@ -69,7 +69,7 @@ class Search_Ajax
                 } else {
                     $tax_query = array(
                         array(
-                            'taxonomy' => $_POST['king_addons_taxonomy_type'],
+                            'taxonomy' => sanitize_text_field($_POST['king_addons_taxonomy_type'] ?? ''),
                             'operator' => 'EXISTS',
                         ),
                     );
@@ -77,7 +77,7 @@ class Search_Ajax
             }
         }
 
-        if ($_POST['king_addons_category'] == 0 || $_POST['king_addons_query_type'] === 'all') {
+        if ((isset($_POST['king_addons_category']) && $_POST['king_addons_category'] == 0) || (isset($_POST['king_addons_query_type']) && $_POST['king_addons_query_type'] === 'all')) {
             $tax_query = [];
         }
 
@@ -122,14 +122,14 @@ class Search_Ajax
                         <?php if ($can_show_content && 'yes' === sanitize_text_field($_POST['king_addons_show_description'])) : ?>
                             <p class="king-addons-ajax-desc">
                                 <a target="<?php echo $target; ?>" href="<?php echo $post_url; ?>">
-                                    <?php echo wp_trim_words(get_the_content(), sanitize_text_field($_POST['king_addons_number_of_words'])); ?>
+                                    <?php echo wp_trim_words(wp_kses_post(get_the_content()), sanitize_text_field($_POST['king_addons_number_of_words'])); ?>
                                 </a>
                             </p>
                         <?php endif; ?>
-                        <?php if ($can_show_content && sanitize_text_field($_POST['king_addons_show_view_result_btn'])) : ?>
+                        <?php if ($can_show_content && sanitize_text_field($_POST['king_addons_show_view_result_btn'] ?? '')) : ?>
                             <a target="<?php echo $target; ?>" class="king-addons-view-result"
                                href="<?php echo $post_url; ?>">
-                                <?php echo sanitize_text_field($_POST['king_addons_view_result_text']); ?>
+                                <?php echo esc_html(sanitize_text_field($_POST['king_addons_view_result_text'] ?? '')); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -140,8 +140,8 @@ class Search_Ajax
             wp_reset_postdata();
 
         else :
-            if (sanitize_text_field($_POST['king_addons_search_results_offset']) <= 0) {
-                echo '<p class="king-addons-no-results">' . sanitize_text_field($_POST['king_addons_no_results']) . '</p>';
+            if (sanitize_text_field($_POST['king_addons_search_results_offset'] ?? '0') <= 0) {
+                echo '<p class="king-addons-no-results">' . esc_html(sanitize_text_field($_POST['king_addons_no_results'] ?? '')) . '</p>';
             }
         endif;
 

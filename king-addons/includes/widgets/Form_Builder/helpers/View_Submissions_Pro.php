@@ -151,7 +151,13 @@ class View_Submissions_Pro
 
 
                 if ($value[0]) {
-                    $value = unserialize($value[0]);
+                    // Security fix: Use safe unserialize with validation
+                    $unserialized = @unserialize($value[0]);
+                    if ($unserialized !== false && is_array($unserialized)) {
+                        $value = $unserialized;
+                    } else {
+                        $value = $value[0]; // Fallback to original string if unserialize fails
+                    }
                 }
 
                 $prefix = "form_field-";
