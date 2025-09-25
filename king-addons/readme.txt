@@ -1,7 +1,7 @@
 === King Addons for Elementor – 4,000+ ready Elementor sections, 650+ templates, 70+ FREE widgets for Elementor ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor elements, elementor widgets, elementor templates
-Stable tag: 51.1.35
+Stable tag: 51.1.36
 Tested up to: 6.8
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -190,7 +190,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= King Addons for Elementor version 51.1.35 - September 25, 2025 =
+= King Addons for Elementor version 51.1.36 - September 25, 2025 =
 This major update includes many improvements for widgets and security. If you encounter any issues, please email us at contact@kingaddons.com. We will continue improving the plugin step by step this autumn (fall) and adding new widgets, templates, and features.
 * **New:** Dynamic Posts Grid widget – Create dynamic, filterable grids of posts with AJAX search and Load More functionality. Features color-coded post types, responsive design, and smooth animations. Ideal for resource centers, portfolios, and content libraries with advanced filtering.
 * **New:** Mega Menu – Added a new layout with a centered logo between menu items. If you notice any issues, please contact us.
