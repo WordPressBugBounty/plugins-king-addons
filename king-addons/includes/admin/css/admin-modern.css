@@ -1,0 +1,557 @@
+/**
+ * King Addons - Modern Admin Page Styles
+ * Shared styles for admin settings pages
+ *
+ * @package King_Addons
+ */
+
+/* Reset and base styles */
+.ka-admin-wrap {
+    display: flex;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 20px 20px 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.ka-admin-wrap * {
+    box-sizing: border-box;
+}
+
+/* Main content area */
+.ka-admin-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.ka-admin-full {
+    max-width: 900px;
+}
+
+/* ========== Header ========== */
+.ka-admin-header {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #fff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ka-admin-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.ka-admin-header-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.ka-admin-header-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+}
+
+.ka-admin-header-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.ka-admin-header-content {
+    display: flex;
+    align-items: center;
+}
+
+.ka-admin-header-text h1 {
+    margin: 0 0 4px 0;
+}
+
+.ka-admin-header-text p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* ========== Status indicator ========== */
+.ka-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.ka-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.ka-status-enabled {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.ka-status-enabled .ka-status-dot {
+    background: #22c55e;
+}
+
+.ka-status-disabled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.ka-status-disabled .ka-status-dot {
+    background: #ef4444;
+}
+
+/* ========== Cards ========== */
+.ka-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.ka-card-header {
+    background: #f8fafc;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ka-card-header h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.ka-card-header .dashicons {
+    color: #6366f1;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.ka-card-body {
+    padding: 20px 24px;
+}
+
+/* ========== Form rows ========== */
+.ka-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ka-row:last-child {
+    border-bottom: none;
+}
+
+.ka-row-label {
+    width: 200px;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    padding-top: 8px;
+}
+
+.ka-row-field {
+    flex: 1;
+}
+
+.ka-row-field input[type="number"],
+.ka-row-field input[type="text"],
+.ka-row-field input[type="password"],
+.ka-row-field input[type="url"],
+.ka-row-field input[type="email"],
+.ka-row-field textarea {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+.ka-row-field input:focus,
+.ka-row-field textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.ka-row-field input:disabled,
+.ka-row-field textarea:disabled {
+    background: #f8fafc;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.ka-row-field select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 200px;
+    background: #fff;
+}
+
+.ka-row-field select:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.ka-row-desc {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+/* ========== Toggle switch ========== */
+.ka-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.ka-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ka-toggle-slider {
+    width: 44px;
+    height: 24px;
+    background: #cbd5e1;
+    border-radius: 12px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.ka-toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.ka-toggle input:checked + .ka-toggle-slider {
+    background: #6366f1;
+}
+
+.ka-toggle input:checked + .ka-toggle-slider::after {
+    transform: translateX(20px);
+}
+
+.ka-toggle input:disabled + .ka-toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ka-toggle-label {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* ========== Color picker ========== */
+.ka-color-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ka-color-preview {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+    cursor: pointer;
+    padding: 0;
+}
+
+.ka-color-input {
+    max-width: 120px !important;
+}
+
+/* ========== Pro badge ========== */
+.ka-pro-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+}
+
+/* ========== Submit area ========== */
+.ka-submit {
+    padding: 20px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.ka-submit .button-primary,
+.ka-btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: #fff;
+}
+
+.ka-submit .button-primary:hover,
+.ka-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* ========== Tabs ========== */
+.ka-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.ka-tab {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.ka-tab:hover {
+    color: #1e293b;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.ka-tab.active,
+.ka-tab.nav-tab-active {
+    background: #fff;
+    color: #6366f1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ka-tab-content {
+    display: none;
+}
+
+.ka-tab-content.active {
+    display: block;
+}
+
+/* ========== Sidebar ========== */
+.ka-sidebar {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.ka-preview-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 50px;
+}
+
+.ka-preview-header {
+    background: #f8fafc;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ka-preview-body {
+    padding: 20px;
+}
+
+/* ========== Table styles ========== */
+.ka-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ka-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: #f8fafc;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ka-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.ka-table tr:hover td {
+    background: #fafbfc;
+}
+
+/* ========== Info box ========== */
+.ka-info {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #0369a1;
+    margin-bottom: 16px;
+}
+
+.ka-info.warning {
+    background: #fffbeb;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.ka-info.success {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+}
+
+/* ========== Checkboxes grid ========== */
+.ka-checkbox-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ka-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ka-checkbox-item:hover {
+    background: #f1f5f9;
+}
+
+.ka-checkbox-item input[type="checkbox"] {
+    margin: 0;
+}
+
+/* ========== Unit suffix ========== */
+.ka-unit {
+    color: #64748b;
+    font-size: 13px;
+    margin-left: 6px;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1200px) {
+    .ka-admin-wrap {
+        flex-direction: column;
+    }
+
+    .ka-sidebar {
+        width: 100%;
+        order: -1;
+    }
+
+    .ka-preview-card {
+        position: static;
+    }
+}
+
+@media (max-width: 782px) {
+    .ka-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .ka-row-label {
+        width: 100%;
+        padding-top: 0;
+    }
+
+    .ka-row-field input[type="text"],
+    .ka-row-field input[type="number"],
+    .ka-row-field select {
+        max-width: 100%;
+    }
+
+    .ka-admin-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .ka-card-body {
+        padding: 16px;
+    }
+}
+

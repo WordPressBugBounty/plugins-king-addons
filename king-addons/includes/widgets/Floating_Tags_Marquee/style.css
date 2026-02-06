@@ -1,0 +1,302 @@
+/**
+ * Floating Tags Marquee Widget Styles.
+ *
+ * CSS for infinite marquee animation with seamless loop.
+ * Includes Pro styles for fade edges, multi-rows, and drag state.
+ *
+ * @package King_Addons
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+
+.kng-ftm {
+    --kng-ftm-gap: 12px;
+    --kng-ftm-duration: 20s;
+    --kng-ftm-content-width: 100%;
+    --kng-ftm-row-gap: 16px;
+    --kng-ftm-fade-size: 60px;
+    --kng-ftm-fade-color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* ==========================================================================
+   Row Layout
+   ========================================================================== */
+
+.kng-ftm__row {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.kng-ftm__row + .kng-ftm__row {
+    margin-top: var(--kng-ftm-row-gap);
+}
+
+/* ==========================================================================
+   Track
+   ========================================================================== */
+
+.kng-ftm__track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+}
+
+.kng-ftm__track--animating {
+    animation: kng-ftm-scroll var(--kng-ftm-duration) linear infinite;
+}
+
+.kng-ftm__track--right.kng-ftm__track--animating {
+    animation-name: kng-ftm-scroll-reverse;
+}
+
+.kng-ftm__track--paused {
+    animation-play-state: paused;
+}
+
+.kng-ftm__track--dragging {
+    cursor: grabbing;
+    user-select: none;
+}
+
+/* ==========================================================================
+   Content Group
+   ========================================================================== */
+
+.kng-ftm__content {
+    display: flex;
+    align-items: center;
+    gap: var(--kng-ftm-gap);
+    flex-shrink: 0;
+    padding-right: var(--kng-ftm-gap);
+}
+
+/* ==========================================================================
+   Chip / Tag Item
+   ========================================================================== */
+
+.kng-ftm__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #1e293b;
+    background-color: #f1f5f9;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: default;
+    transition: background-color 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.15s ease;
+}
+
+a.kng-ftm__item {
+    cursor: pointer;
+}
+
+a.kng-ftm__item:hover {
+    transform: translateY(-1px);
+}
+
+/* Hover transforms */
+.kng-ftm--hover-lift .kng-ftm__item:hover {
+    transform: translateY(-3px);
+}
+
+.kng-ftm--hover-scale .kng-ftm__item:hover {
+    transform: scale(1.05);
+}
+
+.kng-ftm--hover-lift-scale .kng-ftm__item:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+a.kng-ftm__item:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Highlight state */
+.kng-ftm__item--highlight {
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Tag Text
+   ========================================================================== */
+
+.kng-ftm__text {
+    display: inline-block;
+}
+
+/* ==========================================================================
+   Tag Icon (Pro)
+   ========================================================================== */
+
+.kng-ftm__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    line-height: 1;
+}
+
+.kng-ftm__icon svg {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+}
+
+/* ==========================================================================
+   Separator
+   ========================================================================== */
+
+.kng-ftm__sep {
+    flex-shrink: 0;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.kng-ftm__sep--dot {
+    width: 6px;
+    height: 6px;
+    background-color: #94a3b8;
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
+.kng-ftm__sep--line {
+    width: 1px;
+    height: 20px;
+    background-color: #94a3b8;
+    opacity: 0.5;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes kng-ftm-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(var(--kng-ftm-content-width) * -1));
+    }
+}
+
+@keyframes kng-ftm-scroll-reverse {
+    0% {
+        transform: translateX(calc(var(--kng-ftm-content-width) * -1));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================================================
+   Fade Edges (Pro)
+   ========================================================================== */
+
+.kng-ftm--fade-edges::before,
+.kng-ftm--fade-edges::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--kng-ftm-fade-size);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.kng-ftm--fade-edges::before {
+    left: 0;
+    background: linear-gradient(
+        to right,
+        var(--kng-ftm-fade-color) 0%,
+        transparent 100%
+    );
+}
+
+.kng-ftm--fade-edges::after {
+    right: 0;
+    background: linear-gradient(
+        to left,
+        var(--kng-ftm-fade-color) 0%,
+        transparent 100%
+    );
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+.kng-ftm--reduced-motion .kng-ftm__track {
+    animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kng-ftm:not(.kng-ftm--reduced-motion-off) .kng-ftm__track {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Multi-Rows (Pro)
+   ========================================================================== */
+
+.kng-ftm--multi-rows .kng-ftm__row {
+    /* Each row independently controlled */
+    display: block;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.kng-ftm-empty {
+    padding: 40px 24px;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   Editor Styles
+   ========================================================================== */
+
+body.elementor-editor-active .kng-ftm__track {
+    /* Keep animation running in editor for preview */
+    animation-play-state: running;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    .kng-ftm {
+        --kng-ftm-fade-size: 40px;
+    }
+
+    .kng-ftm__item {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}

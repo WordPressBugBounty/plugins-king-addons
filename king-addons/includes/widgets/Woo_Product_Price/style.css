@@ -1,0 +1,30 @@
+.ka-woo-product-price {
+    display: inline-flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+.ka-woo-product-price__regular {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 4px;
+}
+
+.ka-woo-product-price__sale {
+    font-weight: 700;
+}
+
+.ka-woo-product-price__discount {
+    font-size: 0.85em;
+    padding: 4px 6px;
+    border-radius: 6px;
+    align-self: center;
+    display: inline-flex;
+    line-height: 1.2;
+}
+
+
+
+
+
+

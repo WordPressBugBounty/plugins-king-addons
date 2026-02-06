@@ -644,23 +644,18 @@
     function addTranslatorButton() {
         // Check if button already exists
         if (document.querySelector('.king-addons-ai-translator-btn')) {
-            console.log('AI Translator button already exists');
             return;
         }
-
-        console.log('Attempting to add AI Translator button...');
         
         // Strategy 1: Try to find the left button group in the top toolbar (after initial buttons)
         var $leftButtonGroup = $('#elementor-editor-wrapper-v2 .MuiStack-root.eui-1g5sxhh:first');
         if ($leftButtonGroup.length) {
-            console.log('Found left button group in top toolbar, adding button');
             return addButtonToElement($leftButtonGroup, 'left-group');
         }
         
         // Strategy 2: Try to find the first stack group in the toolbar
         var $toolbarStack = $('#elementor-editor-wrapper-v2 .MuiStack-root');
         if ($toolbarStack.length) {
-            console.log('Found toolbar stack, adding button to first stack');
             return addButtonToElement($toolbarStack.first(), 'toolbar-stack');
         }
         
@@ -669,7 +664,6 @@
         if ($gridContainer.length) {
             var $firstStack = $gridContainer.find('.MuiStack-root:first');
             if ($firstStack.length) {
-                console.log('Found first stack in grid container, adding button');
                 return addButtonToElement($firstStack, 'grid-stack');
             }
         }
@@ -677,25 +671,20 @@
         // Strategy 3: Try to find the toolbar itself
         var $toolbar = $('#elementor-editor-wrapper-v2 .MuiToolbar-root');
         if ($toolbar.length) {
-            console.log('Found toolbar, adding button');
             return addButtonToElement($toolbar, 'toolbar');
         }
         
         // Strategy 4: Try to find the Elementor panel header (fallback)
         var $panelHeader = $('#elementor-panel-header');
         if ($panelHeader.length) {
-            console.log('Fallback: Found #elementor-panel-header, adding button');
             return addButtonToElement($panelHeader, 'panel-header');
         }
         
         // Strategy 5: Try to find the main panel (further fallback)
         var $panel = $('#elementor-panel');
         if ($panel.length) {
-            console.log('Fallback: Adding button to panel');
             return addButtonToElement($panel, 'panel-fallback');
         }
-        
-        console.log('Could not find suitable location for AI Translator button');
         return false;
     }
 
@@ -760,8 +749,7 @@
         var $btn = $translatorBtn.find('button').length ? $translatorBtn.find('button') : $translatorBtn;
         $btn.attr('data-location', location);
         $btn.attr('data-target', $target.prop('tagName') + ($target.attr('id') ? '#' + $target.attr('id') : '') + ($target.attr('class') ? '.' + $target.attr('class').split(' ').join('.') : ''));
-        
-        console.log('AI Translator button added to:', location, 'Target:', $target);
+
         return true;
     }
 
@@ -1054,17 +1042,14 @@
     function stopTranslationProcess() {
         // Prevent multiple calls
         if (translationState.isCancelled) {
-            console.log('⚠️ Translation already cancelled, ignoring duplicate stop request');
             return;
         }
-        
-        console.log('🛑 Stopping translation process...');
+
         translationState.isCancelled = true;
         translationState.isTranslating = false;
         
         // Cancel all active AJAX requests
         if (translationState.currentRequests.length > 0) {
-            console.log('Cancelling ' + translationState.currentRequests.length + ' active AJAX requests');
             translationState.currentRequests.forEach(function(request) {
                 if (request && request.abort) {
                     request.abort();
@@ -1080,9 +1065,6 @@
         
         // Remove any existing popups/overlays
         $('.king-addons-translator-overlay').remove();
-        
-        // Show cancellation message
-        console.log('Translation process cancelled by user');
         
         // Re-enable the button
         toggleTranslatorButton(false);
@@ -1411,8 +1393,6 @@
             return;
         }
         
-        console.log('Starting translation of ' + elements.length + ' elements from ' + fromLang + ' to ' + toLang);
-        
         // Update popup to show progress
         showProgressInPopup($popup);
         
@@ -1466,7 +1446,6 @@
                 ];
                 
                 if (nonTextWidgets.indexOf(widgetType) !== -1) {
-                    console.log('⚪ Skipping non-text widget:', widgetType, '(blacklisted widget type)');
                     return; // Exit early for blacklisted widgets
                 }
                 
@@ -1477,7 +1456,6 @@
                 
                 // If we found text fields, process the widget
                 if (textFields.length > 0) {
-                    console.log('✅ Processing widget:', widgetType, 'with', textFields.length, 'text fields');
                     elements.push({
                         container: container,
                         widgetType: widgetType,
@@ -1485,8 +1463,6 @@
                         elementId: model.get('id')
                     });
                     return;
-                } else {
-                    console.log('⚪ No text fields found in widget:', widgetType);
                 }
             }
             
@@ -1509,17 +1485,12 @@
      * Get text fields for a specific widget type using Elementor control types
      */
     function getTextFieldsForWidget(widgetType, settings, container) {
-        console.log('🔍 Analyzing widget:', widgetType);
-        console.log('🔍 Widget settings keys:', Object.keys(settings));
-        
         var textFields = [];
         
         // Try to get widget controls schema from Elementor
         var controls = getWidgetControls(widgetType, container);
         
         if (controls && Object.keys(controls).length > 0) {
-            console.log('📋 Found widget controls schema with', Object.keys(controls).length, 'controls');
-            
             // Look for text-based controls
             Object.keys(controls).forEach(function(controlName) {
                 var control = controls[controlName];
@@ -1543,28 +1514,21 @@
                         ];
                         
                         if (!skipFields.includes(controlName)) {
-                            console.log('✅ Found text control:', controlName, 'Type:', controlType, 'Value:', settingValue.substring(0, 50) + '...');
-                            
                             textFields.push({
                                 field: controlName,
                                 value: settingValue,
                                 type: controlType === 'wysiwyg' ? 'wysiwyg' : 'text'
                             });
-                        } else {
-                            console.log('⚪ Skipping non-translatable field:', controlName, 'Type:', controlType);
                         }
                     }
                 }
                 
                 // Also check for repeater controls
                 if (controlType === 'repeater' && settingValue) {
-                    console.log('🔍 Found repeater control:', controlName);
                     checkRepeaterFieldsByType(controlName, control, settingValue, textFields);
                 }
             });
         } else {
-            console.log('⚠️ No widget controls schema found, falling back to manual detection');
-            
             // Fallback: Use the original method for widgets without accessible controls
             var commonTextFields = [
                 'title', 'text', 'content', 'description', 'subtitle', 'button_text',
@@ -1586,11 +1550,6 @@
             checkRepeaterFields(settings, textFields);
         }
         
-        console.log('🔍 Final result for widget', widgetType + ':', textFields.length, 'text fields found');
-        if (textFields.length > 0) {
-            console.log('📝 All text fields:', textFields.map(f => f.field + ' = ' + f.value.substring(0, 30) + '...'));
-        }
-        
         return textFields;
     }
     
@@ -1605,13 +1564,11 @@
                 
                 // Try to get controls from the model's widget config
                 if (model.config && model.config.controls) {
-                    console.log('📋 Found controls from model.config');
                     return model.config.controls;
                 }
                 
                 // Try to get controls from the container settings
                 if (container.settings && container.settings.controls) {
-                    console.log('📋 Found controls from container.settings');
                     return container.settings.controls;
                 }
             }
@@ -1620,7 +1577,6 @@
             if (window.elementor && elementor.widgets) {
                 var widgetConfig = elementor.widgets.getWidgetType(widgetType);
                 if (widgetConfig && widgetConfig.controls) {
-                    console.log('📋 Found controls from widgets registry');
                     return widgetConfig.controls;
                 }
             }
@@ -1629,12 +1585,10 @@
             if (window.elementor && elementor.elementsManager) {
                 var elementView = elementor.elementsManager.getElementView(container.model.get('id'));
                 if (elementView && elementView.model && elementView.model.controls) {
-                    console.log('📋 Found controls from element view');
                     return elementView.model.controls;
                 }
             }
-            
-            console.log('⚠️ Could not find controls schema for widget:', widgetType);
+
             return null;
             
         } catch (error) {
@@ -1648,8 +1602,6 @@
      */
     function checkRepeaterFieldsByType(repeaterName, repeaterControl, repeaterData, textFields) {
         try {
-            console.log('🔍 Analyzing repeater:', repeaterName, 'with control:', repeaterControl);
-            
             // Get the fields schema for this repeater
             var repeaterFields = repeaterControl.fields || repeaterControl.controls || {};
             
@@ -1664,10 +1616,7 @@
                 }
             });
             
-            console.log('🔍 Found text fields in repeater schema:', textFieldNames);
-            
             if (textFieldNames.length === 0) {
-                console.log('⚠️ No text fields found in repeater schema');
                 return;
             }
             
@@ -1683,8 +1632,7 @@
                         if (modelData[fieldName] && typeof modelData[fieldName] === 'string' && modelData[fieldName].trim()) {
                             const fieldKey = `${repeaterName}[${i}][${fieldName}]`;
                             const fieldValue = modelData[fieldName];
-                            
-                            console.log(`✅ Found repeater text field: ${fieldKey} = ${fieldValue}`);
+
                             textFields.push({
                                 field: fieldKey,
                                 value: fieldValue,
@@ -1705,8 +1653,7 @@
                         if (item[fieldName] && typeof item[fieldName] === 'string' && item[fieldName].trim()) {
                             const fieldKey = `${repeaterName}[${i}][${fieldName}]`;
                             const fieldValue = item[fieldName];
-                            
-                            console.log(`✅ Found repeater text field: ${fieldKey} = ${fieldValue}`);
+
                             textFields.push({
                                 field: fieldKey,
                                 value: fieldValue,
@@ -1753,32 +1700,23 @@
             'price_list': ['price_title', 'price_description']
         };
 
-        console.log('🔍 Starting fallback repeater field check for settings:', Object.keys(settings));
-
         for (const [repeaterKey, fieldNames] of Object.entries(repeaterConfigs)) {
             if (settings[repeaterKey]) {
-                console.log(`🔍 Found repeater key: ${repeaterKey}`);
-                
                 let repeaterData = settings[repeaterKey];
                 
                 // Handle Backbone Collections (common in King Addons and some Elementor widgets)
                 if (repeaterData && typeof repeaterData === 'object' && repeaterData.models) {
-                    console.log(`🔍 BACKBONE COLLECTION detected for ${repeaterKey}:`, repeaterData);
-                    console.log(`🔍 Collection length:`, repeaterData.length || repeaterData.models.length);
-                    
                     // Extract models from Backbone collection
                     const models = repeaterData.models || [];
                     for (let i = 0; i < models.length; i++) {
                         const model = models[i];
                         const modelData = model.attributes || model.toJSON();
-                        console.log(`🔍 Processing Backbone model ${i}:`, modelData);
-                        
+
                         for (const fieldName of fieldNames) {
                             if (modelData[fieldName] && typeof modelData[fieldName] === 'string' && modelData[fieldName].trim()) {
                                 const fieldKey = `${repeaterKey}[${i}][${fieldName}]`;
                                 const fieldValue = modelData[fieldName];
-                                
-                                console.log(`✅ Found repeater text field: ${fieldKey} = ${fieldValue}`);
+
                                 textFields.push({
                                     field: fieldKey,
                                     value: fieldValue,
@@ -1794,16 +1732,13 @@
                 }
                 // Handle regular arrays
                 else if (Array.isArray(repeaterData)) {
-                    console.log(`🔍 ARRAY detected for ${repeaterKey}, length:`, repeaterData.length);
-                    
                     for (let i = 0; i < repeaterData.length; i++) {
                         const item = repeaterData[i];
                         for (const fieldName of fieldNames) {
                             if (item[fieldName] && typeof item[fieldName] === 'string' && item[fieldName].trim()) {
                                 const fieldKey = `${repeaterKey}[${i}][${fieldName}]`;
                                 const fieldValue = item[fieldName];
-                                
-                                console.log(`✅ Found repeater text field: ${fieldKey} = ${fieldValue}`);
+
                                 textFields.push({
                                     field: fieldKey,
                                     value: fieldValue,
@@ -1819,18 +1754,15 @@
                 }
                 // Handle objects with numbered keys (alternative format)
                 else if (repeaterData && typeof repeaterData === 'object') {
-                    console.log(`🔍 OBJECT detected for ${repeaterKey}:`, repeaterData);
                     const keys = Object.keys(repeaterData).filter(key => /^\d+$/.test(key));
-                    console.log(`🔍 Found numeric keys:`, keys);
-                    
+
                     for (const key of keys) {
                         const item = repeaterData[key];
                         for (const fieldName of fieldNames) {
                             if (item[fieldName] && typeof item[fieldName] === 'string' && item[fieldName].trim()) {
                                 const fieldKey = `${repeaterKey}[${key}][${fieldName}]`;
                                 const fieldValue = item[fieldName];
-                                
-                                console.log(`✅ Found repeater text field: ${fieldKey} = ${fieldValue}`);
+
                                 textFields.push({
                                     field: fieldKey,
                                     value: fieldValue,
@@ -1890,13 +1822,10 @@
     function translateElementsSequentially(elements, index, $popup) {
         // Check if translation was cancelled
         if (translationState.isCancelled) {
-            console.log('Translation cancelled, stopping process');
             return;
         }
         
         if (index >= elements.length) {
-            console.log('🏁 Translation sequence complete! Index:', index, 'Total elements:', elements.length);
-            console.log('🎯 Calling showTranslationComplete with popup:', $popup && $popup.length > 0 ? 'exists' : 'missing');
             showTranslationComplete($popup);
             return;
         }
@@ -1938,7 +1867,6 @@
     function translateElementFields(element, callback) {
         // Check if translation was cancelled before starting
         if (translationState.isCancelled) {
-            console.log('Translation cancelled, skipping element fields');
             callback(false);
             return;
         }
@@ -1956,7 +1884,6 @@
         function translateNextField() {
             // Check if translation was cancelled before processing next field
             if (translationState.isCancelled) {
-                console.log('Translation cancelled, stopping field translation');
                 callback(false);
                 return;
             }
@@ -1974,7 +1901,6 @@
             translateSingleField(field.value, function(translatedText, success) {
                 // Check if translation was cancelled while waiting for response
                 if (translationState.isCancelled) {
-                    console.log('Translation cancelled, ignoring field response');
                     callback(false);
                     return;
                 }
@@ -1999,7 +1925,6 @@
     function translateSingleField(text, callback) {
         // Check if translation was cancelled before making request
         if (translationState.isCancelled) {
-            console.log('Translation cancelled, skipping AJAX request');
             callback(text, false);
             return;
         }
@@ -2019,7 +1944,6 @@
             
             // Check if translation was cancelled while request was in progress
             if (translationState.isCancelled) {
-                console.log('Translation cancelled, ignoring AJAX response');
                 callback(text, false);
                 return;
             }
@@ -2128,15 +2052,6 @@
                 responseJSON: xhr.responseJSON
             });
             
-            // Log specifically for token limit debugging
-            if (xhr.status === 429 || errorMessage.toLowerCase().includes('limit')) {
-                console.log('🔍 Potential token limit error detected:', {
-                    status: xhr.status,
-                    message: errorMessage,
-                    fullResponse: xhr.responseText
-                });
-            }
-            
             // Show error popup for critical network issues
             if (shouldShowError) {
                 stopTranslationProcess();
@@ -2180,9 +2095,6 @@
      */
     function updateElementSettings(container, translatedFields) {
         try {
-            console.log('🔄 Updating element settings for widget:', container.model.get('widgetType'));
-            console.log('🔄 All translated fields:', translatedFields);
-            
             // Separate regular fields from repeater fields
             var regularFields = {};
             var repeaterUpdates = {};
@@ -2198,14 +2110,6 @@
                     var itemIndex = parseInt(repeaterMatch[2]);
                     var itemField = repeaterMatch[3];
                     
-                    console.log('📝 Found repeater field:', {
-                        fullKey: fieldKey,
-                        repeaterKey: repeaterKey,
-                        itemIndex: itemIndex,
-                        itemField: itemField,
-                        value: translatedValue
-                    });
-                    
                     if (!repeaterUpdates[repeaterKey]) {
                         repeaterUpdates[repeaterKey] = {};
                     }
@@ -2215,30 +2119,24 @@
                     repeaterUpdates[repeaterKey][itemIndex][itemField] = translatedValue;
                 } else {
                     // Regular field
-                    console.log('📝 Found regular field:', fieldKey, '=', translatedValue);
                     regularFields[fieldKey] = translatedValue;
                 }
             });
             
             // Apply regular field updates
             if (Object.keys(regularFields).length > 0) {
-                console.log('🔧 Applying regular field updates:', regularFields);
                 $e.run('document/elements/settings', {
                     container: container,
                     settings: regularFields
                 });
-                console.log('✅ Regular field updates applied successfully');
             }
             
             // Apply repeater field updates
             Object.keys(repeaterUpdates).forEach(function(repeaterKey) {
-                console.log('🔧 Updating repeater field:', repeaterKey, repeaterUpdates[repeaterKey]);
                 var currentSettings = container.settings.get(repeaterKey);
                 
                 // Handle Backbone Collections (King Addons and some Elementor widgets)
                 if (currentSettings && typeof currentSettings.models !== 'undefined') {
-                    console.log('📦 Found Backbone collection for:', repeaterKey, 'Length:', currentSettings.length);
-                    
                     // Work with Backbone collection
                     Object.keys(repeaterUpdates[repeaterKey]).forEach(function(itemIndex) {
                         var index = parseInt(itemIndex);
@@ -2249,9 +2147,7 @@
                             Object.keys(repeaterUpdates[repeaterKey][itemIndex]).forEach(function(fieldName) {
                                 var oldValue = model.get(fieldName);
                                 var newValue = repeaterUpdates[repeaterKey][itemIndex][fieldName];
-                                
-                                console.log('📝 Updating Backbone model [' + index + '][' + fieldName + ']:', oldValue, '->', newValue);
-                                
+
                                 // Update the model attribute
                                 model.set(fieldName, newValue);
                             });
@@ -2268,19 +2164,11 @@
                         
                         var repeaterSettings = {};
                         repeaterSettings[repeaterKey] = backboneData;
-                        
-                        console.log('🔧 Applying Backbone collection update via Elementor API:', {
-                            repeaterKey: repeaterKey,
-                            dataLength: backboneData.length,
-                            settingsObject: repeaterSettings
-                        });
-                        
+
                         $e.run('document/elements/settings', {
                             container: container,
                             settings: repeaterSettings
                         });
-                        
-                        console.log('✅ Backbone collection updates applied via Elementor API for:', repeaterKey);
                     } catch (e) {
                         console.warn('⚠️ Error updating via Elementor API, trying alternative method:', e);
                         
@@ -2288,19 +2176,14 @@
                         try {
                             if (typeof container.saveSettings === 'function') {
                                 container.saveSettings();
-                                console.log('📡 Triggered saveSettings as fallback for:', repeaterKey);
                             }
                         } catch (e2) {
                             console.warn('⚠️ Fallback method also failed:', e2);
                         }
                     }
-                    
-                    console.log('✅ Backbone collection updates applied successfully for:', repeaterKey);
                 }
                 // Handle regular arrays (standard Elementor repeaters)
                 else if (Array.isArray(currentSettings)) {
-                    console.log('📦 Found array for:', repeaterKey, 'Length:', currentSettings.length);
-                    
                     var updatedRepeater = currentSettings.slice(); // Clone array
                     
                     Object.keys(repeaterUpdates[repeaterKey]).forEach(function(itemIndex) {
@@ -2311,7 +2194,6 @@
                                 var oldValue = updatedRepeater[index][fieldName];
                                 var newValue = repeaterUpdates[repeaterKey][itemIndex][fieldName];
                                 updatedRepeater[index][fieldName] = newValue;
-                                console.log('📝 Updated array item [' + index + '][' + fieldName + ']:', oldValue, '->', newValue);
                             });
                         }
                     });
@@ -2319,24 +2201,14 @@
                     // Update the entire repeater field
                     var repeaterSettings = {};
                     repeaterSettings[repeaterKey] = updatedRepeater;
-                    
-                    console.log('🔧 Applying array repeater settings update:', {
-                        repeaterKey: repeaterKey,
-                        originalLength: currentSettings.length,
-                        updatedLength: updatedRepeater.length,
-                        settingsObject: repeaterSettings
-                    });
-                    
+
                     $e.run('document/elements/settings', {
                         container: container,
                         settings: repeaterSettings
                     });
-                    console.log('✅ Array repeater updates applied successfully for:', repeaterKey);
                 }
                 // Handle objects with numbered keys
                 else if (currentSettings && typeof currentSettings === 'object') {
-                    console.log('📦 Found object for:', repeaterKey, 'Keys:', Object.keys(currentSettings));
-                    
                     var updatedObject = Object.assign({}, currentSettings); // Clone object
                     
                     Object.keys(repeaterUpdates[repeaterKey]).forEach(function(itemIndex) {
@@ -2346,7 +2218,6 @@
                                 var oldValue = updatedObject[itemIndex][fieldName];
                                 var newValue = repeaterUpdates[repeaterKey][itemIndex][fieldName];
                                 updatedObject[itemIndex][fieldName] = newValue;
-                                console.log('📝 Updated object item [' + itemIndex + '][' + fieldName + ']:', oldValue, '->', newValue);
                             });
                         }
                     });
@@ -2359,9 +2230,7 @@
                         container: container,
                         settings: repeaterSettings
                     });
-                    console.log('✅ Object repeater updates applied successfully for:', repeaterKey);
                 } else {
-                    console.log('⚠️ Repeater field not found or unsupported type:', repeaterKey, typeof currentSettings, currentSettings);
                 }
             });
             
@@ -2524,7 +2393,6 @@
                 </style>
             `;
             $previewHead.append(previewStyles);
-            console.log('Preview animation styles injected into iframe');
         }
     }
 
@@ -2537,7 +2405,6 @@
         
         // Find element in preview iframe
         if (!elementor || !elementor.$preview) {
-            console.log('Preview not available');
             return;
         }
         
@@ -2545,7 +2412,6 @@
         var $previewElement = $previewDoc.find('[data-id="' + elementId + '"]');
         
         if ($previewElement.length === 0) {
-            console.log('Element not found in preview:', elementId);
             return;
         }
         
@@ -2553,10 +2419,8 @@
             // Remove any existing classes first
             $previewElement.removeClass('king-addons-translated-element');
             $previewElement.addClass('king-addons-translating-element');
-            console.log('Added translating highlight to element:', elementId);
         } else {
             $previewElement.removeClass('king-addons-translating-element');
-            console.log('Removed translating highlight from element:', elementId);
         }
     }
 
@@ -2569,7 +2433,6 @@
         
         // Find element in preview iframe
         if (!elementor || !elementor.$preview) {
-            console.log('Preview not available for success animation');
             return;
         }
         
@@ -2577,19 +2440,16 @@
         var $previewElement = $previewDoc.find('[data-id="' + elementId + '"]');
         
         if ($previewElement.length === 0) {
-            console.log('Element not found in preview for success animation:', elementId);
             return;
         }
         
         // Remove translating class and add translated class
         $previewElement.removeClass('king-addons-translating-element');
         $previewElement.addClass('king-addons-translated-element');
-        console.log('Added success animation to element:', elementId);
         
         // Remove the success animation after it completes
         setTimeout(function() {
             $previewElement.removeClass('king-addons-translated-element');
-            console.log('Removed success animation from element:', elementId);
         }, 1200);
     }
 
@@ -2597,15 +2457,6 @@
      * Show translation complete with stats (stays open until manually closed)
      */
     function showTranslationComplete($popup) {
-        console.log('🎉 showTranslationComplete called');
-        console.log('🔍 Popup exists:', $popup && $popup.length > 0);
-        console.log('🔍 Popup classes:', $popup && $popup.length > 0 ? $popup.attr('class') : 'N/A');
-        console.log('📊 Final stats:', {
-            total: translationState.totalElements,
-            translated: translationState.translatedElements,
-            failed: translationState.failedElements
-        });
-        
         if (!$popup || $popup.length === 0) {
             console.error('❌ Cannot show translation results: popup not found');
             return;
@@ -2638,13 +2489,9 @@
             </div>
         `;
         
-        console.log('📝 Setting stats HTML into popup form');
         var $form = $popup.find('.king-addons-translator-form');
-        console.log('🔍 Form element found:', $form.length > 0);
         
         $form.html(statsHtml);
-        
-        console.log('✅ Stats HTML set, popup should now show results');
         
         // Play success sound (Web Audio API)
         try {
@@ -2665,7 +2512,6 @@
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.3);
         } catch (e) {
-            console.log('Audio notification not available');
         }
         
         // Show temporary notification to attract attention
@@ -2679,16 +2525,6 @@
             });
         }, 5000);
         
-        // Log popup state for debugging
-        console.log('🔍 Final popup state check:');
-        console.log('- Popup visible:', $popup.is(':visible'));
-        console.log('- Popup display:', $popup.css('display'));
-        console.log('- Popup opacity:', $popup.css('opacity'));
-        console.log('- Popup z-index:', $popup.css('z-index'));
-        console.log('- Popup position:', $popup.css('position'));
-        console.log('- Overlay exists:', $popup.closest('.king-addons-translator-overlay').length > 0);
-        console.log('- Browser dimensions:', window.innerWidth + 'x' + window.innerHeight);
-        
         // Update header to show completion
         var completionHeaderHtml = `
             <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;filter: invert(1);"/>
@@ -2701,8 +2537,6 @@
         
         // If popup is in compact mode, move it back to center for better visibility
         if ($popup.hasClass('compact')) {
-            console.log('📐 Moving popup from compact mode to center for results display');
-            
             // Remove compact class and positioning
             $popup.removeClass('compact moving');
             $popup.css({
@@ -2749,7 +2583,6 @@
             $popup.css('opacity', '0').animate({'opacity': '1'}, 300);
         } else {
             // For non-compact popups, ensure they're also properly visible
-            console.log('📐 Ensuring non-compact popup is visible');
             $popup.css({
                 'z-index': '999999',
                 'opacity': '1',
@@ -2796,7 +2629,6 @@
     function onElementorInit() {
         // Check if AI Page Translator is enabled
         if (typeof KingAddonsAiField !== 'undefined' && KingAddonsAiField.translator_enabled === false) {
-            console.log('AI Page Translator is disabled in settings');
             return;
         }
         
@@ -2824,7 +2656,6 @@
             
             // Inject preview styles when preview loads
             elementor.hooks.addAction('preview/loaded', function() {
-                console.log('Preview loaded, injecting animation styles');
                 injectPreviewStyles();
             });
         }
@@ -2861,7 +2692,6 @@
                 childList: true,
                 subtree: true
             });
-            console.log('Observing changes in top toolbar');
         }
         
         // Also observe the main editor wrapper for structural changes
@@ -2872,7 +2702,6 @@
                 childList: true,
                 subtree: false
             });
-            console.log('Observing changes in editor wrapper');
         }
 
         // Observe changes in the main panel (fallback)
@@ -2883,7 +2712,6 @@
                 childList: true,
                 subtree: true
             });
-            console.log('Observing changes in elementor panel');
         }
 
         // Observe the main Elementor editor area
@@ -2894,7 +2722,6 @@
                 childList: true,
                 subtree: true
             });
-            console.log('Observing changes in editor area');
         }
     }
 
@@ -2904,21 +2731,18 @@
     function initTranslator() {
         // Wait for Elementor to be fully loaded
         $(window).on('elementor:init', function() {
-            console.log('Elementor initialized, setting up AI Translator');
             // Add small delay to ensure Material UI is rendered
             setTimeout(onElementorInit, 500);
         });
 
         // Fallback if elementor:init doesn't fire
         setTimeout(function() {
-            console.log('Fallback initialization for AI Translator');
             onElementorInit();
         }, 3000);
         
         // Additional fallback for when Material UI components are ready
         setTimeout(function() {
             if (!document.querySelector('.king-addons-ai-translator-btn')) {
-                console.log('Material UI fallback initialization for AI Translator');
                 onElementorInit();
             }
         }, 5000);
@@ -2926,14 +2750,11 @@
 
     // Initialize when DOM is ready
     $(document).ready(function() {
-        console.log('DOM ready, initializing AI Translator');
         initTranslator();
         
         // Global event handler for close buttons (backup protection)
         $(document).off('click.aiTranslatorGlobal').on('click.aiTranslatorGlobal', '.king-addons-translator-close-btn', function(e) {
-            console.log('🚫 Global close button clicked');
             if (translationState.isTranslating) {
-                console.log('🛑 Stopping translation via global handler');
                 stopTranslationProcess();
                 
                 // Show cancellation notice

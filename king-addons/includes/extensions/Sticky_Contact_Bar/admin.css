@@ -1,0 +1,330 @@
+/**
+ * Sticky Contact Bar - Admin Styles
+ *
+ * @package King_Addons
+ */
+
+/* Settings page wrapper */
+.ka-scbar-admin {
+    max-width: 900px;
+}
+
+.ka-scbar-admin h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ka-scbar-admin h1::before {
+    content: '';
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    border-radius: 8px;
+}
+
+/* Tabs navigation */
+.ka-scbar-admin__tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 24px;
+    background: #fff;
+    padding: 0 20px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.ka-scbar-admin__tab {
+    padding: 14px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #50575e;
+    transition: all 0.2s ease;
+    margin-bottom: -1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ka-scbar-admin__tab:hover {
+    color: #2271b1;
+    background: rgba(34, 113, 177, 0.04);
+}
+
+.ka-scbar-admin__tab.is-active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+}
+
+/* Pro badge */
+.ka-pro-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: #fff;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* Panel content */
+.ka-scbar-admin__panels {
+    background: #fff;
+    padding: 24px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.ka-scbar-admin__panel {
+    display: none;
+}
+
+.ka-scbar-admin__panel.is-active {
+    display: block;
+}
+
+/* Form table styling */
+.ka-scbar-admin .form-table {
+    margin: 0;
+}
+
+.ka-scbar-admin .form-table th {
+    padding: 16px 12px 16px 0;
+    font-weight: 500;
+    color: #1d2327;
+    width: 200px;
+}
+
+.ka-scbar-admin .form-table td {
+    padding: 12px 0;
+}
+
+.ka-scbar-admin .form-table tr {
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.ka-scbar-admin .form-table tr:last-child {
+    border-bottom: none;
+}
+
+.ka-scbar-admin input[type="text"],
+.ka-scbar-admin input[type="email"],
+.ka-scbar-admin input[type="number"],
+.ka-scbar-admin select {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ka-scbar-admin input[type="text"]:focus,
+.ka-scbar-admin input[type="email"]:focus,
+.ka-scbar-admin input[type="number"]:focus,
+.ka-scbar-admin select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.15);
+    outline: none;
+}
+
+.ka-scbar-admin input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.ka-scbar-admin .description {
+    color: #646970;
+    font-size: 12px;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+/* Item row (button repeater) */
+.ka-scbar-item-row {
+    background: #f9f9f9;
+    border: 1px solid #e2e4e7;
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ka-scbar-item-row:hover {
+    border-color: #c3c4c7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.ka-scbar-item-row p {
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ka-scbar-item-row p:last-child {
+    margin-bottom: 0;
+}
+
+.ka-scbar-item-row label {
+    font-size: 13px;
+    color: #50575e;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ka-scbar-item-row input[type="text"],
+.ka-scbar-item-row input[type="email"],
+.ka-scbar-item-row input[type="number"],
+.ka-scbar-item-row select {
+    min-width: 180px;
+}
+
+.ka-scbar-item-row .regular-text {
+    width: 280px;
+}
+
+/* Remove button */
+.ka-scbar-remove,
+.ka-scbar-remove-condition {
+    background: #fff;
+    border: 1px solid #d63638;
+    color: #d63638;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.ka-scbar-remove:hover,
+.ka-scbar-remove-condition:hover {
+    background: #d63638;
+    color: #fff;
+}
+
+/* Add button */
+#ka-scbar-add-item,
+#ka-scbar-add-condition {
+    margin-top: 8px;
+}
+
+/* Condition row */
+.ka-scbar-condition-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+    background: #f9f9f9;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e4e7;
+}
+
+.ka-scbar-condition-row select,
+.ka-scbar-condition-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.ka-scbar-condition-row .ka-scbar-remove-condition {
+    flex-shrink: 0;
+    padding: 6px 12px;
+}
+
+/* Submit button */
+.ka-scbar-admin .submit {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.ka-scbar-admin #submit {
+    background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+    border: none;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ka-scbar-admin #submit:hover {
+    background: linear-gradient(135deg, #135e96 0%, #0a4b78 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 113, 177, 0.25);
+}
+
+/* Color row styling */
+.ka-scbar-item-row input[type="text"][placeholder*="#"] {
+    width: 120px;
+    min-width: 120px;
+}
+
+/* Two-column layout for colors */
+.ka-scbar-colors-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* Disabled state */
+.ka-scbar-admin input:disabled,
+.ka-scbar-admin select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f5f5f5;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .ka-scbar-admin__tabs {
+        flex-wrap: wrap;
+        padding: 0 12px;
+    }
+
+    .ka-scbar-admin__tab {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    .ka-scbar-admin .form-table th {
+        width: auto;
+        display: block;
+        padding-bottom: 4px;
+    }
+
+    .ka-scbar-admin .form-table td {
+        display: block;
+        padding-left: 0;
+    }
+
+    .ka-scbar-item-row {
+        padding: 16px;
+    }
+
+    .ka-scbar-item-row .regular-text {
+        width: 100%;
+    }
+
+    .ka-scbar-condition-row {
+        flex-wrap: wrap;
+    }
+}
+

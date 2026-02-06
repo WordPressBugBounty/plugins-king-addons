@@ -29,7 +29,7 @@ class Blog_Posts extends Widget_Base
 
     public function get_title(): string
     {
-        return esc_html__('Blog Posts Carousel', 'king-addons');
+        return esc_html__(' Advanced Blog Posts Carousel', 'king-addons');
     }
 
     public function get_icon(): string

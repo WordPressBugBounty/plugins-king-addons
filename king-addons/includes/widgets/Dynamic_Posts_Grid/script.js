@@ -21,6 +21,33 @@
             const isPro = widgetMode === 'custom_cpt';
             
             const gridHandler = {
+                // Sanitize HTML using DOMPurify for XSS protection
+                sanitizeHtml(value) {
+                    if (typeof DOMPurify !== 'undefined') {
+                        return DOMPurify.sanitize(String(value), {ALLOWED_TAGS: [], ALLOWED_ATTR: []});
+                    }
+                    // Fallback
+                    return String(value)
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#039;");
+                },
+
+                normalizeSafeUrl(rawUrl, allowedProtocols = ["http:", "https:"]) {
+                    if (!rawUrl || typeof rawUrl !== "string") return null;
+                    try {
+                        const url = new URL(rawUrl, window.location.href);
+                        if (allowedProtocols.includes(url.protocol)) {
+                            return url.href;
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                    return null;
+                },
+
                 init() {
                     this.wrapper = $scope.find('.king-addons-dpg-wrapper');
                     this.grid = $scope.find('.king-addons-dpg-grid');
@@ -124,8 +151,10 @@
                             if (postLink.length > 0) {
                                 const postUrl = postLink.attr('href');
                                 if (postUrl) {
-                                    // Navigate to post
-                                    window.location.href = postUrl;
+                                    const safePostUrl = this.normalizeSafeUrl(postUrl);
+                                    if (safePostUrl) {
+                                        window.location.href = safePostUrl;
+                                    }
                                 }
                             }
                         });
@@ -184,6 +213,11 @@
                 },
 
                 openImageLightbox(url, title) {
+                    const safeUrl = this.normalizeSafeUrl(url);
+                    if (!safeUrl) {
+                        return;
+                    }
+
                     // Prevent multiple lightboxes from opening simultaneously
                     if ($('.lg-backdrop, .lg-outer, .king-addons-dpg-lightbox-temp, [data-lg-uid]').length > 0) {
                         return;
@@ -199,8 +233,8 @@
                     
                     // Create array with single image item for LightGallery
                     const galleryItems = [{
-                        src: url,
-                        subHtml: title || ''
+                        src: safeUrl,
+                        subHtml: title ? '<div>' + this.sanitizeHtml(title) + '</div>' : ''
                     }];
                     
                     // Initialize LightGallery directly with dynamic gallery
@@ -232,7 +266,7 @@
                         });
                     } else {
                         console.error('LightGallery not available');
-                        window.open(url, '_blank');
+                        window.open(safeUrl, '_blank');
                     }
                 },
 
@@ -240,7 +274,10 @@
                     // Check if LightGallery is available
                     if (typeof $.fn.lightGallery === 'undefined') {
                         console.warn('LightGallery not loaded, opening video in new tab');
-                        window.open(url, '_blank');
+                        const safeUrl = this.normalizeSafeUrl(url);
+                        if (safeUrl) {
+                            window.open(safeUrl, '_blank');
+                        }
                         return;
                     }
 
@@ -249,11 +286,16 @@
                 },
 
                 createYouTubePopup(url, title) {
+                    const safeUrl = this.normalizeSafeUrl(url);
+                    if (!safeUrl) {
+                        return;
+                    }
+
                     // Process YouTube URL to get video ID
-                    const videoId = this.getYouTubeVideoId(url);
+                    const videoId = this.getYouTubeVideoId(safeUrl);
                     if (!videoId) {
                         console.warn('Invalid YouTube URL');
-                        window.open(url, '_blank');
+                        window.open(safeUrl, '_blank');
                         return;
                     }
 
@@ -560,9 +602,18 @@
 
                         const $iconWrap = $card.find('.king-addons-dpg-icon');
                         if (conf.icon_type === 'image' && conf.image_url) {
-                            $iconWrap.html('<img src="' + conf.image_url + '" alt="' + postType + '" />');
+                            const safeImgUrl = this.normalizeSafeUrl(conf.image_url);
+                            if (!safeImgUrl) return;
+                            $iconWrap.empty().append(
+                                $("<img />", {
+                                    src: safeImgUrl,
+                                    alt: String(postType || ""),
+                                })
+                            );
                         } else if (conf.icon_class) {
-                            $iconWrap.html('<i class="' + conf.icon_class + '"></i>');
+                            $iconWrap.empty().append(
+                                $("<i />").addClass(String(conf.icon_class || ""))
+                            );
                         }
                     });
                 },

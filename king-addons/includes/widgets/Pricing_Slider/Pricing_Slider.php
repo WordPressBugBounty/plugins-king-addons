@@ -1963,9 +1963,27 @@ class Pricing_Slider extends Widget_Base
         return $current_value >= $feature_min_value;
     }
 
+    /**
+     * Allow Pro to fully override widget output without using parent::render().
+     *
+     * Pro can return true to indicate it rendered the widget output completely.
+     *
+     * @param array<string, mixed> $settings Widget settings for display.
+     * @return bool Whether Pro rendered output.
+     */
+    public function maybe_render_pro(array $settings): bool
+    {
+        return false;
+    }
+
     public function render()
     {
         $settings = $this->get_settings_for_display();
+
+        if ($this->maybe_render_pro($settings)) {
+            return;
+        }
+
         $default_value = isset($settings['default_value']) ? $settings['default_value'] : 50;
 
         // Ensure default value is within range

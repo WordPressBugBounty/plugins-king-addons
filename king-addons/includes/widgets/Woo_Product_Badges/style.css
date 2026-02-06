@@ -1,0 +1,44 @@
+.ka-woo-badges {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.ka-woo-badges--top-left { justify-content: flex-start; }
+.ka-woo-badges--top-right { justify-content: flex-end; }
+.ka-woo-badges--bottom-left { justify-content: flex-start; }
+.ka-woo-badges--bottom-right { justify-content: flex-end; }
+
+.ka-woo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    color: #fff;
+    background: #111;
+    box-shadow: 0 6px 12px rgba(17, 24, 39, 0.18);
+}
+
+.ka-woo-badge--sale {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.ka-woo-badge--new {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.ka-woo-badge--best {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.ka-woo-badge--custom {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+
+
+
+
+

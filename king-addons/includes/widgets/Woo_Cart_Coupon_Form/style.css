@@ -1,0 +1,53 @@
+.ka-woo-cart-coupon-widget {
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fff;
+}
+
+.ka-woo-cart-coupon__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ka-woo-cart-coupon__toggle {
+    background: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+
+.ka-woo-cart-coupon__body {
+    margin-top: 8px;
+}
+
+.ka-woo-cart-coupon__row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.ka-woo-cart-coupon__input {
+    flex: 1;
+    min-width: 180px;
+}
+
+.ka-woo-cart-coupon__apply,
+.ka-woo-cart-coupon__remove {
+    cursor: pointer;
+}
+
+.ka-woo-cart-coupon__notice {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #334155;
+}
+
+
+
+
+

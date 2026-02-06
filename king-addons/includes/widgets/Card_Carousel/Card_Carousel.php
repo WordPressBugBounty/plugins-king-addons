@@ -31,7 +31,7 @@ class Card_Carousel extends Widget_Base
 
     public function get_title(): string
     {
-        return esc_html__('Card Carousel', 'king-addons');
+        return esc_html__('Advanced Card Carousel', 'king-addons');
     }
 
     public function get_icon(): string

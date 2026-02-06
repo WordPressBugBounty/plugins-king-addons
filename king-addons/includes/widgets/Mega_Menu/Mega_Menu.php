@@ -148,6 +148,30 @@ class Mega_Menu extends Widget_Base
     }
 
     /**
+     * Placeholder for Pro: Add Lottie logo controls.
+     *
+     * Pro overrides this method to inject additional logo controls.
+     *
+     * @return void
+     */
+    public function add_lottie_logo_controls(): void
+    {
+        // Intentionally empty in Free.
+    }
+
+    /**
+     * Placeholder for Pro: Add current menu item style controls.
+     *
+     * Pro overrides this method to add advanced current menu item styling.
+     *
+     * @return void
+     */
+    public function add_current_menu_item_controls(): void
+    {
+        // Intentionally empty in Free.
+    }
+
+    /**
      * Placeholder for Pro: Add controls for mobile menu layout.
      *
      * @return void
@@ -371,6 +395,9 @@ class Mega_Menu extends Widget_Base
                 ],
             ]
         );
+
+        // Allow Pro to inject additional logo controls (e.g., Lottie logo type).
+        $this->add_lottie_logo_controls();
 
         $this->add_control(
             'menu_layout',
@@ -1159,6 +1186,9 @@ $this->end_controls_section();
         $this->end_controls_section();
 
         $this->add_menu_items_hover_effects_controls();
+
+        // Allow Pro to add current menu item styling controls.
+        $this->add_current_menu_item_controls();
     }
 
     /**

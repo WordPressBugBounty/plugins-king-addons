@@ -758,13 +758,13 @@ class Video_Popup extends Widget_Base
         $class_ID = 'king-addons-video-popup-' . $this_ID;
         $overlay_ID = 'king-addons-video-popup-overlay-' . $this_ID;
 
+        $class_selector_js = esc_attr(wp_json_encode('.' . $class_ID));
+        $overlay_selector_js = esc_attr(wp_json_encode('.' . $overlay_ID));
+
         // Overlay
         echo '<div class="king-addons-video-popup-overlay ' .
             esc_attr($overlay_ID) . '" onclick="';
-        echo "document.querySelector('." .
-            esc_attr($class_ID) . "').classList.toggle('king-addons-video-popup-active'); document.querySelector('." .
-            esc_attr($overlay_ID) . "').style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-            esc_attr($overlay_ID) . "').style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
+        echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-video-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
         echo '"></div>';
 
         // START: Popup box
@@ -811,10 +811,7 @@ class Video_Popup extends Widget_Base
 
             echo '<button class="king-addons-video-popup-button king-addons-video-popup-button-' .
                 esc_attr($this_ID) . ' king-addons-video-popup-button-effect-' . esc_attr($settings['kng_video_popup_btn_effect_type']) . '" onclick="';
-            echo "document.querySelector('." .
-                esc_attr($class_ID) . "').classList.toggle('king-addons-video-popup-active'); document.querySelector('." .
-                esc_attr($overlay_ID) . "').style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                esc_attr($overlay_ID) . "').style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 500);";
+            echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-video-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 500);";
             echo '">';
 
             Icons_Manager::render_icon($settings['kng_video_popup_btn_icon']);

@@ -8,6 +8,20 @@
                 elementorFrontend.elementsHandler.addHandler(
                     elementorModules.frontend.handlers.Base.extend({
                         onInit() {
+                            const normalizeSafeUrl = (rawUrl) => {
+                                if (!rawUrl || typeof rawUrl !== "string") return null;
+                                try {
+                                    const url = new URL(rawUrl, window.location.href);
+                                    const allowedProtocols = ["http:", "https:", "mailto:", "tel:"];
+                                    if (allowedProtocols.includes(url.protocol)) {
+                                        return url.href;
+                                    }
+                                } catch (e) {
+                                    // ignore
+                                }
+                                return null;
+                            };
+
                             const $elem = this.$element,
                                 $wrap = $elem.find(".king-addons-image-accordion"),
                                 $wrapContainer = $elem.find(".king-addons-image-accordion-wrap"),
@@ -133,14 +147,18 @@
                                                 ).length
                                             ) {
                                                 const itemUrl = thisSettings.activeItem.overlayLink;
-                                                if (itemUrl) {
+                                                const safeUrl = normalizeSafeUrl(itemUrl);
+                                                if (safeUrl) {
                                                     if (
                                                         thisSettings.activeItem.overlayLinkTarget ===
                                                         "_blank"
                                                     ) {
-                                                        window.open(itemUrl, "_blank").focus();
+                                                        const w = window.open(safeUrl, "_blank");
+                                                        if (w && typeof w.focus === "function") {
+                                                            w.focus();
+                                                        }
                                                     } else {
-                                                        window.location.href = itemUrl;
+                                                        window.location.href = safeUrl;
                                                     }
                                                 }
                                             }
@@ -216,14 +234,18 @@
                                                 ).length
                                             ) {
                                                 const itemUrl = thisSettings.activeItem.overlayLink;
-                                                if (itemUrl) {
+                                                const safeUrl = normalizeSafeUrl(itemUrl);
+                                                if (safeUrl) {
                                                     if (
                                                         thisSettings.activeItem.overlayLinkTarget ===
                                                         "_blank"
                                                     ) {
-                                                        window.open(itemUrl, "_blank").focus();
+                                                        const w = window.open(safeUrl, "_blank");
+                                                        if (w && typeof w.focus === "function") {
+                                                            w.focus();
+                                                        }
                                                     } else {
-                                                        window.location.href = itemUrl;
+                                                        window.location.href = safeUrl;
                                                     }
                                                 }
                                             }

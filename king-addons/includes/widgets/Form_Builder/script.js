@@ -151,7 +151,8 @@
                                             url: KingAddonsFormBuilderData.ajaxurl,
                                             data: {
                                                 action: 'king_addons_verify_recaptcha',
-                                                'g-recaptcha-response': token
+                                                'g-recaptcha-response': token,
+                                                nonce: KingAddonsFormBuilderData.nonce
                                             },
                                             success: function (response) {
                                                 if (!response.success) {

@@ -657,14 +657,14 @@ class Popup extends Widget_Base
         $class_ID = 'king-addons-popup-' . $this_ID;
         $overlay_ID = 'king-addons-popup-overlay-' . $this_ID;
 
+        $class_selector_js = esc_attr(wp_json_encode('.' . $class_ID));
+        $overlay_selector_js = esc_attr(wp_json_encode('.' . $overlay_ID));
+
         if (!empty($settings['kng_popup_template'])) {
 
             echo '<div class="king-addons-popup-overlay ' .
                 esc_attr($overlay_ID) . '" onclick="';
-            echo "document.querySelector('." .
-                esc_attr($class_ID) . "').classList.toggle('king-addons-popup-active'); document.querySelector('." .
-                esc_attr($overlay_ID) . "').style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                esc_attr($overlay_ID) . "').style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
+            echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
             echo '"></div>';
 
             echo '<div class="king-addons-popup ' .
@@ -679,10 +679,7 @@ class Popup extends Widget_Base
 
                 echo '<div class="king-addons-popup-close-button king-addons-popup-close-button-' .
                     esc_attr($this_ID) . '" onclick="';
-                echo "document.querySelector('." .
-                    esc_attr($class_ID) . "').classList.toggle('king-addons-popup-active'); document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
+                echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
                 echo '">';
 
                 Icons_Manager::render_icon($settings['kng_popup_close_btn_icon']);
@@ -706,10 +703,7 @@ class Popup extends Widget_Base
 
                 echo '<button class="king-addons-popup-button king-addons-popup-button-' .
                     esc_attr($this_ID) . '" onclick="';
-                echo "document.querySelector('." .
-                    esc_attr($class_ID) . "').classList.toggle('king-addons-popup-active'); document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 500);";
+                echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 500);";
                 echo '">' .
                     esc_html($settings['kng_popup_btn_text']) . '</button>';
 

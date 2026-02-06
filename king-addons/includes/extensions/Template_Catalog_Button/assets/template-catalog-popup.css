@@ -121,14 +121,14 @@
 }
 
 .king-addons-popup-tab-button:hover {
-    background: rgba(138, 43, 226, 0.1);
-    color: #8a2be2;
+    background: rgba(121, 49, 255, 0.1);
+    color: #7931ff;
 }
 
 .king-addons-popup-tab-button.active {
     background: #fff;
-    color: #8a2be2;
-    border-bottom: 3px solid #8a2be2;
+    color: #7931ff;
+    border-bottom: 3px solid #7931ff;
 }
 
 .king-addons-popup-tab-button i {
@@ -136,7 +136,7 @@
 }
 
 .popup-tab-count {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
     padding: 2px 8px;
     border-radius: 12px;
@@ -146,7 +146,7 @@
 }
 
 .king-addons-popup-tab-button.active .popup-tab-count {
-    background: #8a2be2;
+    background: #7931ff;
 }
 
 /* Tab Content */
@@ -185,8 +185,8 @@
 .king-addons-template-popup-search:focus,
 .king-addons-sections-popup-search:focus {
     outline: none;
-    border-color: #8a2be2;
-    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+    border-color: #7931ff;
+    box-shadow: 0 0 0 3px rgba(121, 49, 255, 0.1);
 }
 
 .king-addons-template-popup-select {
@@ -198,12 +198,25 @@
     min-width: 140px;
     transition: border-color 0.2s ease;
     height: auto;
+    color: #6c757d;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 8px;
+}
+
+.king-addons-template-popup-select:hover {
+    border-color: #bdbdbd;
 }
 
 .king-addons-template-popup-select:focus {
     outline: none;
-    border-color: #8a2be2;
-    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+    border-color: #7931ff;
+    box-shadow: 0 0 0 3px rgba(121, 49, 255, 0.1);
 }
 
 /* Reset filters button */
@@ -269,7 +282,7 @@
 
 .king-addons-template-popup-body::-webkit-scrollbar-thumb:hover,
 .king-addons-sections-popup-body::-webkit-scrollbar-thumb:hover {
-    background: #8a2be2;
+    background: #7931ff;
 }
 
 .king-addons-template-grid {
@@ -370,9 +383,9 @@
 
 .king-addons-template-pagination button:hover,
 .king-addons-template-pagination a:hover {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
-    border-color: #8a2be2;
+    border-color: #7931ff;
     transform: translateY(-1px);
 }
 
@@ -384,9 +397,9 @@
 
 .king-addons-template-pagination button.active,
 .king-addons-template-pagination .current {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
-    border-color: #8a2be2;
+    border-color: #7931ff;
 }
 
 .king-addons-template-pagination-info {
@@ -541,6 +554,7 @@
     margin-bottom: 15px;
     margin-top: 5px;
     line-height: 1.4;
+    color: #23282d;
 }
 
 .king-addons-pr-popup-title {
@@ -718,7 +732,7 @@
 .king-addons-section-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    border-color: #8a2be2;
+    border-color: #7931ff;
 }
 
 .king-addons-section-item:hover .king-addons-section-item-overlay {
@@ -768,7 +782,7 @@
 }
 
 .king-addons-section-item-plan.premium {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
 }
 
@@ -807,7 +821,7 @@
 }
 
 .king-addons-section-import-btn {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
 }
 
@@ -870,15 +884,15 @@
 }
 
 .king-addons-sections-pagination a:hover {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
-    border-color: #8a2be2;
+    border-color: #7931ff;
 }
 
 .king-addons-sections-pagination .current {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
-    border-color: #8a2be2;
+    border-color: #7931ff;
 }
 
 /* Update template items to support new actions */
@@ -925,7 +939,7 @@
 }
 
 .king-addons-template-import-btn {
-    background: #8a2be2;
+    background: #7931ff;
     color: white;
 }
 

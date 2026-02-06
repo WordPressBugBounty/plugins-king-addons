@@ -1,0 +1,537 @@
+.king-addons-pull-quotes-callouts {
+    --ka-pqcb-gap: 14px;
+    --ka-pqcb-padding: 24px;
+    --ka-pqcb-radius: 16px;
+    --ka-pqcb-bg: #ffffff;
+    --ka-pqcb-border-color: #e2e8f0;
+    --ka-pqcb-border-width: 1px;
+    --ka-pqcb-text-color: #0f172a;
+    --ka-pqcb-author-color: #334155;
+    --ka-pqcb-source-color: #64748b;
+    --ka-pqcb-label-color: #0f172a;
+    --ka-pqcb-label-bg: #e2e8f0;
+    --ka-pqcb-link-color: #2563eb;
+    --ka-pqcb-mark-size: 44px;
+    --ka-pqcb-mark-color: #0f172a;
+    --ka-pqcb-mark-opacity: 0.2;
+    --ka-pqcb-mark-offset-x: 0px;
+    --ka-pqcb-mark-offset-y: 0px;
+    --ka-pqcb-mark-scale: 1;
+    --ka-pqcb-icon-size: 22px;
+    --ka-pqcb-icon-color: #0f172a;
+    --ka-pqcb-icon-offset-x: 0px;
+    --ka-pqcb-icon-offset-y: 0px;
+    --ka-pqcb-accent-size: 0px;
+    --ka-pqcb-accent-color: #0f172a;
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: var(--ka-pqcb-padding);
+    border: var(--ka-pqcb-border-width) solid var(--ka-pqcb-border-color);
+    border-radius: var(--ka-pqcb-radius);
+    background: var(--ka-pqcb-bg);
+    color: var(--ka-pqcb-text-color);
+}
+
+.king-addons-pull-quotes-callouts::before {
+    content: "";
+    position: absolute;
+    background: var(--ka-pqcb-accent-color);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.king-addons-pull-quotes-callouts--accent-left::before {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--ka-pqcb-accent-size);
+}
+
+.king-addons-pull-quotes-callouts--accent-right::before {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: var(--ka-pqcb-accent-size);
+}
+
+.king-addons-pull-quotes-callouts--accent-top::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--ka-pqcb-accent-size);
+}
+
+.king-addons-pull-quotes-callouts--accent-bottom::before {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--ka-pqcb-accent-size);
+}
+
+.king-addons-pqcb-align-left .king-addons-pull-quotes-callouts {
+    text-align: left;
+}
+
+.king-addons-pqcb-align-center .king-addons-pull-quotes-callouts {
+    text-align: center;
+}
+
+.king-addons-pqcb-align-right .king-addons-pull-quotes-callouts {
+    text-align: right;
+}
+
+.king-addons-pull-quotes-callouts__inner {
+    display: flex;
+    gap: var(--ka-pqcb-gap);
+}
+
+.king-addons-pull-quotes-callouts--type-pull-quote .king-addons-pull-quotes-callouts__inner {
+    flex-direction: column;
+}
+
+.king-addons-pull-quotes-callouts--type-callout .king-addons-pull-quotes-callouts__inner {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.king-addons-pqcb-align-left
+    .king-addons-pull-quotes-callouts--type-callout
+    .king-addons-pull-quotes-callouts__inner {
+    justify-content: flex-start;
+}
+
+.king-addons-pqcb-align-center
+    .king-addons-pull-quotes-callouts--type-callout
+    .king-addons-pull-quotes-callouts__inner {
+    justify-content: center;
+}
+
+.king-addons-pqcb-align-right
+    .king-addons-pull-quotes-callouts--type-callout
+    .king-addons-pull-quotes-callouts__inner {
+    justify-content: flex-end;
+}
+
+.king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+    .king-addons-pull-quotes-callouts__inner {
+    flex-direction: column;
+}
+
+.king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+    .king-addons-pull-quotes-callouts__inner {
+    flex-direction: column;
+}
+
+.king-addons-pqcb-align-left
+    .king-addons-pull-quotes-callouts--type-pull-quote
+    .king-addons-pull-quotes-callouts__inner,
+.king-addons-pqcb-align-left
+    .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+    .king-addons-pull-quotes-callouts__inner,
+.king-addons-pqcb-align-left
+    .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+    .king-addons-pull-quotes-callouts__inner {
+    align-items: flex-start;
+}
+
+.king-addons-pqcb-align-center
+    .king-addons-pull-quotes-callouts--type-pull-quote
+    .king-addons-pull-quotes-callouts__inner,
+.king-addons-pqcb-align-center
+    .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+    .king-addons-pull-quotes-callouts__inner,
+.king-addons-pqcb-align-center
+    .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+    .king-addons-pull-quotes-callouts__inner {
+    align-items: center;
+}
+
+.king-addons-pqcb-align-right
+    .king-addons-pull-quotes-callouts--type-pull-quote
+    .king-addons-pull-quotes-callouts__inner,
+.king-addons-pqcb-align-right
+    .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+    .king-addons-pull-quotes-callouts__inner,
+.king-addons-pqcb-align-right
+    .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+    .king-addons-pull-quotes-callouts__inner {
+    align-items: flex-end;
+}
+
+.king-addons-pull-quotes-callouts__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--ka-pqcb-icon-size);
+    color: var(--ka-pqcb-icon-color);
+    transform: translate(var(--ka-pqcb-icon-offset-x), var(--ka-pqcb-icon-offset-y));
+    line-height: 1;
+}
+
+.king-addons-pull-quotes-callouts__icon i,
+.king-addons-pull-quotes-callouts__icon svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+.king-addons-pull-quotes-callouts__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ka-pqcb-gap);
+    min-width: 0;
+}
+
+.king-addons-pull-quotes-callouts__label {
+    align-self: flex-start;
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--ka-pqcb-label-bg);
+    color: var(--ka-pqcb-label-color);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.king-addons-pqcb-align-center .king-addons-pull-quotes-callouts__label {
+    align-self: center;
+}
+
+.king-addons-pqcb-align-right .king-addons-pull-quotes-callouts__label {
+    align-self: flex-end;
+}
+
+@media (max-width: 1024px) {
+    .king-addons-pqcb-align-tablet-left .king-addons-pull-quotes-callouts {
+        text-align: left;
+    }
+
+    .king-addons-pqcb-align-tablet-center .king-addons-pull-quotes-callouts {
+        text-align: center;
+    }
+
+    .king-addons-pqcb-align-tablet-right .king-addons-pull-quotes-callouts {
+        text-align: right;
+    }
+
+    .king-addons-pqcb-align-tablet-left
+        .king-addons-pull-quotes-callouts--type-callout
+        .king-addons-pull-quotes-callouts__inner {
+        justify-content: flex-start;
+    }
+
+    .king-addons-pqcb-align-tablet-center
+        .king-addons-pull-quotes-callouts--type-callout
+        .king-addons-pull-quotes-callouts__inner {
+        justify-content: center;
+    }
+
+    .king-addons-pqcb-align-tablet-right
+        .king-addons-pull-quotes-callouts--type-callout
+        .king-addons-pull-quotes-callouts__inner {
+        justify-content: flex-end;
+    }
+
+    .king-addons-pqcb-align-tablet-left
+        .king-addons-pull-quotes-callouts--type-pull-quote
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-tablet-left
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-tablet-left
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+        .king-addons-pull-quotes-callouts__inner {
+        align-items: flex-start;
+    }
+
+    .king-addons-pqcb-align-tablet-center
+        .king-addons-pull-quotes-callouts--type-pull-quote
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-tablet-center
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-tablet-center
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+        .king-addons-pull-quotes-callouts__inner {
+        align-items: center;
+    }
+
+    .king-addons-pqcb-align-tablet-right
+        .king-addons-pull-quotes-callouts--type-pull-quote
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-tablet-right
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-tablet-right
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+        .king-addons-pull-quotes-callouts__inner {
+        align-items: flex-end;
+    }
+
+    .king-addons-pqcb-align-tablet-center .king-addons-pull-quotes-callouts__label {
+        align-self: center;
+    }
+
+    .king-addons-pqcb-align-tablet-right .king-addons-pull-quotes-callouts__label {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 767px) {
+    .king-addons-pqcb-align-mobile-left .king-addons-pull-quotes-callouts {
+        text-align: left;
+    }
+
+    .king-addons-pqcb-align-mobile-center .king-addons-pull-quotes-callouts {
+        text-align: center;
+    }
+
+    .king-addons-pqcb-align-mobile-right .king-addons-pull-quotes-callouts {
+        text-align: right;
+    }
+
+    .king-addons-pqcb-align-mobile-left
+        .king-addons-pull-quotes-callouts--type-callout
+        .king-addons-pull-quotes-callouts__inner {
+        justify-content: flex-start;
+    }
+
+    .king-addons-pqcb-align-mobile-center
+        .king-addons-pull-quotes-callouts--type-callout
+        .king-addons-pull-quotes-callouts__inner {
+        justify-content: center;
+    }
+
+    .king-addons-pqcb-align-mobile-right
+        .king-addons-pull-quotes-callouts--type-callout
+        .king-addons-pull-quotes-callouts__inner {
+        justify-content: flex-end;
+    }
+
+    .king-addons-pqcb-align-mobile-left
+        .king-addons-pull-quotes-callouts--type-pull-quote
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-mobile-left
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-mobile-left
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+        .king-addons-pull-quotes-callouts__inner {
+        align-items: flex-start;
+    }
+
+    .king-addons-pqcb-align-mobile-center
+        .king-addons-pull-quotes-callouts--type-pull-quote
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-mobile-center
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-mobile-center
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+        .king-addons-pull-quotes-callouts__inner {
+        align-items: center;
+    }
+
+    .king-addons-pqcb-align-mobile-right
+        .king-addons-pull-quotes-callouts--type-pull-quote
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-mobile-right
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-top
+        .king-addons-pull-quotes-callouts__inner,
+    .king-addons-pqcb-align-mobile-right
+        .king-addons-pull-quotes-callouts--type-callout.king-addons-pull-quotes-callouts--icon-none
+        .king-addons-pull-quotes-callouts__inner {
+        align-items: flex-end;
+    }
+
+    .king-addons-pqcb-align-mobile-center .king-addons-pull-quotes-callouts__label {
+        align-self: center;
+    }
+
+    .king-addons-pqcb-align-mobile-right .king-addons-pull-quotes-callouts__label {
+        align-self: flex-end;
+    }
+}
+
+.king-addons-pull-quotes-callouts__mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: var(--ka-pqcb-mark-size);
+    color: var(--ka-pqcb-mark-color);
+    opacity: var(--ka-pqcb-mark-opacity);
+    line-height: 1;
+    transform: translate(var(--ka-pqcb-mark-offset-x), var(--ka-pqcb-mark-offset-y))
+        scale(var(--ka-pqcb-mark-scale));
+    pointer-events: none;
+}
+
+.king-addons-pull-quotes-callouts--mark-mode-inline .king-addons-pull-quotes-callouts__mark {
+    position: static;
+    align-self: flex-start;
+    transform: translate(var(--ka-pqcb-mark-offset-x), var(--ka-pqcb-mark-offset-y))
+        scale(var(--ka-pqcb-mark-scale));
+}
+
+.king-addons-pull-quotes-callouts--mark-mode-watermark .king-addons-pull-quotes-callouts__mark {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+        translate(var(--ka-pqcb-mark-offset-x), var(--ka-pqcb-mark-offset-y))
+        scale(var(--ka-pqcb-mark-scale));
+}
+
+.king-addons-pull-quotes-callouts--mark-hidden .king-addons-pull-quotes-callouts__mark {
+    display: none;
+}
+
+.king-addons-pull-quotes-callouts--mark-classic .king-addons-pull-quotes-callouts__mark {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-weight: 700;
+}
+
+.king-addons-pull-quotes-callouts--mark-modern .king-addons-pull-quotes-callouts__mark {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.king-addons-pull-quotes-callouts--mark-minimal .king-addons-pull-quotes-callouts__mark {
+    font-weight: 400;
+}
+
+.king-addons-pull-quotes-callouts__text {
+    margin: 0;
+    color: var(--ka-pqcb-text-color);
+}
+
+.king-addons-pull-quotes-callouts__text p {
+    margin: 0 0 12px;
+}
+
+.king-addons-pull-quotes-callouts__text p:last-child {
+    margin-bottom: 0;
+}
+
+.king-addons-pull-quotes-callouts__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: var(--ka-pqcb-gap);
+    color: var(--ka-pqcb-source-color);
+}
+
+.king-addons-pull-quotes-callouts__author {
+    color: var(--ka-pqcb-author-color);
+    font-weight: 600;
+}
+
+.king-addons-pull-quotes-callouts__source {
+    color: var(--ka-pqcb-source-color);
+}
+
+.king-addons-pull-quotes-callouts__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ka-pqcb-link-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.king-addons-pull-quotes-callouts__link:hover {
+    text-decoration: underline;
+}
+
+.king-addons-pull-quotes-callouts__separator {
+    color: var(--ka-pqcb-source-color);
+}
+
+.king-addons-pull-quotes-callouts--preset-classic-accent {
+    --ka-pqcb-accent-size: 4px;
+    --ka-pqcb-accent-color: #0f172a;
+}
+
+.king-addons-pull-quotes-callouts--preset-classic-accent .king-addons-pull-quotes-callouts__text {
+    font-style: italic;
+}
+
+.king-addons-pull-quotes-callouts--preset-centered-mark {
+    text-align: center;
+    --ka-pqcb-mark-size: 56px;
+    --ka-pqcb-mark-opacity: 0.25;
+}
+
+.king-addons-pull-quotes-callouts--preset-centered-mark
+    .king-addons-pull-quotes-callouts__label {
+    align-self: center;
+}
+
+.king-addons-pull-quotes-callouts--preset-modern-card {
+    --ka-pqcb-bg: #0f172a;
+    --ka-pqcb-text-color: #f8fafc;
+    --ka-pqcb-author-color: #f1f5f9;
+    --ka-pqcb-source-color: #cbd5f5;
+    --ka-pqcb-border-width: 0px;
+    --ka-pqcb-link-color: #38bdf8;
+}
+
+.king-addons-pull-quotes-callouts--preset-modern-card {
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+}
+
+.king-addons-pull-quotes-callouts--preset-minimal-inline {
+    --ka-pqcb-bg: transparent;
+    --ka-pqcb-border-width: 0px;
+    --ka-pqcb-padding: 0px;
+    --ka-pqcb-mark-opacity: 0.3;
+}
+
+.king-addons-pull-quotes-callouts--preset-minimal-inline .king-addons-pull-quotes-callouts__text {
+    font-style: italic;
+}
+
+.king-addons-pull-quotes-callouts--preset-highlight-strip {
+    --ka-pqcb-bg: #fff7ed;
+    --ka-pqcb-border-width: 0px;
+    --ka-pqcb-accent-size: 6px;
+    --ka-pqcb-accent-color: #f97316;
+}
+
+.king-addons-pull-quotes-callouts--preset-side-callout {
+    --ka-pqcb-bg: #f8fafc;
+    --ka-pqcb-border-color: #e2e8f0;
+    --ka-pqcb-label-bg: #e2e8f0;
+}
+
+.king-addons-pull-quotes-callouts--preset-badge-callout {
+    --ka-pqcb-bg: #f0f9ff;
+    --ka-pqcb-border-color: #bae6fd;
+    --ka-pqcb-label-bg: #0ea5e9;
+    --ka-pqcb-label-color: #ffffff;
+    --ka-pqcb-accent-size: 0px;
+}
+
+.king-addons-pull-quotes-callouts--preset-editorial-watermark {
+    --ka-pqcb-mark-size: 120px;
+    --ka-pqcb-mark-opacity: 0.12;
+}
+
+.king-addons-pull-quotes-callouts--preset-editorial-watermark
+    .king-addons-pull-quotes-callouts__text {
+    font-weight: 600;
+}
+
+@media (max-width: 767px) {
+    .king-addons-pull-quotes-callouts {
+        --ka-pqcb-padding: 20px;
+    }
+
+    .king-addons-pull-quotes-callouts--type-callout .king-addons-pull-quotes-callouts__inner {
+        flex-direction: column;
+    }
+}

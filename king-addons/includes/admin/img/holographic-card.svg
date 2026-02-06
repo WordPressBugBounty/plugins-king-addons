@@ -1,0 +1,45 @@
+<svg height="512" viewBox="0 0 48 48" width="512" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9B62FF;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#5B03FF;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.6"/>
+            <stop offset="33%" style="stop-color:#ff2bd6;stop-opacity:0.6"/>
+            <stop offset="66%" style="stop-color:#ffd600;stop-opacity:0.6"/>
+            <stop offset="100%" style="stop-color:#00ffa8;stop-opacity:0.6"/>
+        </linearGradient>
+    </defs>
+    <g>
+        <!-- Main card outline with 3D tilt -->
+        <path fill="url(#grad1)" d="M6 10c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v28c0 2.2-1.8 4-4 4H10c-2.2 0-4-1.8-4-4V10zm2 0v28c0 1.1.9 2 2 2h28c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2H10c-1.1 0-2 .9-2 2z"/>
+        
+        <!-- Inner poster area -->
+        <rect fill="url(#grad1)" x="10" y="10" width="28" height="18" rx="2" opacity="0.3"/>
+        
+        <!-- Holographic shine lines -->
+        <path fill="url(#grad2)" d="M12 12h24v14H12z" opacity="0.5"/>
+        <line x1="10" y1="14" x2="38" y2="20" stroke="url(#grad2)" stroke-width="1.5" opacity="0.7"/>
+        <line x1="10" y1="18" x2="38" y2="24" stroke="url(#grad2)" stroke-width="1" opacity="0.5"/>
+        
+        <!-- 3D depth indicator (corner fold) -->
+        <path fill="url(#grad1)" d="M38 6l4 4h-4z" opacity="0.6"/>
+        
+        <!-- Parallax layer circle -->
+        <circle fill="url(#grad1)" cx="24" cy="19" r="5" opacity="0.8"/>
+        <circle fill="none" stroke="url(#grad1)" stroke-width="1" cx="24" cy="19" r="7" opacity="0.4"/>
+        
+        <!-- Title line -->
+        <rect fill="url(#grad1)" x="12" y="32" width="16" height="2" rx="1"/>
+        
+        <!-- Meta line -->
+        <rect fill="url(#grad1)" x="12" y="36" width="24" height="1.5" rx="0.75" opacity="0.5"/>
+        
+        <!-- Small badge -->
+        <rect fill="url(#grad1)" x="30" y="32" width="6" height="2" rx="1" opacity="0.6"/>
+        
+        <!-- Rim glow effect -->
+        <rect fill="none" stroke="url(#grad2)" stroke-width="1.5" x="5" y="5" width="38" height="38" rx="5" opacity="0.4"/>
+    </g>
+</svg>

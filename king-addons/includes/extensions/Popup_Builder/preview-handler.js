@@ -42,8 +42,11 @@
             if (model.changed.hasOwnProperty('popup_animation')) {
                 let popupContainer = popup.find('.king-addons-pb-popup-container');
 
+                // Avoid conflict with Bootstrap's `.fade` class.
+                const animationClass = (model.changed['popup_animation'] === 'fade') ? 'fadeIn' : model.changed['popup_animation'];
+
                 popupContainer.removeAttr('class');
-                popupContainer.addClass('king-addons-pb-popup-container animated ' + model.changed['popup_animation']);
+                popupContainer.addClass('king-addons-pb-popup-container animated ' + animationClass);
             }
         },
 

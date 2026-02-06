@@ -108,9 +108,9 @@
     height: var(--thumb-size, 22px);
     border-radius: 50%;
     background: var(--thumb-color, #4a89dc);
-    border: 2px solid #fff;
+    border: var(--thumb-border-width, 2px) solid var(--thumb-border-color, #fff) !important;
     cursor: pointer;
-    transition: background 0.15s ease-in-out, transform 0.15s ease;
+    transition: background var(--thumb-transition-duration, 0.15s) ease-in-out, transform var(--thumb-transition-duration, 0.15s) ease, border-color var(--thumb-transition-duration, 0.15s) ease-in-out;
     margin-top: calc((var(--thumb-size, 22px) - var(--track-height, 8px)) / -2);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
@@ -119,11 +119,11 @@
 .king-pricing-calculator__range::-moz-range-thumb {
     width: var(--thumb-size, 22px);
     height: var(--thumb-size, 22px);
-    border: 2px solid #fff;
+    border: var(--thumb-border-width, 2px) solid var(--thumb-border-color, #fff) !important;
     border-radius: 50%;
     background: var(--thumb-color, #4a89dc);
     cursor: pointer;
-    transition: background 0.15s ease-in-out, transform 0.15s ease;
+    transition: background var(--thumb-transition-duration, 0.15s) ease-in-out, transform var(--thumb-transition-duration, 0.15s) ease, border-color var(--thumb-transition-duration, 0.15s) ease-in-out;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -154,12 +154,14 @@
 
 /* Hover and focus states */
 .king-pricing-calculator__range:hover::-webkit-slider-thumb {
-    background: var(--thumb-color-hover, #3573c3);
+    background: var(--thumb-color-hover, #3573c3) !important;
+    border-color: var(--thumb-border-hover-color, #fff) !important;
     transform: scale(1.1);
 }
 
 .king-pricing-calculator__range:hover::-moz-range-thumb {
-    background: var(--thumb-color-hover, #3573c3);
+    background: var(--thumb-color-hover, #3573c3) !important;
+    border-color: var(--thumb-border-hover-color, #fff) !important;
     transform: scale(1.1);
 }
 
@@ -183,6 +185,10 @@
     margin-top: 10px;
     font-weight: 500;
     color: var(--value-color, #333);
+}
+
+.king-pricing-calculator__range-value-display .king-pricing-calculator__field-unit {
+    margin-left: var(--range-unit-spacing, 6px);
 }
 
 /* For touch devices - increase touch target */
@@ -218,6 +224,31 @@
     padding-right: 30px;
 }
 
+.king-pricing-calculator__select-wrapper {
+    position: relative;
+}
+
+@supports ((-webkit-mask: url("")) or (mask: url(""))) {
+    .king-pricing-calculator__select {
+        background-image: none !important;
+        padding-right: calc(var(--select-arrow-right, 12px) + var(--select-arrow-size, 12px) + 12px) !important;
+    }
+
+    .king-pricing-calculator__select-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: var(--select-arrow-right, 12px) !important;
+        width: var(--select-arrow-size, 12px) !important;
+        height: var(--select-arrow-size, 12px) !important;
+        transform: translateY(-50%);
+        background-color: var(--select-arrow-color, #555) !important;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat center / contain;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat center / contain;
+        pointer-events: none;
+    }
+}
+
 .king-pricing-calculator__select:focus {
     border-color: #6c757d;
     outline: none;
@@ -226,9 +257,12 @@
 
 /* Radio Buttons */
 .king-pricing-calculator__radio-group {
+    border: 0;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--radio-gap, 10px);
 }
 
 .king-pricing-calculator__radio-option {
@@ -237,7 +271,10 @@
 }
 
 .king-pricing-calculator__radio {
-    margin-right: 10px;
+    margin-right: var(--radio-label-spacing, 10px);
+    width: var(--radio-size, 18px);
+    height: var(--radio-size, 18px);
+    accent-color: var(--radio-accent-color, #4a89dc) !important;
 }
 
 /* Checkbox & Switch */

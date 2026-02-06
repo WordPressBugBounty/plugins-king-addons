@@ -16,7 +16,19 @@ class Verify_Google_Recaptcha
 
     public function king_addons_verify_recaptcha()
     {
-        $recaptcha_response = $_POST['g-recaptcha-response'];
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            wp_send_json_error(['message' => 'Invalid request method.']);
+        }
+
+        if (!isset($_POST['nonce']) || !check_ajax_referer('king-addons-js', 'nonce', false)) {
+            wp_send_json_error(['message' => 'Invalid nonce.']);
+        }
+
+        $recaptcha_response = sanitize_text_field($_POST['g-recaptcha-response'] ?? '');
+        if (empty($recaptcha_response)) {
+            wp_send_json_error(['message' => 'Missing reCAPTCHA response.']);
+        }
+
         $is_valid_recaptcha = $this->check_recaptcha($recaptcha_response);
 
         if ($is_valid_recaptcha[0] && $is_valid_recaptcha[1] >= get_option('king_addons_recaptcha_v3_score_threshold')) {
@@ -50,14 +62,18 @@ class Verify_Google_Recaptcha
         ));
 
         if (is_wp_error($response)) {
-            return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
+            return [false, 0];
         }
 
         $decoded_response = json_decode(wp_remote_retrieve_body($response), true);
 
-        $score = $decoded_response['score'];
+        if (!is_array($decoded_response)) {
+            return [false, 0];
+        }
 
-        if ($decoded_response['success'] === true) {
+        $score = isset($decoded_response['score']) ? (float) $decoded_response['score'] : 0.0;
+
+        if (!empty($decoded_response['success'])) {
             return [true, $score];
         } else {
             return [false, $score];

@@ -1,0 +1,126 @@
+.ka-woo-my-account-orders {
+    width: 100%;
+}
+
+.ka-woo-my-account-orders .woocommerce-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ka-woo-my-account-orders .woocommerce-orders-table__row {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    display: table-row;
+    background: #fff;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.07);
+    overflow: hidden;
+}
+
+.ka-woo-my-account-orders .woocommerce-orders-table__cell,
+.ka-woo-my-account-orders .woocommerce-orders-table__header {
+    padding: 12px;
+}
+
+.ka-woo-my-account-orders .woocommerce-orders-table__cell-order-status {
+    font-weight: 600;
+}
+
+.ka-woo-my-account-orders .woocommerce-orders-table__cell-order-status .order-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .ka-woo-my-account-orders .woocommerce-orders-table {
+        display: block;
+    }
+    .ka-woo-my-account-orders .woocommerce-orders-table thead {
+        display: none;
+    }
+    .ka-woo-my-account-orders .woocommerce-orders-table tbody {
+        display: block;
+    }
+    .ka-woo-my-account-orders .woocommerce-orders-table__row {
+        display: block;
+        padding: 12px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+    .ka-woo-my-account-orders .woocommerce-orders-table__cell {
+        display: block;
+        width: 100%;
+        border: none;
+        padding: 6px 0;
+    }
+    .ka-woo-my-account-orders .woocommerce-orders-table__cell:before {
+        content: attr(data-title);
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 4px;
+    }
+}
+
+.ka-woo-my-account-orders__cards {
+    display: grid;
+    gap: 16px;
+}
+
+.ka-woo-my-account-orders__card {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    display: grid;
+    gap: 10px;
+}
+
+.ka-woo-my-account-orders__card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.ka-woo-my-account-orders__order-id {
+    font-weight: 700;
+}
+
+.ka-woo-my-account-orders__status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ka-woo-my-account-orders__meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: #475569;
+    font-size: 14px;
+}
+
+.ka-woo-my-account-orders__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ka-woo-my-account-orders__actions .button {
+    padding: 8px 12px;
+}
+
+
+
+
+
+

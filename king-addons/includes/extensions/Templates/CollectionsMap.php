@@ -84,6 +84,9 @@ final class CollectionsMap
             71 => 'Gym & Fitness',
             72 => 'Funeral Services',
             73 => 'Tattoo & Piercing Studio',
+            74 => 'eSports Teams & Gaming Studio',
+            75 => 'Security Guard',
+            76 => 'VR & AR',
         ];
     }
 }

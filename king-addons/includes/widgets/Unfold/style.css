@@ -1,0 +1,139 @@
+.king-addons-unfold {
+  width: 100%;
+}
+
+.king-addons-unfold__box {
+  position: relative;
+}
+
+.king-addons-unfold__title {
+  margin: 0;
+}
+
+.king-addons-unfold__content {
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.king-addons-unfold__content p {
+  margin-top: 0;
+}
+
+.king-addons-unfold__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--ka-unfold-fade-height, 30px);
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    var(--ka-unfold-fade-color, rgba(0, 0, 0, 0.2)) 100%
+  );
+  transition: opacity 0.25s ease;
+}
+
+.king-addons-unfold__fade--hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.king-addons-unfold__button-wrapper {
+  display: flex;
+  margin-top: 12px;
+}
+
+.king-addons-unfold__button-wrapper--inside {
+  margin-top: 16px;
+}
+
+.king-addons-unfold__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  background-color: #222;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.king-addons-unfold__button--hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.king-addons-unfold__button--hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.king-addons-unfold__button--icon-before .king-addons-unfold__icon {
+  margin-right: 6px;
+}
+
+.king-addons-unfold__button--icon-after .king-addons-unfold__icon {
+  margin-left: 6px;
+}
+
+.king-addons-unfold__button--xs {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.king-addons-unfold__button--sm {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.king-addons-unfold__button--md {
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.king-addons-unfold__button--lg {
+  padding: 12px 18px;
+  font-size: 15px;
+}
+
+.king-addons-unfold__button--block {
+  width: 100%;
+  justify-content: center;
+}
+
+.king-addons-unfold__text {
+  display: inline-flex;
+  align-items: center;
+}
+
+.king-addons-unfold__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.king-addons-unfold__icon--hidden {
+  display: none;
+}
+
+.king-addons-unfold--align-flex-start .king-addons-unfold__button-wrapper {
+  justify-content: flex-start;
+}
+
+.king-addons-unfold--align-center .king-addons-unfold__button-wrapper {
+  justify-content: center;
+}
+
+.king-addons-unfold--align-flex-end .king-addons-unfold__button-wrapper {
+  justify-content: flex-end;
+}
+
+.king-addons-unfold--button-outside .king-addons-unfold__button-wrapper--outside {
+  margin-top: 16px;
+}
+
+
+
+
+

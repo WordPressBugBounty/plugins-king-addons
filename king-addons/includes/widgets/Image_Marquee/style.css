@@ -1,0 +1,115 @@
+.king-addons-image-marquee {
+    --kng-image-marquee-gap: 30px;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.king-addons-image-marquee__track {
+    display: flex;
+    gap: var(--kng-image-marquee-gap);
+    align-items: center;
+    will-change: transform;
+}
+
+.king-addons-image-marquee__track[data-orientation="vertical"] {
+    flex-direction: column;
+}
+
+.king-addons-image-marquee__list {
+    display: flex;
+    gap: var(--kng-image-marquee-gap);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.king-addons-image-marquee__track[data-orientation="vertical"] .king-addons-image-marquee__list {
+    flex-direction: column;
+}
+
+.king-addons-image-marquee__item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    text-decoration: none;
+}
+
+.king-addons-image-marquee__item:hover {
+    text-decoration: none;
+}
+
+.king-addons-image-marquee__media {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-image-marquee__img {
+    display: block;
+    width: 140px;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease;
+}
+
+.king-addons-image-marquee__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.0);
+    transition: background-color 0.25s ease;
+    pointer-events: none;
+}
+
+.king-addons-image-marquee__hover-label {
+    position: absolute;
+    inset: auto;
+    left: 50%;
+    bottom: 12px;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.king-addons-image-marquee__item:hover .king-addons-image-marquee__hover-label {
+    opacity: 1;
+}
+
+.king-addons-image-marquee__item:hover .king-addons-image-marquee__overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.king-addons-image-marquee__item:hover .king-addons-image-marquee__img {
+    transform-origin: center;
+}
+
+.king-addons-image-marquee__link {
+    display: inline-flex;
+}
+
+.elementor-editor-active .king-addons-image-marquee__item {
+    cursor: default;
+}
+
+.king-addons-image-marquee__item .king-addons-image-marquee__hover-label:empty {
+    display: none;
+}
+
+.king-addons-image-marquee__item .king-addons-image-marquee__overlay {
+    border-radius: inherit;
+}
+
+
+
+
+
+

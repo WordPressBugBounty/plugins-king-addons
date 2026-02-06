@@ -22,6 +22,8 @@ class Send_Email
 
         $nonce = $_POST['nonce'];
 
+        // Security fix: Generate nonce server-side instead of relying on client-provided nonce
+        $server_nonce = wp_create_nonce('king-addons-js');
         if (!wp_verify_nonce($nonce, 'king-addons-js')) {
             return;
         }

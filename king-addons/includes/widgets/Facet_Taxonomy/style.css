@@ -1,0 +1,46 @@
+.king-addons-facet__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.king-addons-facet__item {
+  margin-bottom: 6px;
+}
+
+.king-addons-facet__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.king-addons-facet__count {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.king-addons-facet__swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  display: inline-block;
+  background-size: cover;
+  background-position: center;
+}
+
+.king-addons-facet__swatch--image {
+  border: none;
+}
+
+.king-addons-facet__item.is-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+
+
+
+
+

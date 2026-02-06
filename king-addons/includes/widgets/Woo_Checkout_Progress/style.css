@@ -1,0 +1,64 @@
+.ka-woo-checkout-progress {
+    --ka-checkout-progress-base: #e2e2e2;
+    --ka-checkout-progress-active: #111;
+    --ka-checkout-progress-complete: #0f9d58;
+    width: 100%;
+    display: grid;
+    gap: 8px;
+}
+
+.ka-woo-checkout-progress__bar {
+    width: 100%;
+    height: 6px;
+    background: var(--ka-checkout-progress-base);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.ka-woo-checkout-progress__bar span {
+    display: block;
+    height: 100%;
+    background: var(--ka-checkout-progress-active);
+    transition: width 0.3s ease;
+}
+
+.ka-woo-checkout-progress__labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.ka-woo-checkout-progress__steps {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 12px;
+}
+
+.ka-woo-checkout-progress__step {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.ka-woo-checkout-progress__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ka-checkout-progress-base);
+}
+
+.ka-woo-checkout-progress__step.is-active .ka-woo-checkout-progress__dot {
+    background: var(--ka-checkout-progress-active);
+}
+
+.ka-woo-checkout-progress__step.is-complete .ka-woo-checkout-progress__dot {
+    background: var(--ka-checkout-progress-complete);
+}
+
+
+
+
+
+

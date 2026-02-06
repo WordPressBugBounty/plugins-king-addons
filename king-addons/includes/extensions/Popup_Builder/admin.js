@@ -463,6 +463,13 @@ jQuery(document).ready(function ($) {
                 nonce: KingAddonsPopupBuilderOptions.nonce,
                 template: template
             };
+
+            // Secondary nonce printed by wp_nonce_field() in the form.
+            // Required by PHP handler before it persists options.
+            const popupSettingsNonce = $('#king_addons_popup_nonce').val() || $('input[name="king_addons_popup_nonce"]').val();
+            if (popupSettingsNonce) {
+                data.king_addons_popup_nonce = popupSettingsNonce;
+            }
             data['king_addons_pb_' + currentTab + '_conditions'] = JSON.stringify(conditions);
 
             let showOnCanvas = $('#king-addons-pb-show-on-canvas');

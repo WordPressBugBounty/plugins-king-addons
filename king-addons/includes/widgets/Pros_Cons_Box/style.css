@@ -1,0 +1,379 @@
+.king-addons-pros-cons {
+    --kng-pros-cons-gap: 24px;
+    --kng-pros-cons-item-gap: 10px;
+    --kng-pros-cons-icon-size: 18px;
+    --kng-pros-cons-icon-gap: 10px;
+    --kng-pros-cons-title-icon-size: 18px;
+    --kng-pros-cons-title-icon-gap: 8px;
+    --kng-pros-width: 50%;
+    --kng-pros-accent: #22c55e;
+    --kng-cons-accent: #ef4444;
+    --kng-pros-highlight: #f0fdf4;
+    --kng-cons-highlight: #fef2f2;
+    --kng-pros-border-width: 0px;
+    --kng-cons-border-width: 0px;
+    --kng-tooltip-max-width: 220px;
+    --kng-pros-cons-tooltip-offset: 8px;
+    --kng-pros-cons-tooltip-gap: 6px;
+
+    position: relative;
+}
+
+.king-addons-pros-cons__header {
+    margin-bottom: 18px;
+}
+
+.king-addons-pros-cons__title {
+    margin: 0 0 6px;
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 700;
+    color: #111827;
+}
+
+.king-addons-pros-cons__description {
+    margin: 0;
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.king-addons-pros-cons__columns {
+    display: grid;
+    gap: var(--kng-pros-cons-gap);
+    grid-template-columns: minmax(0, var(--kng-pros-width)) minmax(0, calc(100% - var(--kng-pros-width)));
+}
+
+.king-addons-pros-cons--layout-stacked .king-addons-pros-cons__columns,
+.king-addons-pros-cons--single .king-addons-pros-cons__columns {
+    grid-template-columns: 1fr;
+}
+
+.king-addons-pros-cons__section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.king-addons-pros-cons__section--pros {
+    border-inline-start: var(--kng-pros-border-width) solid var(--kng-pros-accent);
+}
+
+.king-addons-pros-cons__section--cons {
+    border-inline-start: var(--kng-cons-border-width) solid var(--kng-cons-accent);
+}
+
+.king-addons-pros-cons__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.king-addons-pros-cons__section-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kng-pros-cons-title-icon-gap);
+}
+
+.king-addons-pros-cons__section-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #111827;
+}
+
+.king-addons-pros-cons__section-title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--kng-pros-cons-title-icon-size);
+    color: currentColor;
+}
+
+.king-addons-pros-cons__section-title-icon svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+    fill: currentColor;
+}
+
+.king-addons-pros-cons__section-subtitle {
+    margin: -6px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.king-addons-pros-cons__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--kng-pros-cons-item-gap);
+}
+
+.king-addons-pros-cons__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--kng-pros-cons-icon-gap);
+    color: #111827;
+    line-height: 1.6;
+    position: relative;
+}
+
+.king-addons-pros-cons__item.is-highlight {
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+.king-addons-pros-cons__section--pros .king-addons-pros-cons__item.is-highlight {
+    background: var(--kng-pros-highlight);
+}
+
+.king-addons-pros-cons__section--cons .king-addons-pros-cons__item.is-highlight {
+    background: var(--kng-cons-highlight);
+}
+
+.king-addons-pros-cons__item-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--kng-pros-cons-icon-size);
+    width: var(--kng-pros-cons-icon-size);
+    height: var(--kng-pros-cons-icon-size);
+    color: currentColor;
+    flex-shrink: 0;
+}
+
+.king-addons-pros-cons__section--pros .king-addons-pros-cons__item-icon {
+    color: var(--kng-pros-accent);
+}
+
+.king-addons-pros-cons__section--cons .king-addons-pros-cons__item-icon {
+    color: var(--kng-cons-accent);
+}
+
+.king-addons-pros-cons__item-text {
+    flex: 1;
+}
+
+.king-addons-pros-cons-title-icon-right .king-addons-pros-cons__section-heading {
+    flex-direction: row-reverse;
+}
+
+.king-addons-pros-cons--icon-right .king-addons-pros-cons__item-icon {
+    order: 3;
+}
+
+.king-addons-pros-cons--no-icons .king-addons-pros-cons__item-icon {
+    display: none;
+}
+
+.king-addons-pros-cons--no-icons .king-addons-pros-cons__list {
+    list-style: disc;
+    padding-inline-start: 1.1em;
+}
+
+.king-addons-pros-cons--no-icons .king-addons-pros-cons__item {
+    display: list-item;
+    gap: 0;
+}
+
+.king-addons-pros-cons--no-icons .king-addons-pros-cons__section--pros .king-addons-pros-cons__item::marker {
+    color: var(--kng-pros-accent);
+}
+
+.king-addons-pros-cons--no-icons .king-addons-pros-cons__section--cons .king-addons-pros-cons__item::marker {
+    color: var(--kng-cons-accent);
+}
+
+.king-addons-pros-cons__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.king-addons-pros-cons__toggle-icon::before {
+    content: "+";
+    font-size: 16px;
+    line-height: 1;
+}
+
+.king-addons-pros-cons__toggle[aria-expanded="true"] .king-addons-pros-cons__toggle-icon::before {
+    content: "-";
+}
+
+.king-addons-pros-cons__section.is-collapsed .king-addons-pros-cons__list {
+    display: none;
+}
+
+.king-addons-pros-cons[data-tooltip="yes"] .king-addons-pros-cons__section {
+    overflow: visible;
+}
+
+.king-addons-pros-cons__tooltip-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: var(--kng-pros-cons-tooltip-gap);
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.king-addons-pros-cons__tooltip {
+    position: absolute;
+    z-index: 5;
+    max-width: var(--kng-tooltip-max-width);
+    background: #111827;
+    color: #ffffff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.king-addons-pros-cons__item.is-tooltip-visible .king-addons-pros-cons__tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.king-addons-pros-cons__tooltip--top {
+    bottom: calc(100% + var(--kng-pros-cons-tooltip-offset));
+    left: 0;
+}
+
+.king-addons-pros-cons__tooltip--right {
+    left: calc(100% + var(--kng-pros-cons-tooltip-offset));
+    top: 0;
+}
+
+.king-addons-pros-cons__tooltip--bottom {
+    top: calc(100% + var(--kng-pros-cons-tooltip-offset));
+    left: 0;
+}
+
+.king-addons-pros-cons__tooltip--left {
+    right: calc(100% + var(--kng-pros-cons-tooltip-offset));
+    top: 0;
+}
+
+.king-addons-pros-cons__diff {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+    width: fit-content;
+}
+
+.king-addons-pros-cons__rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.king-addons-pros-cons__rating-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.king-addons-pros-cons__rating-stars {
+    display: inline-flex;
+    gap: 4px;
+    color: #f59e0b;
+    font-size: 14px;
+}
+
+.king-addons-pros-cons__rating-meta {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.king-addons-pros-cons--preset-clean .king-addons-pros-cons__section {
+    background: #ffffff;
+    box-shadow: none;
+}
+
+.king-addons-pros-cons--preset-card .king-addons-pros-cons__section--pros {
+    background: #f0fdf4;
+    border-color: rgba(34, 197, 94, 0.2);
+}
+
+.king-addons-pros-cons--preset-card .king-addons-pros-cons__section--cons {
+    background: #fef2f2;
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.king-addons-pros-cons--preset-modern-glass .king-addons-pros-cons__section {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+}
+
+.king-addons-pros-cons--preset-bold-split .king-addons-pros-cons__section {
+    border-width: 2px;
+}
+
+.king-addons-pros-cons--preset-bold-split .king-addons-pros-cons__section--pros {
+    border-color: var(--kng-pros-accent);
+}
+
+.king-addons-pros-cons--preset-bold-split .king-addons-pros-cons__section--cons {
+    border-color: var(--kng-cons-accent);
+}
+
+.king-addons-pros-cons--preset-minimal-border .king-addons-pros-cons__section {
+    background: transparent;
+    border-color: rgba(15, 23, 42, 0.15);
+    box-shadow: none;
+}
+
+.king-addons-pros-cons--preset-review-style .king-addons-pros-cons__section {
+    border-radius: 16px;
+    border-color: rgba(15, 23, 42, 0.1);
+}
+
+@media (max-width: 767px) {
+    .king-addons-pros-cons--stacked-mobile .king-addons-pros-cons__columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 768px) {
+    .king-addons-pros-cons[data-collapse-mode="mobile"] .king-addons-pros-cons__toggle {
+        display: none;
+    }
+}

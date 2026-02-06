@@ -1,0 +1,33 @@
+.woocommerce-MyAccount-navigation {
+    width: 100%;
+}
+
+.woocommerce-MyAccount-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.woocommerce-MyAccount-navigation li {
+    margin-bottom: 8px;
+}
+
+.woocommerce-MyAccount-navigation .ka-myaccount-nav__icon {
+    margin-right: 6px;
+    color: #6b7280;
+}
+
+.woocommerce-MyAccount-navigation .ka-myaccount-nav__count {
+    margin-left: 6px;
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+
+
+
+
+

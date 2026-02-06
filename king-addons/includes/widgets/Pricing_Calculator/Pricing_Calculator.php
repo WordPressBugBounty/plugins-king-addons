@@ -14,8 +14,6 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-
-
 class Pricing_Calculator extends Widget_Base
 {
     
@@ -42,7 +40,10 @@ class Pricing_Calculator extends Widget_Base
 
     public function get_script_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-pricing-calculator-script'];
+        return [
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-dompurify-purify.min',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-pricing-calculator-script'
+        ];
     }
 
     public function get_categories(): array
@@ -70,6 +71,57 @@ class Pricing_Calculator extends Widget_Base
     public function get_custom_help_url()
     {
         return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
+    }
+
+    /**
+     * Register Pro-only controls (placeholder).
+     *
+     * Pro overrides this method to add premium controls without using parent::register_controls().
+     *
+     * @return void
+     */
+    public function register_pro_controls(): void
+    {
+        // Intentionally empty in Free.
+    }
+
+    /**
+     * Filter wrapper classes (placeholder).
+     *
+     * Pro overrides this method to add additional wrapper classes.
+     *
+     * @param array<int, string> $classes Base wrapper classes.
+     * @param array<string, mixed> $settings Widget settings.
+     * @return array<int, string> Filtered wrapper classes.
+     */
+    public function filter_calculator_classes(array $classes, array $settings): array
+    {
+        return $classes;
+    }
+
+    /**
+     * Filter wrapper attributes (placeholder).
+     *
+     * Pro overrides this method to add additional data attributes.
+     *
+     * @param array<string, mixed> $attributes Base wrapper attributes.
+     * @param array<string, mixed> $settings Widget settings.
+     * @return array<string, mixed> Filtered wrapper attributes.
+     */
+    public function filter_calculator_attributes(array $attributes, array $settings): array
+    {
+        return $attributes;
+    }
+
+    /**
+     * Render Pro-only output after the base widget markup (placeholder).
+     *
+     * @param array<string, mixed> $settings Widget settings.
+     * @return void
+     */
+    public function render_pro_after(array $settings): void
+    {
+        // Intentionally empty in Free.
     }
 
     protected function register_controls()
@@ -976,6 +1028,198 @@ $this->end_controls_section();
                 'separator' => 'before',
             ]
         );
+
+        $this->add_control(
+            'select_heading',
+            [
+                'label' => esc_html__('Select', 'king-addons'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'select_arrow_color',
+            [
+                'label' => esc_html__('Arrow Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__select-wrapper' => '--select-arrow-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'select_arrow_size',
+            [
+                'label' => esc_html__('Arrow Size', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 6,
+                        'max' => 30,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__select-wrapper' => '--select-arrow-size: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'select_arrow_right_offset',
+            [
+                'label' => esc_html__('Arrow Right Offset', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 40,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__select-wrapper' => '--select-arrow-right: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'radio_heading',
+            [
+                'label' => esc_html__('Radio', 'king-addons'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'radio_accent_color',
+            [
+                'label' => esc_html__('Accent Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-group' => '--radio-accent-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'radio_size',
+            [
+                'label' => esc_html__('Radio Size', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 10,
+                        'max' => 40,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-group' => '--radio-size: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'radio_gap',
+            [
+                'label' => esc_html__('Options Spacing', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 40,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-group' => '--radio-gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'radio_label_spacing',
+            [
+                'label' => esc_html__('Label Spacing', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 40,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-group' => '--radio-label-spacing: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'radio_label_color',
+            [
+                'label' => esc_html__('Label Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-option label' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'radio_label_typography',
+                'selector' => '{{WRAPPER}} .king-pricing-calculator__radio-option label',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Background::get_type(),
+            [
+                'name' => 'radio_group_background',
+                'label' => esc_html__('Background', 'king-addons'),
+                'types' => ['classic', 'gradient'],
+                'selector' => '{{WRAPPER}} .king-pricing-calculator__radio-group',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Border::get_type(),
+            [
+                'name' => 'radio_group_border',
+                'label' => esc_html__('Border', 'king-addons'),
+                'selector' => '{{WRAPPER}} .king-pricing-calculator__radio-group',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'radio_group_border_radius',
+            [
+                'label' => esc_html__('Border Radius', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-group' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'radio_group_padding',
+            [
+                'label' => esc_html__('Padding', 'king-addons'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em', 'rem'],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__radio-group' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
         
         $this->add_control(
             'range_slider_heading',
@@ -1018,6 +1262,57 @@ $this->end_controls_section();
                 ],
             ]
         );
+
+        $this->add_control(
+            'range_slider_thumb_hover_color',
+            [
+                'label' => esc_html__('Thumb Hover Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__field input[type="range"]' => '--thumb-color-hover: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_thumb_border_color',
+            [
+                'label' => esc_html__('Thumb Border Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__field input[type="range"]' => '--thumb-border-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_thumb_border_hover_color',
+            [
+                'label' => esc_html__('Thumb Border Hover Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__field input[type="range"]' => '--thumb-border-hover-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'range_slider_thumb_border_width',
+            [
+                'label' => esc_html__('Thumb Border Width', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 10,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__field input[type="range"]' => '--thumb-border-width: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
         
         $this->add_responsive_control(
             'range_slider_track_height',
@@ -1051,6 +1346,123 @@ $this->end_controls_section();
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .king-pricing-calculator__field input[type="range"]' => '--thumb-size: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_thumb_transition_duration',
+            [
+                'label' => esc_html__('Thumb Animation Duration', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['s', 'ms'],
+                'default' => [
+                    'unit' => 's',
+                    'size' => 0.15,
+                ],
+                'range' => [
+                    's' => [
+                        'min' => 0,
+                        'max' => 2,
+                        'step' => 0.05,
+                    ],
+                    'ms' => [
+                        'min' => 0,
+                        'max' => 2000,
+                        'step' => 10,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__field input[type="range"]' => '--thumb-transition-duration: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_value_heading',
+            [
+                'label' => esc_html__('Range Value', 'king-addons'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_value_number_heading',
+            [
+                'label' => esc_html__('Number', 'king-addons'),
+                'type' => Controls_Manager::HEADING,
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_value_number_color',
+            [
+                'label' => esc_html__('Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__range-value-display .king-pricing-calculator__range-value' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'range_slider_value_number_typography',
+                'selector' => '{{WRAPPER}} .king-pricing-calculator__range-value-display .king-pricing-calculator__range-value',
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_value_unit_heading',
+            [
+                'label' => esc_html__('Unit', 'king-addons'),
+                'type' => Controls_Manager::HEADING,
+            ]
+        );
+
+        $this->add_control(
+            'range_slider_value_unit_color',
+            [
+                'label' => esc_html__('Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__range-value-display .king-pricing-calculator__field-unit' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'range_slider_value_unit_typography',
+                'selector' => '{{WRAPPER}} .king-pricing-calculator__range-value-display .king-pricing-calculator__field-unit',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'range_slider_value_unit_spacing',
+            [
+                'label' => esc_html__('Spacing', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 50,
+                    ],
+                    'em' => [
+                        'min' => 0,
+                        'max' => 5,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-pricing-calculator__range-value-display' => '--range-unit-spacing: {{SIZE}}{{UNIT}};',
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 10,
                 ],
             ]
         );
@@ -1593,6 +2005,9 @@ $this->end_controls_section();
         );
         
         $this->end_controls_section();
+
+        // Allow Pro to add additional controls without using parent::register_controls().
+        $this->register_pro_controls();
     }
     
     /**
@@ -1731,7 +2146,7 @@ $this->end_controls_section();
         $html .= '<span class="king-pricing-calculator__range-value" id="' . esc_attr($value_id) . '">' . esc_html($field['field_default']) . '</span>';
         
         if (!empty($field['field_unit'])) {
-            $html .= ' <span class="king-pricing-calculator__field-unit">' . esc_html($field['field_unit']) . '</span>';
+            $html .= '<span class="king-pricing-calculator__field-unit">' . esc_html($field['field_unit']) . '</span>';
         }
         
         $html .= '</div>';
@@ -1753,13 +2168,15 @@ $this->end_controls_section();
         $desc_id = !empty($field['field_description']) ? $field_id . '-desc' : '';
         $aria_desc = !empty($desc_id) ? ' aria-describedby="' . esc_attr($desc_id) . '"' : '';
         
-        $html = '<select id="' . esc_attr($field_id) . '" name="' . esc_attr($field_id) . '" class="king-pricing-calculator__select"' . $aria_desc . '>';
+        $html = '<div class="king-pricing-calculator__select-wrapper">';
+        $html .= '<select id="' . esc_attr($field_id) . '" name="' . esc_attr($field_id) . '" class="king-pricing-calculator__select"' . $aria_desc . '>';
         
         foreach ($options as $option) {
             $html .= '<option value="' . esc_attr($option['value']) . '" data-price="' . esc_attr($option['price']) . '">' . esc_html($option['label']) . '</option>';
         }
         
         $html .= '</select>';
+        $html .= '</div>';
         
         return $html;
     }
@@ -1884,9 +2301,10 @@ $this->end_controls_section();
         if ($settings['live_calculation'] === 'yes') {
             $calculator_classes[] = 'king-pricing-calculator--live';
         }
-        
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-        $this->add_render_attribute('calculator', [
+
+        $calculator_classes = $this->filter_calculator_classes($calculator_classes, $settings);
+
+        $attributes = [
             'id' => $calculator_id,
             'class' => $calculator_classes,
             'data-base-price' => floatval($settings['base_price']),
@@ -1895,7 +2313,11 @@ $this->end_controls_section();
             'data-decimal-separator' => esc_attr($settings['decimal_separator']),
             'data-price-prefix' => esc_attr($settings['price_prefix']),
             'data-price-suffix' => esc_attr($settings['price_suffix']),
-        ]);}
+        ];
+
+        $attributes = $this->filter_calculator_attributes($attributes, $settings);
+
+        $this->add_render_attribute('calculator', $attributes);
 
         ?>
         <div <?php $this->print_render_attribute_string('calculator'); ?>>
@@ -1958,6 +2380,7 @@ $this->end_controls_section();
                 </div>
             <?php endif; ?>
         </div>
+        <?php $this->render_pro_after($settings); ?>
         <?php
     }
 } 

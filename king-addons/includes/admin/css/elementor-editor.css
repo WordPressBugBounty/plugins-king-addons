@@ -3,6 +3,9 @@
     width: 32px;
     height: 32px;
     background-size: 32px;
+    background-image: url(../img/default-widget.svg);
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #elementor-panel-elements .king-addons-icon {
@@ -156,6 +159,10 @@
 
 .elementor-control[class*="pro_notice"] {
     padding: 5px 0 15px 0 !important;
+}
+
+.elementor-repeater-row-controls .elementor-control[class*="pro_notice"] {
+    padding: 5px 10px 15px 10px !important
 }
 
 .king-addons-pro-notice {
@@ -522,6 +529,10 @@
     background-image: url(../img/testimonial.svg);
 }
 
+.king-addons-icon.king-addons-testimonials-wall {
+    background-image: url(../img/testimonial.svg);
+}
+
 .king-addons-icon.king-addons-testimonial-carousel {
     background-image: url(../img/testimonial-carousel.svg);
 }
@@ -668,6 +679,82 @@
 
 .king-addons-icon.king-addons-dynamic-posts-grid {
     background-image: url(../img/dynamic-posts-grid.svg);
+}
+
+.king-addons-icon.king-addons-advanced-callout-box {
+    background-image: url(../img/advanced-callout-box.svg);
+}
+
+.king-addons-icon.king-addons-magnetic-buttons {
+    background-image: url(../img/magnetic-buttons.svg);
+}
+
+.king-addons-icon.king-addons-parallax-depth-cards {
+    background-image: url(../img/parallax-background.svg);
+}
+
+.king-addons-icon.king-addons-pull-quotes-callouts-builder {
+    background-image: url(../img/pull-quotes-callouts-builder.svg);
+}
+
+.king-addons-icon.king-addons-scrollytelling-slides {
+    background-image: url(../img/scrollytelling-slides.svg);
+}
+
+.king-addons-icon.king-addons-spotlight-reveal {
+    background-image: url(../img/spotlight-reveal.svg);
+}
+
+.king-addons-icon.king-addons-holographic-card {
+    background-image: url(../img/holographic-card.svg);
+}
+
+.king-addons-icon.king-addons-card-slider {
+    background-image: url(../img/card-slider.svg);
+}
+
+.king-addons-icon.king-addons-simple-card-grid {
+    background-image: url(../img/simple-card-grid.svg);
+}
+
+.king-addons-icon.king-addons-simple-post-grid {
+    background-image: url(../img/simple-post-grid.svg);
+}
+
+.king-addons-icon.king-addons-simple-post-slider {
+    background-image: url(../img/simple-post-slider.svg);
+}
+
+.king-addons-icon.king-addons-quick-product-slider {
+    background-image: url(../img/quick-product-slider.svg);
+}
+
+.king-addons-icon.king-addons-quick-product-grid {
+    background-image: url(../img/quick-product-grid.svg);
+}
+
+.king-addons-icon.king-addons-kpi-tiles-microcharts {
+    background-image: url(../img/kpi-tiles-microcharts.svg);
+}
+
+.king-addons-icon.king-addons-interactive-gradient-mesh {
+    background-image: url(../img/interactive-gradient-mesh.svg);
+}
+
+.king-addons-icon.king-addons-breadcrumbs {
+    background-image: url(../img/breadcrumbs.svg);
+}
+
+.king-addons-icon.king-addons-ajax-add-to-cart {
+    background-image: url(../img/ajax-add-to-cart.svg);
+}
+
+.king-addons-icon.king-addons-compare-table {
+    background-image: url(../img/compare-table.svg);
+}
+
+.king-addons-icon.king-addons-icon-steps-process-timeline {
+    background-image: url(../img/timeline.svg);
 }
 
 /* for elementor icons */

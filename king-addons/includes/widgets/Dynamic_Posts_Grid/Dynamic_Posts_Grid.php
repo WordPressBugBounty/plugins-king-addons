@@ -23,6 +23,19 @@ if (!defined('ABSPATH')) {
  */
 class Dynamic_Posts_Grid extends Widget_Base
 {
+    /**
+     * Allow Pro to fully override widget output without using parent::render().
+     *
+     * Pro can return true to indicate it rendered the widget output completely.
+     *
+     * @param array<string, mixed> $settings Widget settings for display.
+     * @return bool Whether Pro rendered output.
+     */
+    public function maybe_render_pro(array $settings): bool
+    {
+        return false;
+    }
+
 
     /**
      * Get widget name.
@@ -71,7 +84,10 @@ class Dynamic_Posts_Grid extends Widget_Base
      */
     public function get_script_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-dynamic-posts-grid-script'];
+        return [
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-dompurify-purify.min',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-dynamic-posts-grid-script'
+        ];
     }
 
     /**
@@ -3865,18 +3881,6 @@ class Dynamic_Posts_Grid extends Widget_Base
             ]
         );
 
-        $this->add_control(
-            'kng_dynamic_posts_default_button_border_color',
-            [
-                'label' => esc_html__('Default Button Border Color', 'king-addons'),
-                'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(0, 0, 0, 0.1)',
-                'selectors' => [
-                    '{{WRAPPER}} .king-addons-dpg-button' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
         // Category-specific colors
         $default_colors = [
             ['color' => '#FFFFFF', 'bg' => '#EF4444', 'hover_color' => '#FFFFFF', 'hover_bg' => '#DC2626', 'border' => '#EF4444'], // Red
@@ -4155,6 +4159,10 @@ class Dynamic_Posts_Grid extends Widget_Base
     {
         $settings = $this->get_settings_for_display();
         $widget_id = $this->get_id();
+
+        if ($this->maybe_render_pro($settings)) {
+            return;
+        }
 
         // Query posts
         $query_args = [

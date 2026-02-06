@@ -1,0 +1,65 @@
+.ka-woo-checkout-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    display: grid;
+    gap: 10px;
+}
+
+.ka-woo-checkout-step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ka-woo-checkout-step.is-active {
+    border-color: #2563eb;
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
+}
+
+.ka-woo-checkout-step.is-complete .ka-woo-checkout-step__number {
+    background: #16a34a;
+}
+
+.ka-woo-checkout-step__number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #111827;
+}
+
+.ka-woo-checkout-step__label {
+    font-weight: 600;
+    color: #111827;
+}
+
+.ka-woo-checkout-steps__nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.ka-woo-checkout-step-hidden {
+    display: none !important;
+}
+
+.ka-woo-checkout-step-error {
+    border-color: #ef4444 !important;
+}
+
+
+
+
+

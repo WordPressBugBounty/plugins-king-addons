@@ -84,6 +84,13 @@
                 return;
             }
 
+            // Do not show this block inside King Addons Woo Builder templates.
+            // We rely on both PHP-provided flag and runtime detection because meta may not
+            // be saved yet when the editor first loads.
+            if (this.isWooBuilderTemplate()) {
+                return;
+            }
+
             // Check if button is enabled (premium setting)
             if (window.kingAddonsTemplateCatalog.buttonEnabled === false) {
                 return;
@@ -107,6 +114,35 @@
             if (buttonAdded) {
                 this.buttonCreated = true;
             }
+        }
+
+        /**
+         * Detect if current Elementor document is a Woo Builder template.
+         */
+        isWooBuilderTemplate() {
+            try {
+                if (window.kingAddonsTemplateCatalog && window.kingAddonsTemplateCatalog.isWooBuilderTemplate) {
+                    return true;
+                }
+
+                // Elementor runtime config (best-effort, varies across versions)
+                const cfg = (typeof elementor !== 'undefined' && elementor.config) ? elementor.config : null;
+                const doc = cfg && (cfg.document || cfg.initial_document) ? (cfg.document || cfg.initial_document) : null;
+
+                const docType = doc && doc.type ? doc.type : null;
+                if (docType === 'king-addons-woo-builder') {
+                    return true;
+                }
+
+                const settings = doc && doc.settings ? doc.settings : null;
+                if (settings && settings.ka_woo_template_type) {
+                    return true;
+                }
+            } catch (e) {
+                // ignore
+            }
+
+            return false;
         }
 
         /**
@@ -1182,6 +1218,7 @@
 
             const formData = new URLSearchParams();
             formData.append('action', 'import_elementor_page_with_images');
+            formData.append('nonce', window.kingAddonsTemplateCatalog.nonce);
             formData.append('data', JSON.stringify(modifiedData));
 
             fetch(window.kingAddonsTemplateCatalog.ajaxUrl, {
@@ -1223,6 +1260,7 @@
         processOriginalStyleImages() {
             const formData = new URLSearchParams();
             formData.append('action', 'process_import_images');
+            formData.append('nonce', window.kingAddonsTemplateCatalog.nonce);
 
             fetch(window.kingAddonsTemplateCatalog.ajaxUrl, {
                 method: 'POST', 
@@ -1447,6 +1485,7 @@
             // Use the existing template import system (like the original catalog)
             const formData = new FormData();
             formData.append('action', 'import_elementor_page_with_images');
+            formData.append('nonce', window.kingAddonsTemplateCatalog.nonce);
             formData.append('data', JSON.stringify(templateData));
 
             fetch(window.kingAddonsTemplateCatalog.ajaxUrl, {
@@ -1474,6 +1513,7 @@
         processImageImport() {
             const formData = new FormData();
             formData.append('action', 'process_import_images');
+            formData.append('nonce', window.kingAddonsTemplateCatalog.nonce);
 
             fetch(window.kingAddonsTemplateCatalog.ajaxUrl, {
                 method: 'POST',
@@ -2081,6 +2121,7 @@
             // Call Templates import system
             const importFormData = new FormData();
             importFormData.append('action', 'import_elementor_page_with_images');
+            importFormData.append('nonce', window.kingAddonsTemplateCatalog.nonce);
             importFormData.append('data', JSON.stringify(importData));
 
             this.updateImportProgress(55, 'Initializing section import with Templates system...');
@@ -2182,6 +2223,7 @@
             const processNextImage = () => {
                 const formData = new FormData();
                 formData.append('action', 'process_import_images');
+                formData.append('nonce', window.kingAddonsTemplateCatalog.nonce);
 
                 fetch(window.kingAddonsTemplateCatalog.ajaxUrl, {
                     method: 'POST',

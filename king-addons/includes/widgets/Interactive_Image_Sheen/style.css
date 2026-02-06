@@ -1,0 +1,539 @@
+/**
+ * Interactive Image Sheen Widget Styles.
+ *
+ * Premium sheen effect overlay with presets and animations.
+ *
+ * @package King_Addons
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+
+.kng-iis {
+    --kng-iis-angle: 25deg;
+    --kng-iis-intensity: 60;
+    --kng-iis-duration: 600ms;
+    --kng-iis-sheen-color: #ffffff;
+    --kng-iis-sheen-opacity: 0.6;
+    --kng-iis-softness: 30%;
+    --kng-iis-sheen-width: 50%;
+    --kng-iis-layer2-width: 80%;
+    --kng-iis-layer3-width: 120%;
+    --kng-iis-static-pos: 30%;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Media Container
+   ========================================================================== */
+
+.kng-iis__media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.kng-iis__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.kng-iis__link {
+    display: block;
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   Sheen Overlay
+   ========================================================================== */
+
+.kng-iis__sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-150%);
+    transition: opacity 0.2s ease;
+    will-change: transform, opacity;
+}
+
+/* Calculate opacity based on intensity */
+.kng-iis__sheen {
+    --computed-opacity: calc(var(--kng-iis-sheen-opacity) * var(--kng-iis-intensity) / 100);
+}
+
+/* ==========================================================================
+   Preset: Silk Soft (Wide & Subtle)
+   ========================================================================== */
+
+.kng-iis--preset-silk-soft .kng-iis__sheen {
+    background: linear-gradient(
+        calc(90deg + var(--kng-iis-angle)),
+        transparent 0%,
+        transparent calc(50% - var(--kng-iis-sheen-width) / 2 - var(--kng-iis-softness)),
+        rgba(var(--kng-iis-sheen-color-rgb, 255, 255, 255), calc(var(--computed-opacity) * 0.3)) calc(50% - var(--kng-iis-sheen-width) / 2),
+        rgba(var(--kng-iis-sheen-color-rgb, 255, 255, 255), var(--computed-opacity)) 50%,
+        rgba(var(--kng-iis-sheen-color-rgb, 255, 255, 255), calc(var(--computed-opacity) * 0.3)) calc(50% + var(--kng-iis-sheen-width) / 2),
+        transparent calc(50% + var(--kng-iis-sheen-width) / 2 + var(--kng-iis-softness)),
+        transparent 100%
+    );
+}
+
+/* Fallback using simple linear gradient */
+.kng-iis--preset-silk-soft .kng-iis__sheen {
+    background: linear-gradient(
+        calc(90deg + var(--kng-iis-angle)),
+        transparent 0%,
+        transparent 20%,
+        var(--kng-iis-sheen-color) 50%,
+        transparent 80%,
+        transparent 100%
+    );
+    opacity: 0;
+}
+
+/* ==========================================================================
+   Preset: Gloss Sharp (Narrow & Bright)
+   ========================================================================== */
+
+.kng-iis--preset-gloss-sharp .kng-iis__sheen {
+    background: linear-gradient(
+        calc(90deg + var(--kng-iis-angle)),
+        transparent 0%,
+        transparent 40%,
+        var(--kng-iis-sheen-color) 48%,
+        var(--kng-iis-sheen-color) 52%,
+        transparent 60%,
+        transparent 100%
+    );
+}
+
+/* ==========================================================================
+   Preset: Dual Streak (Two Lines)
+   ========================================================================== */
+
+.kng-iis--preset-dual-streak .kng-iis__sheen {
+    background: linear-gradient(
+        calc(90deg + var(--kng-iis-angle)),
+        transparent 0%,
+        transparent 25%,
+        var(--kng-iis-sheen-color) 30%,
+        transparent 35%,
+        transparent 65%,
+        var(--kng-iis-sheen-color) 70%,
+        transparent 75%,
+        transparent 100%
+    );
+}
+
+/* ==========================================================================
+   Animation Keyframes
+   ========================================================================== */
+
+/* Left to Right (default) */
+@keyframes kng-iis-sheen-pass {
+    0% {
+        transform: translateX(-150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+    100% {
+        transform: translateX(150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+}
+
+/* Right to Left */
+@keyframes kng-iis-sheen-pass-rtl {
+    0% {
+        transform: translateX(150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+    100% {
+        transform: translateX(-150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+}
+
+/* Top to Bottom */
+@keyframes kng-iis-sheen-pass-ttb {
+    0% {
+        transform: translateY(-150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+    100% {
+        transform: translateY(150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+}
+
+/* Bottom to Top */
+@keyframes kng-iis-sheen-pass-btt {
+    0% {
+        transform: translateY(150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+    100% {
+        transform: translateY(-150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+}
+
+@keyframes kng-iis-sheen-pass-loop {
+    0% {
+        transform: translateX(-150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+    50% {
+        transform: translateX(150%);
+        opacity: var(--computed-opacity, 0.5);
+    }
+    50.01% {
+        transform: translateX(-150%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(-150%);
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   Animation Directions
+   ========================================================================== */
+
+/* Default: Left to Right */
+.kng-iis--direction-left-right .kng-iis__sheen {
+    transform: translateX(-150%);
+}
+
+/* Right to Left */
+.kng-iis--direction-right-left .kng-iis__sheen {
+    transform: translateX(150%);
+}
+
+/* Top to Bottom */
+.kng-iis--direction-top-bottom .kng-iis__sheen {
+    transform: translateY(-150%);
+}
+
+/* Bottom to Top */
+.kng-iis--direction-bottom-top .kng-iis__sheen {
+    transform: translateY(150%);
+}
+
+/* ==========================================================================
+   Hover Trigger
+   ========================================================================== */
+
+/* Play once on hover - Left to Right (default) */
+.kng-iis--trigger-hover.kng-iis--repeat-once:hover .kng-iis__sheen,
+.kng-iis--direction-left-right.kng-iis--trigger-hover.kng-iis--repeat-once:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass var(--kng-iis-duration) forwards;
+}
+
+/* Play once on hover - Right to Left */
+.kng-iis--direction-right-left.kng-iis--trigger-hover.kng-iis--repeat-once:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-rtl var(--kng-iis-duration) forwards;
+}
+
+/* Play once on hover - Top to Bottom */
+.kng-iis--direction-top-bottom.kng-iis--trigger-hover.kng-iis--repeat-once:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-ttb var(--kng-iis-duration) forwards;
+}
+
+/* Play once on hover - Bottom to Top */
+.kng-iis--direction-bottom-top.kng-iis--trigger-hover.kng-iis--repeat-once:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-btt var(--kng-iis-duration) forwards;
+}
+
+/* Loop while hovering */
+.kng-iis--trigger-hover.kng-iis--repeat-loop:hover .kng-iis__sheen,
+.kng-iis--direction-left-right.kng-iis--trigger-hover.kng-iis--repeat-loop:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass var(--kng-iis-duration) infinite;
+}
+
+.kng-iis--direction-right-left.kng-iis--trigger-hover.kng-iis--repeat-loop:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-rtl var(--kng-iis-duration) infinite;
+}
+
+.kng-iis--direction-top-bottom.kng-iis--trigger-hover.kng-iis--repeat-loop:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-ttb var(--kng-iis-duration) infinite;
+}
+
+.kng-iis--direction-bottom-top.kng-iis--trigger-hover.kng-iis--repeat-loop:hover .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-btt var(--kng-iis-duration) infinite;
+}
+
+/* Always playing */
+.kng-iis--trigger-always .kng-iis__sheen,
+.kng-iis--direction-left-right.kng-iis--trigger-always .kng-iis__sheen {
+    animation: kng-iis-sheen-pass calc(var(--kng-iis-duration) * 3) infinite;
+}
+
+.kng-iis--direction-right-left.kng-iis--trigger-always .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-rtl calc(var(--kng-iis-duration) * 3) infinite;
+}
+
+.kng-iis--direction-top-bottom.kng-iis--trigger-always .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-ttb calc(var(--kng-iis-duration) * 3) infinite;
+}
+
+.kng-iis--direction-bottom-top.kng-iis--trigger-always .kng-iis__sheen {
+    animation: kng-iis-sheen-pass-btt calc(var(--kng-iis-duration) * 3) infinite;
+}
+
+/* ==========================================================================
+   Layered Sheen (Pro)
+   ========================================================================== */
+
+.kng-iis__sheen--layer2 {
+    z-index: 3;
+}
+
+.kng-iis__sheen--layer3 {
+    z-index: 4;
+}
+
+/* Layer styles */
+.kng-iis__sheen--soft {
+    background: linear-gradient(
+        calc(90deg + var(--kng-iis-angle)),
+        transparent 0%,
+        transparent 20%,
+        var(--kng-iis-sheen-color) 50%,
+        transparent 80%,
+        transparent 100%
+    );
+}
+
+.kng-iis__sheen--sharp {
+    background: linear-gradient(
+        calc(90deg + var(--kng-iis-angle)),
+        transparent 0%,
+        transparent 45%,
+        var(--kng-iis-sheen-color) 50%,
+        transparent 55%,
+        transparent 100%
+    );
+}
+
+/* Layer widths via CSS variables */
+.kng-iis--layers-2 .kng-iis__sheen--layer2,
+.kng-iis--layers-3 .kng-iis__sheen--layer2 {
+    width: var(--kng-iis-layer2-width);
+    left: calc((100% - var(--kng-iis-layer2-width)) / 2);
+}
+
+.kng-iis--layers-3 .kng-iis__sheen--layer3 {
+    width: var(--kng-iis-layer3-width);
+    left: calc((100% - var(--kng-iis-layer3-width)) / 2);
+}
+
+/* ==========================================================================
+   Follow Cursor Mode (Pro)
+   ========================================================================== */
+
+.kng-iis--follow .kng-iis__sheen {
+    animation: none;
+    transform: translateX(-50%) translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.1s ease-out;
+}
+
+.kng-iis--follow:hover .kng-iis__sheen,
+.kng-iis--follow.kng-iis--following .kng-iis__sheen {
+    opacity: var(--computed-opacity, 0.5);
+}
+
+/* Radial gradient for follow mode */
+.kng-iis--follow .kng-iis__sheen {
+    background: radial-gradient(
+        ellipse 30% 100% at center,
+        var(--kng-iis-sheen-color) 0%,
+        transparent 100%
+    );
+}
+
+/* ==========================================================================
+   Mask Shapes (Pro)
+   ========================================================================== */
+
+.kng-iis--mask-circle {
+    border-radius: 50%;
+}
+
+.kng-iis--mask-circle .kng-iis__media {
+    border-radius: 50%;
+}
+
+/* Rounded handled via selectors in PHP */
+
+/* ==========================================================================
+   Mobile Fallback (Pro)
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Disable sheen */
+    .kng-iis--mobile-disable .kng-iis__sheen {
+        display: none;
+    }
+
+    /* Static highlight */
+    .kng-iis--mobile-static .kng-iis__sheen {
+        animation: none;
+        transform: translateX(calc(var(--kng-iis-static-pos) - 50%));
+        opacity: 0.2;
+    }
+
+    /* Reveal on scroll - handled by JS with IntersectionObserver */
+    .kng-iis--mobile-reveal .kng-iis__sheen {
+        animation: none;
+        transform: translateX(-150%);
+        opacity: 0;
+    }
+
+    .kng-iis--mobile-reveal.kng-iis--in-view .kng-iis__sheen {
+        animation: kng-iis-sheen-pass var(--kng-iis-duration) ease-out forwards;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .kng-iis--reduced-disable .kng-iis__sheen {
+        animation: none;
+        display: none;
+    }
+
+    .kng-iis--reduced-static .kng-iis__sheen {
+        animation: none;
+        transform: translateX(0);
+        opacity: 0.15;
+    }
+}
+
+/* ==========================================================================
+   Focus Trigger (Pro)
+   ========================================================================== */
+
+.kng-iis:focus-within .kng-iis__sheen {
+    animation: kng-iis-sheen-pass var(--kng-iis-duration) ease-out forwards;
+}
+
+/* ==========================================================================
+   Card Mode
+   ========================================================================== */
+
+.kng-iis--mode-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.kng-iis__content {
+    padding: 16px;
+}
+
+.kng-iis__content--overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    padding: 24px 16px 16px;
+    color: #ffffff;
+}
+
+.kng-iis__content--top {
+    top: 0;
+    bottom: auto;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+    padding: 16px 16px 24px;
+}
+
+.kng-iis__content--center {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.kng-iis__content--bottom {
+    bottom: 0;
+    top: auto;
+}
+
+.kng-iis__title {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.kng-iis__description {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.kng-iis__button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.kng-iis__button:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.kng-iis__button:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Editor Styles
+   ========================================================================== */
+
+body.elementor-editor-active .kng-iis__sheen {
+    /* Show subtle preview in editor */
+    opacity: 0.1;
+    transform: translateX(0);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    .kng-iis__title {
+        font-size: 1.1rem;
+    }
+
+    .kng-iis__description {
+        font-size: 0.85rem;
+    }
+
+    .kng-iis__button {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}

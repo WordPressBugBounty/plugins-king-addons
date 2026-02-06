@@ -49,6 +49,16 @@ class Ajax_Select2_API
             'numberposts' => 10
         ];
 
+        // Load specific templates by IDs (for pre-populating selected values)
+        if (isset($request['ids']) && !empty($request['ids'])) {
+            $ids = array_filter(array_map('intval', explode(',', $request['ids'])));
+            if (!empty($ids)) {
+                $args['post__in'] = $ids;
+                $args['numberposts'] = -1;
+                unset($args['meta_key'], $args['meta_value']); // Allow any template type when loading by ID
+            }
+        }
+
         if (isset($request['s'])) {
             $args['s'] = $request['s'];
         }

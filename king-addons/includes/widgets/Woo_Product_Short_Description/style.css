@@ -1,0 +1,35 @@
+.ka-woo-product-short-description {
+    line-height: 1.6;
+    position: relative;
+}
+
+.ka-woo-product-short-description__readmore {
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ka-woo-product-short-description--clamp .ka-woo-product-short-description__content.is-trimmed {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: var(--ka-short-desc-lines, 3);
+}
+
+.ka-woo-product-short-description__toggle {
+    display: inline-flex;
+    margin-top: 8px;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+
+
+
+

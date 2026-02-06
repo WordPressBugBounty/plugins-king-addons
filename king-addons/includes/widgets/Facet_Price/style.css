@@ -1,0 +1,68 @@
+.king-addons-facet--price .king-addons-facet__row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.king-addons-facet--price .king-addons-facet__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.king-addons-facet__buckets {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.king-addons-facet__bucket {
+  margin: 0;
+}
+
+.king-addons-facet__bucket-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.king-addons-facet__bucket-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.king-addons-facet__bucket-btn.is-active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.king-addons-facet__bucket-btn.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.king-addons-facet__bucket-label {
+  font-weight: 600;
+}
+
+.king-addons-facet__bucket-count {
+  font-size: 12px;
+  color: #475569;
+}
+
+
+
+
+
+

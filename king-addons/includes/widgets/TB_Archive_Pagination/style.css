@@ -1,0 +1,3 @@
+.king-addons-tb-archive-pagination{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start;}
+.king-addons-tb-archive-pagination a,.king-addons-tb-archive-pagination span{padding:6px 10px;border:1px solid #e5e7eb;text-decoration:none;}
+.king-addons-tb-archive-pagination .current{font-weight:600;}

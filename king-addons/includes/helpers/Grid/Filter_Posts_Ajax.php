@@ -36,6 +36,11 @@ class Filter_Posts_Ajax
      */
     public function get_max_num_pages($settings)
     {
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'king_addons_grid_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
+        }
+
         $query = new \WP_Query($this->get_main_query_args());
         $max_num_pages = (int)ceil($query->max_num_pages);
         $adjustedTotal = max(0, $query->found_posts - $query->query_vars['offset']);
@@ -1101,6 +1106,11 @@ HTML;
      */
     public function king_addons_filter_grid_posts()
     {
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'king_addons_grid_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
+        }
+
         $settings = $_POST['grid_settings'];
         $posts = new \WP_Query($this->get_main_query_args());
 

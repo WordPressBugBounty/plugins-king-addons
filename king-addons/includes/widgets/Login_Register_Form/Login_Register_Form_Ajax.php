@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 
 // Include Security Manager
 require_once KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Security_Manager.php';
+require_once KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Widget_Settings_Resolver.php';
 
 /**
  * AJAX handlers for Login Register Form widget
@@ -58,12 +59,23 @@ class Login_Register_Form_Ajax
             wp_send_json_error(['message' => esc_html__('Please fill in all required fields.', 'king-addons')]);
         }
 
-        // Validate reCAPTCHA if present
-        if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
-            $recaptcha_response = sanitize_text_field($_POST['g-recaptcha-response']);
-            $widget_id = isset($_POST['widget_id']) ? sanitize_text_field($_POST['widget_id']) : '';
-            
-            if (!self::verify_recaptcha($recaptcha_response, $widget_id)) {
+        $widget_id = isset($_POST['widget_id']) ? sanitize_text_field($_POST['widget_id']) : '';
+        $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+        $widget_settings = Widget_Settings_Resolver::resolve($post_id, $widget_id);
+
+        // Validate reCAPTCHA if enabled on widget (server-side settings only)
+        $recaptcha_enabled = !empty($widget_settings['enable_recaptcha']) && $widget_settings['enable_recaptcha'] === 'yes';
+        $recaptcha_secret = isset($widget_settings['recaptcha_secret_key']) ? sanitize_text_field($widget_settings['recaptcha_secret_key']) : '';
+        $recaptcha_threshold = 0.5;
+        if (isset($widget_settings['recaptcha_score_threshold']['size'])) {
+            $recaptcha_threshold = floatval($widget_settings['recaptcha_score_threshold']['size']);
+        } elseif (isset($widget_settings['recaptcha_score_threshold'])) {
+            $recaptcha_threshold = floatval($widget_settings['recaptcha_score_threshold']);
+        }
+
+        if ($recaptcha_enabled && !empty($recaptcha_secret)) {
+            $recaptcha_response = sanitize_text_field($_POST['g-recaptcha-response'] ?? '');
+            if (empty($recaptcha_response) || !self::verify_recaptcha($recaptcha_response, $recaptcha_secret, $recaptcha_threshold)) {
                 wp_send_json_error(['message' => esc_html__('reCAPTCHA verification failed. Please try again.', 'king-addons')]);
             }
         }
@@ -305,12 +317,23 @@ class Login_Register_Form_Ajax
             wp_send_json_error(['message' => esc_html__('Registration failed. Please try again later.', 'king-addons')]);
         }
 
-        // Validate reCAPTCHA if present
-        if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
-            $recaptcha_response = sanitize_text_field($_POST['g-recaptcha-response']);
-            $widget_id = isset($_POST['widget_id']) ? sanitize_text_field($_POST['widget_id']) : '';
-            
-            if (!self::verify_recaptcha($recaptcha_response, $widget_id)) {
+        $widget_id = isset($_POST['widget_id']) ? sanitize_text_field($_POST['widget_id']) : '';
+        $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+        $widget_settings = Widget_Settings_Resolver::resolve($post_id, $widget_id);
+
+        // Validate reCAPTCHA if enabled on widget (server-side settings only)
+        $recaptcha_enabled = !empty($widget_settings['enable_recaptcha']) && $widget_settings['enable_recaptcha'] === 'yes';
+        $recaptcha_secret = isset($widget_settings['recaptcha_secret_key']) ? sanitize_text_field($widget_settings['recaptcha_secret_key']) : '';
+        $recaptcha_threshold = 0.5;
+        if (isset($widget_settings['recaptcha_score_threshold']['size'])) {
+            $recaptcha_threshold = floatval($widget_settings['recaptcha_score_threshold']['size']);
+        } elseif (isset($widget_settings['recaptcha_score_threshold'])) {
+            $recaptcha_threshold = floatval($widget_settings['recaptcha_score_threshold']);
+        }
+
+        if ($recaptcha_enabled && !empty($recaptcha_secret)) {
+            $recaptcha_response = sanitize_text_field($_POST['g-recaptcha-response'] ?? '');
+            if (empty($recaptcha_response) || !self::verify_recaptcha($recaptcha_response, $recaptcha_secret, $recaptcha_threshold)) {
                 wp_send_json_error(['message' => esc_html__('reCAPTCHA verification failed. Please try again.', 'king-addons')]);
             }
         }
@@ -384,9 +407,9 @@ class Login_Register_Form_Ajax
             self::try_send_registration_emails($user_id, $widget_id);
         }
 
-        // Try Mailchimp integration if enabled
-        if (isset($_POST['widget_id'])) {
-            self::try_mailchimp_integration($user_id, $email, $first_name, $last_name);
+        // Try Mailchimp integration if enabled (server-side widget settings only)
+        if (!empty($widget_id) && !empty($post_id)) {
+            self::try_mailchimp_integration($user_id, $email, $first_name, $last_name, $post_id, $widget_id);
         }
 
         // Check if we should auto-login after registration
@@ -528,20 +551,22 @@ class Login_Register_Form_Ajax
     /**
      * Try Mailchimp integration if enabled
      */
-    private static function try_mailchimp_integration($user_id, $email, $first_name, $last_name)
+    private static function try_mailchimp_integration($user_id, $email, $first_name, $last_name, $post_id, $widget_id)
     {
         // Only allow Mailchimp integration for Pro users
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
             return false;
         }
         
+        $widget_settings = Widget_Settings_Resolver::resolve($post_id, $widget_id);
+
         // Check if Mailchimp integration is enabled
-        if (empty($_POST['enable_mailchimp_integration']) || $_POST['enable_mailchimp_integration'] !== 'yes') {
+        if (empty($widget_settings['enable_mailchimp_integration']) || $widget_settings['enable_mailchimp_integration'] !== 'yes') {
             return false;
         }
 
-        $api_key = sanitize_text_field($_POST['mailchimp_api_key'] ?? '');
-        $list_id = sanitize_text_field($_POST['mailchimp_list_id'] ?? '');
+        $api_key = isset($widget_settings['mailchimp_api_key']) ? sanitize_text_field($widget_settings['mailchimp_api_key']) : '';
+        $list_id = isset($widget_settings['mailchimp_list_id']) ? sanitize_text_field($widget_settings['mailchimp_list_id']) : '';
 
         if (empty($api_key) || empty($list_id)) {
             error_log('King Addons Mailchimp: API Key or List ID not configured');
@@ -553,7 +578,7 @@ class Login_Register_Form_Ajax
         $url = "https://{$datacenter}.api.mailchimp.com/3.0/lists/{$list_id}/members";
 
         // Check if double opt-in is enabled
-        $double_optin = isset($_POST['mailchimp_double_optin']) && $_POST['mailchimp_double_optin'] === 'yes';
+        $double_optin = !empty($widget_settings['mailchimp_double_optin']) && $widget_settings['mailchimp_double_optin'] === 'yes';
         $status = $double_optin ? 'pending' : 'subscribed';
 
         $member_data = [
@@ -598,18 +623,20 @@ class Login_Register_Form_Ajax
      */
     private static function get_redirect_url($form_type)
     {
+        $fallback = home_url('/');
+
         // Check for custom redirect in POST data
         if ($form_type === 'login' && !empty($_POST['redirect_after_login'])) {
-            return esc_url_raw($_POST['redirect_after_login']);
+            return wp_validate_redirect(esc_url_raw($_POST['redirect_after_login']), $fallback);
         }
         
         if ($form_type === 'register' && !empty($_POST['redirect_after_register'])) {
-            return esc_url_raw($_POST['redirect_after_register']);
+            return wp_validate_redirect(esc_url_raw($_POST['redirect_after_register']), $fallback);
         }
         
         // Check for previous page redirect
         if (!empty($_POST['redirect_to'])) {
-            return esc_url_raw($_POST['redirect_to']);
+            return wp_validate_redirect(esc_url_raw($_POST['redirect_to']), $fallback);
         }
         
         // Default redirects based on form type
@@ -627,23 +654,22 @@ class Login_Register_Form_Ajax
         }
         
         // Fallback to current page or home
-        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : home_url();
+        $referer = isset($_SERVER['HTTP_REFERER']) ? esc_url_raw($_SERVER['HTTP_REFERER']) : '';
+        return wp_validate_redirect($referer, $fallback);
     }
 
     /**
      * Verify reCAPTCHA response
      */
-    private static function verify_recaptcha($recaptcha_response, $widget_id = '')
+    private static function verify_recaptcha($recaptcha_response, $secret_key, $threshold = 0.5)
     {
         if (empty($recaptcha_response)) {
             return false;
         }
-        
-        // Get secret key from POST data
-        $secret_key = sanitize_text_field($_POST['recaptcha_secret_key'] ?? '');
+
+        $secret_key = sanitize_text_field($secret_key);
         if (empty($secret_key)) {
-            // If no secret key configured, skip validation
-            return true;
+            return false;
         }
         $verify_url = 'https://www.google.com/recaptcha/api/siteverify';
         
@@ -669,8 +695,8 @@ class Login_Register_Form_Ajax
         }
         
         // For reCAPTCHA v3, also check score threshold
-        if (isset($result['score']) && isset($_POST['recaptcha_score_threshold'])) {
-            $threshold = floatval($_POST['recaptcha_score_threshold'] ?? 0.5);
+        if (isset($result['score'])) {
+            $threshold = floatval($threshold);
             return $result['success'] && ($result['score'] >= $threshold);
         }
         

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <text x="16" y="46" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="500" fill="#f97316">
+    <tspan opacity="0.4">L</tspan>
+    <tspan opacity="0.6">o</tspan>
+    <tspan opacity="0.8">a</tspan>
+    <tspan opacity="1">d</tspan>
+    <tspan opacity="0.8">i</tspan>
+    <tspan opacity="0.6">n</tspan>
+    <tspan opacity="0.4">g</tspan>
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.4s" repeatCount="indefinite"/>
+  </text>
+</svg>

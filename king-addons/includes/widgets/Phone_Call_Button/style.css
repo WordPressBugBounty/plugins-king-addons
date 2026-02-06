@@ -1,0 +1,186 @@
+.king-addons-phone-call {
+    width: 100%;
+    display: flex;
+}
+
+.king-addons-phone-call.align-left {
+    justify-content: flex-start;
+}
+
+.king-addons-phone-call.align-center {
+    justify-content: center;
+}
+
+.king-addons-phone-call.align-right {
+    justify-content: flex-end;
+}
+
+.king-addons-phone-call__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #111827;
+    color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #111827;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    position: relative;
+    --kng-phone-effect-color: currentColor;
+    --kng-phone-effect-color-hover: var(--kng-phone-effect-color, currentColor);
+    --kng-phone-effect-thickness: 2px;
+    --kng-phone-effect-inset: -10px;
+    --kng-phone-effect-duration: 1.6s;
+    --kng-phone-effect-opacity: 0.35;
+    --kng-phone-effect-scale-start: 0.9;
+    --kng-phone-effect-scale-end: 1.35;
+    --kng-phone-hover-scale: 1;
+}
+
+.king-addons-phone-call__button.is-icon-right {
+    flex-direction: row-reverse;
+}
+
+.king-addons-phone-call__button:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+    transform: scale(var(--kng-phone-hover-scale, 1));
+}
+
+.king-addons-phone-call__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.king-addons-phone-call__icon i,
+.king-addons-phone-call__icon svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+.king-addons-phone-call__icon svg {
+    fill: currentColor;
+}
+
+.king-addons-phone-call__text {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Pro: floating + animations */
+.king-addons-phone-call__button.is-floating {
+    position: fixed;
+    inset: auto 16px 20px auto;
+    z-index: 9999;
+}
+
+.king-addons-phone-call__button.is-floating.is-left {
+    inset: auto auto 20px 16px;
+}
+
+.king-addons-phone-call__button.is-anim-pulse {
+    /* Pulse is implemented via ::before so it can use effect color. */
+}
+
+.king-addons-phone-call__button.is-anim-bounce {
+    animation: king-addons-phone-call-bounce 1.4s ease-in-out infinite;
+}
+
+.king-addons-phone-call__button.is-anim-pulse::before,
+.king-addons-phone-call__button.is-anim-waves::before,
+.king-addons-phone-call__button.is-anim-waves::after,
+.king-addons-phone-call__button.is-anim-ring::before {
+    content: '';
+    position: absolute;
+    inset: var(--kng-phone-effect-inset, -10px);
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.king-addons-phone-call__button.is-anim-pulse::before {
+    border: var(--kng-phone-effect-thickness, 2px) solid var(--kng-phone-effect-color, currentColor);
+    animation: king-addons-phone-call-pulse-outline var(--kng-phone-effect-duration, 1.6s) ease-out infinite;
+}
+
+.king-addons-phone-call__button:hover.is-anim-pulse::before {
+    border-color: var(--kng-phone-effect-color-hover, var(--kng-phone-effect-color, currentColor));
+}
+
+.king-addons-phone-call__button.is-anim-waves::before,
+.king-addons-phone-call__button.is-anim-waves::after {
+    border: var(--kng-phone-effect-thickness, 2px) solid var(--kng-phone-effect-color, currentColor);
+    animation: king-addons-phone-call-waves var(--kng-phone-effect-duration, 1.8s) ease-out infinite;
+}
+
+.king-addons-phone-call__button:hover.is-anim-waves::before,
+.king-addons-phone-call__button:hover.is-anim-waves::after {
+    border-color: var(--kng-phone-effect-color-hover, var(--kng-phone-effect-color, currentColor));
+}
+
+.king-addons-phone-call__button.is-anim-waves::after {
+    animation-delay: calc(var(--kng-phone-effect-duration, 1.8s) / 2);
+}
+
+.king-addons-phone-call__button.is-anim-ring::before {
+    border: var(--kng-phone-effect-thickness, 2px) solid var(--kng-phone-effect-color, currentColor);
+    animation: king-addons-phone-call-ring var(--kng-phone-effect-duration, 0.9s) ease-in-out infinite;
+    opacity: var(--kng-phone-effect-opacity, 0.35);
+}
+
+.king-addons-phone-call__button:hover.is-anim-ring::before {
+    border-color: var(--kng-phone-effect-color-hover, var(--kng-phone-effect-color, currentColor));
+}
+
+@keyframes king-addons-phone-call-pulse-outline {
+    0% {
+        transform: scale(var(--kng-phone-effect-scale-start, 0.9));
+        opacity: var(--kng-phone-effect-opacity, 0.35);
+    }
+    100% {
+        transform: scale(var(--kng-phone-effect-scale-end, 1.35));
+        opacity: 0;
+    }
+}
+
+@keyframes king-addons-phone-call-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes king-addons-phone-call-waves {
+    0% {
+        transform: scale(var(--kng-phone-effect-scale-start, 0.9));
+        opacity: var(--kng-phone-effect-opacity, 0.35);
+    }
+    100% {
+        transform: scale(var(--kng-phone-effect-scale-end, 1.35));
+        opacity: 0;
+    }
+}
+
+@keyframes king-addons-phone-call-ring {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-4deg); }
+    40% { transform: rotate(4deg); }
+    60% { transform: rotate(-4deg); }
+    80% { transform: rotate(4deg); }
+}
+
+@media (max-width: 768px) {
+    .king-addons-phone-call__button {
+        width: auto;
+    }
+}
+
+
+
+
+
+

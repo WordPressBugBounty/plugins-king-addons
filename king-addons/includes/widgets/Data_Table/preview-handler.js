@@ -1,36 +1,68 @@
 "use strict";
 (function ($) {
-    $(window).on('elementor:init', () => {
-        elementor.hooks.addAction('panel/open_editor/widget/king-addons-data-table', (panel, model, view) => {
-            elementor.channels.editor.on('king-addons-data-table-export', () => {
+    const FLAG = "kingAddonsDataTablePreviewBound";
+    let activeView = null;
 
-                // Retrieve all table rows
-                const rows = view.$el.find('.king-addons-data-table .king-addons-table-row');
-                const data = [];
+    /**
+     * Export currently active table as CSV.
+     *
+     * @returns {void}
+     */
+    const exportActiveTable = () => {
+        if (!activeView) {
+            return;
+        }
 
-                // Iterate over each row and collect text from relevant cells
-                rows.each((_, row) => {
-                    const cols = row.querySelectorAll('.king-addons-table-text');
-                    const rowData = Array.from(cols, col => col.innerText).join(',');
-                    data.push(rowData);
-                });
+        const rows = activeView.$el.find(".king-addons-data-table .king-addons-table-row");
+        const data = [];
 
-                // Construct CSV content from array of rows
-                const csvContent = data.join('\n');
-
-                // Create a Blob from CSV data and generate a download link
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const downloadLink = document.createElement('a');
-                downloadLink.download = 'placeholder.csv';
-                downloadLink.href = URL.createObjectURL(blob);
-                downloadLink.style.display = 'none';
-
-                // Append link to DOM, trigger download, and then remove the link
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-                URL.revokeObjectURL(downloadLink.href);
-            });
+        rows.each((_, row) => {
+            const cols = row.querySelectorAll(".king-addons-table-text");
+            const rowData = Array.from(cols, (col) => col.innerText).join(",");
+            data.push(rowData);
         });
-    });
+
+        const csvContent = data.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+        downloadLink.download = "placeholder.csv";
+        downloadLink.href = url;
+        downloadLink.style.display = "none";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+    };
+
+    /**
+     * Bind editor listeners once.
+     *
+     * @returns {void}
+     */
+    const bindOnce = () => {
+        if (window[FLAG]) {
+            return;
+        }
+        window[FLAG] = true;
+
+        $(window).on("elementor:init", () => {
+            elementor.channels.editor.off("king-addons-data-table-export.kingAddonsDataTable");
+            elementor.channels.editor.on(
+                "king-addons-data-table-export.kingAddonsDataTable",
+                exportActiveTable
+            );
+
+            elementor.hooks.addAction(
+                "panel/open_editor/widget/king-addons-data-table",
+                (panel, model, view) => {
+                    activeView = view;
+                }
+            );
+        });
+    };
+
+    bindOnce();
 })(jQuery);

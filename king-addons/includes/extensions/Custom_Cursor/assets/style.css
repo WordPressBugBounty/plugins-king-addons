@@ -1,0 +1,405 @@
+/**
+ * King Addons Custom Cursor Styles
+ * Provides styling for the custom cursor feature.
+ */
+
+/* Main cursor container */
+.ka-custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--ka-cursor-size, 14px);
+    height: var(--ka-cursor-size, 14px);
+    pointer-events: none;
+    z-index: 999999;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: translate3d(var(--ka-cursor-x, -9999px), var(--ka-cursor-y, -9999px), 0) scale(var(--ka-cursor-scale, 1));
+    opacity: var(--ka-cursor-opacity, 1);
+    mix-blend-mode: var(--ka-cursor-mix-blend, normal);
+    transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                opacity 0.2s ease;
+    will-change: transform;
+}
+
+.ka-custom-cursor,
+.ka-custom-cursor *,
+.ka-custom-cursor::before,
+.ka-custom-cursor::after {
+    outline: none !important;
+}
+
+/* Hidden state */
+.ka-custom-cursor--hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Inner and outer cursor elements */
+.ka-custom-cursor__inner,
+.ka-custom-cursor__outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Inner cursor (filled circle) */
+.ka-custom-cursor__inner {
+    background: var(--ka-cursor-fill, #111);
+    filter: blur(var(--ka-cursor-blur, 0px));
+    transition: background 0.15s ease, 
+                filter 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                border-radius 0.15s ease;
+}
+
+/* Outer cursor (ring) */
+.ka-custom-cursor__outer {
+    border: var(--ka-cursor-border-width, 2px) solid var(--ka-cursor-border-color, #111);
+    opacity: 0.9;
+    transition: border-color 0.15s ease, 
+                border-width 0.15s ease,
+                transform 0.15s ease,
+                opacity 0.15s ease;
+}
+
+/* ========== Basic Types ========== */
+
+/* Preset: Dot only (hide outer ring) */
+.ka-custom-cursor--type-dot .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Ring only (hide inner dot) */
+.ka-custom-cursor--type-ring .ka-custom-cursor__inner {
+    display: none;
+}
+
+/* Preset: Outline */
+.ka-custom-cursor--type-outline .ka-custom-cursor__inner {
+    background: transparent;
+    border: var(--ka-cursor-border-width, 2px) solid var(--ka-cursor-fill, #111);
+}
+.ka-custom-cursor--type-outline .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Crosshair */
+.ka-custom-cursor--type-crosshair .ka-custom-cursor__inner {
+    width: 4px !important;
+    height: 4px !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.ka-custom-cursor--type-crosshair .ka-custom-cursor__outer {
+    display: none;
+}
+.ka-custom-cursor--type-crosshair::before,
+.ka-custom-cursor--type-crosshair::after {
+    content: '';
+    position: absolute;
+    background: var(--ka-cursor-fill, #111);
+}
+.ka-custom-cursor--type-crosshair::before {
+    width: 100%;
+    height: 2px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+.ka-custom-cursor--type-crosshair::after {
+    width: 2px;
+    height: 100%;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+/* Preset: Arrow */
+.ka-custom-cursor--type-arrow .ka-custom-cursor__inner {
+    background: transparent;
+    width: 0 !important;
+    height: 0 !important;
+    border-style: solid;
+    border-width: calc(var(--ka-cursor-size, 14px) * 0.8) calc(var(--ka-cursor-size, 14px) * 0.5) 0 calc(var(--ka-cursor-size, 14px) * 0.5);
+    border-color: var(--ka-cursor-fill, #111) transparent transparent transparent;
+    border-radius: 0;
+    transform: rotate(-45deg);
+}
+.ka-custom-cursor--type-arrow .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* ========== Effect Types ========== */
+
+/* Preset: Glow effect */
+.ka-custom-cursor--type-glow .ka-custom-cursor__inner {
+    box-shadow: 0 0 calc(var(--ka-cursor-size, 14px) * 0.8) calc(var(--ka-cursor-size, 14px) * 0.3) var(--ka-cursor-fill, #111);
+}
+.ka-custom-cursor--type-glow .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Soft Glow */
+.ka-custom-cursor--type-soft-glow .ka-custom-cursor__inner {
+    filter: blur(calc(var(--ka-cursor-size, 14px) * 0.15));
+    box-shadow: 0 0 calc(var(--ka-cursor-size, 14px) * 1.2) calc(var(--ka-cursor-size, 14px) * 0.5) var(--ka-cursor-fill, #111);
+}
+.ka-custom-cursor--type-soft-glow .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Neon */
+.ka-custom-cursor--type-neon .ka-custom-cursor__inner {
+    background: #fff;
+    box-shadow: 
+        0 0 calc(var(--ka-cursor-size, 14px) * 0.3) var(--ka-cursor-fill, #111),
+        0 0 calc(var(--ka-cursor-size, 14px) * 0.6) var(--ka-cursor-fill, #111),
+        0 0 calc(var(--ka-cursor-size, 14px) * 1) var(--ka-cursor-fill, #111),
+        0 0 calc(var(--ka-cursor-size, 14px) * 1.5) var(--ka-cursor-fill, #111);
+}
+.ka-custom-cursor--type-neon .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Blend mode (difference) */
+.ka-custom-cursor--type-blend {
+    mix-blend-mode: difference;
+}
+.ka-custom-cursor--type-blend .ka-custom-cursor__inner {
+    background: #fff;
+    width: calc(var(--ka-cursor-size, 14px) * 1.5);
+    height: calc(var(--ka-cursor-size, 14px) * 1.5);
+}
+.ka-custom-cursor--type-blend .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Blob with smooth transitions */
+.ka-custom-cursor--type-blob .ka-custom-cursor__inner {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    width: calc(var(--ka-cursor-size, 14px) * 1.3);
+    height: calc(var(--ka-cursor-size, 14px) * 1.3);
+    animation: ka-cursor-blob-morph 4s ease-in-out infinite;
+}
+.ka-custom-cursor--type-blob .ka-custom-cursor__outer {
+    display: none;
+}
+
+@keyframes ka-cursor-blob-morph {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+    50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+    75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+}
+
+/* Preset: Dual cursor */
+.ka-custom-cursor--type-dual .ka-custom-cursor__outer {
+    transform: scale(1.3);
+    opacity: 0.55;
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.ka-custom-cursor--type-dual::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border: 1px solid var(--ka-cursor-border-color, #111);
+    border-radius: 50%;
+    opacity: 0.25;
+}
+
+/* Preset: Gradient */
+.ka-custom-cursor--type-gradient .ka-custom-cursor__inner {
+    background: linear-gradient(135deg, var(--ka-cursor-fill, #111) 0%, var(--ka-cursor-border-color, #333) 100%);
+    width: calc(var(--ka-cursor-size, 14px) * 1.2);
+    height: calc(var(--ka-cursor-size, 14px) * 1.2);
+}
+.ka-custom-cursor--type-gradient .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Image cursor */
+.ka-custom-cursor--type-image .ka-custom-cursor__inner {
+    background: var(--ka-cursor-image, none) no-repeat center center;
+    background-size: contain;
+    border-radius: 0;
+}
+.ka-custom-cursor--type-image .ka-custom-cursor__outer {
+    display: none;
+}
+
+/* Preset: Magnetic cursor */
+.ka-custom-cursor--type-magnetic .ka-custom-cursor__outer {
+    transition: transform 0.25s ease;
+}
+
+/* Click ripple animation */
+.ka-custom-cursor--ripple .ka-custom-cursor__inner {
+    animation: ka-custom-cursor-ripple 0.35s ease-out;
+}
+
+@keyframes ka-custom-cursor-ripple {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(1.35);
+        opacity: 0.25;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* Click ripple (spread, not clipped by cursor) */
+.ka-custom-cursor__click-ripple {
+    position: fixed;
+    z-index: 999998;
+    width: 60px;
+    height: 60px;
+    border-radius: 999px;
+    left: 0;
+    top: 0;
+    transform: scale(0);
+    background: var(--ka-cursor-fill, #111);
+    opacity: 0.4;
+    pointer-events: none;
+    animation: ka-custom-cursor-click-ripple 0.6s ease-out forwards;
+    will-change: transform, opacity;
+    mix-blend-mode: var(--ka-cursor-mix-blend, normal);
+}
+
+@keyframes ka-custom-cursor-click-ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* Cursor label */
+.ka-custom-cursor__label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+}
+
+.ka-custom-cursor__label.is-visible {
+    opacity: 1;
+}
+
+/* Tail container */
+.ka-custom-cursor__tail {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999998;
+}
+
+/* Tail dots */
+.ka-custom-cursor__tail-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: -4px;
+    margin-left: -4px;
+    background: var(--ka-cursor-fill, #111);
+    transform: translate3d(-9999px, -9999px, 0);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    will-change: transform, opacity;
+}
+
+/* Hide default cursor when custom cursor is enabled and hide_original_cursor is true */
+body.ka-custom-cursor-enabled.ka-cursor-hide-original,
+body.ka-custom-cursor-enabled.ka-cursor-hide-original * {
+    cursor: none !important;
+}
+
+/* Restore default cursor for inputs and text areas when hiding original */
+body.ka-custom-cursor-enabled.ka-cursor-hide-original input,
+body.ka-custom-cursor-enabled.ka-cursor-hide-original textarea,
+body.ka-custom-cursor-enabled.ka-cursor-hide-original select,
+body.ka-custom-cursor-enabled.ka-cursor-hide-original [contenteditable="true"] {
+    cursor: text !important;
+}
+
+body.ka-custom-cursor-enabled.ka-cursor-hide-original input[type="submit"],
+body.ka-custom-cursor-enabled.ka-cursor-hide-original input[type="button"],
+body.ka-custom-cursor-enabled.ka-cursor-hide-original input[type="reset"],
+body.ka-custom-cursor-enabled.ka-cursor-hide-original button {
+    cursor: none !important;
+}
+
+/* When not hiding original cursor, custom cursor just follows alongside */
+body.ka-custom-cursor-enabled:not(.ka-cursor-hide-original) {
+    /* Keep default cursor visible, custom cursor follows it */
+}
+
+/* State-based cursor styling */
+.ka-custom-cursor[data-ka-state="hover"] .ka-custom-cursor__outer {
+    transform: scale(1.1);
+}
+
+.ka-custom-cursor[data-ka-state="drag"] .ka-custom-cursor__inner {
+    transform: scale(0.8);
+}
+
+.ka-custom-cursor[data-ka-state="zoom"] .ka-custom-cursor__inner::after {
+    content: '';
+    position: absolute;
+    inset: 25%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E") no-repeat center center;
+    background-size: contain;
+    opacity: 0.9;
+}
+
+/* Disable custom cursor on mobile/touch devices */
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+    body.ka-custom-cursor-enabled,
+    body.ka-custom-cursor-enabled * {
+        cursor: auto !important;
+    }
+    
+    .ka-custom-cursor {
+        display: none !important;
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .ka-custom-cursor,
+    .ka-custom-cursor__inner,
+    .ka-custom-cursor__outer,
+    .ka-custom-cursor__label,
+    .ka-custom-cursor__tail-dot {
+        transition: none !important;
+        animation: none !important;
+    }
+}

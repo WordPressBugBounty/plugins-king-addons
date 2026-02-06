@@ -1,0 +1,211 @@
+.king-addons-advanced-callout {
+    --ka-callout-bg: #f8fafc;
+    --ka-callout-border: #e2e8f0;
+    --ka-callout-text: #0f172a;
+    --ka-callout-content: #475569;
+    --ka-callout-icon: #64748b;
+    --ka-callout-accent-color: #94a3b8;
+    --ka-callout-accent-width: 4px;
+    --ka-callout-gap: 14px;
+    --ka-callout-icon-size: 20px;
+    --ka-callout-button-gap: 14px;
+    --ka-callout-button-bg: var(--ka-callout-accent-color);
+    --ka-callout-button-color: #ffffff;
+    --ka-callout-button-border: transparent;
+    --ka-callout-button-border-width: 1px;
+    --ka-callout-button-border-style: solid;
+    --ka-callout-button-bg-hover: var(--ka-callout-button-bg);
+    --ka-callout-button-color-hover: var(--ka-callout-button-color);
+    --ka-callout-button-border-hover: var(--ka-callout-button-border);
+    --ka-callout-button-hover-filter: brightness(0.95);
+    --ka-callout-align-items: flex-start;
+    position: relative;
+    display: block;
+    background-color: var(--ka-callout-bg);
+    color: var(--ka-callout-text);
+    border: 1px solid var(--ka-callout-border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.king-addons-advanced-callout::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--ka-callout-accent-width);
+    background-color: var(--ka-callout-accent-color);
+}
+
+.king-addons-advanced-callout[data-accent="no"]::before {
+    display: none;
+}
+
+.king-addons-advanced-callout__inner {
+    display: flex;
+    gap: var(--ka-callout-gap);
+    padding: 18px;
+    align-items: flex-start;
+}
+
+.king-addons-advanced-callout[data-icon-position="top"] .king-addons-advanced-callout__inner {
+    flex-direction: column;
+    align-items: var(--ka-callout-align-items);
+}
+
+.king-addons-advanced-callout[data-icon-position="none"] .king-addons-advanced-callout__inner {
+    gap: 0;
+}
+
+.king-addons-advanced-callout__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ka-callout-icon);
+    font-size: var(--ka-callout-icon-size);
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.king-addons-advanced-callout__icon i,
+.king-addons-advanced-callout__icon svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+.king-addons-advanced-callout__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.king-addons-advanced-callout__title {
+    margin: 0;
+    color: var(--ka-callout-text);
+    font-weight: 600;
+}
+
+.king-addons-advanced-callout__title + .king-addons-advanced-callout__content {
+    margin-top: 6px;
+}
+
+.king-addons-advanced-callout__content {
+    color: var(--ka-callout-content);
+}
+
+.king-addons-advanced-callout__content > *:first-child {
+    margin-top: 0;
+}
+
+.king-addons-advanced-callout__content > *:last-child {
+    margin-bottom: 0;
+}
+
+.king-addons-advanced-callout__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    margin-top: var(--ka-callout-button-gap);
+    background-color: var(--ka-callout-button-bg);
+    color: var(--ka-callout-button-color);
+    border-radius: 8px;
+    border-width: var(--ka-callout-button-border-width);
+    border-style: var(--ka-callout-button-border-style);
+    border-color: var(--ka-callout-button-border);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
+}
+
+.king-addons-advanced-callout__button:hover {
+    background-color: var(--ka-callout-button-bg-hover);
+    color: var(--ka-callout-button-color-hover);
+    border-color: var(--ka-callout-button-border-hover);
+    filter: var(--ka-callout-button-hover-filter);
+}
+
+.king-addons-advanced-callout[data-align="left"] {
+    --ka-callout-align-items: flex-start;
+}
+
+.king-addons-advanced-callout[data-align="center"] {
+    --ka-callout-align-items: center;
+}
+
+.king-addons-advanced-callout[data-align="right"] {
+    --ka-callout-align-items: flex-end;
+}
+
+.king-addons-advanced-callout[data-align="left"] .king-addons-advanced-callout__body {
+    text-align: left;
+}
+
+.king-addons-advanced-callout[data-align="center"] .king-addons-advanced-callout__body {
+    text-align: center;
+}
+
+.king-addons-advanced-callout[data-align="right"] .king-addons-advanced-callout__body {
+    text-align: right;
+}
+
+.king-addons-advanced-callout[data-type="note"] {
+    --ka-callout-bg: #f8fafc;
+    --ka-callout-border: #e2e8f0;
+    --ka-callout-text: #0f172a;
+    --ka-callout-content: #475569;
+    --ka-callout-icon: #64748b;
+    --ka-callout-accent-color: #94a3b8;
+}
+
+.king-addons-advanced-callout[data-type="tip"] {
+    --ka-callout-bg: #ecfdf3;
+    --ka-callout-border: #a7f3d0;
+    --ka-callout-text: #064e3b;
+    --ka-callout-content: #065f46;
+    --ka-callout-icon: #059669;
+    --ka-callout-accent-color: #10b981;
+}
+
+.king-addons-advanced-callout[data-type="warning"] {
+    --ka-callout-bg: #fff7ed;
+    --ka-callout-border: #fdba74;
+    --ka-callout-text: #7c2d12;
+    --ka-callout-content: #9a3412;
+    --ka-callout-icon: #ea580c;
+    --ka-callout-accent-color: #f97316;
+}
+
+.king-addons-advanced-callout[data-type="promo"] {
+    --ka-callout-bg: #eef2ff;
+    --ka-callout-border: #c7d2fe;
+    --ka-callout-text: #312e81;
+    --ka-callout-content: #4338ca;
+    --ka-callout-icon: #4f46e5;
+    --ka-callout-accent-color: #6366f1;
+}
+
+.king-addons-advanced-callout[data-type="info"] {
+    --ka-callout-bg: #eff6ff;
+    --ka-callout-border: #bfdbfe;
+    --ka-callout-text: #1e3a8a;
+    --ka-callout-content: #1d4ed8;
+    --ka-callout-icon: #2563eb;
+    --ka-callout-accent-color: #3b82f6;
+}
+
+.king-addons-advanced-callout[data-type="success"] {
+    --ka-callout-bg: #f0fdf4;
+    --ka-callout-border: #bbf7d0;
+    --ka-callout-text: #14532d;
+    --ka-callout-content: #15803d;
+    --ka-callout-icon: #16a34a;
+    --ka-callout-accent-color: #22c55e;
+}
+
+@media (max-width: 767px) {
+    .king-addons-advanced-callout__inner {
+        padding: 16px;
+    }
+}

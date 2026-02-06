@@ -60,7 +60,7 @@ class Security_Dashboard
     }
 
     /**
-     * Render the security dashboard
+     * Render the security dashboard - V3 Premium style inspired Design
      */
     public static function render_dashboard()
     {
@@ -68,405 +68,480 @@ class Security_Dashboard
         $stats = self::get_security_statistics();
         $blocked_ips = self::get_blocked_ips();
         $recent_attempts = self::get_recent_failed_attempts();
+
+        // Theme mode is per-user
+        $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
+        $allowed_theme_modes = ['dark', 'light', 'auto'];
+        if (!in_array($theme_mode, $allowed_theme_modes, true)) {
+            $theme_mode = 'dark';
+        }
         
+        // Enqueue shared V3 styles
+        wp_enqueue_style(
+            'king-addons-admin-v3',
+            KING_ADDONS_URL . 'includes/admin/layouts/shared/admin-v3-styles.css',
+            [],
+            KING_ADDONS_VERSION
+        );
         ?>
-        <div class="wrap">
-            <h1><?php echo esc_html__('King Addons - Login Security Dashboard', 'king-addons'); ?></h1>
-            
-            <!-- Widget Information -->
-            <div class="king-addons-widget-info">
-                <div class="widget-info-header">
-                    <h2><?php echo esc_html__('Login Register Form Widget Security', 'king-addons'); ?></h2>
-                    <p class="description">
-                        <?php echo esc_html__('This security dashboard monitors and protects the Login Register Form widget from various threats including brute-force attacks, spam registrations, malicious file uploads, and unauthorized access attempts.', 'king-addons'); ?>
-                    </p>
+        <script>
+        (function() {
+            document.body && document.body.classList.add('ka-admin-v3');
+            const mode = '<?php echo esc_js($theme_mode); ?>';
+            const mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+            const isDark = mode === 'auto' ? !!(mql && mql.matches) : mode === 'dark';
+            document.documentElement.classList.toggle('ka-v3-dark', isDark);
+            document.body && document.body.classList.toggle('ka-v3-dark', isDark);
+        })();
+        </script>
+
+        <style>
+        /* Security Dashboard V3 - Additional styles */
+        .ka-security-v3 .ka-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .ka-security-v3 .ka-feature-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-feature-card {
+            background: #1c1c1e;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        
+        .ka-security-v3 .ka-feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-feature-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .ka-security-v3 .ka-feature-card .dashicons {
+            font-size: 32px;
+            width: 32px;
+            height: 32px;
+            color: #ef4444;
+            margin-bottom: 12px;
+        }
+        
+        .ka-security-v3 .ka-feature-card h4 {
+            margin: 0 0 6px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-feature-card h4,
+        body.ka-v3-dark .ka-security-v3 .ka-stat-card h3 {
+            color: #f5f5f7;
+        }
+        
+        .ka-security-v3 .ka-feature-card p {
+            margin: 0;
+            font-size: 13px;
+            color: #86868b;
+        }
+        
+        /* Stats override for security color */
+        .ka-security-v3 .ka-stat-card .ka-stat-number {
+            color: #ef4444;
+        }
+        
+        /* Actions grid */
+        .ka-security-v3 .ka-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .ka-security-v3 .ka-action-card {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-action-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        
+        .ka-security-v3 .ka-action-card h4 {
+            margin: 0 0 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-action-card h4 {
+            color: #f5f5f7;
+        }
+        
+        .ka-security-v3 .ka-action-card p {
+            margin: 0 0 16px;
+            font-size: 13px;
+            color: #86868b;
+        }
+        
+        .ka-security-v3 .ka-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 980px;
+            font-size: 14px;
+            color: #1d1d1f;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-action-btn {
+            background: #2c2c2e;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f5f5f7;
+        }
+        
+        .ka-security-v3 .ka-action-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        body.ka-v3-dark .ka-security-v3 .ka-action-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .ka-security-v3 .ka-action-btn .dashicons {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Security specific input focus */
+        .ka-security-v3 input:focus {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        body.ka-v3-dark .ka-security-v3 input:focus {
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2) !important;
+        }
+        
+        /* Security toggle color */
+        .ka-security-v3 .ka-toggle input:checked + .ka-toggle-slider {
+            background: #ef4444 !important;
+        }
+        </style>
+
+        <div class="ka-admin-wrap ka-security-v3">
+            <!-- Header -->
+            <div class="ka-admin-header">
+                <div class="ka-admin-header-left">
+                    <div class="ka-admin-header-icon red">
+                        <span class="dashicons dashicons-shield"></span>
+                    </div>
+                    <div>
+                        <h1 class="ka-admin-title"><?php esc_html_e('Login Security', 'king-addons'); ?></h1>
+                        <p class="ka-admin-subtitle"><?php esc_html_e('Monitor and protect Login Register Form widgets', 'king-addons'); ?></p>
+                    </div>
                 </div>
-                
-                <div class="security-features-grid">
-                    <div class="security-feature">
-                        <span class="dashicons dashicons-shield-alt"></span>
-                        <h4><?php echo esc_html__('Rate Limiting', 'king-addons'); ?></h4>
-                        <p><?php echo esc_html__('Automatically blocks IPs after failed login attempts', 'king-addons'); ?></p>
-                    </div>
-                    
-                    <div class="security-feature">
-                        <span class="dashicons dashicons-upload"></span>
-                        <h4><?php echo esc_html__('File Upload Security', 'king-addons'); ?></h4>
-                        <p><?php echo esc_html__('Validates file types, sizes, and scans for malicious content', 'king-addons'); ?></p>
-                    </div>
-                    
-                    <div class="security-feature">
-                        <span class="dashicons dashicons-admin-users"></span>
-                        <h4><?php echo esc_html__('Anti-Enumeration', 'king-addons'); ?></h4>
-                        <p><?php echo esc_html__('Prevents user enumeration through unified error messages', 'king-addons'); ?></p>
-                    </div>
-                    
-                    <div class="security-feature">
-                        <span class="dashicons dashicons-share"></span>
-                        <h4><?php echo esc_html__('Social Login Protection', 'king-addons'); ?></h4>
-                        <p><?php echo esc_html__('Enhanced validation for Google and Facebook login data', 'king-addons'); ?></p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Security Overview -->
-            <div class="king-addons-security-overview">
-                <h2><?php echo esc_html__('Security Statistics', 'king-addons'); ?></h2>
-                <p class="description">
-                    <?php echo esc_html__('Real-time security metrics for the Login Register Form widget across your entire website.', 'king-addons'); ?>
-                </p>
-                <div class="king-addons-stats-grid">
-                    <div class="king-addons-stat-card">
-                        <h3><?php echo esc_html__('Failed Login Attempts (24h)', 'king-addons'); ?></h3>
-                        <div class="stat-number"><?php echo esc_html($stats['failed_logins_24h']); ?></div>
-                    </div>
-                    
-                    <div class="king-addons-stat-card">
-                        <h3><?php echo esc_html__('Blocked IPs', 'king-addons'); ?></h3>
-                        <div class="stat-number"><?php echo esc_html($stats['blocked_ips']); ?></div>
-                    </div>
-                    
-                    <div class="king-addons-stat-card">
-                        <h3><?php echo esc_html__('Suspicious Registrations', 'king-addons'); ?></h3>
-                        <div class="stat-number"><?php echo esc_html($stats['suspicious_registrations']); ?></div>
-                    </div>
-                    
-                    <div class="king-addons-stat-card">
-                        <h3><?php echo esc_html__('File Upload Blocks', 'king-addons'); ?></h3>
-                        <div class="stat-number"><?php echo esc_html($stats['file_upload_blocks']); ?></div>
+                <div class="ka-admin-header-actions">
+                    <div class="ka-v3-segmented" id="ka-v3-theme-segment" role="radiogroup" aria-label="<?php echo esc_attr(esc_html__('Theme', 'king-addons')); ?>" data-active="<?php echo esc_attr($theme_mode); ?>">
+                        <span class="ka-v3-segmented-indicator" aria-hidden="true"></span>
+                        <button type="button" class="ka-v3-segmented-btn" data-theme="light" aria-pressed="<?php echo $theme_mode === 'light' ? 'true' : 'false'; ?>">
+                            <span class="ka-v3-segmented-icon" aria-hidden="true">☀︎</span>
+                            <?php esc_html_e('Light', 'king-addons'); ?>
+                        </button>
+                        <button type="button" class="ka-v3-segmented-btn" data-theme="dark" aria-pressed="<?php echo $theme_mode === 'dark' ? 'true' : 'false'; ?>">
+                            <span class="ka-v3-segmented-icon" aria-hidden="true">☾</span>
+                            <?php esc_html_e('Dark', 'king-addons'); ?>
+                        </button>
+                        <button type="button" class="ka-v3-segmented-btn" data-theme="auto" aria-pressed="<?php echo $theme_mode === 'auto' ? 'true' : 'false'; ?>">
+                            <span class="ka-v3-segmented-icon" aria-hidden="true">◐</span>
+                            <?php esc_html_e('Auto', 'king-addons'); ?>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Currently Blocked IPs -->
+            <!-- Features -->
+            <div class="ka-features-grid">
+                <div class="ka-feature-card">
+                    <span class="dashicons dashicons-shield-alt"></span>
+                    <h4><?php esc_html_e('Rate Limiting', 'king-addons'); ?></h4>
+                    <p><?php esc_html_e('Auto-blocks IPs after failed attempts', 'king-addons'); ?></p>
+                </div>
+                <div class="ka-feature-card">
+                    <span class="dashicons dashicons-upload"></span>
+                    <h4><?php esc_html_e('File Security', 'king-addons'); ?></h4>
+                    <p><?php esc_html_e('Validates uploads & scans content', 'king-addons'); ?></p>
+                </div>
+                <div class="ka-feature-card">
+                    <span class="dashicons dashicons-admin-users"></span>
+                    <h4><?php esc_html_e('Anti-Enumeration', 'king-addons'); ?></h4>
+                    <p><?php esc_html_e('Unified error messages', 'king-addons'); ?></p>
+                </div>
+                <div class="ka-feature-card">
+                    <span class="dashicons dashicons-share"></span>
+                    <h4><?php esc_html_e('Social Login', 'king-addons'); ?></h4>
+                    <p><?php esc_html_e('Enhanced OAuth validation', 'king-addons'); ?></p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="ka-stats-grid">
+                <div class="ka-stat-card">
+                    <h3 class="ka-stat-title"><?php esc_html_e('Failed Logins (24h)', 'king-addons'); ?></h3>
+                    <div class="ka-stat-number"><?php echo esc_html($stats['failed_logins_24h']); ?></div>
+                </div>
+                <div class="ka-stat-card">
+                    <h3 class="ka-stat-title"><?php esc_html_e('Blocked IPs', 'king-addons'); ?></h3>
+                    <div class="ka-stat-number"><?php echo esc_html($stats['blocked_ips']); ?></div>
+                </div>
+                <div class="ka-stat-card">
+                    <h3 class="ka-stat-title"><?php esc_html_e('Suspicious Registrations', 'king-addons'); ?></h3>
+                    <div class="ka-stat-number"><?php echo esc_html($stats['suspicious_registrations']); ?></div>
+                </div>
+                <div class="ka-stat-card">
+                    <h3 class="ka-stat-title"><?php esc_html_e('Upload Blocks', 'king-addons'); ?></h3>
+                    <div class="ka-stat-number"><?php echo esc_html($stats['file_upload_blocks']); ?></div>
+                </div>
+            </div>
+
+            <!-- Blocked IPs -->
             <?php if (!empty($blocked_ips)): ?>
-            <div class="king-addons-blocked-ips">
-                <h2><?php echo esc_html__('Currently Blocked IPs', 'king-addons'); ?></h2>
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                        <tr>
-                            <th><?php echo esc_html__('IP Address', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('Attempts', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('Last Attempt', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('Expires', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('Actions', 'king-addons'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($blocked_ips as $ip_data): ?>
-                        <tr>
-                            <td><?php echo esc_html($ip_data['ip']); ?></td>
-                            <td><?php echo esc_html($ip_data['attempts']); ?></td>
-                            <td><?php echo esc_html(human_time_diff($ip_data['last_attempt'], time()) . ' ago'); ?></td>
-                            <td><?php echo esc_html(human_time_diff(time(), $ip_data['expires']) . ' remaining'); ?></td>
-                            <td>
-                                <button class="button unblock-ip" data-ip="<?php echo esc_attr($ip_data['ip']); ?>">
-                                    <?php echo esc_html__('Unblock', 'king-addons'); ?>
-                                </button>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php endif; ?>
-
-            <!-- Recent Failed Attempts -->
-            <?php if (!empty($recent_attempts)): ?>
-            <div class="king-addons-recent-attempts">
-                <h2><?php echo esc_html__('Recent Failed Attempts', 'king-addons'); ?></h2>
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                        <tr>
-                            <th><?php echo esc_html__('Time', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('IP Address', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('Type', 'king-addons'); ?></th>
-                            <th><?php echo esc_html__('Details', 'king-addons'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($recent_attempts as $attempt): ?>
-                        <tr>
-                            <td><?php echo esc_html(date('Y-m-d H:i:s', $attempt['time'])); ?></td>
-                            <td><?php echo esc_html($attempt['ip']); ?></td>
-                            <td><?php echo esc_html(ucfirst($attempt['type'])); ?></td>
-                            <td><?php echo esc_html($attempt['details']); ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php endif; ?>
-
-            <!-- Security Settings -->
-            <div class="king-addons-security-settings">
-                <h2><?php echo esc_html__('Security Settings for Login Register Form Widget', 'king-addons'); ?></h2>
-                <p class="description">
-                    <?php echo esc_html__('Configure security parameters that apply to all Login Register Form widgets on your website. These settings help protect against brute-force attacks, spam registrations, and other security threats.', 'king-addons'); ?>
-                </p>
-                <form method="post" action="options.php">
-                    <?php settings_fields('king_addons_security_settings'); ?>
-                    <table class="form-table">
-                        <tr>
-                            <th scope="row">
-                                <label for="king_addons_max_login_attempts">
-                                    <?php echo esc_html__('Max Login Attempts', 'king-addons'); ?>
-                                </label>
-                            </th>
-                            <td>
-                                <input type="number" id="king_addons_max_login_attempts" name="king_addons_max_login_attempts" 
-                                       value="<?php echo esc_attr(get_option('king_addons_max_login_attempts', 5)); ?>" min="1" max="20" />
-                                <p class="description">
-                                    <?php echo esc_html__('Number of failed login attempts before an IP address is temporarily blocked from accessing Login Register Form widgets. Recommended: 3-5 attempts.', 'king-addons'); ?>
-                                    <br><strong><?php echo esc_html__('Applies to:', 'king-addons'); ?></strong> <?php echo esc_html__('Login forms, Registration forms, Password reset forms', 'king-addons'); ?>
-                                </p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="king_addons_lockout_duration">
-                                    <?php echo esc_html__('Lockout Duration (minutes)', 'king-addons'); ?>
-                                </label>
-                            </th>
-                            <td>
-                                <input type="number" id="king_addons_lockout_duration" name="king_addons_lockout_duration" 
-                                       value="<?php echo esc_attr(get_option('king_addons_lockout_duration', 15)); ?>" min="1" max="1440" />
-                                <p class="description">
-                                    <?php echo esc_html__('Duration in minutes to block an IP address after exceeding failed attempts. During this time, the IP cannot access any Login Register Form widgets. Recommended: 15-30 minutes.', 'king-addons'); ?>
-                                    <br><strong><?php echo esc_html__('Security Impact:', 'king-addons'); ?></strong> <?php echo esc_html__('Prevents brute-force attacks and automated bot attempts', 'king-addons'); ?>
-                                </p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="king_addons_enable_security_logging">
-                                    <?php echo esc_html__('Enable Security Logging', 'king-addons'); ?>
-                                </label>
-                            </th>
-                            <td>
-                                <input type="checkbox" id="king_addons_enable_security_logging" name="king_addons_enable_security_logging" value="1" 
-                                       <?php checked(get_option('king_addons_enable_security_logging', 1)); ?> />
-                                <p class="description">
-                                    <?php echo esc_html__('Log all security events related to Login Register Form widgets including failed attempts, suspicious registrations, blocked file uploads, and social login activities. Logs help track and analyze security threats.', 'king-addons'); ?>
-                                    <br><strong><?php echo esc_html__('Recommended:', 'king-addons'); ?></strong> <?php echo esc_html__('Keep enabled for security monitoring and compliance', 'king-addons'); ?>
-                                </p>
-                            </td>
-                        </tr>
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-dismiss" style="color: #ef4444;"></span>
+                    <h2><?php esc_html_e('Blocked IPs', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body" style="padding:0">
+                    <table class="ka-table">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e('IP Address', 'king-addons'); ?></th>
+                                <th><?php esc_html_e('Attempts', 'king-addons'); ?></th>
+                                <th><?php esc_html_e('Last Attempt', 'king-addons'); ?></th>
+                                <th><?php esc_html_e('Expires', 'king-addons'); ?></th>
+                                <th><?php esc_html_e('Actions', 'king-addons'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($blocked_ips as $ip_data): ?>
+                            <tr>
+                                <td><?php echo esc_html($ip_data['ip']); ?></td>
+                                <td><?php echo esc_html($ip_data['attempts']); ?></td>
+                                <td><?php echo esc_html(human_time_diff($ip_data['last_attempt'], time()) . ' ago'); ?></td>
+                                <td><?php echo esc_html(human_time_diff(time(), $ip_data['expires']) . ' remaining'); ?></td>
+                                <td>
+                                    <button class="ka-action-btn unblock-ip" data-ip="<?php echo esc_attr($ip_data['ip']); ?>">
+                                        <?php esc_html_e('Unblock', 'king-addons'); ?>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
                     </table>
-                    <?php submit_button(); ?>
-                </form>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Settings -->
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-admin-settings" style="color: #ef4444;"></span>
+                    <h2><?php esc_html_e('Security Settings', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body">
+                    <form method="post" action="options.php">
+                        <?php settings_fields('king_addons_security_settings'); ?>
+                        <div class="ka-row">
+                            <div class="ka-row-label"><?php esc_html_e('Max Login Attempts', 'king-addons'); ?></div>
+                            <div class="ka-row-field">
+                                <input type="number" name="king_addons_max_login_attempts" 
+                                       value="<?php echo esc_attr(get_option('king_addons_max_login_attempts', 5)); ?>" min="1" max="20" />
+                                <p class="ka-row-desc"><?php esc_html_e('Failed attempts before IP is blocked. Recommended: 3-5', 'king-addons'); ?></p>
+                            </div>
+                        </div>
+                        <div class="ka-row">
+                            <div class="ka-row-label"><?php esc_html_e('Lockout Duration', 'king-addons'); ?></div>
+                            <div class="ka-row-field">
+                                <input type="number" name="king_addons_lockout_duration" 
+                                       value="<?php echo esc_attr(get_option('king_addons_lockout_duration', 15)); ?>" min="1" max="1440" />
+                                <span style="color:#86868b;margin-left:6px"><?php esc_html_e('minutes', 'king-addons'); ?></span>
+                                <p class="ka-row-desc"><?php esc_html_e('Duration to block an IP after exceeding attempts. Recommended: 15-30', 'king-addons'); ?></p>
+                            </div>
+                        </div>
+                        <div class="ka-row">
+                            <div class="ka-row-label"><?php esc_html_e('Security Logging', 'king-addons'); ?></div>
+                            <div class="ka-row-field">
+                                <label class="ka-toggle">
+                                    <input type="checkbox" name="king_addons_enable_security_logging" value="1" 
+                                           <?php checked(get_option('king_addons_enable_security_logging', 1)); ?> />
+                                    <span class="ka-toggle-slider"></span>
+                                    <span class="ka-toggle-label"><?php esc_html_e('Log security events', 'king-addons'); ?></span>
+                                </label>
+                                <p class="ka-row-desc"><?php esc_html_e('Record failed attempts, blocks, and suspicious activity', 'king-addons'); ?></p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.04);">
+                            <button type="submit" class="ka-btn ka-btn-primary"><?php esc_html_e('Save Settings', 'king-addons'); ?></button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- Actions -->
-            <div class="king-addons-security-actions">
-                <h2><?php echo esc_html__('Security Management Actions', 'king-addons'); ?></h2>
-                <p class="description">
-                    <?php echo esc_html__('Manage security data and generate reports for Login Register Form widget security events.', 'king-addons'); ?>
-                </p>
-                
-                <div class="security-actions-grid">
-                    <div class="action-card">
-                        <h4><?php echo esc_html__('Clear Security Logs', 'king-addons'); ?></h4>
-                        <p><?php echo esc_html__('Remove all stored security logs and reset blocked IP addresses. This action cannot be undone.', 'king-addons'); ?></p>
-                        <button class="button button-secondary" id="clear-security-logs">
-                            <span class="dashicons dashicons-trash"></span>
-                            <?php echo esc_html__('Clear All Logs', 'king-addons'); ?>
-                        </button>
-                    </div>
-                    
-                    <div class="action-card">
-                        <h4><?php echo esc_html__('Export Security Report', 'king-addons'); ?></h4>
-                        <p><?php echo esc_html__('Generate and download a comprehensive security report including all statistics and blocked IPs.', 'king-addons'); ?></p>
-                        <button class="button button-secondary" id="export-security-report">
-                            <span class="dashicons dashicons-download"></span>
-                            <?php echo esc_html__('Export Report', 'king-addons'); ?>
-                        </button>
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-admin-tools" style="color: #ef4444;"></span>
+                    <h2><?php esc_html_e('Management Actions', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body">
+                    <div class="ka-actions-grid">
+                        <div class="ka-action-card">
+                            <h4><?php esc_html_e('Clear Security Logs', 'king-addons'); ?></h4>
+                            <p><?php esc_html_e('Remove all logs and reset blocked IPs', 'king-addons'); ?></p>
+                            <button class="ka-action-btn" id="clear-security-logs">
+                                <span class="dashicons dashicons-trash"></span>
+                                <?php esc_html_e('Clear Logs', 'king-addons'); ?>
+                            </button>
+                        </div>
+                        <div class="ka-action-card">
+                            <h4><?php esc_html_e('Export Report', 'king-addons'); ?></h4>
+                            <p><?php esc_html_e('Download security report as JSON', 'king-addons'); ?></p>
+                            <button class="ka-action-btn" id="export-security-report">
+                                <span class="dashicons dashicons-download"></span>
+                                <?php esc_html_e('Export', 'king-addons'); ?>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <style>
-        /* Widget Info Section */
-        .king-addons-widget-info {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 8px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .widget-info-header h2 {
-            color: white;
-            margin: 0 0 10px 0;
-        }
-        .widget-info-header .description {
-            color: rgba(255,255,255,0.9);
-            font-size: 16px;
-            margin-bottom: 25px;
-        }
-        .security-features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .security-feature {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .security-feature .dashicons {
-            font-size: 32px;
-            width: 32px;
-            height: 32px;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-        .security-feature h4 {
-            color: white;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        .security-feature p {
-            color: rgba(255,255,255,0.8);
-            font-size: 14px;
-            margin: 0;
-        }
-
-        /* Stats Grid */
-        .king-addons-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        .king-addons-stat-card {
-            background: #fff;
-            border: 1px solid #ccd0d4;
-            border-radius: 8px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease;
-        }
-        .king-addons-stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .king-addons-stat-card h3 {
-            margin: 0 0 15px 0;
-            font-size: 14px;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            color: #2271b1;
-            line-height: 1;
-        }
-
-        /* Main Sections */
-        .king-addons-security-overview,
-        .king-addons-blocked-ips,
-        .king-addons-recent-attempts,
-        .king-addons-security-settings,
-        .king-addons-security-actions {
-            background: #fff;
-            border: 1px solid #ccd0d4;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 20px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        /* Security Actions */
-        .security-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .action-card {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-        .action-card h4 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-        .action-card p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        .action-card button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-height: 32px;
-        }
-        .action-card button .dashicons {
-            font-size: 16px;
-            width: 16px;
-            height: 16px;
-            line-height: 16px;
-            vertical-align: middle;
-        }
-
-        /* Form improvements */
-        .form-table th {
-            width: 250px;
-            padding: 20px 10px 20px 0;
-        }
-        .form-table td {
-            padding: 20px 10px;
-        }
-        .form-table input[type="number"] {
-            width: 100px;
-        }
-        .form-table .description {
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-        .form-table .description strong {
-            color: #2271b1;
-        }
-
-        /* Table improvements */
-        .wp-list-table th, .wp-list-table td {
-            padding: 12px;
-        }
-        .unblock-ip {
-            font-size: 12px;
-            padding: 4px 8px;
-        }
-
-        /* Loading animation */
-        @keyframes rotation {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(359deg);
-            }
-        }
-        </style>
-
         <script>
+        (function() {
+            const segment = document.getElementById('ka-v3-theme-segment');
+            if (!segment) {
+                return;
+            }
+
+            const ajaxUrl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
+            const nonce = '<?php echo esc_js(wp_create_nonce('king_addons_dashboard_ui')); ?>';
+            const buttons = segment.querySelectorAll('.ka-v3-segmented-btn');
+
+            const mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+            let mode = (segment.getAttribute('data-active') || 'dark').toString();
+            let mqlHandler = null;
+
+            function setPressedState(activeMode) {
+                segment.setAttribute('data-active', activeMode);
+                buttons.forEach((btn) => {
+                    const theme = btn.getAttribute('data-theme');
+                    btn.setAttribute('aria-pressed', theme === activeMode ? 'true' : 'false');
+                });
+            }
+
+            function saveUISetting(key, value) {
+                try {
+                    const body = new URLSearchParams();
+                    body.set('action', 'king_addons_save_dashboard_ui');
+                    body.set('nonce', nonce);
+                    body.set('key', key);
+                    body.set('value', value);
+
+                    fetch(ajaxUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                        body: body.toString(),
+                        credentials: 'same-origin'
+                    });
+                } catch (e) {}
+            }
+
+            function applyTheme(isDark) {
+                document.body.classList.toggle('ka-v3-dark', isDark);
+                document.documentElement.classList.toggle('ka-v3-dark', isDark);
+            }
+
+            function setThemeMode(nextMode, save) {
+                mode = nextMode;
+                setPressedState(nextMode);
+
+                if (mqlHandler && mql) {
+                    if (mql.removeEventListener) {
+                        mql.removeEventListener('change', mqlHandler);
+                    } else if (mql.removeListener) {
+                        mql.removeListener(mqlHandler);
+                    }
+                    mqlHandler = null;
+                }
+
+                if (nextMode === 'auto') {
+                    applyTheme(!!(mql && mql.matches));
+                    mqlHandler = (e) => {
+                        if (mode !== 'auto') {
+                            return;
+                        }
+                        applyTheme(!!e.matches);
+                    };
+                    if (mql) {
+                        if (mql.addEventListener) {
+                            mql.addEventListener('change', mqlHandler);
+                        } else if (mql.addListener) {
+                            mql.addListener(mqlHandler);
+                        }
+                    }
+                } else {
+                    applyTheme(nextMode === 'dark');
+                }
+
+                if (save) {
+                    saveUISetting('theme_mode', nextMode);
+                }
+            }
+
+            // Optional global for any legacy handlers
+            window.kaV3ToggleDark = function() {
+                const isDark = document.body.classList.contains('ka-v3-dark');
+                setThemeMode(isDark ? 'light' : 'dark', true);
+            };
+
+            segment.addEventListener('click', (e) => {
+                const btn = e.target && e.target.closest ? e.target.closest('.ka-v3-segmented-btn') : null;
+                if (!btn) {
+                    return;
+                }
+                e.preventDefault();
+                const theme = (btn.getAttribute('data-theme') || 'dark').toString();
+                setThemeMode(theme, true);
+            });
+
+            setThemeMode(mode, false);
+        })();
+        
         jQuery(document).ready(function($) {
             // Unblock IP functionality
             $('.unblock-ip').on('click', function() {
                 const ip = $(this).data('ip');
-                if (confirm('Are you sure you want to unblock this IP?')) {
+                if (confirm('<?php echo esc_js(__('Are you sure you want to unblock this IP?', 'king-addons')); ?>')) {
                     $.post(ajaxurl, {
                         action: 'king_addons_unblock_ip',
                         ip: ip,
@@ -475,7 +550,7 @@ class Security_Dashboard
                         if (response.success) {
                             location.reload();
                         } else {
-                            alert('Failed to unblock IP: ' + response.data.message);
+                            alert('<?php echo esc_js(__('Failed to unblock IP', 'king-addons')); ?>');
                         }
                     });
                 }
@@ -483,7 +558,7 @@ class Security_Dashboard
 
             // Clear security logs
             $('#clear-security-logs').on('click', function() {
-                if (confirm('Are you sure you want to clear all security logs?')) {
+                if (confirm('<?php echo esc_js(__('Are you sure you want to clear all security logs?', 'king-addons')); ?>')) {
                     $.post(ajaxurl, {
                         action: 'king_addons_clear_security_logs',
                         nonce: '<?php echo wp_create_nonce('king_addons_security_nonce'); ?>'
@@ -491,7 +566,7 @@ class Security_Dashboard
                         if (response.success) {
                             location.reload();
                         } else {
-                            alert('Failed to clear logs: ' + response.data.message);
+                            alert('<?php echo esc_js(__('Failed to clear logs', 'king-addons')); ?>');
                         }
                     });
                 }
@@ -501,32 +576,23 @@ class Security_Dashboard
             $('#export-security-report').on('click', function() {
                 const $button = $(this);
                 const originalText = $button.html();
-                
-                // Show loading state
-                $button.prop('disabled', true).html('<span class="dashicons dashicons-update-alt" style="animation: rotation 1s infinite linear;"></span> Generating...');
+                $button.prop('disabled', true).text('<?php echo esc_js(__('Exporting...', 'king-addons')); ?>');
                 
                 $.post(ajaxurl, {
                     action: 'king_addons_export_security_report',
                     nonce: '<?php echo wp_create_nonce('king_addons_security_nonce'); ?>'
                 }, function(response) {
                     if (response.success) {
-                        // Create download link and trigger download
                         const link = document.createElement('a');
                         link.href = response.data.download_url;
                         link.download = response.data.filename;
-                        link.style.display = 'none';
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        
-                        alert('Security report downloaded successfully!');
                     } else {
-                        alert('Failed to generate report: ' + response.data.message);
+                        alert('<?php echo esc_js(__('Failed to generate report', 'king-addons')); ?>');
                     }
-                }).fail(function() {
-                    alert('Network error occurred while generating report.');
                 }).always(function() {
-                    // Restore button state
                     $button.prop('disabled', false).html(originalText);
                 });
             });

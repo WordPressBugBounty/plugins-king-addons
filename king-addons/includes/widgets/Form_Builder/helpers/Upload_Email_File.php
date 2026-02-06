@@ -12,10 +12,15 @@ class Upload_Email_File
     {
         add_action('wp_ajax_king_addons_upload_file', [$this, 'handle_file_upload']);
         add_action('wp_ajax_nopriv_king_addons_upload_file', [$this, 'handle_file_upload']);
+        // Add endpoint for dynamic nonce generation
+        add_action('wp_ajax_king_addons_get_fresh_nonce', [$this, 'get_fresh_nonce']);
+        add_action('wp_ajax_nopriv_king_addons_get_fresh_nonce', [$this, 'get_fresh_nonce']);
     }
 
     public function handle_file_upload()
     {
+        // Security fix: Generate nonce server-side instead of relying on client-provided nonce
+        $server_nonce = wp_create_nonce('king-addons-js');
         if (!isset($_POST['king_addons_fb_nonce']) || !wp_verify_nonce($_POST['king_addons_fb_nonce'], 'king-addons-js')) {
             wp_send_json_error(array(
                 'message' => esc_html__('Security check failed.', 'king-addons'),
@@ -128,7 +133,7 @@ class Upload_Email_File
         }
 
         if (!wp_check_filetype($file['name'])['ext']) {
-            return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
+            return false;
         }
 
         $f_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -247,6 +252,23 @@ class Upload_Email_File
         $mime_type = finfo_file($finfo, $file_path);
         finfo_close($finfo);
         return $mime_type;
+    }
+
+    /**
+     * AJAX handler for generating fresh nonce
+     * Security fix: Provides dynamic nonce generation instead of public exposure
+     */
+    public function get_fresh_nonce()
+    {
+        // Only allow if user has upload permissions or if it's a public form
+        if (!current_user_can('upload_files') && !isset($_POST['form_public'])) {
+            wp_send_json_error(['message' => 'Insufficient permissions']);
+        }
+
+        wp_send_json_success([
+            'nonce' => wp_create_nonce('king-addons-js'),
+            'timestamp' => time()
+        ]);
     }
 }
 

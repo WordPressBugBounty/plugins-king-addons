@@ -1,0 +1,27 @@
+.ka-woo-checkout-place-order__btn {
+    width: auto;
+    min-width: 180px;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ka-woo-checkout-place-order__btn--full {
+    width: 100%;
+}
+
+.ka-woo-checkout-place-order__btn:hover {
+    filter: brightness(0.95);
+}
+
+
+
+
+

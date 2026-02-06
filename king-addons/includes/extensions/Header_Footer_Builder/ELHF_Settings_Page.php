@@ -22,11 +22,14 @@ final class ELHF_Settings_Page
 
     public function __construct()
     {
-        if (is_admin() && current_user_can('manage_options')) {
-            add_action('admin_menu', [$this, 'registerSettingsPage']);
-        }
+        // Settings page is now integrated into the main Header & Footer Builder admin page.
+        // The submenu registration is disabled to avoid duplicate menu items.
+        // if (is_admin() && current_user_can('manage_options')) {
+        //     add_action('admin_menu', [$this, 'registerSettingsPage']);
+        // }
         add_action('admin_init', [$this, 'initSettings']);
-        add_filter('views_edit-king-addons-el-hf', [$this, 'addTabs'], 10, 1);
+        // The tab filter is no longer needed since we have our own navigation
+        // add_filter('views_edit-king-addons-el-hf', [$this, 'addTabs'], 10, 1);
     }
 
     public function registerSettingsPage()
@@ -111,31 +114,38 @@ final class ELHF_Settings_Page
 
     function renderCompatibilityOptionsDescription()
     {
-        echo esc_html__('To ensure compatibility with the current theme, two methods are available:', 'king-addons');
+        echo esc_html__('To ensure compatibility with the current theme, three methods are available:', 'king-addons');
     }
 
     function renderCompatibilityOptionsForm()
     {
-        $chosen_option = get_option('king_addons_el_hf_compatibility_option', '1');
+        $chosen_option = get_option('king_addons_el_hf_compatibility_option', '3');
         wp_enqueue_style('king-addons-el-hf-admin', KING_ADDONS_URL . 'includes/extensions/Header_Footer_Builder/admin.css', '', KING_ADDONS_VERSION);
         ?>
-        <label>
+        <label style="display: block; margin-bottom: 20px;">
             <input type="radio" name="king_addons_el_hf_compatibility_option"
-                   value=1 <?php checked($chosen_option, 1); ?>>
+                   value="3" <?php checked($chosen_option, '3'); ?>>
             <!--suppress HtmlUnknownTag -->
-            <div class="king-addons-el-hf-radio-options"><?php esc_html_e('Method 1 (Recommended)', 'king-addons'); ?></div>
+            <strong class="king-addons-el-hf-radio-options"><?php esc_html_e('Method 3 - Universal (Recommended)', 'king-addons'); ?></strong>
             <!--suppress HtmlUnknownTag -->
-            <p class="description"><?php esc_html_e('This method replaces the theme header (header.php) and footer (footer.php) templates with custom templates. This option works well with most themes by default.', 'king-addons'); ?></p>
-            <br>
+            <p class="description"><?php esc_html_e('This method combines multiple approaches for maximum theme compatibility. It uses hooks, output buffering, CSS hiding of native theme headers/footers, and JavaScript fallback to ensure headers and footers display correctly on all themes.', 'king-addons'); ?></p>
         </label>
-        <label>
+        <label style="display: block; margin-bottom: 20px;">
             <input type="radio" name="king_addons_el_hf_compatibility_option"
-                   value=2 <?php checked($chosen_option, 2); ?>>
+                   value="1" <?php checked($chosen_option, '1'); ?>>
             <!--suppress HtmlUnknownTag -->
-            <div class="king-addons-el-hf-radio-options"><?php esc_html_e('Method 2', 'king-addons'); ?></div>
+            <strong class="king-addons-el-hf-radio-options"><?php esc_html_e('Method 1 - Replace Theme Templates', 'king-addons'); ?></strong>
+            <!--suppress HtmlUnknownTag -->
+            <p class="description"><?php esc_html_e('This method replaces the theme header (header.php) and footer (footer.php) templates with custom templates. Works well with classic themes that use standard WordPress template structure.', 'king-addons'); ?></p>
+        </label>
+        <label style="display: block; margin-bottom: 20px;">
+            <input type="radio" name="king_addons_el_hf_compatibility_option"
+                   value="2" <?php checked($chosen_option, '2'); ?>>
+            <!--suppress HtmlUnknownTag -->
+            <strong class="king-addons-el-hf-radio-options"><?php esc_html_e('Method 2 - CSS Hide + Inject', 'king-addons'); ?></strong>
             <!--suppress HtmlUnknownTag -->
             <p class="description">
-                <?php echo esc_html__('If there are issues with the header or footer templates, this alternative method can be used. It hides the theme header and footer using CSS (display: none;) and displays custom templates instead.', 'king-addons'); ?>
+                <?php echo esc_html__('This method hides the theme header and footer using CSS (display: none;) and injects custom templates via wp_body_open and wp_footer hooks.', 'king-addons'); ?>
             </p>
         </label>
         <?php

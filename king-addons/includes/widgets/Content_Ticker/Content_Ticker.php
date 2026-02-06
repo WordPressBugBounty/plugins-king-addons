@@ -56,6 +56,8 @@ class Content_Ticker extends Widget_Base
     public function get_style_depends()
     {
         return [
+            // Required for Slick layout (e.g. .slick-track { display:flex; }) on frontend.
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-slick-helper',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-content-ticker-style',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-general-general',
         ];
@@ -2098,7 +2100,10 @@ $this->end_controls_section();
             'autoplay' => ($settings['slider_autoplay'] === 'yes'),
             'autoplaySpeed' => absint($settings['slider_autoplay_duration'] * 1000),
             'infinite' => ($settings['slider_loop'] === 'yes'),
-            'pauseOnHover' => $settings['slider_pause_on_hover'],
+            'pauseOnHover' => ($settings['slider_pause_on_hover'] === 'yes'),
+            // Prevent Slick from pausing when slide links get focus.
+            'pauseOnFocus' => false,
+            'pauseOnDotsHover' => false,
             'rtl' => $slider_is_rtl,
             'speed' => absint($settings['slider_effect_duration'] * 1000),
         ];
@@ -2117,7 +2122,7 @@ $this->end_controls_section();
         $this->add_render_attribute('ticker-slider-attribute', [
             'class' => 'king-addons-ticker-slider',
             'dir' => $slider_direction,
-            'data-slick' => wp_json_encode($slider_options),
+            'data-slick-options' => wp_json_encode($slider_options),
         ]);
 
         if ($settings['content_gradient_position'] !== 'none') {

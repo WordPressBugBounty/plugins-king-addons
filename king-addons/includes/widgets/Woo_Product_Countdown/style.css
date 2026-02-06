@@ -1,0 +1,43 @@
+.ka-woo-countdown {
+    display: inline-grid;
+    grid-auto-flow: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.ka-woo-countdown__item {
+    text-align: center;
+}
+
+.ka-woo-countdown__number {
+    display: block;
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
+.ka-woo-countdown__label {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.ka-woo-countdown--inline {
+    display: inline-flex;
+    align-items: center;
+}
+
+.ka-woo-countdown--inline .ka-woo-countdown__inline {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    font-variant-numeric: tabular-nums;
+}
+
+.ka-woo-countdown__sep {
+    opacity: 0.7;
+}
+
+
+
+
+
+

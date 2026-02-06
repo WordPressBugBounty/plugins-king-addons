@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 
 // Include Security Manager
 require_once KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Security_Manager.php';
+require_once KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Widget_Settings_Resolver.php';
 
 /**
  * Social Login Handler for Login Register Form widget
@@ -48,7 +49,9 @@ class Social_Login_Handler
         }
 
         $google_token = sanitize_text_field($_POST['google_token'] ?? '');
-        $widget_settings = self::get_widget_settings($_POST['widget_id'] ?? '');
+        $widget_id = sanitize_text_field($_POST['widget_id'] ?? '');
+        $post_id = absint($_POST['post_id'] ?? 0);
+        $widget_settings = Widget_Settings_Resolver::resolve($post_id, $widget_id);
 
         if (empty($google_token)) {
             wp_send_json_error(['message' => esc_html__('Google token is required.', 'king-addons')]);
@@ -94,7 +97,9 @@ class Social_Login_Handler
         }
 
         $facebook_token = sanitize_text_field($_POST['facebook_token'] ?? '');
-        $widget_settings = self::get_widget_settings($_POST['widget_id'] ?? '');
+        $widget_id = sanitize_text_field($_POST['widget_id'] ?? '');
+        $post_id = absint($_POST['post_id'] ?? 0);
+        $widget_settings = Widget_Settings_Resolver::resolve($post_id, $widget_id);
 
         if (empty($facebook_token)) {
             wp_send_json_error(['message' => esc_html__('Facebook token is required.', 'king-addons')]);
@@ -326,21 +331,6 @@ class Social_Login_Handler
         }
 
         return $username;
-    }
-
-    /**
-     * Get widget settings from POST data
-     */
-    private static function get_widget_settings($widget_id)
-    {
-        // This would be enhanced to get actual widget settings
-        // For now, return settings from POST data
-        return [
-            'google_client_id' => sanitize_text_field($_POST['google_client_id'] ?? ''),
-            'google_client_secret' => sanitize_text_field($_POST['google_client_secret'] ?? ''),
-            'facebook_app_id' => sanitize_text_field($_POST['facebook_app_id'] ?? ''),
-            'facebook_app_secret' => sanitize_text_field($_POST['facebook_app_secret'] ?? ''),
-        ];
     }
 
     /**

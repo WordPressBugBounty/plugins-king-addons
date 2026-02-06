@@ -1,0 +1,7 @@
+.king-addons-tb-featured-image{text-align:left;}
+.king-addons-tb-featured-image img{display:block;width:100%;height:auto;}
+.king-addons-tb-featured-image--ratio img{object-fit:cover;}
+.king-addons-tb-featured-image--ratio-16-9 img{aspect-ratio:16/9;}
+.king-addons-tb-featured-image--ratio-4-3 img{aspect-ratio:4/3;}
+.king-addons-tb-featured-image--ratio-1-1 img{aspect-ratio:1/1;}
+.king-addons-tb-featured-image--ratio-3-4 img{aspect-ratio:3/4;}

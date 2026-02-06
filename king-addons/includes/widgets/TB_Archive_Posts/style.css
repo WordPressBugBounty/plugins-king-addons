@@ -1,0 +1,7 @@
+.king-addons-tb-archive-posts__grid{display:grid;grid-template-columns:repeat(var(--kng-archive-columns,3),minmax(0,1fr));gap:var(--kng-archive-gap,16px);}
+.king-addons-tb-archive-posts__item{border:1px solid #e5e7eb;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.king-addons-tb-archive-posts__title{margin:0;}
+.king-addons-tb-archive-posts__title a{text-decoration:none;}
+.king-addons-tb-archive-posts__meta{font-size:12px;opacity:0.8;}
+.king-addons-tb-archive-posts__excerpt{font-size:14px;}
+.king-addons-tb-archive-posts__button{margin-top:auto;align-self:flex-start;text-decoration:none;padding:6px 12px;border:1px solid #1e293b;border-radius:4px;}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
+  <rect x="15" y="25" width="70" height="50" rx="5" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <text x="50" y="58" font-family="Arial" font-size="28" font-weight="bold" fill="url(#g)" text-anchor="middle">$99</text>
+  <line x1="30" y1="52" x2="45" y2="52" stroke="url(#g)" stroke-width="2" opacity="0.4"/>
+  <text x="37" y="40" font-family="Arial" font-size="12" fill="url(#g)" text-anchor="middle" opacity="0.4">$149</text>
+</svg>

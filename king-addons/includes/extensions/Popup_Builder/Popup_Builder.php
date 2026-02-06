@@ -24,18 +24,23 @@ final class Popup_Builder
     public function __construct()
     {
         add_action('init', [$this, 'register_templates_library_cpt']);
-        add_action('template_redirect', [$this, 'block_template_frontend']);
         add_action('current_screen', [$this, 'redirect_to_options_page']);
 
         add_action('elementor/documents/register', [$this, 'register_elementor_document_type']);
 
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_styles'], 998);
+        // Frontend-only hooks
+        if (!is_admin()) {
+            add_action('template_redirect', [$this, 'block_template_frontend']);
+            add_action('wp_enqueue_scripts', [$this, 'enqueue_styles'], 998);
+            // Enqueue frontend JS even on non-Elementor pages (when popups are configured).
+            add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts'], 998);
+            add_action('template_include', [$this, 'set_post_type_template'], 9999);
+            add_action('wp_footer', [$this, 'render_popups']);
+        }
+
         add_action('elementor/editor/before_enqueue_scripts', [$this, 'enqueueScriptPreviewHandler'], 988);
-        add_action('elementor/frontend/before_enqueue_scripts', [$this, 'enqueue_scripts'], 998);
 
         self::$elementor_instance = Plugin::instance();
-        add_action('template_include', [$this, 'set_post_type_template'], 9999);
-        add_action('wp_footer', [$this, 'render_popups']);
 
         add_action('wp_ajax_king_addons_pb_save_template_conditions', [$this, 'king_addons_pb_save_template_conditions']);
         add_action('wp_ajax_king_addons_pb_create_template', [$this, 'king_addons_pb_create_template']);
@@ -68,10 +73,24 @@ final class Popup_Builder
 
     public function enqueue_scripts(): void
     {
-        wp_enqueue_script('king-addons-popup-builder-popup-module-script', KING_ADDONS_URL . 'includes/extensions/Popup_Builder/popup-module.js', [
-            'jquery',
-            'elementor-frontend'
-        ], KING_ADDONS_VERSION, true);
+        // Avoid loading the popup runtime if there are no configured conditions.
+        $raw_conditions = get_option('king_addons_pb_popup_conditions');
+        if (empty($raw_conditions) || $raw_conditions === '[]') {
+            return;
+        }
+
+        $deps = ['jquery'];
+        if (wp_script_is('elementor-frontend', 'registered')) {
+            $deps[] = 'elementor-frontend';
+        }
+
+        wp_enqueue_script(
+            'king-addons-popup-builder-popup-module-script',
+            KING_ADDONS_URL . 'includes/extensions/Popup_Builder/popup-module.js',
+            $deps,
+            KING_ADDONS_VERSION,
+            true
+        );
     }
 
     public function render_popups(): void
@@ -336,14 +355,34 @@ final class Popup_Builder
 
         if (isset($_POST['king_addons_pb_popup_conditions']) && isset($_POST['king_addons_popup_nonce'])) {
             if (wp_verify_nonce($_POST['king_addons_popup_nonce'], 'king_addons_popup_settings')) {
-                update_option('king_addons_pb_popup_conditions', $this->sanitize_conditions($_POST['king_addons_pb_popup_conditions']));  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                update_option('king_addons_pb_popup_conditions', $this->sanitize_conditions($_POST['king_addons_pb_popup_conditions']));
+
+                // Persist "show on canvas" toggle per-template (used by the admin UI).
+                if (isset($_POST['template']) && isset($_POST['king_addons_pb_popup_show_on_canvas'])) {
+                    $template_slug = sanitize_text_field(wp_unslash($_POST['template']));
+                    $template_id = self::get_template_id($template_slug);
+                    if ($template_id) {
+                        $show_on_canvas = filter_var(wp_unslash($_POST['king_addons_pb_popup_show_on_canvas']), FILTER_VALIDATE_BOOLEAN);
+                        update_post_meta($template_id, 'king_addons_pb_popup_show_on_canvas', $show_on_canvas ? 'true' : 'false');
+                    }
+                }
             }
         }
     }
 
     public function sanitize_conditions($data)
     {
-        return wp_unslash(json_encode(array_filter(json_decode(stripcslashes($data), true))));
+        $decoded = json_decode(wp_unslash($data), true);
+        if (!is_array($decoded)) {
+            return '[]';
+        }
+
+        // Remove empty entries (templates with no locations).
+        $decoded = array_filter($decoded, static function ($value) {
+            return !empty($value);
+        });
+
+        return wp_json_encode($decoded);
     }
 
     public function king_addons_pb_create_template(): void
@@ -419,7 +458,7 @@ final class Popup_Builder
                     </div>
                     <?php if (!king_addons_freemius()->can_use_premium_code__premium_only()): ?>
                         <div class="kng-promo-btn-wrap">
-                            <a href="https://kingaddons.com/pricing/?rel=king-addons-popup-builder" target="_blank">
+                            <a href="https://kingaddons.com/pricing/?utm_source=king-addons-popup-builder" target="_blank">
                                 <div class="kng-promo-btn-txt">
                                     <?php esc_html_e('Unlock Premium Features & 650+ Templates Today!', 'king-addons'); ?>
                                 </div>

@@ -1,107 +1,175 @@
-jQuery(document).ready(function ($) {
-    // Remove default "Add New" button on submissions list page
-    $('.page-title-action').remove();
+"use strict";
 
-    /* -------------------- LIST TABLE (read/unread toggle) -------------------- */
-    $('body').on('click', '.column-read_status', function () {
-        const post_id = $(this).parent().attr('id').replace('post-', '');
-        const read_status = $(this).text() === 'Read' ? '0' : '1';
-        const nonce = KingAddonsSubmissions.nonce; // localized in View_Submissions_Pro
+(function ($) {
+    const FLAG = "kingAddonsSubmissionsBound";
 
-        $.post(KingAddonsSubmissions.ajaxurl, {
-            action: 'king_addons_submissions_update_read_status',
-            post_id,
-            read_status,
-            nonce,
-        });
-    });
-
-    /* -------------------- SINGLE SUBMISSION SCREEN -------------------- */
-    // Add hidden input to store changes
-    $('<input>', {
-        type: 'hidden',
-        id: 'king_addons_submission_changes',
-        name: 'king_addons_submission_changes',
-    }).appendTo('#post');
-
-    let changes = {};
-
-    // Initially lock inputs
-    $('.king-addons-submissions-wrap input, .king-addons-submissions-wrap textarea').each(function () {
-        if ($(this).is('[type="checkbox"],[type="radio"]')) {
-            $(this).prop('disabled', true);
-        } else {
-            $(this).prop('readonly', true);
+    /**
+     * Bind admin submissions handlers once.
+     *
+     * @returns {void}
+     */
+    const bindOnce = () => {
+        if (window[FLAG]) {
+            return;
         }
-    });
+        window[FLAG] = true;
 
-    // Track edits
-    $('input, textarea').on('change', function () {
-        let key = $(this).attr('id');
-        let value = [];
+        $(document).ready(function () {
+            // Remove default "Add New" button on submissions list page.
+            $(".page-title-action").remove();
 
-        if ($(this).is('[type="checkbox"],[type="radio"]')) {
-            value[0] = $(this).attr('type');
-            value[1] = [];
-            value[2] = $(this).closest('.king-addons-submissions-wrap').find('label:first-of-type').text();
-            key = $(this).closest('.king-addons-submissions-wrap').find('label:first-of-type').attr('for');
+            /* -------------------- LIST TABLE (read/unread toggle) -------------------- */
+            $("body").on("click.kingAddonsSubmissions", ".column-read_status", function () {
+                const $row = $(this).parent();
+                const rowId = $row.attr("id") || "";
+                const postId = rowId.replace("post-", "");
+                const currentText = ($(this).text() || "").trim();
+                const readStatus = currentText === "Read" ? "0" : "1";
 
-            $(this).closest('.king-addons-submissions-wrap').find('input').each(function () {
-                value[1].push([$(this).val(), $(this).is(':checked'), $(this).attr('name'), $(this).attr('id')]);
-            });
-        } else {
-            value[0] = $(this).attr('type');
-            value[1] = $(this).val();
-            value[2] = $(this).prev('label').text();
-        }
-        changes[key] = value;
-        $('#king_addons_submission_changes').val(JSON.stringify(changes));
-    });
-
-    // Toggle edit mode
-    $('.king-addons-edit-submissions').on('click', function (e) {
-        e.preventDefault();
-        const btn = $(this);
-        $('#king_addons_submission_changes').val('');
-
-        $('input, textarea').each(function () {
-            if ($(this).prop('readonly') || $(this).prop('disabled')) {
-                $(this).prop('readonly', false).prop('disabled', false);
-                btn.text('Cancel');
-            } else {
-                if ($(this).is('[type="checkbox"],[type="radio"]')) {
-                    $(this).prop('disabled', true);
-                } else {
-                    $(this).prop('readonly', true);
+                const nonce = window.KingAddonsSubmissions ? window.KingAddonsSubmissions.nonce : "";
+                const ajaxurl = window.KingAddonsSubmissions ? window.KingAddonsSubmissions.ajaxurl : "";
+                if (!ajaxurl || !nonce || !postId) {
+                    return;
                 }
-                btn.text('Edit');
+
+                $.post(ajaxurl, {
+                    action: "king_addons_submissions_update_read_status",
+                    post_id: postId,
+                    read_status: readStatus,
+                    nonce,
+                });
+            });
+
+            /* -------------------- SINGLE SUBMISSION SCREEN -------------------- */
+            const $postForm = $("#post");
+            if ($postForm.length) {
+                // Add hidden input to store changes (only once).
+                if (!$("#king_addons_submission_changes").length) {
+                    $("<input>", {
+                        type: "hidden",
+                        id: "king_addons_submission_changes",
+                        name: "king_addons_submission_changes",
+                    }).appendTo($postForm);
+                }
+
+                let changes = {};
+
+                // Initially lock inputs.
+                $postForm
+                    .find(".king-addons-submissions-wrap input, .king-addons-submissions-wrap textarea")
+                    .each(function () {
+                        const $el = $(this);
+                        if ($el.is('[type="checkbox"],[type="radio"]')) {
+                            $el.prop("disabled", true);
+                        } else {
+                            $el.prop("readonly", true);
+                        }
+                    });
+
+                // Track edits (scoped to the submissions UI).
+                $postForm.off("change.kingAddonsSubmissions");
+                $postForm.on(
+                    "change.kingAddonsSubmissions",
+                    ".king-addons-submissions-wrap input, .king-addons-submissions-wrap textarea",
+                    function () {
+                        const $field = $(this);
+                        let key = $field.attr("id") || "";
+                        const value = [];
+
+                        if ($field.is('[type="checkbox"],[type="radio"]')) {
+                            value[0] = $field.attr("type");
+                            value[1] = [];
+                            value[2] = $field
+                                .closest(".king-addons-submissions-wrap")
+                                .find("label:first-of-type")
+                                .text();
+                            key = $field
+                                .closest(".king-addons-submissions-wrap")
+                                .find("label:first-of-type")
+                                .attr("for");
+
+                            $field
+                                .closest(".king-addons-submissions-wrap")
+                                .find("input")
+                                .each(function () {
+                                    const $input = $(this);
+                                    value[1].push([
+                                        $input.val(),
+                                        $input.is(":checked"),
+                                        $input.attr("name"),
+                                        $input.attr("id"),
+                                    ]);
+                                });
+                        } else {
+                            value[0] = $field.attr("type");
+                            value[1] = $field.val();
+                            value[2] = $field.prev("label").text();
+                        }
+
+                        changes[key] = value;
+                        $("#king_addons_submission_changes").val(JSON.stringify(changes));
+                    }
+                );
+
+                // Toggle edit mode (scoped).
+                $postForm.off("click.kingAddonsSubmissions");
+                $postForm.on("click.kingAddonsSubmissions", ".king-addons-edit-submissions", function (e) {
+                    e.preventDefault();
+                    const $btn = $(this);
+                    $("#king_addons_submission_changes").val("");
+
+                    $postForm
+                        .find(".king-addons-submissions-wrap input, .king-addons-submissions-wrap textarea")
+                        .each(function () {
+                            const $el = $(this);
+                            const isLocked = $el.prop("readonly") || $el.prop("disabled");
+                            if (isLocked) {
+                                $el.prop("readonly", false).prop("disabled", false);
+                                $btn.text("Cancel");
+                                return;
+                            }
+                            if ($el.is('[type="checkbox"],[type="radio"]')) {
+                                $el.prop("disabled", true);
+                            } else {
+                                $el.prop("readonly", true);
+                            }
+                            $btn.text("Edit");
+                        });
+                });
+            }
+
+            // Highlight unread rows on list screen.
+            $(".king-addons-submission-unread")
+                .closest("tr")
+                .addClass("king-addons-submission-unread-column");
+
+            /* --------------- Sidebar meta on single submission --------------- */
+            if ($("#postbox-container-1").find("#submitdiv").length && window.KingAddonsSubmissions) {
+                const s = window.KingAddonsSubmissions;
+                $("#minor-publishing").remove();
+                $("#submitdiv .postbox-header h2").text("Extra Info");
+
+                const info = [
+                    ["Form", `<a href="${s.form_page_editor}" target="_blank">${s.form_name} (${s.form_id})</a>`],
+                    ["Page", `<a href="${s.form_page_url}" target="_blank">${s.form_page}</a>`],
+                    ["Created at", s.post_created],
+                    ["Updated at", s.post_updated],
+                    ["User IP", s.agent_ip],
+                    ["User Agent", s.form_agent],
+                ];
+
+                info.forEach(function (row) {
+                    $("<div>", {
+                        class: "misc-pub-section",
+                        html: `${row[0]}: <span class="king-addons-submissions-meta">${row[1]}</span>`,
+                    }).insertBefore("#major-publishing-actions");
+                });
+
+                // Reveal meta boxes.
+                $("#postbox-container-1, #postbox-container-2").css("opacity", 1);
             }
         });
-    });
+    };
 
-    // Highlight unread rows on list screen
-    $('.king-addons-submission-unread').closest('tr').addClass('king-addons-submission-unread-column');
-
-    /* --------------- Sidebar meta on single submission --------------- */
-    if ($('#postbox-container-1').find('#submitdiv').length) {
-        const s = KingAddonsSubmissions; // alias
-        $('#minor-publishing').remove();
-        $('#submitdiv .postbox-header h2').text('Extra Info');
-
-        const info = [
-            ['Form', `<a href="${s.form_page_editor}" target="_blank">${s.form_name} (${s.form_id})</a>`],
-            ['Page', `<a href="${s.form_page_url}" target="_blank">${s.form_page}</a>`],
-            ['Created at', s.post_created],
-            ['Updated at', s.post_updated],
-            ['User IP', s.agent_ip],
-            ['User Agent', s.form_agent],
-        ];
-
-        info.forEach(function (row) {
-            $('<div>', {class: 'misc-pub-section', html: `${row[0]}: <span class="king-addons-submissions-meta">${row[1]}</span>`}).insertBefore('#major-publishing-actions');
-        });
-
-        // Reveal meta boxes
-        $('#postbox-container-1, #postbox-container-2').css('opacity', 1);
-    }
-}); 
+    bindOnce();
+})(jQuery);

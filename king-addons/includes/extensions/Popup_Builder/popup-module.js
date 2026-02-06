@@ -146,7 +146,12 @@
             }
 
             popup.addClass('king-addons-pb-popup-open').show();
-            popup.find('.king-addons-pb-popup-container').addClass('animated ' + settings.popup_animation);
+            const popupContainer = popup.find('.king-addons-pb-popup-container');
+
+            // Avoid conflict with Bootstrap's `.fade` class.
+            // Keep stored setting as `fade`, but use animate.css `fadeIn` at runtime.
+            const animationClass = (settings.popup_animation === 'fade') ? 'fadeIn' : settings.popup_animation;
+            popupContainer.addClass('animated ' + animationClass);
 
             $(window).trigger('resize');
 

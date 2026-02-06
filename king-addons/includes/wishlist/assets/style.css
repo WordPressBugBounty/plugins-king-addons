@@ -1,0 +1,538 @@
+/**
+ * King Addons Wishlist Styles
+ *
+ * @package King_Addons
+ */
+
+/* Button Base */
+.king-addons-wishlist-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #111827;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+.king-addons-wishlist-button:hover {
+    border-color: #f87171;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.king-addons-wishlist-button:focus {
+    outline: 2px solid #f87171;
+    outline-offset: 2px;
+}
+
+.king-addons-wishlist-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Button Added State */
+.king-addons-wishlist-button--added {
+    border-color: #f87171;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.king-addons-wishlist-button--added:hover {
+    border-color: #ef4444;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Button Icon */
+.king-addons-wishlist-button__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-wishlist-button__icon i {
+    display: inline-block;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+}
+
+.king-addons-wishlist-button:hover .king-addons-wishlist-button__icon i {
+    transform: scale(1.1);
+}
+
+.king-addons-wishlist-button--added .king-addons-wishlist-button__icon i::before {
+    content: "\e817"; /* Filled heart for Elementor icons */
+}
+
+/* Button Label */
+.king-addons-wishlist-button__label {
+    white-space: nowrap;
+}
+
+/* Single Product Position */
+.king-addons-wishlist-button--single {
+    margin: 10px 0;
+}
+
+/* Loop/Archive Button */
+.king-addons-wishlist-button--loop {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+/* Table Remove Button */
+.king-addons-wishlist-button--table-remove {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-color: #fca5a5;
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.king-addons-wishlist-button--table-remove:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+/* Counter */
+.king-addons-wishlist-counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background: #111827;
+    color: #ffffff;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.king-addons-wishlist-counter--icon {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+    background: #ef4444;
+}
+
+.king-addons-wishlist-counter[data-count="0"] {
+    display: none;
+}
+
+/* Floating Action Button (FAB) */
+.king-addons-wishlist-fab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #111827;
+    color: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.king-addons-wishlist-fab:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.king-addons-wishlist-fab__link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Wishlist Page Table */
+.king-addons-wishlist-page {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.king-addons-wishlist-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.king-addons-wishlist-table__heading {
+    padding: 14px 12px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.king-addons-wishlist-table__cell {
+    padding: 16px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.king-addons-wishlist-table__row:last-child .king-addons-wishlist-table__cell {
+    border-bottom: none;
+}
+
+.king-addons-wishlist-table__row:hover {
+    background: #f9fafb;
+}
+
+.king-addons-wishlist-table__add-to-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #111827;
+    background-color: #111827;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.king-addons-wishlist-table__add-to-cart:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+}
+
+.king-addons-wishlist-table__add-to-cart.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    padding-right: 32px;
+}
+
+.king-addons-wishlist-table__add-to-cart.added {
+    opacity: 1;
+}
+
+.king-addons-wishlist-table__add-to-cart.loading::after,
+.king-addons-wishlist-table__add-to-cart.added::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+.king-addons-wishlist-table__add-to-cart.loading::after {
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    animation: king-addons-spin 0.75s linear infinite;
+}
+
+.king-addons-wishlist-table__add-to-cart.added::after {
+    border: 2px solid currentColor;
+    border-color: currentColor;
+    mask: none;
+    -webkit-mask: none;
+    background: currentColor;
+    clip-path: polygon(14% 53%, 0 39%, 0 61%, 14% 75%, 54% 34%, 40% 20%);
+}
+
+.king-addons-wishlist-table .added_to_cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #111827;
+    background-color: transparent;
+    color: #111827;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.king-addons-wishlist-table .added_to_cart:hover {
+    background-color: #111827;
+    color: #ffffff;
+    border-color: #111827;
+}
+
+@keyframes king-addons-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Table Image */
+.king-addons-wishlist-table__thumb {
+    display: block;
+}
+
+.king-addons-wishlist-table__thumb img {
+    max-width: 70px;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+}
+
+.king-addons-wishlist-table__thumb:hover img {
+    transform: scale(1.05);
+}
+
+/* Table Title */
+.king-addons-wishlist-table__title {
+    color: #111827;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.king-addons-wishlist-table__title:hover {
+    color: #2563eb;
+}
+
+/* Table Price */
+.king-addons-wishlist-table__price {
+    font-weight: 600;
+    color: #111827;
+}
+
+.king-addons-wishlist-table__price del {
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+.king-addons-wishlist-table__price ins {
+    text-decoration: none;
+    color: #059669;
+}
+
+/* Table Stock */
+.king-addons-wishlist-table__stock {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Empty State */
+.king-addons-wishlist-table__empty {
+    text-align: center;
+    padding: 40px 16px;
+    color: #6b7280;
+}
+
+/* Notice */
+.king-addons-wishlist__notice {
+    padding: 16px;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    color: #92400e;
+    text-align: center;
+}
+
+/* Pro Placeholder */
+.king-addons-pro-placeholder {
+    padding: 20px;
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Share Buttons */
+.king-addons-wishlist-share {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Notes (Pro) */
+.king-addons-wishlist-notes {
+    min-width: 180px;
+}
+
+.king-addons-wishlist-notes__display {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.king-addons-wishlist-notes__text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #374151;
+    word-break: break-word;
+}
+
+.king-addons-wishlist-notes__edit-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.king-addons-wishlist-notes__edit-btn:hover {
+    color: #2563eb;
+}
+
+.king-addons-wishlist-notes__edit-btn .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+.king-addons-wishlist-notes__form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.king-addons-wishlist-notes__input {
+    width: 100%;
+    min-height: 50px;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.king-addons-wishlist-notes__input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.king-addons-wishlist-notes__input::placeholder {
+    color: #9ca3af;
+}
+
+.king-addons-wishlist-notes__actions {
+    display: flex;
+    gap: 6px;
+}
+
+.king-addons-wishlist-notes__save,
+.king-addons-wishlist-notes__cancel {
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.king-addons-wishlist-notes__save {
+    background: #2563eb;
+    border: 1px solid #2563eb;
+    color: #ffffff;
+}
+
+.king-addons-wishlist-notes__save:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.king-addons-wishlist-notes__save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.king-addons-wishlist-notes__cancel {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.king-addons-wishlist-notes__cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .king-addons-wishlist-table {
+        display: block;
+    }
+
+    .king-addons-wishlist-table thead {
+        display: none;
+    }
+
+    .king-addons-wishlist-table tbody,
+    .king-addons-wishlist-table__row {
+        display: block;
+    }
+
+    .king-addons-wishlist-table__row {
+        padding: 16px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+    }
+
+    .king-addons-wishlist-table__cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .king-addons-wishlist-table__cell:last-child {
+        border-bottom: none;
+    }
+
+    .king-addons-wishlist-table__cell::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .king-addons-wishlist-table__cell--image {
+        justify-content: center;
+    }
+
+    .king-addons-wishlist-table__cell--image::before {
+        display: none;
+    }
+}

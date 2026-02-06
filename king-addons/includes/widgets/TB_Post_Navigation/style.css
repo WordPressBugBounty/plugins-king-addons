@@ -1,0 +1,6 @@
+.king-addons-tb-post-navigation{display:flex;gap:var(--kng-nav-gap,12px);flex-wrap:wrap;}
+.king-addons-tb-post-navigation--columns{justify-content:space-between;}
+.king-addons-tb-post-navigation--stacked{flex-direction:column;}
+.king-addons-tb-post-navigation__item a{text-decoration:none;display:block;}
+.king-addons-tb-post-navigation__label{display:block;font-size:12px;opacity:0.8;}
+.king-addons-tb-post-navigation__title{display:block;}

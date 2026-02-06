@@ -1,0 +1,185 @@
+.king-addons-card-grid {
+    --kng-card-grid-gap: 20px;
+}
+
+.king-addons-card-grid__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--kng-card-grid-gap);
+}
+
+.king-addons-card-grid__item {
+    height: 100%;
+}
+
+.king-addons-card-grid__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(17, 24, 39, 0.06);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.25s ease;
+}
+
+.king-addons-card-grid__card:hover {
+    box-shadow: 0 16px 40px rgba(17, 24, 39, 0.12);
+    transform: translateY(-4px);
+}
+
+.king-addons-card-grid__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.king-addons-card-grid__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+.king-addons-card-grid__title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #111827;
+}
+
+.king-addons-card-grid__description {
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.king-addons-card-grid__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    width: fit-content;
+    background-color: #111827;
+    color: #ffffff;
+    border: 1px solid #111827;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-card-grid__button:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(17, 24, 39, 0.18);
+}
+
+.king-addons-card-grid--button-align-left .king-addons-card-grid__button {
+    align-self: flex-start;
+}
+
+.king-addons-card-grid--button-align-center .king-addons-card-grid__button {
+    align-self: center;
+}
+
+.king-addons-card-grid--button-align-right .king-addons-card-grid__button {
+    align-self: flex-end;
+}
+
+.king-addons-card-grid--button-text-align-left .king-addons-card-grid__button {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.king-addons-card-grid--button-text-align-center .king-addons-card-grid__button {
+    justify-content: center;
+    text-align: center;
+}
+
+.king-addons-card-grid--button-text-align-right .king-addons-card-grid__button {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.king-addons-card-grid--text-align-left .king-addons-card-grid__body {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.king-addons-card-grid--text-align-center .king-addons-card-grid__body {
+    align-items: center;
+    text-align: center;
+}
+
+.king-addons-card-grid--text-align-right .king-addons-card-grid__body {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.king-addons-card-grid__card[data-card-link] {
+    cursor: pointer;
+}
+
+.elementor-editor-active .king-addons-card-grid__card[data-card-link] {
+    cursor: default;
+}
+
+.king-addons-card-grid__card.is-anim-hover-lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.king-addons-card-grid__card.is-anim-hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.16);
+}
+
+.king-addons-card-grid__card.is-anim-hover-zoom .king-addons-card-grid__media img {
+    transition: transform 0.35s ease;
+}
+
+.king-addons-card-grid__card.is-anim-hover-zoom:hover .king-addons-card-grid__media img {
+    transform: scale(1.06);
+}
+
+.king-addons-card-grid__card.is-anim-hover-tilt {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.king-addons-card-grid__card.is-anim-hover-tilt:hover {
+    transform: translateY(-6px) rotate3d(1, 1, 0, 3deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.king-addons-card-grid__card.is-anim-hover-float {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.king-addons-card-grid__card.is-anim-hover-float:hover {
+    transform: translate3d(0, -10px, 0);
+    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.18);
+}
+
+.king-addons-card-grid__card.is-anim-hover-scale-fade {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.king-addons-card-grid__card.is-anim-hover-scale-fade:hover {
+    transform: translateY(-6px) scale(1.02);
+    opacity: 0.96;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+}
+
+
+
+
+
+

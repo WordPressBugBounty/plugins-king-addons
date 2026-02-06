@@ -578,14 +578,14 @@ class Off_Canvas_Content extends Widget_Base
         $class_ID = 'king-addons-off-canvas-' . $this_ID;
         $overlay_ID = 'king-addons-off-canvas-overlay-' . $this_ID;
 
+        $class_selector_js = esc_attr(wp_json_encode('.' . $class_ID));
+        $overlay_selector_js = esc_attr(wp_json_encode('.' . $overlay_ID));
+
         if (!empty($settings['kng_off_canvas_template'])) {
 
             echo '<div class="king-addons-off-canvas-overlay ' .
                 esc_attr($overlay_ID) . '" onclick="';
-            echo "document.querySelector('." .
-                esc_attr($class_ID) . "').classList.toggle('king-addons-off-canvas-active'); document.querySelector('." .
-                esc_attr($overlay_ID) . "').style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                esc_attr($overlay_ID) . "').style.display = 'none'; document.body.style.pointerEvents = '';}, 300);";
+            echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-off-canvas-active'); document.querySelector(" . $overlay_selector_js . ").style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.display = 'none'; document.body.style.pointerEvents = '';}, 300);";
             echo '"></div>';
 
             echo '<div class="king-addons-off-canvas ' .
@@ -600,10 +600,7 @@ class Off_Canvas_Content extends Widget_Base
 
                 echo '<div class="king-addons-off-canvas-close-button king-addons-off-canvas-close-button-' .
                     esc_attr($this_ID) . '" onclick="';
-                echo "document.querySelector('." .
-                    esc_attr($class_ID) . "').classList.toggle('king-addons-off-canvas-active'); document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.display = 'none'; document.body.style.pointerEvents = '';}, 300);";
+                echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-off-canvas-active'); document.querySelector(" . $overlay_selector_js . ").style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.display = 'none'; document.body.style.pointerEvents = '';}, 300);";
                 echo '">';
 
                 Icons_Manager::render_icon($settings['kng_off_canvas_close_btn_icon']);
@@ -627,10 +624,7 @@ class Off_Canvas_Content extends Widget_Base
 
                 echo '<button class="king-addons-off-canvas-button king-addons-off-canvas-button-' .
                     esc_attr($this_ID) . '" onclick="';
-                echo "document.querySelector('." .
-                    esc_attr($class_ID) . "').classList.toggle('king-addons-off-canvas-active'); document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector('." .
-                    esc_attr($overlay_ID) . "').style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 300);";
+                echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-off-canvas-active'); document.querySelector(" . $overlay_selector_js . ").style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 300);";
                 echo '">' .
                     esc_html($settings['kng_off_canvas_btn_text']) . '</button>';
 

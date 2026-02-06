@@ -1,0 +1,226 @@
+/**
+ * King Addons Age Gate Admin Styles
+ */
+
+/* ========== Layout ========== */
+.king-addons-age-gate-admin {
+    max-width: 1200px;
+}
+
+.king-addons-age-gate-admin h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.king-addons-age-gate-admin > .description {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+/* ========== Tabs ========== */
+.king-addons-age-gate-admin__tabs {
+    margin-top: 18px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.king-addons-age-gate-admin__tabs .nav-tab {
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: transparent;
+    margin-left: 0;
+    margin-right: 4px;
+    padding: 10px 16px;
+    font-weight: 500;
+    color: #475569;
+    transition: all 0.15s ease;
+}
+
+.king-addons-age-gate-admin__tabs .nav-tab:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.king-addons-age-gate-admin__tabs .nav-tab-active {
+    background: #fff;
+    border-color: #e2e8f0;
+    border-bottom: 1px solid #fff;
+    margin-bottom: -1px;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+/* ========== Panel ========== */
+.king-addons-age-gate-admin__panel {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 20px 24px;
+    margin-top: 0;
+}
+
+/* ========== Form Table ========== */
+.king-addons-age-gate-admin .form-table th {
+    width: 200px;
+    padding: 16px 12px 16px 0;
+    font-weight: 500;
+    color: #374151;
+    vertical-align: top;
+}
+
+.king-addons-age-gate-admin .form-table td {
+    padding: 12px 0;
+}
+
+.king-addons-age-gate-admin .form-table select,
+.king-addons-age-gate-admin .form-table input[type="text"],
+.king-addons-age-gate-admin .form-table input[type="url"],
+.king-addons-age-gate-admin .form-table input[type="number"],
+.king-addons-age-gate-admin .form-table textarea {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.king-addons-age-gate-admin .form-table select:focus,
+.king-addons-age-gate-admin .form-table input[type="text"]:focus,
+.king-addons-age-gate-admin .form-table input[type="url"]:focus,
+.king-addons-age-gate-admin .form-table input[type="number"]:focus,
+.king-addons-age-gate-admin .form-table textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+.king-addons-age-gate-admin .form-table input[type="color"] {
+    width: 48px;
+    height: 36px;
+    padding: 2px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.king-addons-age-gate-admin .description {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+/* ========== Inline Labels ========== */
+.king-addons-age-gate-admin__inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.king-addons-age-gate-admin__inline label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.king-addons-age-gate-admin__inline label input[type="radio"],
+.king-addons-age-gate-admin__inline label input[type="checkbox"] {
+    margin: 0;
+}
+
+/* ========== Switch Style ========== */
+.king-addons-age-gate-admin__switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.king-addons-age-gate-admin__switch input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+/* ========== Pro Badge ========== */
+.king-addons-age-gate-admin__pill {
+    display: inline-block;
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* ========== Pro Disabled State ========== */
+.king-addons-age-gate-admin__pro-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.king-addons-age-gate-admin__pro-disabled th,
+.king-addons-age-gate-admin__pro-disabled td {
+    position: relative;
+}
+
+/* ========== Notes List ========== */
+.king-addons-age-gate-admin__list {
+    list-style: disc;
+    padding-left: 20px;
+    margin: 0;
+    color: #475569;
+}
+
+.king-addons-age-gate-admin__list li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+/* ========== Submit Button ========== */
+.king-addons-age-gate-admin .submit {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.king-addons-age-gate-admin .button-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.king-addons-age-gate-admin .button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 782px) {
+    .king-addons-age-gate-admin__panel {
+        padding: 16px;
+    }
+    
+    .king-addons-age-gate-admin .form-table th,
+    .king-addons-age-gate-admin .form-table td {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+    }
+    
+    .king-addons-age-gate-admin__inline {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

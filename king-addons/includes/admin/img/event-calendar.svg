@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
+  <rect x="15" y="15" width="70" height="70" rx="8" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <rect x="15" y="15" width="70" height="18" rx="8" fill="url(#g)"/>
+  <rect x="25" y="10" width="4" height="12" rx="2" fill="url(#g)"/>
+  <rect x="71" y="10" width="4" height="12" rx="2" fill="url(#g)"/>
+  <text x="50" y="28" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">JUNE</text>
+  <g opacity="0.5">
+    <text x="27" y="48" font-family="Arial" font-size="8" fill="url(#g)">1</text>
+    <text x="42" y="48" font-family="Arial" font-size="8" fill="url(#g)">2</text>
+    <text x="57" y="48" font-family="Arial" font-size="8" fill="url(#g)">3</text>
+    <text x="72" y="48" font-family="Arial" font-size="8" fill="url(#g)">4</text>
+  </g>
+  <circle cx="42" cy="60" r="8" fill="url(#g)" opacity="0.8"/>
+  <text x="42" y="63" font-family="Arial" font-size="8" fill="#fff" text-anchor="middle">15</text>
+  <g opacity="0.5">
+    <text x="57" y="63" font-family="Arial" font-size="8" fill="url(#g)">16</text>
+    <text x="72" y="63" font-family="Arial" font-size="8" fill="url(#g)">17</text>
+  </g>
+  <rect x="22" y="72" width="25" height="6" rx="2" fill="url(#g)" opacity="0.4"/>
+</svg>

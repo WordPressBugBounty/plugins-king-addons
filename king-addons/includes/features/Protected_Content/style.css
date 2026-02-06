@@ -1,0 +1,273 @@
+/**
+ * Protected Content Styles
+ *
+ * Styles for editor preview, fallback messages, and password forms.
+ *
+ * @package King_Addons
+ */
+
+/* ============================================
+   EDITOR PREVIEW STYLES
+   ============================================ */
+
+.king-addons-protected-preview {
+    position: relative;
+}
+
+/* Dashed border around protected elements in editor */
+.king-addons-protected-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px dashed rgba(99, 102, 241, 0.5);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Badge Container */
+.king-addons-protected-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.king-addons-protected-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+}
+
+.king-addons-protected-badge-icon {
+    font-size: 12px;
+}
+
+.king-addons-protected-badge-label {
+    letter-spacing: 0.5px;
+}
+
+/* Tooltip */
+.king-addons-protected-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    min-width: 200px;
+    max-width: 300px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.king-addons-protected-badge:hover .king-addons-protected-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.king-addons-protected-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 16px;
+    border-width: 0 6px 6px 6px;
+    border-style: solid;
+    border-color: transparent transparent #1e1e2e transparent;
+}
+
+.king-addons-protected-tooltip strong {
+    display: block;
+    color: #a5b4fc;
+    margin-bottom: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.king-addons-protected-tooltip-content {
+    word-break: break-word;
+}
+
+/* ============================================
+   FALLBACK MESSAGE STYLES
+   ============================================ */
+
+.king-addons-protected-fallback {
+    padding: 20px 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    color: #1e293b;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    text-align: center;
+}
+
+.king-addons-protected-fallback p {
+    margin: 0;
+}
+
+/* ============================================
+   PASSWORD FORM STYLES
+   ============================================ */
+
+.king-addons-protected-password-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.king-addons-protected-password-message {
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #475569;
+}
+
+.king-addons-password-form {
+    width: 100%;
+}
+
+.king-addons-password-input-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.king-addons-password-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1e293b;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.king-addons-password-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.king-addons-password-input::placeholder {
+    color: #94a3b8;
+}
+
+.king-addons-password-submit {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.king-addons-password-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.king-addons-password-submit:active {
+    transform: translateY(0);
+}
+
+.king-addons-password-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.king-addons-password-error {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 13px;
+}
+
+/* ============================================
+   TEMPLATE FALLBACK STYLES
+   ============================================ */
+
+.king-addons-protected-template-fallback {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* ============================================
+   FORM FALLBACK STYLES
+   ============================================ */
+
+.king-addons-protected-form-fallback {
+    text-align: left;
+}
+
+/* ============================================
+   HIDDEN ELEMENT
+   ============================================ */
+
+.king-addons-protected-hidden {
+    display: none !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 480px) {
+    .king-addons-password-input-wrap {
+        flex-direction: column;
+    }
+
+    .king-addons-password-submit {
+        width: 100%;
+    }
+
+    .king-addons-protected-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .king-addons-protected-tooltip {
+        min-width: 150px;
+    }
+}
+
+
+
+
+
+

@@ -1,0 +1,27 @@
+.ka-woo-product-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ka-woo-product-rating .star-rating {
+    margin: 0;
+}
+
+.ka-woo-product-rating__count {
+    font-size: 0.95em;
+    opacity: 0.85;
+}
+
+.ka-woo-product-rating__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+
+
+
+
+

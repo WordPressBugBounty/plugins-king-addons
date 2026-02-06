@@ -1,0 +1,40 @@
+.ka-woo-sorting {
+    width: 100%;
+}
+
+.ka-woo-sorting--inline form.woocommerce-ordering {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ka-woo-sorting__inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ka-woo-sorting__btn {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.ka-woo-sorting__btn.is-active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.ka-woo-sorting__select {
+    min-width: 200px;
+}
+
+
+
+
+
+

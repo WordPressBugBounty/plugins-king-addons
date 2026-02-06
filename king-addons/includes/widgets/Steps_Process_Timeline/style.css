@@ -1,0 +1,489 @@
+.king-addons-steps-timeline {
+    position: relative;
+    --kng-steps-gap: 28px;
+    --kng-steps-marker-size: 44px;
+    --kng-steps-marker-gap: 16px;
+    --kng-steps-line-thickness: 2px;
+    --kng-steps-line-color: #d0d7de;
+    --kng-steps-progress-color: #1b4fd7;
+    --kng-steps-progress-radius: 999px;
+    --kng-steps-marker-bg: #ffffff;
+    --kng-steps-marker-color: #111827;
+    --kng-steps-marker-border-color: #d1d5db;
+    --kng-steps-marker-border-width: 1px;
+    --kng-steps-icon-size: 18px;
+    --kng-steps-sticky-offset: 0px;
+    --kng-steps-wrap: nowrap;
+    --kng-steps-card-active-border-color: transparent;
+    --kng-steps-card-active-shadow-color: rgba(27, 79, 215, 0.2);
+}
+
+.king-addons-steps__heading {
+    margin-bottom: 24px;
+}
+
+.king-addons-steps-layout-vertical-compact {
+    --kng-steps-gap: 16px;
+    --kng-steps-marker-gap: 12px;
+}
+
+.king-addons-steps__title {
+    margin: 0 0 8px;
+}
+
+.king-addons-steps__subtitle {
+    margin: 0;
+}
+
+.king-addons-steps__track {
+    position: relative;
+}
+
+.king-addons-steps__progress-wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.king-addons-steps--wrap.king-addons-steps-layout-horizontal .king-addons-steps__progress-wrap {
+    display: none;
+}
+
+.king-addons-steps--sticky.king-addons-steps-layout-horizontal .king-addons-steps__progress-wrap {
+    position: sticky;
+    top: var(--kng-steps-sticky-offset);
+}
+
+.king-addons-steps__line {
+    position: absolute;
+    background: var(--kng-steps-line-color);
+}
+
+.king-addons-steps__progress {
+    position: absolute;
+    background: var(--kng-steps-progress-color);
+    border-radius: var(--kng-steps-progress-radius);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.king-addons-steps__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.king-addons-steps-layout-vertical .king-addons-steps__list,
+.king-addons-steps-layout-vertical-compact .king-addons-steps__list {
+    display: grid;
+    row-gap: var(--kng-steps-gap);
+}
+
+.king-addons-steps-layout-horizontal .king-addons-steps__list {
+    display: flex;
+    flex-wrap: var(--kng-steps-wrap);
+    gap: var(--kng-steps-gap);
+    align-items: flex-start;
+}
+
+.king-addons-steps-layout-horizontal .king-addons-step {
+    flex: 1 1 0;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.king-addons-steps-layout-vertical .king-addons-step,
+.king-addons-steps-layout-vertical-compact .king-addons-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--kng-steps-marker-size) 1fr;
+    column-gap: var(--kng-steps-marker-gap);
+    align-items: flex-start;
+    z-index: 2;
+}
+
+.king-addons-steps-line-center.king-addons-steps-layout-vertical .king-addons-step,
+.king-addons-steps-line-center.king-addons-steps-layout-vertical-compact .king-addons-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.king-addons-steps-line-center.king-addons-steps-layout-vertical .king-addons-step__marker,
+.king-addons-steps-line-center.king-addons-steps-layout-vertical-compact .king-addons-step__marker {
+    margin-bottom: var(--kng-steps-marker-gap);
+}
+
+.king-addons-steps-layout-horizontal .king-addons-step__marker {
+    margin-bottom: var(--kng-steps-marker-gap);
+}
+
+.king-addons-step__marker {
+    width: var(--kng-steps-marker-size);
+    height: var(--kng-steps-marker-size);
+    border-radius: 999px;
+    background: var(--kng-steps-marker-bg);
+    color: var(--kng-steps-marker-color);
+    border: var(--kng-steps-marker-border-width) solid var(--kng-steps-marker-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-step__number {
+    font-weight: 600;
+    line-height: 1;
+}
+
+.king-addons-step__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-step__icon i,
+.king-addons-step__icon svg {
+    font-size: var(--kng-steps-icon-size);
+    width: var(--kng-steps-icon-size);
+    height: var(--kng-steps-icon-size);
+}
+
+.king-addons-step__content {
+    position: relative;
+}
+
+.king-addons-steps--card .king-addons-step__content {
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.king-addons-steps--pro .king-addons-step.is-active .king-addons-step__content,
+.king-addons-steps--pro .king-addons-step.is-highlighted .king-addons-step__content {
+    border-color: var(--kng-steps-card-active-border-color);
+    box-shadow: 0 12px 32px var(--kng-steps-card-active-shadow-color);
+    transform: translateY(-2px);
+}
+
+.king-addons-steps-align-center .king-addons-step__content {
+    text-align: center;
+}
+
+.king-addons-steps-align-right .king-addons-step__content {
+    text-align: right;
+}
+
+.king-addons-step__title {
+    margin: 0 0 8px;
+}
+
+.king-addons-step__description {
+    margin: 0;
+}
+
+.king-addons-step__template {
+    margin-top: 12px;
+}
+
+.king-addons-step__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.king-addons-steps-marker-icon .king-addons-step__number {
+    display: none;
+}
+
+.king-addons-steps-marker-number .king-addons-step__icon {
+    display: none;
+}
+
+.king-addons-step:hover .king-addons-step__marker {
+    background: var(--kng-steps-marker-bg-active, var(--kng-steps-marker-bg));
+    color: var(--kng-steps-marker-color-active, var(--kng-steps-marker-color));
+    border-color: var(--kng-steps-marker-border-color-active, var(--kng-steps-marker-border-color));
+}
+
+.king-addons-steps--pro .king-addons-step.is-active .king-addons-step__marker,
+.king-addons-steps--pro .king-addons-step.is-highlighted .king-addons-step__marker {
+    background: var(--kng-steps-marker-bg-active, var(--kng-steps-marker-bg));
+    color: var(--kng-steps-marker-color-active, var(--kng-steps-marker-color));
+    border-color: var(--kng-steps-marker-border-color-active, var(--kng-steps-marker-border-color));
+}
+
+.king-addons-steps--pro .king-addons-step.is-complete .king-addons-step__marker {
+    background: var(--kng-steps-marker-bg-complete, var(--kng-steps-marker-bg-active, var(--kng-steps-marker-bg)));
+    color: var(--kng-steps-marker-color-complete, var(--kng-steps-marker-color-active, var(--kng-steps-marker-color)));
+}
+
+.king-addons-step.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.king-addons-step:focus-visible {
+    outline: 2px solid var(--kng-steps-marker-bg-active, #1b4fd7);
+    outline-offset: 4px;
+}
+
+.king-addons-steps-layout-vertical .king-addons-steps__line,
+.king-addons-steps-layout-vertical-compact .king-addons-steps__line {
+    width: var(--kng-steps-line-thickness);
+    top: 0;
+    height: 100%;
+}
+
+.king-addons-steps-layout-vertical .king-addons-steps__progress,
+.king-addons-steps-layout-vertical-compact .king-addons-steps__progress {
+    width: 100%;
+    height: 0;
+    top: 0;
+    left: 0;
+}
+
+.king-addons-steps-layout-horizontal .king-addons-steps__line {
+    height: var(--kng-steps-line-thickness);
+    left: 0;
+    width: 100%;
+    top: calc(var(--kng-steps-marker-size) / 2);
+    transform: translateY(-50%);
+}
+
+.king-addons-steps-layout-horizontal .king-addons-steps__progress {
+    height: 100%;
+    width: 0;
+    left: 0;
+    top: 0;
+}
+
+.king-addons-steps-line-left.king-addons-steps-layout-vertical .king-addons-steps__line,
+.king-addons-steps-line-left.king-addons-steps-layout-vertical-compact .king-addons-steps__line {
+    left: calc(var(--kng-steps-marker-size) / 2);
+    transform: translateX(-50%);
+}
+
+.king-addons-steps-line-center.king-addons-steps-layout-vertical .king-addons-steps__line,
+.king-addons-steps-line-center.king-addons-steps-layout-vertical-compact .king-addons-steps__line {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.king-addons-steps-line-style-dashed.king-addons-steps-layout-vertical .king-addons-steps__line,
+.king-addons-steps-line-style-dashed.king-addons-steps-layout-vertical-compact .king-addons-steps__line {
+    background-color: transparent;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        var(--kng-steps-line-color),
+        var(--kng-steps-line-color) 6px,
+        transparent 6px,
+        transparent 12px
+    );
+}
+
+.king-addons-steps-line-style-dashed.king-addons-steps-layout-horizontal .king-addons-steps__line {
+    background-color: transparent;
+    background-image: repeating-linear-gradient(
+        to right,
+        var(--kng-steps-line-color),
+        var(--kng-steps-line-color) 10px,
+        transparent 10px,
+        transparent 20px
+    );
+}
+
+.king-addons-steps--pro.king-addons-steps-line-style-gradient.king-addons-steps-layout-vertical .king-addons-steps__line,
+.king-addons-steps--pro.king-addons-steps-line-style-gradient.king-addons-steps-layout-vertical-compact .king-addons-steps__line {
+    background: linear-gradient(to bottom, var(--kng-steps-line-color), var(--kng-steps-progress-color));
+}
+
+.king-addons-steps--pro.king-addons-steps-line-style-gradient.king-addons-steps-layout-horizontal .king-addons-steps__line {
+    background: linear-gradient(to right, var(--kng-steps-line-color), var(--kng-steps-progress-color));
+}
+
+.king-addons-step.is-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.king-addons-steps-reveal-fade-in .king-addons-step.is-reveal {
+    transform: none;
+}
+
+.king-addons-steps-reveal-slide-up .king-addons-step.is-reveal {
+    transform: translateY(32px);
+}
+
+.king-addons-steps-reveal-scale-in .king-addons-step.is-reveal {
+    transform: scale(0.95);
+}
+
+.king-addons-step.is-reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-step.is-reveal {
+        transition: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .king-addons-steps__progress {
+        transition: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .king-addons-steps--wrap.king-addons-steps-stack-tablet.king-addons-steps-layout-horizontal .king-addons-steps__progress-wrap {
+        display: block;
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-layout-horizontal .king-addons-steps__list {
+        display: grid;
+        row-gap: var(--kng-steps-gap);
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-layout-horizontal .king-addons-step {
+        display: grid;
+        grid-template-columns: var(--kng-steps-marker-size) 1fr;
+        column-gap: var(--kng-steps-marker-gap);
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        width: var(--kng-steps-line-thickness);
+        height: 100%;
+        top: 0;
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-layout-horizontal .king-addons-steps__progress {
+        width: 100%;
+        height: 0;
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-line-left.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        left: calc(var(--kng-steps-marker-size) / 2);
+        transform: translateX(-50%);
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-line-center.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .king-addons-steps-stack-tablet.king-addons-steps-line-style-dashed.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        background-color: transparent;
+        background-image: repeating-linear-gradient(
+            to bottom,
+            var(--kng-steps-line-color),
+            var(--kng-steps-line-color) 6px,
+            transparent 6px,
+            transparent 12px
+        );
+    }
+
+    .king-addons-steps--pro.king-addons-steps-stack-tablet.king-addons-steps-line-style-gradient.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        background: linear-gradient(to bottom, var(--kng-steps-line-color), var(--kng-steps-progress-color));
+    }
+}
+
+@media (max-width: 767px) {
+    .king-addons-steps--wrap.king-addons-steps-stack-mobile.king-addons-steps-layout-horizontal .king-addons-steps__progress-wrap {
+        display: block;
+    }
+
+    .king-addons-steps-layout-horizontal .king-addons-steps__list {
+        display: grid;
+        row-gap: var(--kng-steps-gap);
+    }
+
+    .king-addons-steps-layout-horizontal .king-addons-step {
+        display: grid;
+        grid-template-columns: var(--kng-steps-marker-size) 1fr;
+        column-gap: var(--kng-steps-marker-gap);
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .king-addons-steps-layout-horizontal .king-addons-steps__line {
+        width: var(--kng-steps-line-thickness);
+        height: 100%;
+        top: 0;
+    }
+
+    .king-addons-steps-layout-horizontal .king-addons-steps__progress {
+        width: 100%;
+        height: 0;
+    }
+
+    .king-addons-steps-line-left.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        left: calc(var(--kng-steps-marker-size) / 2);
+        transform: translateX(-50%);
+    }
+
+    .king-addons-steps-line-center.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .king-addons-steps-line-style-dashed.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        background-color: transparent;
+        background-image: repeating-linear-gradient(
+            to bottom,
+            var(--kng-steps-line-color),
+            var(--kng-steps-line-color) 6px,
+            transparent 6px,
+            transparent 12px
+        );
+    }
+
+    .king-addons-steps--pro.king-addons-steps-line-style-gradient.king-addons-steps-layout-horizontal .king-addons-steps__line {
+        background: linear-gradient(to bottom, var(--kng-steps-line-color), var(--kng-steps-progress-color));
+    }
+}
+
+body.elementor-editor-active .king-addons-steps--sticky.king-addons-steps-layout-horizontal .king-addons-steps__progress-wrap {
+    position: absolute;
+    top: 0;
+}
+
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical .king-addons-step,
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical-compact .king-addons-step {
+    grid-template-columns: 1fr var(--kng-steps-marker-size);
+}
+
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical .king-addons-step__marker,
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical-compact .king-addons-step__marker {
+    grid-column: 2;
+}
+
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical .king-addons-step__content,
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical-compact .king-addons-step__content {
+    grid-column: 1;
+    text-align: right;
+}
+
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical .king-addons-steps__line,
+.rtl .king-addons-steps-line-left.king-addons-steps-layout-vertical-compact .king-addons-steps__line {
+    left: auto;
+    right: calc(var(--kng-steps-marker-size) / 2);
+    transform: translateX(50%);
+}

@@ -1,167 +1,963 @@
-.postbox {
-    border-radius: 5px;
-    border: 1px solid #f1f1f4;
-    box-shadow: none;
+/**
+ * King Addons Account Page Styles
+ *
+ * Premium style for Freemius account page.
+ * Supports both light and dark themes via ka-v3-dark class.
+ *
+ * @package King_Addons
+ */
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/Inter.woff2') format('woff2');
 }
 
-#wpbody-content .fs-notice.fs-has-title {
-    margin-top: 15px;
+/* ===== CSS CUSTOM PROPERTIES ===== */
+:root {
+    --ka-account-bg: #f5f5f7;
+    --ka-account-text: #1d1d1f;
+    --ka-account-text-secondary: #86868b;
+    --ka-account-card-bg: rgba(255, 255, 255, 0.8);
+    --ka-account-card-border: rgba(0, 0, 0, 0.04);
+    --ka-account-card-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+    --ka-account-input-bg: #fff;
+    --ka-account-input-border: rgba(0, 0, 0, 0.1);
+    --ka-account-link: #0071e3;
+    --ka-account-link-hover: #0077ed;
+    --ka-account-accent: #0071e3;
+    --ka-account-accent-hover: #0077ed;
+    --ka-account-success: #22c55e;
+    --ka-account-warning: #f59e0b;
+    --ka-account-error: #ef4444;
+    --ka-account-table-stripe: rgba(0, 0, 0, 0.02);
+    --ka-account-divider: rgba(0, 0, 0, 0.06);
+    --ka-account-btn-bg: rgba(0, 0, 0, 0.06);
+    --ka-account-btn-text: #1d1d1f;
 }
 
-#poststuff {
-    margin-top: -15px;
+/* Dark theme variables */
+body.ka-v3-dark,
+html.ka-v3-dark body {
+    --ka-account-bg: #000000;
+    --ka-account-text: #f5f5f7;
+    --ka-account-text-secondary: #a1a1a6;
+    --ka-account-card-bg: rgba(28, 28, 30, 0.8);
+    --ka-account-card-border: rgba(255, 255, 255, 0.08);
+    --ka-account-card-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    --ka-account-input-bg: rgba(44, 44, 46, 0.8);
+    --ka-account-input-border: rgba(255, 255, 255, 0.1);
+    --ka-account-link: #64b5f6;
+    --ka-account-link-hover: #90caf9;
+    --ka-account-table-stripe: rgba(255, 255, 255, 0.03);
+    --ka-account-divider: rgba(255, 255, 255, 0.08);
+    --ka-account-btn-bg: rgba(255, 255, 255, 0.1);
+    --ka-account-btn-text: #f5f5f7;
 }
 
-#fs_promo_tab {
+/* ===== BASE STYLES ===== */
+body.king-addons_page_king-addons-account #wpcontent,
+body.king-addons_page_king-addons-account #wpbody,
+body.king-addons_page_king-addons-account #wpbody-content {
+    background: var(--ka-account-bg) !important;
+    padding: 0 !important;
+}
+
+body.king-addons_page_king-addons-account {
+    background: var(--ka-account-bg) !important;
+}
+
+/* ===== HIDE NAV TAB WRAPPER ===== */
+body.king-addons_page_king-addons-account h2.nav-tab-wrapper,
+body.king-addons_page_king-addons-account .nav-tab-wrapper {
     display: none !important;
 }
 
-#fs_account .postbox,
-#fs_account .widefat {
-    border-color: #f1f1f4;
+/* ===== MAIN WRAPPER ===== */
+body.king-addons_page_king-addons-account .wrap.fs-section {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 32px;
+    color: var(--ka-account-text);
 }
 
-.widefat thead td,
-.widefat thead th {
-    border-bottom: 1px solid #f1f1f4;
+body.king-addons_page_king-addons-account #poststuff {
+    margin-top: 0;
+    padding-top: 0;
 }
 
-div.updated {
-    border: 1px solid #f1f1f4;
+/* ===== POSTBOX / CARDS ===== */
+body.king-addons_page_king-addons-account .postbox {
+    background: var(--ka-account-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--ka-account-card-border);
+    border-radius: 20px;
+    box-shadow: var(--ka-account-card-shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Postbox headers */
+body.king-addons_page_king-addons-account #fs_account h3 {
+    background: transparent;
+    border-bottom: 1px solid var(--ka-account-divider);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+    padding: 20px 24px;
+    color: var(--ka-account-text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+body.king-addons_page_king-addons-account #fs_account h3 .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--ka-account-accent);
+}
+
+/* ===== HEADER ACTIONS ===== */
+body.king-addons_page_king-addons-account #fs_account .fs-header-actions {
+    position: absolute;
+    right: 24px;
+    top: 16px;
+    font-size: 13px;
+}
+
+body.king-addons_page_king-addons-account #fs_account .fs-header-actions ul {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px;
+    border-radius: 980px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account #fs_account .fs-header-actions ul {
+    background: rgba(28, 28, 30, 0.72);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.king-addons_page_king-addons-account #fs_account .fs-header-actions li {
+    float: none;
+    font-weight: 400;
+    margin: 0;
+}
+
+body.king-addons_page_king-addons-account #fs_account .fs-header-actions li a {
+    color: var(--ka-account-link);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 980px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1;
+}
+
+body.king-addons_page_king-addons-account #fs_account .fs-header-actions li a:hover {
+    background: var(--ka-account-btn-bg);
+    color: var(--ka-account-link-hover);
+}
+
+body.king-addons_page_king-addons-account #fs_account h3 {
+    padding-right: 220px;
+}
+
+body.king-addons_page_king-addons-account #fs_account .fs-header-actions li a .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* ===== INSIDE / CONTENT ===== */
+body.king-addons_page_king-addons-account .postbox .inside {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+}
+
+/* ===== KEY-VALUE TABLE ===== */
+body.king-addons_page_king-addons-account .fs-key-value-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table td,
+body.king-addons_page_king-addons-account .fs-key-value-table th {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--ka-account-divider);
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table tr:last-child td {
+    border-bottom: none;
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table tr td:first-child {
+    text-align: left;
+    width: 140px;
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table tr td:first-child nobr {
+    font-weight: 500;
+    color: var(--ka-account-text-secondary);
+    font-size: 14px;
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table code,
+body.king-addons_page_king-addons-account .fs-key-value-table input[type=text],
+body.king-addons_page_king-addons-account .fs-key-value-table var {
+    background: none;
+    color: var(--ka-account-text);
+    font-size: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table tr.alternate,
+body.king-addons_page_king-addons-account .fs-key-value-table tr:nth-child(odd) {
+    background-color: var(--ka-account-table-stripe);
+}
+
+body.king-addons_page_king-addons-account .fs-key-value-table .fs-right {
+    text-align: right;
+}
+
+/* ===== BUTTONS ===== */
+
+body.king-addons_page_king-addons-account .button {
+    border-radius: 980px !important;
+    transition: all 250ms ease !important;
+    /* transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important; */
+}
+
+body.king-addons_page_king-addons-account .button,
+body.king-addons_page_king-addons-account .wp-core-ui .button,
+body.king-addons_page_king-addons-account .wp-core-ui .button-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 980px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    border: none;
+    background: var(--ka-account-btn-bg);
+    color: var(--ka-account-btn-text);
+    line-height: 1.4;
+    min-height: auto;
+    height: auto;
+}
+
+body.king-addons_page_king-addons-account .button:hover,
+body.king-addons_page_king-addons-account .wp-core-ui .button:hover,
+body.king-addons_page_king-addons-account .wp-core-ui .button-secondary:hover {
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--ka-account-btn-text);
+    transform: scale(1.02);
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .button:hover,
+body.ka-v3-dark.king-addons_page_king-addons-account .wp-core-ui .button:hover,
+body.ka-v3-dark.king-addons_page_king-addons-account .wp-core-ui .button-secondary:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+body.king-addons_page_king-addons-account .button-primary,
+body.king-addons_page_king-addons-account .wp-core-ui .button-primary {
+    background: var(--ka-account-accent);
+    color: #fff;
+    border: none;
     box-shadow: none;
 }
 
-.fs-notice.updated.success.fs-has-title.fs-slug-king-addons.fs-type-plugin {
-    border-left-width: 4px;
+body.king-addons_page_king-addons-account .button-primary:hover,
+body.king-addons_page_king-addons-account .wp-core-ui .button-primary:hover {
+    background: var(--ka-account-accent-hover);
+    color: #fff;
+    transform: scale(1.02);
+    box-shadow: none;
 }
 
-.nav-tab-active {
-    border: none;
-    display: inline-flex;
-    line-height: 1;
-    padding: 15px 25px;
-    border-radius: 12px;
-    margin-right: 10px;
-    background: #1a1b1b;
-    flex-flow: row;
-    align-items: center;
+body.king-addons_page_king-addons-account .button-small,
+body.king-addons_page_king-addons-account .wp-core-ui .button-small {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+/* Activate License Button */
+body.king-addons_page_king-addons-account .fs-activate-license {
+    background: var(--ka-account-accent);
+    box-shadow: none;
+    color: #fff;
+}
+
+body.king-addons_page_king-addons-account .fs-activate-license:hover {
+    background: var(--ka-account-accent-hover);
+    box-shadow: none;
+    color: #fff;
+}
+
+/* ===== LINKS ===== */
+body.king-addons_page_king-addons-account a {
+    color: var(--ka-account-link);
     text-decoration: none;
-    color: white;
-    margin-bottom: 10px;
+    transition: color 0.2s ease;
 }
 
-h2.nav-tab-wrapper {
-    padding: 25px 15px 15px 30px;
-    background: #1a1b1b;
-    margin-bottom: 20px;
+body.king-addons_page_king-addons-account a:hover {
+    color: var(--ka-account-link-hover);
+}
+
+/* ===== BILLING SECTION ===== */
+body.king-addons_page_king-addons-account #fs_billing h3 {
+    background: transparent;
+    border-bottom: 1px solid var(--ka-account-divider);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+    padding: 20px 24px;
+    color: var(--ka-account-text);
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address {
+    width: 100%;
+    padding: 24px;
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address tr td {
+    padding: 12px;
+    width: 50%;
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address label span {
+    font-weight: 500;
+    color: var(--ka-account-text-secondary);
+    font-size: 13px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address input,
+body.king-addons_page_king-addons-account #fs_billing_address select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--ka-account-input-border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--ka-account-input-bg);
+    color: var(--ka-account-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-top: 0;
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address input:focus,
+body.king-addons_page_king-addons-account #fs_billing_address select:focus {
+    outline: none;
+    border-color: var(--ka-account-accent);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address.fs-read-mode input,
+body.king-addons_page_king-addons-account #fs_billing_address.fs-read-mode select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed var(--ka-account-divider);
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+    color: var(--ka-account-text);
+}
+
+body.king-addons_page_king-addons-account #fs_billing_address button {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* ===== PAYMENTS TABLE ===== */
+body.king-addons_page_king-addons-account #fs_payments h3 {
+    background: transparent;
+    border-bottom: 1px solid var(--ka-account-divider);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+    padding: 20px 24px;
+    color: var(--ka-account-text);
+}
+
+body.king-addons_page_king-addons-account .widefat {
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    background: transparent;
+}
+
+body.king-addons_page_king-addons-account .widefat thead,
+body.king-addons_page_king-addons-account .widefat tbody,
+body.king-addons_page_king-addons-account .widefat tr,
+body.king-addons_page_king-addons-account .widefat td,
+body.king-addons_page_king-addons-account .widefat th {
+    background: transparent;
+}
+
+body.king-addons_page_king-addons-account .widefat thead td,
+body.king-addons_page_king-addons-account .widefat thead th {
+    border-bottom: 1px solid var(--ka-account-divider);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ka-account-text-secondary);
+    padding: 14px 24px;
+    background: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .widefat thead td,
+body.ka-v3-dark.king-addons_page_king-addons-account .widefat thead th {
+    color: rgba(245, 245, 247, 0.72);
+}
+
+body.king-addons_page_king-addons-account .widefat tbody td {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--ka-account-divider);
+    color: var(--ka-account-text);
+    font-size: 14px;
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .widefat tbody td {
+    color: var(--ka-account-text);
+}
+
+body.king-addons_page_king-addons-account .widefat tbody tr:last-child td {
+    border-bottom: none;
+}
+
+body.king-addons_page_king-addons-account .widefat tbody tr:nth-child(odd) {
+    background-color: var(--ka-account-table-stripe);
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .widefat tbody tr:nth-child(odd),
+body.ka-v3-dark.king-addons_page_king-addons-account .widefat tbody tr.alternate {
+    background-color: var(--ka-account-table-stripe) !important;
+}
+
+body.king-addons_page_king-addons-account .widefat tbody tr:hover {
+    background-color: rgba(0, 113, 227, 0.05);
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .widefat tbody tr:hover {
+    background-color: rgba(100, 181, 246, 0.12);
+}
+
+/* Invoice button */
+body.king-addons_page_king-addons-account .widefat .button {
+    padding: 6px 14px;
+    font-size: 12px;
     border-radius: 8px;
 }
 
-.nav-tab-active:hover {
-    border-bottom: none;
-    background: #1a1b1b;
-    color: white;
+/* ===== TAGS & BADGES ===== */
+body.king-addons_page_king-addons-account label.fs-tag,
+body.king-addons_page_king-addons-account span.fs-tag {
+    background: rgba(0, 113, 227, 0.12);
+    border: 1px solid rgba(0, 113, 227, 0.18);
+    border-radius: 980px;
+    color: var(--ka-account-accent);
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 6px 12px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
-.wp-core-ui .button:not(.king-addons-upgrade-notice a),
-.wp-core-ui .button-secondary {
-    color: #191919;
-    border-color: #191919;
-    background: white;
-    border-radius: 5px !important;
+body.ka-v3-dark.king-addons_page_king-addons-account label.fs-tag,
+body.ka-v3-dark.king-addons_page_king-addons-account span.fs-tag {
+    background: rgba(100, 181, 246, 0.18);
+    border-color: rgba(100, 181, 246, 0.22);
+    color: #64b5f6;
 }
 
-.alternate,
-.striped > tbody > :nth-child(odd),
-ul.striped > :nth-child(odd) {
-    background-color: #f2f4f5;
+body.king-addons_page_king-addons-account label.fs-tag.fs-error,
+body.king-addons_page_king-addons-account span.fs-tag.fs-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
 }
 
-html, #wpcontent {
-    background: #f8f8f8;
+body.king-addons_page_king-addons-account label.fs-tag.fs-info,
+body.king-addons_page_king-addons-account span.fs-tag.fs-info {
+    background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
 }
 
-#wpcontent {
-    min-height: 100vh;
+/* ===== MODALS ===== */
+body.king-addons_page_king-addons-account .fs-modal {
+    z-index: 100100;
 }
 
-a {
-    color: #6957F0;
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-dialog {
+    background: var(--ka-account-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--ka-account-card-border);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    padding-bottom: 0;
+    background: rgb(248 248 248);
 }
 
-a:hover {
-    color: #191919;
+body.king-addons_page_king-addons-account .fs-modal.fs-modal-email-address-update p {
+    margin-bottom: 10px;
 }
 
-.fs-key-value-table code,
-.fs-key-value-table input[type=text],
-.fs-key-value-table var {
-    color: #191919;
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-body,
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-panel {
+    background: transparent;
+    color: var(--ka-account-text);
+}
+
+/* Some Freemius modals inject white panels; force them to match the theme */
+body.ka-v3-dark.king-addons_page_king-addons-account .fs-modal .fs-modal-dialog,
+body.ka-v3-dark.king-addons_page_king-addons-account .fs-modal .fs-modal-body,
+body.ka-v3-dark.king-addons_page_king-addons-account .fs-modal .fs-modal-panel {
+    background: var(--ka-account-card-bg) !important;
+    color: var(--ka-account-text) !important;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-header {
+    background: transparent;
+    border-bottom: 1px solid var(--ka-account-divider);
+    padding: 20px 24px;
+    border-radius: 0;
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .button.button-primary:hover {
+    background: #0077ed;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-header h4 {
+    color: var(--ka-account-text) !important;
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-header .fs-close {
+    color: var(--ka-account-text-secondary);
+    opacity: 1;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-header .fs-close:hover {
+    color: var(--ka-account-text);
+    background: #e8e8e8;
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account .fs-modal .fs-modal-header .fs-close:hover {
+    background: #29292b;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-body {
+    padding: 24px 24px 16px;
+    color: var(--ka-account-text);
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-footer {
+    background: transparent;
+    border-top: 1px solid var(--ka-account-divider);
+    padding: 16px 24px;
+    border-radius: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+body.king-addons_page_king-addons-account .fs-modal input[type="text"],
+body.king-addons_page_king-addons-account .fs-modal input[type="email"],
+body.king-addons_page_king-addons-account .fs-modal select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--ka-account-input-border);
+    border-radius: 12px;
     font-size: 15px;
+    font-family: inherit;
+    background: var(--ka-account-input-bg);
+    color: var(--ka-account-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-#wpfooter {
+body.king-addons_page_king-addons-account .fs-modal input[type="text"]:focus,
+body.king-addons_page_king-addons-account .fs-modal input[type="email"]:focus,
+body.king-addons_page_king-addons-account .fs-modal select:focus {
+    outline: none;
+    border-color: var(--ka-account-accent);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
+}
+
+/* Update License modal: avoid clipped inputs and extra spacing */
+body.king-addons_page_king-addons-account .fs-modal .fs-license-options-container {
+    max-width: 100%;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-license-options-container table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-license-options-container td {
+    overflow: visible;
+}
+
+body.king-addons_page_king-addons-account .fs-license-options-container table td:first-child {
+    width: 30px;
+}
+
+body.king-addons_page_king-addons-account .fs-license-options-container table .fs-other-license-key-container label {
+    top: 0;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-other-license-key-container {
+    min-width: 0;
+    width: 100%;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-other-license-key-container > div {
+    min-width: 0;
+    width: 100%;
+    height: auto;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-other-license-key-container input[type="text"] {
+    max-width: 100%;
+}
+
+body.king-addons_page_king-addons-account .fs-modal .fs-modal-body > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Modal overlay */
+body.king-addons_page_king-addons-account.has-fs-modal::before {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* ===== NOTICES ===== */
+body.king-addons_page_king-addons-account .notice,
+body.king-addons_page_king-addons-account .updated,
+body.king-addons_page_king-addons-account .error,
+body.king-addons_page_king-addons-account .fs-notice {
+    background: var(--ka-account-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--ka-account-card-border);
+    border-radius: 16px;
+    box-shadow: var(--ka-account-card-shadow);
+    padding: 16px 20px;
+    margin: 0 0 20px 0;
+    border-left-width: 4px;
+}
+
+/* Freemius notice internals */
+body.king-addons_page_king-addons-account .fs-notice {
+    position: relative;
+}
+
+body.king-addons_page_king-addons-account .fs-notice .fs-plugin-title {
     display: none;
 }
 
-#wpbody-content {
+body.king-addons_page_king-addons-account .fs-notice .fs-notice-body {
+    color: var(--ka-account-text);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+body.king-addons_page_king-addons-account .fs-notice .fs-notice-body strong {
+    font-weight: 600;
+}
+
+body.king-addons_page_king-addons-account .fs-notice .fs-notice-body a {
+    color: var(--ka-account-link);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+body.king-addons_page_king-addons-account .fs-notice .fs-notice-body a:hover {
+    color: var(--ka-account-link-hover);
+}
+
+body.king-addons_page_king-addons-account .fs-notice.updated.success {
+    border-left-color: var(--ka-account-success);
+}
+
+body.king-addons_page_king-addons-account .fs-notice.updated.error,
+body.king-addons_page_king-addons-account .fs-notice.error {
+    border-left-color: var(--ka-account-error);
+}
+
+body.king-addons_page_king-addons-account .fs-notice.updated.warning,
+body.king-addons_page_king-addons-account .fs-notice.warning {
+    border-left-color: var(--ka-account-warning);
+}
+
+body.king-addons_page_king-addons-account .notice p,
+body.king-addons_page_king-addons-account .updated p,
+body.king-addons_page_king-addons-account .error p,
+body.king-addons_page_king-addons-account .fs-notice p {
+    margin: 0;
+    padding: 0;
+    color: var(--ka-account-text);
+}
+
+body.king-addons_page_king-addons-account .notice.notice-success,
+body.king-addons_page_king-addons-account .updated.notice-success {
+    border-left-color: var(--ka-account-success);
+}
+
+body.king-addons_page_king-addons-account .notice.notice-warning {
+    border-left-color: var(--ka-account-warning);
+}
+
+body.king-addons_page_king-addons-account .notice.notice-error,
+body.king-addons_page_king-addons-account .error {
+    border-left-color: var(--ka-account-error);
+}
+
+body.king-addons_page_king-addons-account .notice.notice-info {
+    border-left-color: var(--ka-account-link);
+}
+
+body.king-addons_page_king-addons-account .fs-notice[data-id="license_not_whitelabeled"].success,
+body.king-addons_page_king-addons-account .fs-notice[data-id="license_whitelabeled"].success {
+    border-left-color: var(--ka-account-success);
+}
+
+/* ===== INLINE BUTTON ===== */
+body.king-addons_page_king-addons-account .fs-button-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ka-account-text-secondary);
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+body.king-addons_page_king-addons-account .fs-button-inline:hover {
+    color: var(--ka-account-error);
+}
+
+body.king-addons_page_king-addons-account .fs-button-inline .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* ===== SCROLLABLE TABLE ===== */
+body.king-addons_page_king-addons-account #fs_sites .fs-scrollable-table .fs-table-body {
+    border: 1px solid var(--ka-account-divider);
+    border-radius: 12px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+body.king-addons_page_king-addons-account #fs_sites .fs-scrollable-table .fs-table-body > table.widefat {
+    border: none !important;
+}
+
+/* ===== ADDONS SECTION ===== */
+body.king-addons_page_king-addons-account #fs_addons h3 {
+    border: none;
+    margin-bottom: 0;
+    padding: 4px 5px;
+}
+
+body.king-addons_page_king-addons-account #fs_addons td {
+    vertical-align: middle;
+}
+
+/* ===== DASHICONS COLOR IN DARK MODE ===== */
+body.ka-v3-dark.king-addons_page_king-addons-account .dashicons {
+    color: var(--ka-account-text);
+}
+
+body.ka-v3-dark.king-addons_page_king-addons-account #fs_account h3 .dashicons {
+    color: #64b5f6;
+}
+
+/* ===== FOOTER ===== */
+body.king-addons_page_king-addons-account #wpfooter {
+    display: none;
+}
+
+body.king-addons_page_king-addons-account #wpbody-content {
     padding-bottom: 0;
 }
 
-code {
-    font-family: inherit;
+/* ===== CODE ELEMENT ===== */
+body.king-addons_page_king-addons-account code {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: none;
 }
 
-.fs-key-value-table td, .fs-key-value-table th {
-    padding: 8px;
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media screen and (max-width: 782px) {
+    body.king-addons_page_king-addons-account .wrap.fs-section {
+        padding: 24px 16px;
+    }
+
+    body.king-addons_page_king-addons-account .postbox {
+        border-radius: 16px;
+    }
+
+    body.king-addons_page_king-addons-account #fs_account .fs-header-actions {
+        position: static;
+        margin: 0 0 12px;
+        padding: 0 24px 12px;
+    }
+
+    body.king-addons_page_king-addons-account #fs_account .fs-header-actions ul {
+        flex-wrap: wrap;
+    }
+
+    body.king-addons_page_king-addons-account .fs-key-value-table td {
+        display: block;
+        padding: 12px 24px;
+    }
+
+    body.king-addons_page_king-addons-account .fs-key-value-table tr td:first-child {
+        width: 100%;
+        padding-bottom: 4px;
+    }
+
+    body.king-addons_page_king-addons-account .fs-key-value-table tr td:nth-child(2) {
+        padding-top: 0;
+    }
+
+    body.king-addons_page_king-addons-account #fs_billing_address tr td {
+        display: block;
+        width: 100%;
+    }
 }
 
-.fs-notice[data-id=license_not_whitelabeled].success,
-.fs-notice[data-id=license_whitelabeled].success {
-    border-left-color: #6957F0;
-    color: inherit;
+/* ===== SMOOTH TRANSITIONS FOR THEME SWITCH ===== */
+body.king-addons_page_king-addons-account,
+body.king-addons_page_king-addons-account #wpcontent,
+body.king-addons_page_king-addons-account #wpbody,
+body.king-addons_page_king-addons-account #wpbody-content,
+body.king-addons_page_king-addons-account .postbox,
+body.king-addons_page_king-addons-account .fs-key-value-table td,
+body.king-addons_page_king-addons-account .widefat tbody td,
+body.king-addons_page_king-addons-account a,
+body.king-addons_page_king-addons-account .button {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#fs_account h3 .dashicons {
-    font-size: 1.2em;
-    height: 24px;
-    width: 24px;
+/* ===== PREVENT FLASH ON INITIAL LOAD ===== */
+body.king-addons_page_king-addons-account.ka-no-transition,
+body.king-addons_page_king-addons-account.ka-no-transition * {
+    transition: none !important;
 }
 
-.fs-modal .fs-modal-header h4 {
-    color: #191919 !important;
+/* ===== BUTTON GROUP ===== */
+body.king-addons_page_king-addons-account .button-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.fs-modal .fs-modal-header {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+body.king-addons_page_king-addons-account .button-group .button {
+    margin: 8px 8px 0 0;
 }
 
-.fs-modal .fs-modal-footer {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+body.king-addons_page_king-addons-account .fs-header-actions li:has(a[href*="king-addons-pricing"]),
+body.king-addons_page_king-addons-account .fs-header-actions li:has(a[href*="king-addons-pricing"]) + li  {
+    display: none;
 }
 
-
-#fs_account .fs-header-actions li {
-    float: left;
-    font-weight: 400;
-    margin: 0 2px;
+body.king-addons_page_king-addons-account a.button.fs-change-plan.button-upgrade {
+    display: none;
 }
 
-.updated a {
-    text-decoration: none;
-    padding-bottom: 0 !important;
+/* ===== FORM INLINE ===== */
+body.king-addons_page_king-addons-account .fs-key-value-table form {
+    display: inline-block;
 }
 
-#fs_account h3 {
-    border-bottom: 1px solid #f1f1f4;
-    font-size: 1.2em;
-    line-height: 1.4;
-    margin: 0 0 12px;
-    padding: 12px 15px;
+body.king-addons_page_king-addons-account .fs-key-value-table tr td:first-child form {
+    display: block;
 }
 
-.button.fs-change-plan.button-upgrade {
-    margin-left: 5px;
+/* ===== LICENSE OPTIONS IN MODAL ===== */
+body.king-addons_page_king-addons-account .fs-license-options-container table {
+    width: 100%;
+}
+
+body.king-addons_page_king-addons-account .fs-license-options-container td {
+    padding: 8px 0;
+    vertical-align: middle;
+}
+
+body.king-addons_page_king-addons-account .fs-license-options-container input[type="radio"] {
+    margin-right: 8px;
+}
+
+body.king-addons_page_king-addons-account .fs-license-options-container select {
+    width: 100%;
+}
+
+body.king-addons_page_king-addons-account .fs-other-license-key-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+body.king-addons_page_king-addons-account .fs-other-license-key-container > div {
+    flex: 1;
+    min-width: 200px;
+}
+
+body.king-addons_page_king-addons-account .show-license-resend-modal {
+    font-size: 13px;
+    color: var(--ka-account-link);
+    display: block;
+    margin-top: 16px;
+}
+
+body.king-addons_page_king-addons-account .show-license-resend-modal:hover {
+    color: var(--ka-account-link-hover);
+}
+
+/* ===== TOGGLE VISIBILITY BUTTON ===== */
+body.king-addons_page_king-addons-account .fs-toggle-visibility {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* ===== HIDE PROMO TAB ===== */
+#fs_promo_tab {
+    display: none !important;
 }

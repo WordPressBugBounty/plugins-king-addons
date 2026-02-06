@@ -1,0 +1,54 @@
+.ka-woo-my-account-downloads {
+    width: 100%;
+}
+
+.ka-woo-my-account-downloads table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ka-woo-my-account-downloads tr {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.ka-woo-my-account-downloads td,
+.ka-woo-my-account-downloads th {
+    padding: 12px;
+}
+
+@media (max-width: 768px) {
+    .ka-woo-my-account-downloads table,
+    .ka-woo-my-account-downloads thead,
+    .ka-woo-my-account-downloads tbody,
+    .ka-woo-my-account-downloads th,
+    .ka-woo-my-account-downloads td,
+    .ka-woo-my-account-downloads tr {
+        display: block;
+        width: 100%;
+    }
+    .ka-woo-my-account-downloads thead {
+        display: none;
+    }
+    .ka-woo-my-account-downloads tr {
+        padding: 12px;
+    }
+    .ka-woo-my-account-downloads td {
+        padding: 6px 0;
+    }
+    .ka-woo-my-account-downloads td:before {
+        content: attr(data-title);
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 4px;
+    }
+}
+
+
+
+
+
+

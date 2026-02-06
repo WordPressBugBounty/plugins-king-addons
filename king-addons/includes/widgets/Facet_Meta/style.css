@@ -1,0 +1,41 @@
+.ka-facet-meta {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.ka-facet-meta__input,
+.ka-facet-meta__select,
+.ka-facet-meta__range input {
+    min-width: 140px;
+}
+
+.ka-facet-meta__range {
+    display: flex;
+    gap: 8px;
+}
+.king-addons-facet--meta .king-addons-facet__row {
+  display: flex;
+  gap: 8px;
+}
+
+.king-addons-facet--meta .king-addons-facet__input {
+  min-width: 140px;
+}
+
+.ka-facet-meta__select.is-active,
+.king-addons-facet--meta .king-addons-facet__input:focus,
+.king-addons-facet--meta .king-addons-facet__input.is-active {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.king-addons-facet--meta .king-addons-facet__count {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+
+
+
+

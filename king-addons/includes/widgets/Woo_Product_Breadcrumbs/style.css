@@ -1,0 +1,40 @@
+.ka-woo-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    min-width: 0;
+}
+
+.ka-woo-breadcrumbs a {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ka-woo-breadcrumbs__sep {
+    opacity: 0.7;
+}
+
+.ka-woo-breadcrumbs__home {
+    display: inline-flex;
+    align-items: center;
+}
+
+.ka-woo-breadcrumbs .breadcrumb_last {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+
+
+

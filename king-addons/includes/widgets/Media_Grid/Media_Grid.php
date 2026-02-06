@@ -19,8 +19,6 @@ if (!defined('ABSPATH')) {
 
 class Media_Grid extends Widget_Base
 {
-    
-
 
     public function get_name()
     {
@@ -29,7 +27,7 @@ class Media_Grid extends Widget_Base
 
     public function get_title()
     {
-        return esc_html__('Image Grid & Slider/Carousel/Gallery', 'king-addons');
+        return esc_html__('Advanced Image Gallery', 'king-addons');
     }
 
     public function get_icon()
@@ -4208,11 +4206,11 @@ class Media_Grid extends Widget_Base
         $this->add_control(
             'lightbox_color',
             [
-                'label' => esc_html__('Color', 'king-addons'),
+                'label' => esc_html__('Text Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span, {{WRAPPER}} .king-addons-grid-item-title .inner-block a' => 'color: {{VALUE}}',
                 ],
             ]
         );
@@ -4260,11 +4258,11 @@ class Media_Grid extends Widget_Base
         $this->add_control(
             'lightbox_color_hr',
             [
-                'label' => esc_html__('Color', 'king-addons'),
+                'label' => esc_html__('Text Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover, {{WRAPPER}} .king-addons-grid-item-title .inner-block a:hover' => 'color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -4321,11 +4319,78 @@ class Media_Grid extends Widget_Base
             ]
         );
 
+        // Icon Size Control - separate from typography
+        $this->add_responsive_control(
+            'lightbox_icon_size',
+            [
+                'label' => esc_html__('Icon Size', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', 'rem'],
+                'range' => [
+                    'px' => [
+                        'min' => 5,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                    'em' => [
+                        'min' => 0.5,
+                        'max' => 5,
+                        'step' => 0.1,
+                    ],
+                    'rem' => [
+                        'min' => 0.5,
+                        'max' => 5,
+                        'step' => 0.1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 16,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox i' => 'font-size: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        // Icon Color Control - separate from text color
+        $this->add_responsive_control(
+            'lightbox_icon_color',
+            [
+                'label' => esc_html__('Icon Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#ffffff',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span svg' => 'fill: {{VALUE}};',
+                ],
+            ]
+        );
+
+        // Icon Hover Color Control
+        $this->add_responsive_control(
+            'lightbox_icon_color_hover',
+            [
+                'label' => esc_html__('Icon Color (Hover)', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox span:hover i' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox span:hover svg' => 'fill: {{VALUE}} !important;',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover i' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .king-addons-grid-item-lightbox .inner-block > span:hover svg' => 'fill: {{VALUE}} !important;',
+                ],
+            ]
+        );
+
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
                 'name' => 'lightbox_typography',
-                'selector' => '{{WRAPPER}} .king-addons-grid-item-lightbox'
+                'selector' => '{{WRAPPER}} .king-addons-grid-item-lightbox, {{WRAPPER}} .king-addons-grid-item-title .inner-block a',
             ]
         );
 
@@ -7346,7 +7411,7 @@ $this->end_controls_section();
                 'progressBar' => $s['lightbox_popup_progressbar'],
                 'counter' => $s['lightbox_popup_counter'],
                 'controls' => $s['lightbox_popup_arrows'],
-                'getCaptionFromTitleOrAlt' => $s['lightbox_popup_captions'],
+                'getCaptionFromTitleOrAlt' => false,
                 'thumbnail' => $s['lightbox_popup_thumbnails'],
                 'showThumbByDefault' => $s['lightbox_popup_thumbnails_default'],
                 'share' => $s['lightbox_popup_sharing'],
@@ -7392,7 +7457,7 @@ $this->end_controls_section();
                 'progressBar' => $s['lightbox_popup_progressbar'],
                 'counter' => $s['lightbox_popup_counter'],
                 'controls' => $s['lightbox_popup_arrows'],
-                'getCaptionFromTitleOrAlt' => $s['lightbox_popup_captions'],
+                'getCaptionFromTitleOrAlt' => false,
                 'thumbnail' => $s['lightbox_popup_thumbnails'],
                 'showThumbByDefault' => $s['lightbox_popup_thumbnails_default'],
                 'share' => $s['lightbox_popup_sharing'],

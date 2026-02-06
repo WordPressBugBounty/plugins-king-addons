@@ -1,0 +1,74 @@
+.ka-woo-my-account-order-details {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fff;
+}
+
+.ka-woo-order-details__back {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.ka-woo-order-details__summary {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.ka-woo-order-details__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.ka-woo-order-details__badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 12px;
+}
+
+.ka-woo-my-account-order-details table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ka-woo-my-account-order-details th,
+.ka-woo-my-account-order-details td {
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .ka-woo-my-account-order-details table,
+  .ka-woo-my-account-order-details thead,
+  .ka-woo-my-account-order-details tbody,
+  .ka-woo-my-account-order-details th,
+  .ka-woo-my-account-order-details td,
+  .ka-woo-my-account-order-details tr {
+    display: block;
+    width: 100%;
+  }
+  .ka-woo-my-account-order-details thead {
+    display: none;
+  }
+  .ka-woo-my-account-order-details td {
+    padding: 6px 0;
+  }
+  .ka-woo-my-account-order-details td:before {
+    content: attr(data-title);
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+}
+
+
+
+
+

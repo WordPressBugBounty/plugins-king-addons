@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
+  <rect x="10" y="30" width="35" height="16" rx="8" fill="url(#g)" opacity="0.9"/>
+  <text x="19" y="41" font-family="Arial" font-size="8" fill="#fff">Color</text>
+  <circle cx="38" cy="38" r="4" fill="none" stroke="#fff" stroke-width="1.5"/>
+  <path d="M36 36l4 4M40 36l-4 4" stroke="#fff" stroke-width="1.5"/>
+  <rect x="50" y="30" width="40" height="16" rx="8" fill="url(#g)" opacity="0.9"/>
+  <text x="58" y="41" font-family="Arial" font-size="8" fill="#fff">Size: M</text>
+  <circle cx="82" cy="38" r="4" fill="none" stroke="#fff" stroke-width="1.5"/>
+  <path d="M80 36l4 4M84 36l-4 4" stroke="#fff" stroke-width="1.5"/>
+  <rect x="10" y="54" width="45" height="16" rx="8" fill="url(#g)" opacity="0.7"/>
+  <text x="17" y="65" font-family="Arial" font-size="8" fill="#fff">$50-$100</text>
+  <circle cx="47" cy="62" r="4" fill="none" stroke="#fff" stroke-width="1.5"/>
+  <path d="M45 60l4 4M49 60l-4 4" stroke="#fff" stroke-width="1.5"/>
+</svg>

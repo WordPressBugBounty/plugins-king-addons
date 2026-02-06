@@ -30,7 +30,7 @@ class WooCommerce_Grid extends Widget_Base
 
     public function get_title()
     {
-        return esc_html__('WooCommerce Grid & Slider/Carousel', 'king-addons');
+        return esc_html__('WooCommerce Grid & Slider', 'king-addons');
     }
 
     public function get_icon()
@@ -45,9 +45,9 @@ class WooCommerce_Grid extends Widget_Base
 
     public function get_keywords()
     {
-        return ['king addons', 'king', 'addons', 'kingaddons', 'king-addons', 'shop grid', 'product grid', 'slick', 'loop', 'sales', 'filter',
+        return ['king addons', 'king', 'addons', 'kingaddons', 'king-addons', 'shop grid', 'quick product grid', 'slick', 'loop', 'sales', 'filter',
             'woo', 'commerce', 'woocommerce', 'shop', 'product', 'products', 'carousel', 'slider', 'grid', 'masonry', 'store', 'sale',
-            'woocommerce', 'product slider', 'product carousel', 'isotope', 'masonry grid', 'filterable grid', 'loop grid'];
+            'woocommerce', 'product slider', 'quick product slider', 'isotope', 'masonry grid', 'filterable grid', 'loop grid'];
     }
 
     public function get_script_depends()
@@ -9795,7 +9795,7 @@ class WooCommerce_Grid extends Widget_Base
                 'progressBar' => $settings['lightbox_popup_progressbar'],
                 'counter' => $settings['lightbox_popup_counter'],
                 'controls' => $settings['lightbox_popup_arrows'],
-                'getCaptionFromTitleOrAlt' => $settings['lightbox_popup_captions'],
+                'getCaptionFromTitleOrAlt' => false,
                 'thumbnail' => $settings['lightbox_popup_thumbnails'],
                 'showThumbByDefault' => $settings['lightbox_popup_thumbnails_default'],
                 'share' => $settings['lightbox_popup_sharing'],
@@ -9851,7 +9851,7 @@ class WooCommerce_Grid extends Widget_Base
                 'progressBar' => $settings['lightbox_popup_progressbar'],
                 'counter' => $settings['lightbox_popup_counter'],
                 'controls' => $settings['lightbox_popup_arrows'],
-                'getCaptionFromTitleOrAlt' => $settings['lightbox_popup_captions'],
+                'getCaptionFromTitleOrAlt' => false,
                 'thumbnail' => $settings['lightbox_popup_thumbnails'],
                 'showThumbByDefault' => $settings['lightbox_popup_thumbnails_default'],
                 'share' => $settings['lightbox_popup_sharing'],

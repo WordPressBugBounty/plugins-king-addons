@@ -20,8 +20,6 @@ if (!defined('ABSPATH')) {
 class Slider extends Widget_Base
 {
     
-
-
     public function get_name()
     {
         return 'king-addons-slider';

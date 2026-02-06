@@ -1,0 +1,528 @@
+.kng-maintenance-body {
+    margin: 0;
+}
+
+html,
+body.kng-maintenance-body {
+    height: 100%;
+}
+
+.kng-maintenance-body,
+.kng-maintenance {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+.kng-maintenance {
+    position: relative;
+    min-height: 70vh;
+    padding: 80px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Full-page response should always fill the viewport without extra scroll.
+   100vh can overflow when combined with padding; border-box prevents that.
+   Use dynamic viewport units when available (mobile browser UI safe). */
+body.kng-maintenance-body .kng-maintenance {
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+}
+
+.kng-maintenance-full {
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+}
+
+.kng-maintenance-theme-dark {
+    background: radial-gradient(circle at top left, rgba(0, 113, 227, 0.2), transparent 55%), #0b0b0d;
+    color: #f5f5f7;
+}
+
+.kng-maintenance-theme-light {
+    background: radial-gradient(circle at top left, rgba(0, 113, 227, 0.12), transparent 55%), #f5f5f7;
+    color: #1d1d1f;
+}
+
+.kng-maintenance-shell {
+    max-width: 880px;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.kng-maintenance-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 48px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.kng-maintenance-theme-light .kng-maintenance-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+}
+
+.kng-maintenance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: rgba(0, 113, 227, 0.18);
+    color: #a5d8ff;
+    margin-bottom: 20px;
+}
+
+.kng-maintenance-theme-light .kng-maintenance-badge {
+    background: rgba(0, 113, 227, 0.12);
+    color: #0071e3;
+}
+
+.kng-maintenance-card h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 0 0 16px;
+    line-height: 1.1;
+}
+
+.kng-maintenance-subhead {
+    font-size: 18px;
+    margin: 0 0 24px;
+    color: #a1a1a6;
+}
+
+.kng-maintenance-theme-light .kng-maintenance-subhead {
+    color: #6e6e73;
+}
+
+.kng-maintenance-launch {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #8dd1ff;
+    margin-bottom: 24px;
+}
+
+.kng-maintenance-theme-light .kng-maintenance-launch {
+    color: #0071e3;
+}
+
+.kng-maintenance-countdown {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.kng-maintenance-countdown div {
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    text-align: center;
+}
+
+.kng-maintenance-countdown strong {
+    display: block;
+    font-size: 24px;
+}
+
+.kng-maintenance-countdown span {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #a1a1a6;
+}
+
+.kng-maintenance-progress {
+    margin-bottom: 20px;
+}
+
+.kng-maintenance-progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.kng-maintenance-progress-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #0071e3, #34d399);
+    border-radius: inherit;
+}
+
+.kng-maintenance-progress-label {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #a1a1a6;
+}
+
+.kng-maintenance-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.kng-maintenance-form input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: inherit;
+}
+
+.kng-maintenance-form button {
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: none;
+    background: #0071e3;
+    color: #fff;
+    cursor: pointer;
+}
+
+.kng-maintenance-split {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.kng-maintenance-split h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.kng-maintenance-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #8d8d94;
+}
+
+.kng-maintenance-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.kng-maintenance-orb {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 113, 227, 0.4), transparent 70%);
+    top: -60px;
+    right: -40px;
+    filter: blur(10px);
+}
+
+.kng-maintenance-orb.secondary {
+    width: 220px;
+    height: 220px;
+    bottom: -60px;
+    left: -40px;
+    top: auto;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.4), transparent 70%);
+}
+
+.kng-maintenance-template-dark .kng-maintenance-card {
+    background: rgba(5, 5, 7, 0.9);
+}
+
+.kng-maintenance-template-gradient .kng-maintenance-card {
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.2), rgba(236, 72, 153, 0.2));
+}
+
+.kng-maintenance-template-aurora .kng-maintenance-card {
+    background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.22), transparent 55%),
+        radial-gradient(circle at 80% 30%, rgba(34, 197, 94, 0.18), transparent 55%),
+        radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.18), transparent 60%),
+        rgba(10, 10, 12, 0.86);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.kng-maintenance-private-access {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 9999;
+    max-width: min(360px, calc(100vw - 32px));
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.kng-maintenance-theme-light .kng-maintenance-private-access {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.kng-maintenance-private-access summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.kng-maintenance-private-access summary::-webkit-details-marker {
+    display: none;
+}
+
+.kng-maintenance-private-access-body {
+    padding: 0 14px 14px;
+}
+
+.kng-maintenance-private-access-error {
+    margin: 8px 0 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.14);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    font-size: 13px;
+}
+
+.kng-maintenance-private-access-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.kng-maintenance-private-access-form input {
+    min-width: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(0, 0, 0, 0.2);
+    color: inherit;
+}
+
+.kng-maintenance-theme-light .kng-maintenance-private-access-form input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+.kng-maintenance-private-access-form button {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    background: #0071e3;
+    color: #fff;
+    cursor: pointer;
+}
+
+.kng-maintenance-template-aurora .kng-maintenance-badge {
+    background: rgba(34, 211, 238, 0.16);
+    color: #a5f3fc;
+}
+
+.kng-maintenance-template-neon .kng-maintenance-card {
+    background: rgba(4, 4, 8, 0.92);
+    border-color: rgba(56, 189, 248, 0.18);
+    box-shadow: 0 30px 90px rgba(56, 189, 248, 0.12), 0 20px 70px rgba(168, 85, 247, 0.08);
+}
+
+.kng-maintenance-template-neon .kng-maintenance-badge {
+    background: rgba(168, 85, 247, 0.16);
+    color: #e9d5ff;
+}
+
+.kng-maintenance-template-neon .kng-maintenance-progress-bar span {
+    background: linear-gradient(90deg, #22d3ee, #a855f7);
+}
+
+.kng-maintenance-template-paper .kng-maintenance-card {
+    background: #ffffff;
+    border-color: rgba(2, 6, 23, 0.08);
+    box-shadow: 0 22px 55px rgba(2, 6, 23, 0.08);
+}
+
+.kng-maintenance-template-paper .kng-maintenance-badge {
+    background: rgba(2, 6, 23, 0.06);
+    color: #0f172a;
+}
+
+.kng-maintenance-template-paper .kng-maintenance-subhead,
+.kng-maintenance-template-paper .kng-maintenance-progress-label,
+.kng-maintenance-template-paper .kng-maintenance-footer {
+    color: rgba(2, 6, 23, 0.6);
+}
+
+.kng-maintenance-template-paper .kng-maintenance-form input {
+    border-color: rgba(2, 6, 23, 0.12);
+}
+
+.kng-maintenance-template-grid .kng-maintenance-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.kng-maintenance-template-grid .kng-maintenance-shell::before {
+    content: '';
+    position: absolute;
+    inset: -120px;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 60%);
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.kng-maintenance-template-grid .kng-maintenance-badge {
+    background: rgba(0, 113, 227, 0.16);
+    color: #bfdbfe;
+}
+
+.kng-maintenance-template-mono .kng-maintenance-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(18px) saturate(120%);
+}
+
+.kng-maintenance-template-mono .kng-maintenance-badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.kng-maintenance-template-mono .kng-maintenance-orb,
+.kng-maintenance-template-mono .kng-maintenance-orb.secondary {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 70%);
+}
+
+.kng-maintenance-template-spotlight .kng-maintenance-card {
+    background: radial-gradient(circle at 50% -20%, rgba(0, 113, 227, 0.28), transparent 55%),
+        rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.kng-maintenance-template-spotlight .kng-maintenance-badge {
+    background: rgba(0, 113, 227, 0.2);
+    color: #c7e5ff;
+}
+
+.kng-maintenance-template-poster .kng-maintenance {
+    padding: 110px 24px;
+}
+
+.kng-maintenance-template-poster .kng-maintenance-card {
+    border-radius: 34px;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.22), rgba(59, 130, 246, 0.16)),
+        rgba(10, 10, 12, 0.84);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.kng-maintenance-template-poster .kng-maintenance-badge {
+    background: rgba(236, 72, 153, 0.16);
+    color: #fecdd3;
+}
+
+.kng-maintenance-template-ribbon .kng-maintenance-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.kng-maintenance-template-ribbon .kng-maintenance-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.22), rgba(0, 113, 227, 0.18), rgba(236, 72, 153, 0.18));
+    opacity: 0.32;
+    pointer-events: none;
+}
+
+.kng-maintenance-template-ribbon .kng-maintenance-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.kng-maintenance-template-ribbon .kng-maintenance-badge {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.kng-maintenance-template-countdown .kng-maintenance-badge {
+    background: rgba(59, 130, 246, 0.22);
+    color: #93c5fd;
+}
+
+.kng-maintenance-template-subscribe .kng-maintenance-form button {
+    background: linear-gradient(90deg, #0071e3, #60a5fa);
+}
+
+.kng-maintenance-template-product-launch .kng-maintenance-card {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(14, 116, 144, 0.15));
+}
+
+.kng-maintenance-template-split .kng-maintenance-card {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.kng-maintenance-template-construction .kng-maintenance-card {
+    background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08) 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px);
+}
+
+.kng-maintenance-template-logo .kng-maintenance-card h1::before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 12px;
+    border-radius: 50%;
+    background: #0071e3;
+}
+
+.kng-maintenance-template-progress .kng-maintenance-badge {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+.kng-maintenance-loaded .kng-maintenance-card {
+    animation: kng-maintenance-fade 0.8s ease forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes kng-maintenance-fade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .kng-maintenance-card {
+        padding: 32px 24px;
+    }
+
+    .kng-maintenance-countdown {
+        grid-template-columns: 1fr;
+    }
+
+    .kng-maintenance-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -5,6 +5,7 @@
 namespace King_Addons;
 
 use Exception;
+use King_Addons\SectionsMap;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -27,6 +28,13 @@ final class Templates
         $templates = TemplatesMap::getTemplatesMapArray();
         $collections = CollectionsMap::getCollectionsMapArray();
 
+        // Load Sections for counting
+        if (!class_exists('King_Addons\\SectionsMap')) {
+            require_once KING_ADDONS_PATH . 'includes/SectionsMap.php';
+        }
+        $sections_map = SectionsMap::getSectionsMapArray();
+        $sections = $sections_map['sections'] ?? [];
+
         uasort($collections, function ($a, $b) {
             return strcasecmp($a, $b);
         });
@@ -40,9 +48,12 @@ final class Templates
         $categories = [];
         $tags = [];
         $category_counts = [];
+        $collection_counts = [];
+        $collection_images = [];
+        $template_collection_map = [];
 
         // Getting unique categories and tags
-        foreach ($templates['templates'] as $template) {
+        foreach ($templates['templates'] as $key => $template) {
             if (!in_array($template['category'], $categories)) {
                 $categories[] = $template['category'];
             }
@@ -55,6 +66,25 @@ final class Templates
 
             $category = $template['category'];
             $category_counts[$category] = isset($category_counts[$category]) ? $category_counts[$category] + 1 : 1;
+
+            $collection_id = $template['collection'] ?? '';
+            if ($collection_id !== '') {
+                $collection_counts[$collection_id] = isset($collection_counts[$collection_id]) ? $collection_counts[$collection_id] + 1 : 1;
+                if (!isset($collection_images[$collection_id])) {
+                    $collection_images[$collection_id] = $key;
+                }
+                $template_collection_map[$key] = $collection_id;
+            }
+        }
+
+        // Count sections per collection
+        $collection_sections_counts = [];
+        foreach ($sections as $section) {
+            $parent = $section['parent_template'] ?? '';
+            if ($parent && isset($template_collection_map[$parent])) {
+                $col_id = $template_collection_map[$parent];
+                $collection_sections_counts[$col_id] = isset($collection_sections_counts[$col_id]) ? $collection_sections_counts[$col_id] + 1 : 1;
+            }
         }
 
         sort($categories);
@@ -117,6 +147,11 @@ final class Templates
                                     </a>
                                 </div>
                             <?php endif; ?>
+                            <div class="kng-nav-item kng-nav-item-current">
+                                    <a href="https://www.youtube.com/@kingaddons" target="_blank">
+                                        <div class="kng-nav-item-txt"><?php echo esc_html__('YouTube Guides', 'king-addons'); ?></div>
+                                    </a>
+                            </div>
                             <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
                                 <div class="kng-nav-item kng-nav-item-current kng-nav-activate-license">
                                     <a id="activate-license-btn">
@@ -128,7 +163,7 @@ final class Templates
                             <?php endif; ?>
                             <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
                                 <div class="kng-promo-btn-wrap">
-                        <a href="https://kingaddons.com/pricing/?rel=king-addons-templates-catalog" target="_blank">
+                        <a href="https://kingaddons.com/pricing/?utm_source=king-addons-templates-catalog" target="_blank">
                             <div class="kng-promo-btn-txt">
                                 <?php esc_html_e('Unlock Premium Features & 650+ Templates Today!', 'king-addons'); ?>
                             </div>
@@ -149,13 +184,16 @@ final class Templates
                     <?php esc_html_e('Templates', 'king-addons'); ?>
                     <span class="tab-count"><?php echo count($templates['templates']); ?></span>
                 </button>
-                <?php if (KING_ADDONS_EXT_SECTIONS_CATALOG): ?>
                 <button class="king-addons-tab-button" data-tab="sections">
                     <i class="eicon-section"></i>
                     <?php esc_html_e('Sections', 'king-addons'); ?>
                     <span class="tab-count" id="sections-count">0</span>
                 </button>
-                <?php endif; ?>
+                <button class="king-addons-tab-button" data-tab="collections">
+                    <i class="eicon-folder"></i>
+                    <?php esc_html_e('Collections', 'king-addons'); ?>
+                    <span class="tab-count"><?php echo count($collections); ?></span>
+                </button>
             </div>
 
             <!-- Templates Tab Content -->
@@ -234,7 +272,6 @@ final class Templates
             </div>
 
             <!-- Sections Tab Content -->
-            <?php if (KING_ADDONS_EXT_SECTIONS_CATALOG): ?>
             <div id="sections-catalog" class="king-addons-tab-content">
                 <div class="filters-wrapper">
                     <div class="filters">
@@ -266,7 +303,41 @@ final class Templates
                     <div class="sections-pagination"></div>
                 </div>
             </div>
-            <?php endif; ?>
+
+            <!-- Collections Tab Content -->
+            <div id="collections-catalog" class="king-addons-tab-content">
+                <div class="collections-toolbar">
+                    <div class="collections-search">
+                        <input type="text" id="collections-search" placeholder="<?php esc_attr_e('Search collections...', 'king-addons'); ?>">
+                    </div>
+                </div>
+
+                <div class="collections-rows-wrapper">
+                    <div class="collections-rows-container">
+                        <div class="collections-loading">
+                            <?php esc_html_e('Loading collections...', 'king-addons'); ?>
+                        </div>
+                    </div>
+                    <div class="collections-rows-pagination"></div>
+                </div>
+                
+                <!-- Collection Details View -->
+                <div id="collection-details-view" style="display: none;">
+                    <div class="collection-details-header">
+                        <button type="button" class="ka-back-button">
+                            <i class="eicon-arrow-left"></i> <?php esc_html_e('Back to Collections', 'king-addons'); ?>
+                        </button>
+                        <div class="collection-details-search">
+                            <input type="text" id="collection-search" placeholder="<?php esc_attr_e('Search in collection...', 'king-addons'); ?>">
+                        </div>
+                    </div>
+                    <div class="collection-details-content">
+                        <div class="collection-loading">
+                            <?php esc_html_e('Loading collection...', 'king-addons'); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div id="template-preview-popup" style="display:none;">
                 <div class="popup-content">
@@ -294,6 +365,42 @@ final class Templates
                         </button>
                     </div>
                     <iframe id="template-preview-iframe" src="" frameborder="0"></iframe>
+                </div>
+            </div>
+
+            <!-- Section Import Popup -->
+            <div id="section-import-popup" class="ka-popup-overlay" style="display:none;">
+                <div class="ka-popup-content">
+                    <button type="button" class="ka-popup-close" id="close-section-popup">
+                        <span class="dashicons dashicons-no-alt"></span>
+                    </button>
+                    <div class="ka-popup-body">
+                        <div class="ka-popup-icon">
+                            <i class="eicon-file-download"></i>
+                        </div>
+                        <h3 class="ka-popup-title"><?php esc_html_e('Import Section', 'king-addons'); ?></h3>
+                        <p class="ka-popup-message">
+                            <?php esc_html_e('Are you sure you want to import this section? It will be added to your current page.', 'king-addons'); ?>
+                        </p>
+                        <div class="ka-popup-details">
+                            <div class="ka-popup-detail-row">
+                                <span class="ka-label"><?php esc_html_e('Section:', 'king-addons'); ?></span>
+                                <span class="ka-value" id="popup-section-name"></span>
+                            </div>
+                            <div class="ka-popup-detail-row">
+                                <span class="ka-label"><?php esc_html_e('Plan:', 'king-addons'); ?></span>
+                                <span class="ka-value" id="popup-section-plan"></span>
+                            </div>
+                        </div>
+                        <div class="ka-popup-actions">
+                            <button type="button" class="ka-btn ka-btn-secondary" id="cancel-section-import">
+                                <?php esc_html_e('Cancel', 'king-addons'); ?>
+                            </button>
+                            <button type="button" class="ka-btn ka-btn-primary" id="confirm-section-import">
+                                <?php esc_html_e('Import Section', 'king-addons'); ?>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="template-installing-popup" style="display:none;">
@@ -580,6 +687,8 @@ final class Templates
         );
 
         add_action('wp_ajax_filter_templates', array($this, 'handle_filter_templates'));
+        add_action('wp_ajax_king_addons_get_collection_details', array($this, 'handle_get_collection_details'));
+        add_action('wp_ajax_king_addons_get_collections_rows', array($this, 'handle_get_collections_rows'));
         
         // Sections catalog endpoints
         add_action('wp_ajax_king_addons_get_sections_catalog', array($this, 'handle_get_sections_catalog'));
@@ -588,11 +697,13 @@ final class Templates
         add_action('http_api_curl', array($this, 'set_custom_curl_options'), 10, 3);
     }
 
-    public function set_custom_curl_options($handle)
+    public function set_custom_curl_options($handle, $r, $url)
     {
-        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 60);
-        curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 300);
-        curl_setopt($handle, CURLOPT_TIMEOUT, 300);
+        if (strpos($url, 'kingaddons.com') !== false) {
+            curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 60);
+            curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 300);
+            curl_setopt($handle, CURLOPT_TIMEOUT, 300);
+        }
     }
 
     function handle_filter_templates(): void
@@ -623,6 +734,20 @@ final class Templates
     public function import_elementor_page_with_images(): void
     {
         if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+            return;
+        }
+
+        // Support both the legacy templates admin nonce and the Elementor editor
+        // Template Catalog button nonce.
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        $valid_nonce = $nonce && (
+            wp_verify_nonce($nonce, 'kingAddonsNonce') ||
+            wp_verify_nonce($nonce, 'king_addons_template_catalog')
+        );
+
+        if (!$valid_nonce) {
+            wp_send_json_error('Invalid nonce');
             return;
         }
 
@@ -743,6 +868,19 @@ final class Templates
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error('The current user can not manage options and create pages. Please change it in the WordPress settings.');
+            return;
+        }
+
+        // Support both the legacy templates admin nonce and the Elementor editor
+        // Template Catalog button nonce.
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        $valid_nonce = $nonce && (
+            wp_verify_nonce($nonce, 'kingAddonsNonce') ||
+            wp_verify_nonce($nonce, 'king_addons_template_catalog')
+        );
+
+        if (!$valid_nonce) {
+            wp_send_json_error('Invalid nonce');
             return;
         }
 
@@ -873,6 +1011,10 @@ final class Templates
     public function download_image_to_media_gallery($image_url, $image_retry_count)
     {
         try {
+            if (!$this->is_safe_remote_url($image_url)) {
+                throw new Exception('Blocked potentially unsafe image URL: ' . $image_url);
+            }
+
             $response = wp_remote_get($image_url, ['timeout' => 30]);
 
             if (is_wp_error($response)) {
@@ -964,6 +1106,38 @@ final class Templates
     }
 
     /**
+     * Basic SSRF guard for remote URLs.
+     *
+     * @param string $url URL to validate.
+     *
+     * @return bool
+     */
+    private function is_safe_remote_url(string $url): bool
+    {
+        $parsed = parse_url($url);
+        if (!$parsed || empty($parsed['scheme']) || empty($parsed['host'])) {
+            return false;
+        }
+
+        if (!in_array($parsed['scheme'], ['http', 'https'], true)) {
+            return false;
+        }
+
+        $host = $parsed['host'];
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return (bool) filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+        }
+
+        // Allow domain names; block obvious localhost patterns.
+        $lower = strtolower($host);
+        if ($lower === 'localhost' || str_ends_with($lower, '.local')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * AJAX handler for getting sections catalog data
      */
     public function handle_get_sections_catalog(): void
@@ -974,21 +1148,23 @@ final class Templates
         }
 
         // Check nonce - handle both admin area and popup
-        if (isset($_POST['nonce'])) {
-            $valid_nonce = wp_verify_nonce($_POST['nonce'], 'kingAddonsNonce') || 
-                          wp_verify_nonce($_POST['nonce'], 'king_addons_template_catalog');
-            
-            if (!$valid_nonce) {
-                wp_send_json_error('Invalid nonce');
-                return;
-            }
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : '';
+        $valid_nonce = $nonce && (wp_verify_nonce($nonce, 'kingAddonsNonce') ||
+            wp_verify_nonce($nonce, 'king_addons_template_catalog'));
+
+        if (!$valid_nonce) {
+            wp_send_json_error('Invalid nonce');
+            return;
         }
 
         if (!class_exists('King_Addons\\SectionsMap')) {
             require_once KING_ADDONS_PATH . 'includes/SectionsMap.php';
         }
 
-        $sections_map = SectionsMap::getSectionsMapArray();
+        $sections_map_class = '\\King_Addons\\SectionsMap';
+        $sections_map = is_callable([$sections_map_class, 'getSectionsMapArray'])
+            ? call_user_func([$sections_map_class, 'getSectionsMapArray'])
+            : [];
         $sections = $sections_map['sections'] ?? [];
         
         $is_premium_active = function_exists('king_addons_freemius') && king_addons_freemius()->can_use_premium_code();
@@ -1160,6 +1336,346 @@ final class Templates
         wp_send_json_success([
             'section_data' => $data['section'],  // Your API returns 'section' not 'landing'
             'message' => 'Section data retrieved successfully'
+        ]);
+    }
+
+    public function handle_get_collection_details()
+    {
+        // Verify nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kingAddonsNonce')) {
+            wp_send_json_error('Invalid nonce');
+        }
+
+        $collection_id = isset($_POST['collection_id']) ? sanitize_text_field($_POST['collection_id']) : '';
+        if (empty($collection_id)) {
+            wp_send_json_error('Collection ID is required');
+        }
+
+        $templates = TemplatesMap::getTemplatesMapArray();
+        
+        if (!class_exists('King_Addons\\SectionsMap')) {
+            require_once KING_ADDONS_PATH . 'includes/SectionsMap.php';
+        }
+        $sections_map = SectionsMap::getSectionsMapArray();
+        $sections = $sections_map['sections'] ?? [];
+
+        // Filter Templates
+        $collection_templates = [];
+        $template_keys = [];
+        foreach ($templates['templates'] as $key => $template) {
+            if (isset($template['collection']) && (string)$template['collection'] === (string)$collection_id) {
+                $template['template_key'] = $key;
+                $collection_templates[] = $template;
+                $template_keys[] = $key;
+            }
+        }
+
+        // Filter Sections
+        $collection_sections = [];
+        foreach ($sections as $key => $section) {
+            $parent = $section['parent_template'] ?? '';
+            if ($parent && in_array($parent, $template_keys)) {
+                $section['section_key'] = $key;
+                $collection_sections[] = $section;
+            }
+        }
+
+        // Render Templates HTML
+        ob_start();
+        if (empty($collection_templates)) {
+            echo '<p class="templates-not-found">' . esc_html__('No templates found in this collection.', 'king-addons') . '</p>';
+        } else {
+            foreach ($collection_templates as $template) {
+                $attr_key = $template['template_key'];
+                ?>
+                <div class="template-item"
+                    data-category="<?php echo esc_attr($template['category']); ?>"
+                    data-tags="<?php echo esc_attr(implode(',', $template['tags'])); ?>"
+                    data-template-key="<?php echo esc_attr($attr_key); ?>"
+                    data-template-plan="<?php echo esc_attr($template['plan']); ?>">
+                    <img class="kng-addons-template-thumbnail" loading="lazy"
+                        src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
+                        alt="<?php echo esc_attr($template['title']); ?>">
+                    <h3><?php echo esc_html($template['title']); ?></h3>
+                    <div class="template-plan template-plan-<?php echo esc_html($template['plan']); ?>"><?php echo esc_html($template['plan']); ?></div>
+                </div>
+                <?php
+            }
+        }
+        $templates_html = ob_get_clean();
+
+        // Render Sections HTML
+        ob_start();
+        if (empty($collection_sections)) {
+            echo '<p class="sections-not-found">' . esc_html__('No sections found in this collection.', 'king-addons') . '</p>';
+        } else {
+            foreach ($collection_sections as $section) {
+                $section_key = $section['section_key'];
+                $plan = $section['plan'];
+                $title = $section['title'];
+                $thumb_url = "https://thumbnails.kingaddons.com/sections/$plan/$section_key.png";
+                ?>
+                <div class="section-item"
+                     data-section-key="<?php echo esc_attr($section_key); ?>"
+                     data-section-plan="<?php echo esc_attr($plan); ?>">
+                    <div class="section-preview">
+                        <img src="<?php echo esc_url($thumb_url); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy">
+                        <div class="section-actions">
+                            <button class="import-section-btn" data-section-key="<?php echo esc_attr($section_key); ?>" data-section-plan="<?php echo esc_attr($plan); ?>">
+                                <i class="eicon-file-download"></i> <?php esc_html_e('Import', 'king-addons'); ?>
+                            </button>
+                            <a href="<?php echo esc_url('https://sections.kingaddons.com/' . $section_key); ?>" class="live-preview-btn" target="_blank">
+                                <i class="eicon-preview-medium"></i> <?php esc_html_e('Live Preview', 'king-addons'); ?>
+                            </a>
+                        </div>
+                        <?php if ($plan === 'premium'): ?>
+                            <span class="section-badge-pro">PRO</span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="section-info">
+                        <h4><?php echo esc_html($title); ?></h4>
+                    </div>
+                </div>
+                <?php
+            }
+        }
+        $sections_html = ob_get_clean();
+
+        wp_send_json_success([
+            'templates_html' => $templates_html,
+            'sections_html' => $sections_html,
+            'templates_count' => count($collection_templates),
+            'sections_count' => count($collection_sections)
+        ]);
+    }
+
+    public function handle_get_collections_rows()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+        }
+
+        // Verify nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kingAddonsNonce')) {
+            wp_send_json_error('Invalid nonce');
+        }
+
+        $page = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
+        $search = isset($_POST['search']) ? sanitize_text_field(wp_unslash($_POST['search'])) : '';
+        $per_page = 10; // Number of collections per page
+
+        $templates = TemplatesMap::getTemplatesMapArray();
+        $collections_map = CollectionsMap::getCollectionsMapArray();
+
+        // Load Sections to compute section counts per collection
+        if (!class_exists('King_Addons\\SectionsMap')) {
+            require_once KING_ADDONS_PATH . 'includes/SectionsMap.php';
+        }
+        $sections_map = SectionsMap::getSectionsMapArray();
+        $sections = $sections_map['sections'] ?? [];
+
+        // Build templates grouped by collection + counts
+        // Search behavior mirrors template search: title + tags (and direct key).
+        $search_terms = array_values(array_filter(preg_split('/\s+/', (string) $search)));
+        $has_search = !empty($search_terms);
+
+        $templates_by_collection = [];
+        $templates_by_collection_title = [];
+        $templates_by_collection_tags = [];
+
+        $template_counts = [];
+        $template_key_to_collection = [];
+        $template_matches_search = [];
+        $collections_matching_by_name = [];
+
+        $contains_ci = static function ($haystack, $needle): bool {
+            if ($needle === '') {
+                return true;
+            }
+            if (function_exists('mb_stripos')) {
+                return mb_stripos((string) $haystack, (string) $needle) !== false;
+            }
+            return stripos((string) $haystack, (string) $needle) !== false;
+        };
+
+        if ($has_search) {
+            foreach ($collections_map as $collection_id => $collection_name) {
+                foreach ($search_terms as $term) {
+                    if ($term !== '' && $contains_ci($collection_name, $term)) {
+                        $collections_matching_by_name[$collection_id] = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        foreach (($templates['templates'] ?? []) as $key => $template) {
+            $collection_id = $template['collection'] ?? '';
+            if ($collection_id === '' || !isset($collections_map[$collection_id])) {
+                continue;
+            }
+
+            $template_key_to_collection[$key] = $collection_id;
+
+            if (!isset($template_counts[$collection_id])) {
+                $template_counts[$collection_id] = 0;
+            }
+            $template_counts[$collection_id]++;
+
+            $title = (string) ($template['title'] ?? '');
+            $tags = is_array($template['tags'] ?? null) ? $template['tags'] : [];
+            $matches_by_title = false;
+            $matches_by_tags = false;
+            $matches_by_key = ($search !== '' && $key === $search);
+
+            if ($has_search) {
+                foreach ($search_terms as $term) {
+                    if ($term === '') {
+                        continue;
+                    }
+
+                    if ($contains_ci($title, $term)) {
+                        $matches_by_title = true;
+                        continue;
+                    }
+
+                    if ($contains_ci($key, $term)) {
+                        $matches_by_key = true;
+                        continue;
+                    }
+
+                    foreach ($tags as $tag) {
+                        if ($contains_ci((string) $tag, $term)) {
+                            $matches_by_tags = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $collection_name_match = $has_search && isset($collections_matching_by_name[$collection_id]);
+            $template_is_relevant = !$has_search || $collection_name_match || $matches_by_key || $matches_by_title || $matches_by_tags;
+            $template_matches_search[$key] = (bool) ($matches_by_key || $matches_by_title || $matches_by_tags);
+
+            if (!$template_is_relevant) {
+                continue;
+            }
+
+            $item = [
+                'key' => $key,
+                'title' => $title,
+                'plan' => $template['plan'],
+                'category' => $template['category'],
+            ];
+
+            if (!isset($templates_by_collection_title[$collection_id])) {
+                $templates_by_collection_title[$collection_id] = [];
+            }
+            if (!isset($templates_by_collection_tags[$collection_id])) {
+                $templates_by_collection_tags[$collection_id] = [];
+            }
+
+            // No search: keep natural order (default Collections landing should not be empty).
+            if (!$has_search) {
+                if (!isset($templates_by_collection[$collection_id])) {
+                    $templates_by_collection[$collection_id] = [];
+                }
+                $templates_by_collection[$collection_id][] = $item;
+                continue;
+            }
+
+            // If the collection name matches, keep natural order; otherwise prioritize title matches.
+            if ($collection_name_match) {
+                if (!isset($templates_by_collection[$collection_id])) {
+                    $templates_by_collection[$collection_id] = [];
+                }
+                $templates_by_collection[$collection_id][] = $item;
+            } else {
+                if ($matches_by_key || $matches_by_title) {
+                    $templates_by_collection_title[$collection_id][] = $item;
+                } elseif ($matches_by_tags) {
+                    $templates_by_collection_tags[$collection_id][] = $item;
+                }
+            }
+        }
+
+        // Merge per-collection buckets and apply soft limit
+        $collection_ids_all = array_keys($template_counts);
+        foreach ($collection_ids_all as $collection_id) {
+            if (!isset($templates_by_collection[$collection_id])) {
+                $templates_by_collection[$collection_id] = [];
+            }
+
+            if ($has_search && !isset($collections_matching_by_name[$collection_id])) {
+                $merged = array_merge(
+                    $templates_by_collection_title[$collection_id] ?? [],
+                    $templates_by_collection_tags[$collection_id] ?? []
+                );
+                $templates_by_collection[$collection_id] = $merged;
+            }
+
+            if (count($templates_by_collection[$collection_id]) > 20) {
+                $templates_by_collection[$collection_id] = array_slice($templates_by_collection[$collection_id], 0, 20);
+            }
+        }
+
+        // Compute sections count per collection using parent_template -> template -> collection mapping.
+        // When searching, count only sections whose parent template matches search (unless collection name matches).
+        $section_counts = [];
+        foreach ($sections as $section) {
+            $parent = $section['parent_template'] ?? '';
+            if (!$parent || !isset($template_key_to_collection[$parent])) {
+                continue;
+            }
+
+            $collection_id = $template_key_to_collection[$parent];
+            $collection_name_match = $has_search && isset($collections_matching_by_name[$collection_id]);
+            if ($has_search && !$collection_name_match) {
+                if (!isset($template_matches_search[$parent]) || !$template_matches_search[$parent]) {
+                    continue;
+                }
+            }
+
+            if (!isset($section_counts[$collection_id])) {
+                $section_counts[$collection_id] = 0;
+            }
+            $section_counts[$collection_id]++;
+        }
+
+        // Only collections that actually have templates in the (possibly filtered) result
+        $collection_ids = array_keys(array_filter($templates_by_collection, static function ($items) {
+            return !empty($items);
+        }));
+
+        // Sort collections by name to match the main Collections view
+        usort($collection_ids, function ($a, $b) use ($collections_map) {
+            return strcasecmp((string) ($collections_map[$a] ?? ''), (string) ($collections_map[$b] ?? ''));
+        });
+
+        $total_collections = count($collection_ids);
+        $total_pages = (int) ceil($total_collections / $per_page);
+        $page = min($page, max(1, $total_pages));
+        $offset = ($page - 1) * $per_page;
+        $paged_collection_ids = array_slice($collection_ids, $offset, $per_page);
+
+        $result_collections = [];
+        foreach ($paged_collection_ids as $id) {
+            $result_collections[] = [
+                'id' => $id,
+                'name' => $collections_map[$id],
+                'templates' => $templates_by_collection[$id],
+                'templates_count' => (int) ($template_counts[$id] ?? 0),
+                'sections_count' => (int) ($section_counts[$id] ?? 0)
+            ];
+        }
+
+        wp_send_json_success([
+            'collections' => $result_collections,
+            'pagination' => [
+                'total' => $total_collections,
+                'pages' => $total_pages,
+                'current' => $page
+            ]
         ]);
     }
 }

@@ -28,7 +28,6 @@
 
         // Get widget settings from data attributes
         const widgetSettings = {
-            recaptcha_secret_key: $wrapper.data('recaptcha-secret-key') || '',
             recaptcha_score_threshold: $wrapper.data('recaptcha-threshold') || '0.5',
             redirect_after_login: $wrapper.data('redirect-login') || '',
             redirect_after_register: $wrapper.data('redirect-register') || '',
@@ -41,9 +40,6 @@
             admin_email_subject: $wrapper.data('admin-email-subject') || '',
             admin_email_content: $wrapper.data('admin-email-content') || '',
             enable_mailchimp_integration: $wrapper.data('enable-mailchimp') || 'no',
-            mailchimp_api_key: $wrapper.data('mailchimp-api-key') || '',
-            mailchimp_list_id: $wrapper.data('mailchimp-list-id') || '',
-            mailchimp_double_optin: $wrapper.data('mailchimp-double-optin') || 'no',
             auto_login_after_register: $wrapper.data('auto-login') || 'yes'
         };
 
@@ -125,6 +121,7 @@
     function handleLoginSubmission($form, $wrapper, widgetId, widgetSettings) {
         const $messageContainer = $form.closest('.king-addons-login-register-form').find('.king-addons-form-message');
         const $submitButton = $form.find('.king-addons-login-button');
+        const postId = $wrapper.data('post-id') || 0;
         
         // Clear previous messages
         clearMessages($wrapper);
@@ -144,7 +141,7 @@
             password: $form.find('[name="password"]').val(),
             remember: $form.find('[name="remember"]').is(':checked') ? 1 : 0,
             widget_id: widgetId,
-            recaptcha_secret_key: widgetSettings.recaptcha_secret_key,
+            post_id: postId,
             recaptcha_score_threshold: widgetSettings.recaptcha_score_threshold,
             redirect_after_login: widgetSettings.redirect_after_login
         };
@@ -220,6 +217,7 @@
     function handleRegisterSubmission($form, $wrapper, widgetId, widgetSettings) {
         const $messageContainer = $form.closest('.king-addons-login-register-form').find('.king-addons-form-message');
         const $submitButton = $form.find('.king-addons-register-button');
+        const postId = $wrapper.data('post-id') || 0;
         
         // Clear previous messages
         clearMessages($wrapper);
@@ -240,7 +238,7 @@
             password: $form.find('[name="password"]').val(),
             confirm_password: $form.find('[name="confirm_password"]').val(),
             widget_id: widgetId,
-            recaptcha_secret_key: widgetSettings.recaptcha_secret_key,
+            post_id: postId,
             recaptcha_score_threshold: widgetSettings.recaptcha_score_threshold,
             redirect_after_register: widgetSettings.redirect_after_register,
             terms_required: widgetSettings.terms_required,
@@ -252,9 +250,6 @@
             admin_email_subject: widgetSettings.admin_email_subject,
             admin_email_content: widgetSettings.admin_email_content,
             enable_mailchimp_integration: widgetSettings.enable_mailchimp_integration,
-            mailchimp_api_key: widgetSettings.mailchimp_api_key,
-            mailchimp_list_id: widgetSettings.mailchimp_list_id,
-            mailchimp_double_optin: widgetSettings.mailchimp_double_optin,
             auto_login_after_register: widgetSettings.auto_login_after_register
         };
 
@@ -791,7 +786,7 @@
                     nonce: king_addons_login_register_vars.social_login_nonce,
                     google_token: response.credential,
                     widget_id: widgetId,
-                    google_client_id: $wrapper.data('google-client-id')
+                    post_id: $wrapper.data('post-id') || 0
                 },
                 success: function(ajaxResponse) {
                     if (ajaxResponse.success) {
@@ -831,8 +826,7 @@
                     nonce: king_addons_login_register_vars.social_login_nonce,
                     facebook_token: authResponse.accessToken,
                     widget_id: widgetId,
-                    facebook_app_id: $wrapper.data('facebook-app-id'),
-                    facebook_app_secret: $wrapper.data('facebook-app-secret')
+                    post_id: $wrapper.data('post-id') || 0
                 },
                 success: function(ajaxResponse) {
                     if (ajaxResponse.success) {

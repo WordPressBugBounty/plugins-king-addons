@@ -1,0 +1,13 @@
+/* 
+* Hide spam notifications. 
+* More info: https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/#11-plugins-should-not-hijack-the-admin-dashboard
+*/
+html body .wpmet-notice.notice,
+html body .wpnotice-wrapper.notice.templately,
+html body .wpnotice-wrapper.notice.essential-addons-for-elementor-lite,
+html body .notice.ha-review-notice.ha-review-notice--extended,
+html body .notice.wpr-plugin-sale-notice,
+html body .notice.wpr-rating-notice,
+html body .astra-notice-wrapper.astra-notice.notice {
+    display: none !important;
+}

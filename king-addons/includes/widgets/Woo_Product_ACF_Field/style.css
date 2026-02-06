@@ -1,0 +1,21 @@
+.ka-woo-product-acf-field {
+    display: inline-flex;
+    gap: 6px;
+    align-items: baseline;
+}
+
+.ka-woo-product-acf-field__before,
+.ka-woo-product-acf-field__after {
+    color: #444;
+    font-size: 14px;
+}
+
+.ka-woo-product-acf-field__value {
+    font-weight: 600;
+}
+
+
+
+
+
+

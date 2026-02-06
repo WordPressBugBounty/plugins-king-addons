@@ -1,0 +1,4 @@
+.king-addons-tb-404-search-form{display:flex;gap:8px;flex-wrap:wrap;}
+.king-addons-tb-404-search-form input[type="search"]{padding:10px 12px;border:1px solid #e5e7eb;border-radius:4px;min-width:200px;}
+.king-addons-tb-404-search-form button{padding:10px 14px;border:none;background:#1e293b;color:#fff;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.king-addons-tb-404-search-form__icon{margin-right:4px;}

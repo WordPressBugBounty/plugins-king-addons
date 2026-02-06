@@ -1,0 +1,138 @@
+.king-addons-rotating-image-tiles {
+  width: 100%;
+  position: relative;
+}
+
+.king-addons-rotating-image-tiles__holder {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  display: block;
+}
+
+.king-addons-rotating-image-tiles__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--rit-columns, 3), minmax(0, 1fr));
+  gap: var(--rit-gap, 12px);
+  height: 100%;
+}
+
+.king-addons-rotating-image-tiles__tile {
+  position: relative;
+  overflow: hidden;
+  min-height: 160px;
+  background-color: #f5f5f5;
+  border-radius: inherit;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.king-addons-rotating-image-tiles__tile-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.king-addons-rotating-image-tiles__image-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.king-addons-rotating-image-tiles__image-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--rit-transition-duration, 800ms) var(--rit-easing, ease-in-out),
+    transform var(--rit-transition-duration, 800ms) var(--rit-easing, ease-in-out);
+  will-change: opacity, transform;
+}
+
+.king-addons-rotating-image-tiles__image-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: var(--rit-image-fit, cover);
+  transform: scale(1);
+  opacity: var(--rit-image-opacity, 1);
+  transition: transform var(--rit-transition-duration, 800ms) var(--rit-easing, ease-in-out),
+    opacity var(--rit-transition-duration, 800ms) var(--rit-easing, ease-in-out);
+  display: block;
+}
+
+.king-addons-rotating-image-tiles__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  opacity: var(--rit-overlay-opacity, 0);
+  mix-blend-mode: var(--rit-overlay-blend, normal);
+  pointer-events: none;
+}
+
+.king-addons-rotating-image-tiles__image-layer.is-current {
+  opacity: 1;
+  z-index: 2;
+}
+
+.king-addons-rotating-image-tiles__image-layer.is-entering {
+  opacity: 1;
+  z-index: 3;
+}
+
+.king-addons-rotating-image-tiles__image-layer.is-leaving {
+  opacity: 0;
+}
+
+.king-addons-rotating-image-tiles__tile:hover .king-addons-rotating-image-tiles__image-layer img {
+  transform: scale(var(--rit-hover-scale, var(--rit-image-scale-hover, 1.05)));
+  opacity: var(--rit-image-opacity-hover, 1);
+}
+
+.king-addons-rotating-image-tiles__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: #ffffff;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.6) 70%);
+  padding: 12px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.king-addons-rotating-image-tiles__caption-title {
+  font-weight: 600;
+  margin: 0;
+}
+
+.king-addons-rotating-image-tiles__caption-description {
+  margin: 4px 0 0;
+  font-size: 0.875em;
+  line-height: 1.4;
+}
+
+.king-addons-rotating-image-tiles__tile.is-hover-lift:hover {
+  transform: translateY(-6px);
+}
+
+.king-addons-rotating-image-tiles__tile.is-hover-glow:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.king-addons-rotating-image-tiles__tile.is-hover-shadow:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+.king-addons-rotating-image-tiles__tile.is-animating .king-addons-rotating-image-tiles__image-layer {
+  will-change: opacity, transform;
+}
+
+@media (max-width: 767px) {
+  .king-addons-rotating-image-tiles__grid {
+    grid-template-columns: repeat(var(--rit-columns-mobile, 2), minmax(0, 1fr));
+  }
+}
+
+
+
+
+
+

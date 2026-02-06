@@ -1,0 +1,7 @@
+.king-addons-tb-related-posts__grid{display:grid;grid-template-columns:repeat(var(--kng-related-columns,3),minmax(0,1fr));gap:var(--kng-related-gap,16px);}
+.king-addons-tb-related-posts__item{border:1px solid #e5e7eb;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.king-addons-tb-related-posts__title{margin:0;}
+.king-addons-tb-related-posts__title a{text-decoration:none;}
+.king-addons-tb-related-posts__meta{font-size:12px;opacity:0.8;}
+.king-addons-tb-related-posts__excerpt{font-size:14px;opacity:0.9;}
+.king-addons-tb-related-posts__button{margin-top:auto;align-self:flex-start;text-decoration:none;padding:6px 12px;border:1px solid #1e293b;border-radius:4px;}

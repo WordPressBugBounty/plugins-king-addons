@@ -125,6 +125,10 @@ final class LibrariesMap
                     'css' => [],
                     'js' => ['wpcolorpicker']
                 ],
+                'dompurify' => [
+                    'css' => [],
+                    'js' => ['purify.min']
+                ],
             ]
         ];
     }

@@ -1,0 +1,117 @@
+.king-addons-faq {
+    width: 100%;
+}
+
+.king-addons-faq__controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.king-addons-faq__search {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    min-width: 220px;
+}
+
+.king-addons-faq__toggle-all {
+    padding: 10px 14px;
+    border: 1px solid #111827;
+    background-color: #111827;
+    color: #ffffff;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.king-addons-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kng-faq-gap, 12px);
+}
+
+.king-addons-faq__item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    padding: 14px 16px;
+}
+
+.king-addons-faq__question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: #0f172a;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+}
+
+.king-addons-faq__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 14px;
+}
+
+.king-addons-faq__icon--close {
+    display: none;
+}
+
+.king-addons-faq__question[aria-expanded="true"] .king-addons-faq__icon {
+    display: none;
+}
+
+.king-addons-faq__question[aria-expanded="true"] .king-addons-faq__icon--close {
+    display: inline-flex;
+}
+
+.king-addons-faq__answer {
+    margin-top: 10px;
+    color: #475569;
+    line-height: 1.6;
+    display: none;
+}
+
+/* Animations (pro) */
+.king-addons-faq__item.is-anim-fade .king-addons-faq__answer {
+    transition: opacity 0.2s ease;
+}
+
+.king-addons-faq__item.is-anim-slide .king-addons-faq__answer {
+    transition: max-height 0.25s ease;
+}
+
+.king-addons-faq__item.is-anim-zoom .king-addons-faq__answer {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0;
+    transform: scale(0.98);
+}
+
+.king-addons-faq__item.is-anim-zoom.is-open .king-addons-faq__answer {
+    opacity: 1;
+    transform: scale(1);
+}
+
+@media (max-width: 768px) {
+    .king-addons-faq__item {
+        padding: 12px 14px;
+    }
+}
+
+
+
+
+

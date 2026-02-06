@@ -1,0 +1,298 @@
+.king-addons-woo-builder-notice {
+    padding: 8px 10px;
+    border: 1px dashed #ccd0d4;
+    background: #f6f7f7;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #1d2327;
+}
+
+.king-addons-woo-builder-pro-lock {
+    margin: 6px 0 12px;
+    padding: 8px 10px;
+    border-left: 3px solid #d63638;
+    background: #fff4f4;
+    color: #8a1f1f;
+    font-size: 12px;
+}
+
+.ka-woo-rule select {
+    max-width: 100%;
+}
+
+.king-addons-woo-builder-filters {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.king-addons-woo-builder-filters select {
+    min-width: 180px;
+}
+
+.ka-woo-checkout-steps {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    list-style: none;
+    margin: 0;
+}
+
+.ka-woo-checkout-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f6f7f7;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #111;
+}
+
+.ka-woo-checkout-step__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #4b6fff;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.ka-woo-checkout-sticky {
+    position: sticky;
+    top: 20px;
+    padding: 16px;
+    border: 1px solid #e2e4e7;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.ka-woo-checkout-sticky__title {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.ka-woo-checkout-summary--sticky {
+    position: sticky;
+    top: 20px;
+}
+
+.ka-woo-checkout-upsells {
+    margin-top: 24px;
+}
+
+.ka-woo-checkout-upsells__title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.ka-woo-checkout-upsells__grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.ka-woo-checkout-upsells__item {
+    border: 1px solid #e2e4e7;
+    border-radius: 8px;
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+    text-align: center;
+}
+
+.ka-woo-checkout-upsells__thumb img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.ka-woo-checkout-upsells__title {
+    font-size: 15px;
+    margin: 0;
+}
+
+.ka-woo-checkout-upsells__price {
+    font-weight: 700;
+}
+
+.ka-woo-cart-cross-sells {
+    margin-top: 24px;
+}
+
+.ka-woo-cart-cross-sells__title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.ka-woo-account-quick-links {
+    margin-top: 20px;
+}
+
+.ka-woo-account-quick-links__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ka-woo-account-quick-links__link {
+    display: inline-flex;
+    padding: 8px 12px;
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #111;
+    background: #fff;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.ka-woo-account-quick-links__link:hover {
+    background: #f6f7f7;
+    border-color: #d0d5dd;
+}
+
+.ka-woo-account-custom-block {
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid #e2e4e7;
+    border-radius: 8px;
+}
+
+.ka-woo-payment-icon {
+    height: 16px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.ka-woo-checkout-payment .wc_payment_method {
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.ka-woo-checkout-payment .wc_payment_method.is-active {
+    border-color: #e2e4e7;
+    background: #fafbfc;
+}
+
+.ka-woo-products-grid__pagination--align-left {
+    text-align: left;
+}
+.ka-woo-products-grid__pagination--align-center {
+    text-align: center;
+}
+.ka-woo-products-grid__pagination--align-right {
+    text-align: right;
+}
+
+.ka-woo-products-grid__pagination--skin-outline .page-numbers,
+.ka-woo-products-grid__pagination--skin-ghost .page-numbers {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+.ka-woo-products-grid__pagination--skin-ghost .page-numbers {
+    background: transparent;
+}
+.ka-woo-products-grid__pagination--skin-outline .page-numbers.current,
+.ka-woo-products-grid__pagination--skin-ghost .page-numbers.current {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.ka-woo-cart-coupon {
+    margin: 12px 0;
+    padding: 12px;
+    border: 1px dashed #d0d5dd;
+    border-radius: 6px;
+}
+
+.ka-woo-cart-coupon__form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ka-woo-account-logout.button {
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.ka-woo-hidden {
+    display: none !important;
+}
+
+.ka-woo-checkout-step--error {
+    border: 1px solid #d63638;
+    background: #fff5f5;
+}
+
+.ka-woo-checkout-steps__nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.ka-woo-checkout-sticky {
+    transition: max-height 0.2s ease, top 0.2s ease;
+}
+
+.ka-woo-checkout-upsells__grid,
+.ka-woo-cart-cross-sells .ka-woo-checkout-upsells__grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.ka-woo-checkout-upsells__item .button,
+.ka-woo-cart-cross-sells .ka-woo-checkout-upsells__item .button {
+    width: 100%;
+}
+
+.ka-woo-my-account-dashboard__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.ka-woo-account-card {
+    border: 1px solid #e2e4e7;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fff;
+    display: grid;
+    gap: 6px;
+}
+
+.ka-woo-account-card__label {
+    font-size: 13px;
+    color: #555;
+}
+
+.ka-woo-account-card__value {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ka-woo-account-card__link {
+    color: #111;
+    font-size: 13px;
+}
+
+
+
+
+
+

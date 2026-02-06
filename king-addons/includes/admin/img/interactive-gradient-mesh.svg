@@ -1,0 +1,45 @@
+<svg height="512" viewBox="0 0 48 48" width="512" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9B62FF;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#5B03FF;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="mesh1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.7"/>
+            <stop offset="50%" style="stop-color:#ff2bd6;stop-opacity:0.7"/>
+            <stop offset="100%" style="stop-color:#ffd600;stop-opacity:0.7"/>
+        </linearGradient>
+        <linearGradient id="mesh2" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#00ffa8;stop-opacity:0.6"/>
+            <stop offset="100%" style="stop-color:#ff6b6b;stop-opacity:0.6"/>
+        </linearGradient>
+    </defs>
+    <g>
+        <!-- Background frame -->
+        <rect x="4" y="4" width="40" height="40" rx="4" fill="none" stroke="url(#grad1)" stroke-width="2"/>
+        
+        <!-- Mesh gradient blobs -->
+        <ellipse cx="14" cy="14" rx="10" ry="8" fill="url(#mesh1)" opacity="0.8"/>
+        <ellipse cx="36" cy="18" rx="8" ry="10" fill="url(#mesh2)" opacity="0.7"/>
+        <ellipse cx="20" cy="34" rx="12" ry="8" fill="url(#mesh1)" opacity="0.6"/>
+        <ellipse cx="38" cy="36" rx="6" ry="8" fill="url(#mesh2)" opacity="0.5"/>
+        
+        <!-- Mesh grid lines -->
+        <path d="M8 16 Q16 12, 24 16 T40 16" stroke="url(#grad1)" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <path d="M8 24 Q16 20, 24 24 T40 24" stroke="url(#grad1)" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <path d="M8 32 Q16 28, 24 32 T40 32" stroke="url(#grad1)" stroke-width="0.5" fill="none" opacity="0.4"/>
+        
+        <path d="M16 8 Q12 16, 16 24 T16 40" stroke="url(#grad1)" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <path d="M24 8 Q20 16, 24 24 T24 40" stroke="url(#grad1)" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <path d="M32 8 Q28 16, 32 24 T32 40" stroke="url(#grad1)" stroke-width="0.5" fill="none" opacity="0.4"/>
+        
+        <!-- Control points -->
+        <circle cx="14" cy="14" r="2" fill="url(#grad1)"/>
+        <circle cx="36" cy="18" r="2" fill="url(#grad1)"/>
+        <circle cx="20" cy="34" r="2" fill="url(#grad1)"/>
+        <circle cx="38" cy="36" r="1.5" fill="url(#grad1)" opacity="0.7"/>
+        
+        <!-- Interactive cursor hint -->
+        <path d="M28 26l4 6 1.5-2.5 3 0.5-4.5-7z" fill="url(#grad1)" opacity="0.8"/>
+    </g>
+</svg>

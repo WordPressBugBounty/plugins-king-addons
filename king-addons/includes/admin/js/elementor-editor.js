@@ -123,6 +123,18 @@
                     width: 100%;
                     max-width: 100%;
                     box-sizing: border-box;
+                    display: block;
+                    flex: 0 0 100%;
+                    min-width: 0;
+                }
+
+                /* Ensure injected blocks sit under the Need Help link */
+                #elementor-panel__editor__help.king-addons-help-injected {
+                    flex-wrap: wrap;
+                }
+
+                #elementor-panel__editor__help.king-addons-help-injected > #elementor-panel__editor__help__link {
+                    flex: 0 0 100%;
                 }
                 
                 .king-addons-bug-report {
@@ -187,18 +199,35 @@
                     background: #28a745;
                 }
 
+                /* Responsive: prevent overflow in narrow Elementor panels */
+                @media (max-width: 420px) {
+                    .king-addons-bug-report-email-section {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .king-addons-bug-report-email-field {
+                        width: 100%;
+                    }
+
+                    .king-addons-bug-report-copy-btn {
+                        width: 100%;
+                    }
+                }
+
                 /* Promo block styles */
                 .king-addons-promo-block {
                     background: linear-gradient(135deg, #93117e 0%, #d946ef 100%);
                     border-radius: 6px;
                     padding: 16px;
                     margin-top: 12px;
-                    margin-bottom: 0;
+                    margin-bottom: 12px;
                     color: white;
                     position: relative;
                     overflow: hidden;
                     width: 100%;
                     box-sizing: border-box;
+                    min-width: 0;
                 }
                 
                 .king-addons-promo-block::before {
@@ -424,7 +453,7 @@
                 const promoBlock = document.createElement('div');
                 promoBlock.className = 'king-addons-promo-block';
                 promoBlock.innerHTML = `
-                    <div class="king-addons-promo-title">Unlock <span class="king-addons-promo-highlight">650+</span> premium templates and <span class="king-addons-promo-highlight">200+</span> advanced features for only <span class="king-addons-promo-highlight">$4.99</span>/month.</div>
+                    <div class="king-addons-promo-title">Get <span class="king-addons-promo-highlight">4,000+</span> premium templates and sections, <span class="king-addons-promo-highlight">80+</span> widgets, <span class="king-addons-promo-highlight">200+</span> advanced features, and AI tools for Elementor. From <span class="king-addons-promo-highlight">$4</span>/mo, billed annually.</div>
                     <div class="king-addons-promo-text">Upgrade now and boost your website's performance!</div>
                     <div class="king-addons-promo-small">Trusted by 20,000+ users</div>
                     <div class="king-addons-promo-buttons">
@@ -435,52 +464,94 @@
                 return promoBlock;
             }
 
-            function replaceBugReportInPanel() {
+            function updateHelpPanel(widgetType) {
                 const helpSection = document.querySelector('#elementor-panel__editor__help');
-                if (helpSection) {
-                    // Clear existing content and create wrapper
-                    helpSection.innerHTML = '';
-                    
-                    // Create wrapper div
-                    const wrapper = document.createElement('div');
+                if (!helpSection) {
+                    return;
+                }
+
+                const helpLink = helpSection.querySelector('#elementor-panel__editor__help__link');
+
+                const shouldShowPromo = !(typeof kingAddonsEditor !== 'undefined' && kingAddonsEditor.isPro);
+                const shouldShowBugReport = !!(widgetType && widgetType.startsWith('king-addons-'));
+
+                let wrapper = helpSection.querySelector('.king-addons-help-wrapper');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
                     wrapper.className = 'king-addons-help-wrapper';
-                    
-                    // Add promo block only if not PRO user
-                    const promoBlock = createPromoBlock();
-                    if (promoBlock) {
-                        wrapper.appendChild(promoBlock);
-                    }
-                    
-                    // Always add bug report section
-                    wrapper.appendChild(createBugReportSection());
-                    
-                    // Add wrapper to help section
                     helpSection.appendChild(wrapper);
+                }
+
+                // Promo: show for ALL widgets when Pro is not active.
+                const existingPromo = wrapper.querySelector('.king-addons-promo-block');
+                if (shouldShowPromo) {
+                    if (!existingPromo) {
+                        const promoBlock = createPromoBlock();
+                        if (promoBlock) {
+                            wrapper.prepend(promoBlock);
+                        }
+                    }
+                } else if (existingPromo) {
+                    existingPromo.remove();
+                }
+
+                // Bug report: only for King Addons widgets.
+                const existingBugReport = wrapper.querySelector('.king-addons-bug-report');
+                if (shouldShowBugReport) {
+                    if (!existingBugReport) {
+                        wrapper.appendChild(createBugReportSection());
+                    }
+                } else if (existingBugReport) {
+                    existingBugReport.remove();
+                }
+
+                // Clean up empty wrapper.
+                if (!wrapper.querySelector('.king-addons-promo-block') && !wrapper.querySelector('.king-addons-bug-report')) {
+                    wrapper.remove();
+                }
+
+                // Place the Elementor "Need Help" link at the very end when we inject content.
+                // If bug-report is visible (King Addons widget), hide the link entirely.
+                const hasWrapper = !!helpSection.querySelector('.king-addons-help-wrapper');
+                const hasBugReport = !!helpSection.querySelector('.king-addons-bug-report');
+                if (helpLink) {
+                    if (hasBugReport) {
+                        helpLink.style.display = 'none';
+                    } else {
+                        helpLink.style.display = '';
+                    }
+
+                    if (hasWrapper && helpLink.parentNode === helpSection) {
+                        helpSection.appendChild(helpLink);
+                    }
+                }
+
+                // Toggle layout helper class only when we inject content.
+                if (hasWrapper) {
+                    helpSection.classList.add('king-addons-help-injected');
+                } else {
+                    helpSection.classList.remove('king-addons-help-injected');
                 }
             }
 
-            // Hook into Elementor panel events to replace help section for King Addons widgets
+            // Hook into Elementor panel events to inject promo (all widgets) + bug report (King Addons only)
             if (window.elementor) {
                 elementor.hooks.addAction('panel/open_editor/widget', function(panel, model, view) {
                     const widgetType = model.attributes.widgetType;
-                    
-                    // Check if it's a King Addons widget
-                    if (widgetType && widgetType.startsWith('king-addons-')) {
-                        // Wait a bit for the panel to fully load, then replace the help section
-                        setTimeout(() => {
-                            replaceBugReportInPanel();
-                        }, 100);
-                    }
+
+                    // Wait a bit for the panel to fully load, then update help panel.
+                    setTimeout(() => {
+                        updateHelpPanel(widgetType);
+                    }, 100);
                 });
             }
 
-            // Initial replacement if we're already on a King Addons widget
+            // Initial injection if we're already on a widget
             setTimeout(() => {
                 if (window.elementor && elementor.panel && elementor.panel.currentView) {
                     const currentModel = elementor.panel.currentView.model;
-                    if (currentModel && currentModel.attributes.widgetType && currentModel.attributes.widgetType.startsWith('king-addons-')) {
-                        replaceBugReportInPanel();
-                    }
+                    const widgetType = currentModel && currentModel.attributes ? currentModel.attributes.widgetType : '';
+                    updateHelpPanel(widgetType);
                 }
             }, 500);
         })();

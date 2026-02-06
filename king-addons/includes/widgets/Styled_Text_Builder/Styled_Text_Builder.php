@@ -45,6 +45,16 @@ class Styled_Text_Builder extends Widget_Base
         return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-styled-text-builder-style'];
     }
 
+    /**
+     * Script dependencies.
+     *
+     * @return array<int, string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-styled-text-builder-script'];
+    }
+
     public function get_categories(): array
     {
         return ['king-addons'];
@@ -414,6 +424,7 @@ class Styled_Text_Builder extends Widget_Base
 
         /** ====================================================== */
         /** TEXT EFFECTS ========================================== */
+        $pro_icon = king_addons_freemius()->can_use_premium_code() ? '' : '<i class="eicon-pro-icon"></i>';
         $repeater->add_control(
             'kng_styled_txt_effect',
             [
@@ -424,11 +435,198 @@ class Styled_Text_Builder extends Widget_Base
                     'text-gradient' => esc_html__('Text Gradient', 'king-addons'),
                     'underline-gradient' => esc_html__('Underline Gradient', 'king-addons'),
                     'outline-stroke' => esc_html__('Outline Stroke', 'king-addons'),
+                    'spoiler-thanos' => sprintf(__('Spoiler / Thanos Snap %s', 'king-addons'), $pro_icon),
+                    'typing' => sprintf(__('Typing Text %s', 'king-addons'), $pro_icon),
                 ],
                 'label_block' => true,
                 'default' => 'none',
                 'separator' => 'before',
                 'condition' => [
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        if (!king_addons_freemius()->can_use_premium_code()) {
+            $repeater->add_control(
+                'kng_styled_txt_effect_spoiler_notice',
+                [
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => esc_html__('Spoiler / Thanos effect is available in Pro.', 'king-addons'),
+                    'content_classes' => 'king-addons-pro-notice',
+                    'condition' => [
+                        'kng_styled_txt_effect' => 'spoiler-thanos',
+                        'kng_styled_txt_content_type' => 'text',
+                        'kng_styled_txt_effect!' => 'outline-stroke',
+                    ],
+                ]
+            );
+        }
+
+        if (!king_addons_freemius()->can_use_premium_code()) {
+            $repeater->add_control(
+                'kng_styled_txt_effect_typing_notice',
+                [
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => esc_html__('Typing Text effect is available in Pro.', 'king-addons'),
+                    'content_classes' => 'king-addons-pro-notice',
+                    'condition' => [
+                        'kng_styled_txt_effect' => 'typing',
+                        'kng_styled_txt_content_type' => 'text',
+                    ],
+                ]
+            );
+        }
+
+        $repeater->add_control(
+            'kng_styled_txt_spoiler_trigger_desktop',
+            [
+                'label' => esc_html__('Reveal on Desktop', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'hover',
+                'options' => [
+                    'hover' => esc_html__('Hover', 'king-addons'),
+                    'hover-click' => esc_html__('Hover + Click (Remove)', 'king-addons'),
+                    'click' => esc_html__('Click', 'king-addons'),
+                ],
+                'condition' => [
+                    'kng_styled_txt_effect' => 'spoiler-thanos',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_spoiler_trigger_mobile',
+            [
+                'label' => esc_html__('Reveal on Mobile', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'tap',
+                'options' => [
+                    'tap' => esc_html__('Tap', 'king-addons'),
+                    'hover' => esc_html__('Hover', 'king-addons'),
+                    'hover-click' => esc_html__('Hover + Tap (Remove)', 'king-addons'),
+                ],
+                'condition' => [
+                    'kng_styled_txt_effect' => 'spoiler-thanos',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_spoiler_color',
+            [
+                'label' => esc_html__('Spoiler Dots Color', 'king-addons'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#9ca3af',
+                'condition' => [
+                    'kng_styled_txt_effect' => 'spoiler-thanos',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_spoiler_opacity',
+            [
+                'label' => esc_html__('Spoiler Opacity', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['custom'],
+                'range' => [
+                    'custom' => [
+                        'min' => 0.1,
+                        'max' => 1,
+                        'step' => 0.05,
+                    ],
+                ],
+                'default' => [
+                    'size' => 0.92,
+                    'unit' => 'custom',
+                ],
+                'condition' => [
+                    'kng_styled_txt_effect' => 'spoiler-thanos',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_spoiler_speed',
+            [
+                'label' => esc_html__('Animation Speed (s)', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['custom'],
+                'range' => [
+                    'custom' => [
+                        'min' => 0.5,
+                        'max' => 5,
+                        'step' => 0.1,
+                    ],
+                ],
+                'default' => [
+                    'size' => 1.6,
+                    'unit' => 'custom',
+                ],
+                'condition' => [
+                    'kng_styled_txt_effect' => 'spoiler-thanos',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_typing_speed',
+            [
+                'label' => esc_html__('Typing Speed (ms)', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 80,
+                'min' => 10,
+                'max' => 500,
+                'condition' => [
+                    'kng_styled_txt_effect' => 'typing',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_typing_delay',
+            [
+                'label' => esc_html__('Loop Delay (ms)', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 1200,
+                'min' => 0,
+                'max' => 10000,
+                'condition' => [
+                    'kng_styled_txt_effect' => 'typing',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_typing_loop',
+            [
+                'label' => esc_html__('Loop Typing', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'return_value' => 'yes',
+                'default' => 'yes',
+                'condition' => [
+                    'kng_styled_txt_effect' => 'typing',
+                    'kng_styled_txt_content_type' => 'text'
+                ]
+            ]
+        );
+
+        $repeater->add_control(
+            'kng_styled_txt_typing_cursor',
+            [
+                'label' => esc_html__('Cursor', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'default' => '|',
+                'condition' => [
+                    'kng_styled_txt_effect' => 'typing',
                     'kng_styled_txt_content_type' => 'text'
                 ]
             ]
@@ -1244,6 +1442,12 @@ class Styled_Text_Builder extends Widget_Base
 
                     $txt_effect = $item['kng_styled_txt_effect'];
                     $txt_effect_class = '';
+                    $data_attrs = '';
+                    $inline_style = '';
+
+                    if (in_array($txt_effect, ['spoiler-thanos', 'typing'], true) && !king_addons_freemius()->can_use_premium_code__premium_only()) {
+                        $txt_effect = 'none';
+                    }
 
                     switch ($txt_effect) {
                         case 'text-gradient':
@@ -1252,13 +1456,33 @@ class Styled_Text_Builder extends Widget_Base
                         case 'underline-gradient':
                             $txt_effect_class = ' king-addons-styled-text-underline-gradient';
                             break;
+                        case 'spoiler-thanos':
+                            $txt_effect_class = ' king-addons-styled-text--spoiler';
+
+                            $spoiler_color = $item['kng_styled_txt_spoiler_color'] ?? '#9ca3af';
+                            $spoiler_opacity = isset($item['kng_styled_txt_spoiler_opacity']['size']) ? (float) $item['kng_styled_txt_spoiler_opacity']['size'] : 0.92;
+                            $spoiler_speed = isset($item['kng_styled_txt_spoiler_speed']['size']) ? (float) $item['kng_styled_txt_spoiler_speed']['size'] : 1.6;
+                            $trigger_desktop = $item['kng_styled_txt_spoiler_trigger_desktop'] ?? 'hover';
+                            $trigger_mobile = $item['kng_styled_txt_spoiler_trigger_mobile'] ?? 'tap';
+
+                            $data_attrs = ' data-effect="spoiler" data-spoiler-desktop="' . esc_attr($trigger_desktop) . '" data-spoiler-mobile="' . esc_attr($trigger_mobile) . '"';
+                            $inline_style = ' style="--kng-spoiler-color:' . esc_attr($spoiler_color) . ';--kng-spoiler-opacity:' . esc_attr($spoiler_opacity) . ';--kng-spoiler-speed:' . esc_attr($spoiler_speed) . 's;"';
+                            break;
+                        case 'typing':
+                            $txt_effect_class = ' king-addons-styled-text--typing';
+                            $typing_speed = isset($item['kng_styled_txt_typing_speed']) ? (int) $item['kng_styled_txt_typing_speed'] : 80;
+                            $typing_delay = isset($item['kng_styled_txt_typing_delay']) ? (int) $item['kng_styled_txt_typing_delay'] : 1200;
+                            $typing_loop = ($item['kng_styled_txt_typing_loop'] ?? 'yes') === 'yes';
+                            $typing_cursor = $item['kng_styled_txt_typing_cursor'] ?? '|';
+                            $data_attrs = ' data-effect="typing" data-typing-speed="' . esc_attr($typing_speed) . '" data-typing-delay="' . esc_attr($typing_delay) . '" data-typing-loop="' . ($typing_loop ? 'yes' : 'no') . '" data-typing-cursor="' . esc_attr($typing_cursor) . '"';
+                            break;
                     }
 
                     if ('' !== $item['kng_styled_txt_content']) {
 
                         echo '<span class="elementor-repeater-item-' .
                             esc_attr($item['_id']) .
-                            esc_attr($txt_effect_class) . ' king-addons-styled-text">';
+                            esc_attr($txt_effect_class) . ' king-addons-styled-text"' . $data_attrs . $inline_style . '>';
 
                         $html = '<' . esc_attr($item_tag) . ' ' . $this->get_render_attribute_string('kng_styled_txt_content_inner_attribute' . $item_count) . '>';
                         echo wp_kses($html, wp_kses_allowed_html('post'));

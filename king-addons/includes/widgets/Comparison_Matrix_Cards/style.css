@@ -1,0 +1,450 @@
+.king-addons-comparison-matrix-cards {
+    --kng-cmc-gap: 24px;
+    --kng-cmc-columns: 3;
+    --kng-cmc-card-min-width: 260px;
+    --kng-cmc-border-color: #e5e7eb;
+    --kng-cmc-text: #0f172a;
+    --kng-cmc-muted: #64748b;
+    --kng-cmc-accent: #1d4ed8;
+    --kng-cmc-included: #16a34a;
+    --kng-cmc-excluded: #dc2626;
+    --kng-cmc-limited: #f59e0b;
+    --kng-cmc-tooltip-bg: #111827;
+    --kng-cmc-tooltip-text: #ffffff;
+    --kng-cmc-unique-bg: rgba(29, 78, 216, 0.08);
+    --kng-cmc-unique-border: rgba(29, 78, 216, 0.32);
+    --kng-cmc-unique-text: #1d4ed8;
+    --kng-cmc-divider-color: rgba(148, 163, 184, 0.4);
+    --kng-cmc-divider-style: dashed;
+    --kng-cmc-divider-width: 1px;
+    --kng-cmc-header-gap: 8px;
+    --kng-cmc-group-bg: transparent;
+    --kng-cmc-group-radius: 0px;
+    --kng-cmc-group-padding: 6px 0 0 0;
+    --kng-cmc-card-hover-translate: 0px;
+    --kng-cmc-dim-opacity: 0.45;
+    --kng-cmc-sticky-offset: 0px;
+    --kng-cmc-sticky-bg: #ffffff;
+    --kng-cmc-sticky-divider: rgba(148, 163, 184, 0.4);
+    --kng-cmc-sticky-shadow: rgba(15, 23, 42, 0.18);
+    --kng-cmc-search-bg: #ffffff;
+    --kng-cmc-search-border: #e5e7eb;
+    --kng-cmc-search-text: #0f172a;
+}
+
+.king-addons-comparison-matrix-cards__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.king-addons-comparison-matrix-cards__search {
+    flex: 1 1 240px;
+}
+
+.king-addons-comparison-matrix-cards__search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--kng-cmc-search-border);
+    background: var(--kng-cmc-search-bg);
+    color: var(--kng-cmc-search-text);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.king-addons-comparison-matrix-cards__search-input:focus {
+    border-color: var(--kng-cmc-accent);
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+}
+
+.king-addons-comparison-matrix-cards__highlight-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--kng-cmc-text);
+    cursor: pointer;
+    position: relative;
+}
+
+.king-addons-comparison-matrix-cards__highlight-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.king-addons-comparison-matrix-cards__toggle-indicator {
+    position: relative;
+    width: 42px;
+    height: 22px;
+    border-radius: 999px;
+    background: #cbd5f5;
+    transition: background 0.2s ease;
+}
+
+.king-addons-comparison-matrix-cards__toggle-indicator::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.king-addons-comparison-matrix-cards__highlight-input:checked + .king-addons-comparison-matrix-cards__toggle-indicator {
+    background: var(--kng-cmc-accent);
+}
+
+.king-addons-comparison-matrix-cards__highlight-input:focus + .king-addons-comparison-matrix-cards__toggle-indicator {
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+}
+
+.king-addons-comparison-matrix-cards__highlight-input:checked + .king-addons-comparison-matrix-cards__toggle-indicator::after {
+    transform: translateX(20px);
+}
+
+.king-addons-comparison-matrix-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--kng-cmc-columns), minmax(0, 1fr));
+    gap: var(--kng-cmc-gap);
+}
+
+.king-addons-comparison-matrix-cards__card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid var(--kng-cmc-border-color);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.king-addons-comparison-matrix-cards__card:hover {
+    transform: translateY(var(--kng-cmc-card-hover-translate));
+}
+
+.king-addons-comparison-matrix-cards--preset-minimal .king-addons-comparison-matrix-cards__card {
+    box-shadow: none;
+    border-color: transparent;
+    background: #f8fafc;
+}
+
+.king-addons-comparison-matrix-cards--preset-bordered .king-addons-comparison-matrix-cards__card {
+    border-width: 2px;
+}
+
+.king-addons-comparison-matrix-cards--preset-soft .king-addons-comparison-matrix-cards__card {
+    background: #ffffff;
+    border-color: rgba(148, 163, 184, 0.35);
+}
+
+.king-addons-comparison-matrix-cards--equal-height .king-addons-comparison-matrix-cards__card {
+    height: 100%;
+}
+
+.king-addons-comparison-matrix-cards__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kng-cmc-header-gap);
+}
+
+.king-addons-comparison-matrix-cards.is-sticky-enabled .king-addons-comparison-matrix-cards__header {
+    position: sticky;
+    top: var(--kng-cmc-sticky-offset);
+    z-index: 2;
+    background: var(--kng-cmc-sticky-bg);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--kng-cmc-sticky-divider);
+}
+
+.king-addons-comparison-matrix-cards.has-sticky-shadow .king-addons-comparison-matrix-cards__header {
+    box-shadow: 0 10px 20px -16px var(--kng-cmc-sticky-shadow);
+}
+
+.king-addons-comparison-matrix-cards__badge {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(29, 78, 216, 0.12);
+    color: var(--kng-cmc-accent);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.king-addons-comparison-matrix-cards__title {
+    margin: 0;
+    color: var(--kng-cmc-text);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.king-addons-comparison-matrix-cards__description {
+    margin: 0;
+    color: var(--kng-cmc-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.king-addons-comparison-matrix-cards__price {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--kng-cmc-text);
+}
+
+.king-addons-comparison-matrix-cards__subtitle {
+    font-size: 14px;
+    color: var(--kng-cmc-muted);
+}
+
+.king-addons-comparison-matrix-cards__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--kng-cmc-accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.king-addons-comparison-matrix-cards__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(29, 78, 216, 0.25);
+}
+
+.king-addons-comparison-matrix-cards__features {
+    flex: 1 1 auto;
+}
+
+.king-addons-comparison-matrix-cards__feature-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.king-addons-comparison-matrix-cards__feature {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: var(--kng-cmc-divider-width) var(--kng-cmc-divider-style) var(--kng-cmc-divider-color);
+    transition: opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-comparison-matrix-cards__feature:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.king-addons-comparison-matrix-cards__feature.is-filter-hidden,
+.king-addons-comparison-matrix-cards__feature.is-highlight-hidden {
+    display: none;
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-background .king-addons-comparison-matrix-cards__feature.is-unique {
+    background: var(--kng-cmc-unique-bg);
+    border: 1px solid var(--kng-cmc-unique-border);
+    color: var(--kng-cmc-unique-text);
+    padding: 10px 12px;
+    border-radius: 12px;
+    border-bottom: none;
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-background .king-addons-comparison-matrix-cards__feature.is-unique .king-addons-comparison-matrix-cards__feature-value,
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-background .king-addons-comparison-matrix-cards__feature.is-unique .king-addons-comparison-matrix-cards__feature-label {
+    color: var(--kng-cmc-unique-text);
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-border .king-addons-comparison-matrix-cards__feature.is-unique {
+    background: transparent;
+    border: 2px solid var(--kng-cmc-unique-border);
+    color: var(--kng-cmc-unique-text);
+    padding: 10px 12px;
+    border-radius: 12px;
+    border-bottom: none;
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-border .king-addons-comparison-matrix-cards__feature.is-unique .king-addons-comparison-matrix-cards__feature-value,
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-border .king-addons-comparison-matrix-cards__feature.is-unique .king-addons-comparison-matrix-cards__feature-label {
+    color: var(--kng-cmc-unique-text);
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-icon .king-addons-comparison-matrix-cards__feature.is-unique {
+    border-bottom-color: transparent;
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-icon .king-addons-comparison-matrix-cards__feature.is-unique .king-addons-comparison-matrix-cards__icon,
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-unique.is-highlight-style-icon .king-addons-comparison-matrix-cards__feature.is-unique .king-addons-comparison-matrix-cards__feature-value {
+    color: var(--kng-cmc-unique-text);
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-dim .king-addons-comparison-matrix-cards__feature.is-identical {
+    opacity: var(--kng-cmc-dim-opacity);
+}
+
+.king-addons-comparison-matrix-cards.is-highlight-active.is-highlight-mode-hide .king-addons-comparison-matrix-cards__feature.is-identical {
+    display: none;
+}
+
+.king-addons-comparison-matrix-cards__feature-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--kng-cmc-text);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.king-addons-comparison-matrix-cards__feature-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--kng-cmc-text);
+    font-weight: 600;
+}
+
+.king-addons-comparison-matrix-cards__feature-group {
+    padding: var(--kng-cmc-group-padding);
+    background: var(--kng-cmc-group-bg);
+    border-radius: var(--kng-cmc-group-radius);
+}
+
+.king-addons-comparison-matrix-cards__feature-group.is-hidden {
+    display: none;
+}
+
+.king-addons-comparison-matrix-cards__group {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--kng-cmc-muted);
+    font-weight: 600;
+}
+
+.king-addons-comparison-matrix-cards__footer {
+    font-size: 12px;
+    color: var(--kng-cmc-muted);
+}
+
+.king-addons-comparison-matrix-cards__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+}
+
+.king-addons-comparison-matrix-cards__icon.is-included {
+    color: var(--kng-cmc-included);
+}
+
+.king-addons-comparison-matrix-cards__icon.is-excluded {
+    color: var(--kng-cmc-excluded);
+}
+
+.king-addons-comparison-matrix-cards__icon.is-limited {
+    color: var(--kng-cmc-limited);
+}
+
+.king-addons-comparison-matrix-cards__tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+}
+
+.king-addons-comparison-matrix-cards__tooltip-text {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%);
+    min-width: 180px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--kng-cmc-tooltip-bg);
+    color: var(--kng-cmc-tooltip-text);
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform-origin: bottom center;
+    z-index: 5;
+}
+
+.king-addons-comparison-matrix-cards__tooltip:hover .king-addons-comparison-matrix-cards__tooltip-text,
+.king-addons-comparison-matrix-cards__tooltip:focus .king-addons-comparison-matrix-cards__tooltip-text,
+.king-addons-comparison-matrix-cards__tooltip:focus-within .king-addons-comparison-matrix-cards__tooltip-text {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+    pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+    .king-addons-comparison-matrix-cards__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .king-addons-comparison-matrix-cards--mobile-scroll .king-addons-comparison-matrix-cards__grid {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(var(--kng-cmc-card-min-width), 1fr);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 10px;
+    }
+
+    .king-addons-comparison-matrix-cards--mobile-scroll .king-addons-comparison-matrix-cards__card {
+        scroll-snap-align: start;
+        min-width: var(--kng-cmc-card-min-width);
+    }
+
+    .king-addons-comparison-matrix-cards.is-sticky-mobile-off .king-addons-comparison-matrix-cards__header {
+        position: static;
+        box-shadow: none;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .king-addons-comparison-matrix-cards.is-sticky-compact .king-addons-comparison-matrix-cards__description,
+    .king-addons-comparison-matrix-cards.is-sticky-compact .king-addons-comparison-matrix-cards__subtitle {
+        display: none;
+    }
+}
+
+.king-addons-comparison-matrix-cards--hide-scrollbar .king-addons-comparison-matrix-cards__grid {
+    scrollbar-width: none;
+}
+
+.king-addons-comparison-matrix-cards--hide-scrollbar .king-addons-comparison-matrix-cards__grid::-webkit-scrollbar {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-comparison-matrix-cards__card,
+    .king-addons-comparison-matrix-cards__button,
+    .king-addons-comparison-matrix-cards__tooltip-text,
+    .king-addons-comparison-matrix-cards__feature,
+    .king-addons-comparison-matrix-cards__toggle-indicator,
+    .king-addons-comparison-matrix-cards__toggle-indicator::after,
+    .king-addons-comparison-matrix-cards__search-input {
+        transition: none;
+    }
+}

@@ -9,6 +9,7 @@ namespace King_Addons;
 use Elementor\Plugin;
 use Elementor\Widgets_Manager;
 use Elementor\Controls_Manager;
+use King_Addons\Wishlist\Wishlist_Module;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
@@ -22,6 +23,13 @@ final class Core
      * @var Core|null The single instance of the class.
      */
     private static ?Core $_instance = null;
+
+    /**
+     * Wishlist module instance.
+     *
+     * @var Wishlist_Module|null
+     */
+    private ?Wishlist_Module $wishlist_module = null;
 
     /**
      * Instance
@@ -40,6 +48,51 @@ final class Core
     }
 
     /**
+     * Check if an extension is enabled.
+     *
+     * Checks database options first, defaults to enabled if not set (new installations).
+     * Falls back to constant check for backward compatibility.
+     *
+     * @param string $extension_id The extension ID (e.g., 'templates-catalog', 'popup-builder').
+     * @param string $constant_name The constant name to check as fallback (e.g., 'KING_ADDONS_EXT_POPUP_BUILDER').
+     * @return bool True if extension is enabled, false otherwise.
+     * @since 1.0.0
+     */
+    private function isExtensionEnabled(string $extension_id, string $constant_name): bool
+    {
+        // Dependency checks (extensions that require other plugins).
+        if ($extension_id === 'woo-builder' && (!class_exists('WooCommerce') || !function_exists('WC'))) {
+            return false;
+        }
+
+        // Get options from database
+        $options = get_option('king_addons_options', []);
+
+        // If a constant is defined and explicitly false, treat it as a hard disable.
+        // This is useful for extensions that are in development and should not be
+        // available/visible even if the database option is enabled.
+        if ($constant_name !== '' && defined($constant_name) && constant($constant_name) === false) {
+            return false;
+        }
+
+        // Check if option exists in database
+        $option_key = 'ext_' . $extension_id;
+        if (isset($options[$option_key])) {
+            // Option exists, use its value
+            return $options[$option_key] === 'enabled';
+        }
+
+        // Option doesn't exist (new installation), default to enabled
+        // But also check constant as fallback for backward compatibility
+        if ($constant_name !== '' && defined($constant_name)) {
+            return constant($constant_name);
+        }
+
+        // Default to enabled for new installations
+        return true;
+    }
+
+    /**
      * Constructor
      *
      * Perform some compatibility checks to make sure basic requirements are meet.
@@ -51,7 +104,6 @@ final class Core
     {
         require_once(KING_ADDONS_PATH . 'includes/ModulesMap.php');
         require_once(KING_ADDONS_PATH . 'includes/LibrariesMap.php');
-        require_once(KING_ADDONS_PATH . 'includes/SectionsMap.php');
 
         if ($this->hasElementorCompatibility()) {
 
@@ -59,7 +111,7 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/helpers/Check_Requirements/Check_Requirements.php');
 
             // Templates Catalog
-            if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
+            if ($this->isExtensionEnabled('templates-catalog', 'KING_ADDONS_EXT_TEMPLATES_CATALOG')) {
                 require_once(KING_ADDONS_PATH . 'includes/TemplatesMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/CollectionsMap.php');
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Templates/Templates.php');
@@ -69,26 +121,176 @@ final class Core
                 Template_Catalog_Button::instance();
             }
 
-            // Sections Catalog
-            // if (KING_ADDONS_EXT_SECTIONS_CATALOG) {
-            //     require_once(KING_ADDONS_PATH . 'includes/extensions/Sections_Catalog/Sections_Catalog.php');
-            //     Sections_Catalog::instance();
-            // }
-
             // Header & Footer Builder
-            if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {
+            if ($this->isExtensionEnabled('header-footer-builder', 'KING_ADDONS_EXT_HEADER_FOOTER_BUILDER')) {
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Header_Footer_Builder/Header_Footer_Builder.php');
                 Header_Footer_Builder::instance();
             }
 
             // Popup Builder
-            if (KING_ADDONS_EXT_POPUP_BUILDER) {
+            if ($this->isExtensionEnabled('popup-builder', 'KING_ADDONS_EXT_POPUP_BUILDER')) {
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Popup_Builder/Popup_Builder.php');
                 Popup_Builder::instance();
             }
 
+            // Cookie / Consent Bar
+            if ($this->isExtensionEnabled('cookie-consent', 'KING_ADDONS_EXT_COOKIE_CONSENT')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Cookie_Consent/Cookie_Consent.php');
+                Cookie_Consent::instance();
+            }
+
+            // WooCommerce Builder
+            if ($this->isExtensionEnabled('woo-builder', 'KING_ADDONS_EXT_WOO_BUILDER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Woo_Builder/Woo_Builder.php');
+                if (class_exists('King_Addons\\Woo_Builder')) {
+                    new Woo_Builder();
+                }
+            }
+
+            // Sticky Contact Bar
+            if ($this->isExtensionEnabled('sticky-contact-bar', 'KING_ADDONS_EXT_STICKY_CONTACT_BAR')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Sticky_Contact_Bar/Sticky_Contact_Bar.php');
+
+                $pro_loaded = false;
+                if (
+                    function_exists('king_addons_freemius')
+                    && king_addons_freemius()->can_use_premium_code__premium_only()
+                    && defined('KING_ADDONS_PRO_PATH')
+                ) {
+                    $pro_file_path = KING_ADDONS_PRO_PATH . 'includes/extensions/Sticky_Contact_Bar_Pro/Sticky_Contact_Bar_Pro.php';
+                    if (file_exists($pro_file_path)) {
+                        require_once $pro_file_path;
+                        if (class_exists('King_Addons\\Sticky_Contact_Bar_Pro')) {
+                            new Sticky_Contact_Bar_Pro();
+                            $pro_loaded = true;
+                        }
+                    }
+                }
+
+                if (!$pro_loaded && class_exists('King_Addons\\Sticky_Contact_Bar')) {
+                    new Sticky_Contact_Bar();
+                }
+            }
+
+            // Theme Builder
+            if ($this->isExtensionEnabled('theme-builder', 'KING_ADDONS_EXT_THEME_BUILDER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Theme_Builder/Theme_Builder.php');
+
+                $pro_loaded = false;
+                if (
+                    function_exists('king_addons_freemius')
+                    && king_addons_freemius()->can_use_premium_code__premium_only()
+                    && defined('KING_ADDONS_PRO_PATH')
+                ) {
+                    $pro_file_path = KING_ADDONS_PRO_PATH . 'includes/extensions/Theme_Builder_Pro/Theme_Builder_Pro.php';
+                    if (file_exists($pro_file_path)) {
+                        require_once $pro_file_path;
+                        if (class_exists('King_Addons\\Theme_Builder_Pro')) {
+                            new Theme_Builder_Pro();
+                            $pro_loaded = true;
+                        }
+                    }
+                }
+
+                if (!$pro_loaded && class_exists('King_Addons\\Theme_Builder')) {
+                    new Theme_Builder();
+                }
+            }
+
+            // Custom Cursor
+            if ($this->isExtensionEnabled('custom-cursor', 'KING_ADDONS_EXT_CUSTOM_CURSOR')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Custom_Cursor/Custom_Cursor.php');
+                if (class_exists('King_Addons\\Custom_Cursor')) {
+                    new Custom_Cursor();
+                }
+            }
+
+            // Age Gate
+            if ($this->isExtensionEnabled('age-gate', 'KING_ADDONS_EXT_AGE_GATE')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Age_Gate/Age_Gate.php');
+                if (defined('KING_ADDONS_PRO_PATH')) {
+                    $age_gate_pro = KING_ADDONS_PRO_PATH . 'includes/extensions/Age_Gate_Pro/Age_Gate_Pro.php';
+                    if (file_exists($age_gate_pro)) {
+                        require_once $age_gate_pro;
+                    }
+                }
+                Age_Gate::instance();
+            }
+
+            // Live Chat & Support Builder
+            if ($this->isExtensionEnabled('live-chat', 'KING_ADDONS_EXT_LIVE_CHAT')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Live_Chat/Live_Chat.php');
+                Live_Chat::instance();
+            }
+
+            // Docs & Knowledge Base
+            if ($this->isExtensionEnabled('docs-kb', 'KING_ADDONS_EXT_DOCS_KB')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Docs_KB/Docs_KB.php');
+                Docs_KB::instance();
+            }
+
+            // Pricing Table Builder
+            if ($this->isExtensionEnabled('pricing-table-builder', 'KING_ADDONS_EXT_PRICING_TABLE_BUILDER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Pricing_Table_Builder/Pricing_Table_Builder.php');
+                Pricing_Table_Builder::instance();
+            }
+
+            // Custom Code Manager
+            if ($this->isExtensionEnabled('custom-code-manager', 'KING_ADDONS_EXT_CUSTOM_CODE_MANAGER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Custom_Code_Manager/Custom_Code_Manager.php');
+                Custom_Code_Manager::getInstance();
+            }
+
+            // Fomo Notifications
+            if ($this->isExtensionEnabled('fomo-notifications', 'KING_ADDONS_EXT_FOMO_NOTIFICATIONS')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Fomo_Notifications/Fomo_Notifications.php');
+                Fomo_Notifications::instance();
+            }
+
+            // Smart Links
+            if ($this->isExtensionEnabled('smart-links', 'KING_ADDONS_EXT_SMART_LINKS')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Smart_Links/Smart_Links.php');
+                \King_Addons\Smart_Links\Smart_Links::instance();
+            }
+
+            // Activity Log
+            if ($this->isExtensionEnabled('activity-log', 'KING_ADDONS_EXT_ACTIVITY_LOG')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Activity_Log/Activity_Log.php');
+                \King_Addons\Activity_Log\Activity_Log::instance();
+            }
+
+            // Maintenance Mode
+            if ($this->isExtensionEnabled('maintenance-mode', 'KING_ADDONS_EXT_MAINTENANCE_MODE')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Maintenance_Mode/Maintenance_Mode.php');
+                \King_Addons\Maintenance_Mode\Maintenance_Mode::instance();
+            }
+
+            // Data Table Builder
+            if ($this->isExtensionEnabled('table-builder', 'KING_ADDONS_EXT_TABLE_BUILDER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Data_Table_Builder/Data_Table_Builder.php');
+                Data_Table_Builder::instance();
+            }
+
+            // Site Preloader Animation
+            if ($this->isExtensionEnabled('site-preloader', 'KING_ADDONS_EXT_SITE_PRELOADER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Site_Preloader/Site_Preloader.php');
+                Site_Preloader::instance();
+            }
+
+            // Image Optimizer
+            if ($this->isExtensionEnabled('image-optimizer', 'KING_ADDONS_EXT_IMAGE_OPTIMIZER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Image_Optimizer/Image_Optimizer.php');
+                \King_Addons\Image_Optimizer\Image_Optimizer::instance();
+            }
+
             // Admin
             require_once(KING_ADDONS_PATH . 'includes/Admin.php');
+
+            // Rating Notice (admin only)
+            if (is_admin()) {
+                require_once(KING_ADDONS_PATH . 'includes/admin/notices/RatingNotice.php');
+                \King_Addons\Admin\Notices\RatingNotice::instance();
+            }
 
             // Additional - Controls
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2.php');
@@ -122,6 +324,19 @@ final class Core
             // Alt Text Generator for Media Library
             require_once(KING_ADDONS_PATH . 'includes/extensions/alt-text-generator/Alt_Text_Generator.php');
             new Alt_Text_Generator();
+
+            // Wishlist module - check extension toggle
+            if ($this->isExtensionEnabled('wishlist', 'KING_ADDONS_EXT_WISHLIST')) {
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_DB.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Session.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Settings.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Service.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Renderer.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Frontend.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_WooCommerce.php';
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Module.php';
+                $this->wishlist_module = new Wishlist_Module();
+            }
 
             // Dynamic Posts Grid AJAX Helper - Initialize regardless of Elementor compatibility
             // This is needed for AJAX functionality to work even when PRO version is disabled
@@ -162,10 +377,14 @@ final class Core
             // Initialize social login handler
             \King_Addons\Widgets\Login_Register_Form\Social_Login_Handler::init();
 
-            // Initialize Security Dashboard for admins
+            // Initialize Security Dashboard for admins (only if Login Register Form widget is enabled)
             if (is_admin()) {
-                require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Security_Dashboard.php');
-                \King_Addons\Widgets\Login_Register_Form\Security_Dashboard::init();
+                $widget_options = get_option('king_addons_options', []);
+                $login_form_enabled = !isset($widget_options['login-register-form']) || $widget_options['login-register-form'] === 'enabled';
+                if ($login_form_enabled) {
+                    require_once(KING_ADDONS_PATH . 'includes/widgets/Login_Register_Form/Security_Dashboard.php');
+                    \King_Addons\Widgets\Login_Register_Form\Security_Dashboard::init();
+                }
             }
 
             new Admin();
@@ -178,6 +397,9 @@ final class Core
                 add_action('wp_ajax_king_addons_premium_notice_dismiss', [$this, 'king_addons_premium_notice_dismiss_callback']);
                 add_action('admin_notices', [$this, 'showNoticeUpgrade']);
             }
+
+            // Dashboard UI settings AJAX handler
+            add_action('wp_ajax_king_addons_save_dashboard_ui', [$this, 'king_addons_save_dashboard_ui_callback']);
 
             // Conditionally enqueue AI text-field enhancement script and styles in Elementor editor
             $ai_options = get_option('king_addons_ai_options', []);
@@ -206,10 +428,70 @@ final class Core
         if (!current_user_can('manage_options')) {
             wp_die();
         }
+
+        check_ajax_referer('king_addons_premium_notice_dismiss', 'nonce');
+
         $user_id = get_current_user_id();
         // Save the current time as the last dismissal time for the premium notice
         update_user_meta($user_id, 'king_addons_premium_notice_dismissed_time', time());
         wp_die(); // End AJAX request
+    }
+
+    /**
+     * AJAX callback for saving dashboard UI settings (theme, view toggle)
+     * 
+     * @since 1.0.0
+     */
+    function king_addons_save_dashboard_ui_callback()
+    {
+        // Check user capabilities
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized'], 403);
+        }
+
+        check_ajax_referer('king_addons_dashboard_ui', 'nonce');
+
+        $key = isset($_POST['key']) ? sanitize_text_field($_POST['key']) : '';
+
+        $user_id = get_current_user_id();
+
+        // Validate key
+        $allowed_keys = ['dark_theme', 'theme_mode', 'show_descriptions'];
+        if (!in_array($key, $allowed_keys, true)) {
+            wp_send_json_error(['message' => 'Invalid key'], 400);
+        }
+
+        // Theme preference is per-user.
+        if ($key === 'theme_mode') {
+            $mode = isset($_POST['value']) ? sanitize_key($_POST['value']) : '';
+            $allowed_modes = ['dark', 'light', 'auto'];
+            if (!in_array($mode, $allowed_modes, true)) {
+                wp_send_json_error(['message' => 'Invalid theme mode'], 400);
+            }
+
+            update_user_meta($user_id, 'king_addons_theme_mode', $mode);
+
+            // Also store as a global option so pages can fall back when user meta isn't set.
+            update_option('king_addons_theme_mode', $mode);
+
+            wp_send_json_success(['key' => $key, 'value' => $mode]);
+        }
+
+        // Backward compatibility: old boolean dark_theme maps to theme_mode.
+        if ($key === 'dark_theme') {
+            $is_dark = isset($_POST['value']) && $_POST['value'] === '1';
+            $mode = $is_dark ? 'dark' : 'light';
+            update_user_meta($user_id, 'king_addons_theme_mode', $mode);
+            wp_send_json_success(['key' => 'theme_mode', 'value' => $mode]);
+        }
+
+        // Remaining UI settings are still stored as site option (shared).
+        $value = isset($_POST['value']) && $_POST['value'] === '1';
+        $settings = get_option('king_addons_dashboard_ui', []);
+        $settings[$key] = $value;
+        update_option('king_addons_dashboard_ui', $settings);
+
+        wp_send_json_success(['key' => $key, 'value' => $value]);
     }
 
     function showNoticeUpgrade()
@@ -229,40 +511,63 @@ final class Core
             //        if ($last_dismissed && ($now - $last_dismissed) < 60) {
             return;
         }
-?>
+        ?>
         <div class="king-addons-upgrade-notice notice notice-info is-dismissible"
-            style="border-left: 4px solid #FF4040;padding: 10px 15px;">
+            style="border-left: 4px solid #0071e3;padding: 10px 15px;">
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
-                <span>Unlock <strong style="font-weight: 700;">650+</strong> premium templates and <strong
-                        style="font-weight: 700;">200+</strong> advanced features for only $<strong
-                        style="font-weight: 700;">4.99</strong>/month. Upgrade now and boost your website's performance!</span>
+               <span>
+  Get <strong style="font-weight: 700;">4,000+</strong> premium templates and sections,
+  <strong style="font-weight: 700;">80+</strong> widgets,
+  <strong style="font-weight: 700;">200+</strong> advanced features,
+  and AI tools for Elementor.
+  From $<strong style="font-weight: 700;">4</strong>/mo, billed annually.
+</span>
             </p>
             <p style="font-size: 14px; opacity: 0.6;">Trusted by 20,000+ users</p>
             <p style="display: flex;">
-                <a style="font-size: 14px;padding: 4px 22px;display: flex;align-items: center;background-image: linear-gradient(120deg, #A20BD8 0%, #FF4040 100%);border: none;"
-                    href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
-                    class="button button-primary"><img style="margin-right: 7px;width: 15px;height: 15px;"
-                        src="<?php echo esc_url(KING_ADDONS_URL) . 'includes/admin/img/icon-for-admin.svg'; ?>"
-                        alt="<?php echo esc_html__('Upgrade Now', 'king-addons'); ?>">Upgrade Now</a>
-                <a style="margin-left: 20px;display: flex;align-items: center;"
+                <a href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&amp;utm_medium=plugin&amp;utm_campaign=kng" target="_blank" class="ka-wb-btn ka-wb-btn-primary" style="
+    background: #0071e3;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 980px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    white-space: nowrap;
+    font-family: inherit;
+">Upgrade to Pro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="
+    width: 16px;
+    height: 16px;
+"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+        </a>
+                <a style="margin-left: 20px;display: flex;align-items: center;font-size: 14px;color: #0071e3;"
                     href="https://kingaddons.com/pricing?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng"
                     class="link">Learn More</a>
             </p>
         </div>
         <script>
-            (function($) {
+            (function ($) {
                 // Wait for the document to be ready
-                $(document).ready(function() {
+                const kingAddonsPremiumNoticeNonce = '<?php echo esc_js(wp_create_nonce('king_addons_premium_notice_dismiss')); ?>';
+                $(document).ready(function () {
                     // Attach click handler to the dismiss button of the premium notice
-                    $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function() {
+                    $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function () {
                         $.post(ajaxurl, {
-                            action: 'king_addons_premium_notice_dismiss'
+                            action: 'king_addons_premium_notice_dismiss',
+                            nonce: kingAddonsPremiumNoticeNonce
                         });
                     });
                 });
             })(jQuery);
         </script>
-<?php
+        <?php
     }
 
     function enqueueFrontendStyles()
@@ -342,17 +647,106 @@ final class Core
         add_action('elementor/widgets/register', [$this, 'registerWidgets']);
         add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueueEditorStyles']);
         add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueueEditorScripts']);
+        add_action('elementor/preview/enqueue_styles', [$this, 'enqueueEditorPreviewStyles']);
+    }
+
+    function enqueueEditorPreviewStyles(): void
+    {
+        wp_enqueue_style(
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-elementor-preview',
+            KING_ADDONS_URL . 'includes/admin/css/elementor-preview.css',
+            [],
+            KING_ADDONS_VERSION
+        );
     }
 
     function addWidgetCategory(): void
     {
-        Plugin::instance()->elements_manager->add_category(
+        $elements_manager = Plugin::instance()->elements_manager;
+
+        // Add our categories
+        $elements_manager->add_category(
             'king-addons',
             [
                 'title' => esc_html__('King Addons', 'king-addons'),
                 'icon' => 'fa fa-plug'
             ]
         );
+
+        $elements_manager->add_category(
+            'king-addons-woo-builder',
+            [
+                'title' => esc_html__('King Addons Woo Builder', 'king-addons'),
+                'icon' => 'fa fa-shopping-cart'
+            ]
+        );
+
+        // Move our categories to the top of the panel
+        $this->reorderWidgetCategories($elements_manager);
+    }
+
+    /**
+     * Reorder widget categories so King Addons categories appear after Layout and Basic.
+     *
+     * @param \Elementor\Elements_Manager $elements_manager
+     * @return void
+     */
+    private function reorderWidgetCategories($elements_manager): void
+    {
+        try {
+            $reflection = new \ReflectionClass($elements_manager);
+            $categories_property = $reflection->getProperty('categories');
+            $categories_property->setAccessible(true);
+
+            $categories = $categories_property->getValue($elements_manager);
+            if (!is_array($categories)) {
+                return;
+            }
+
+            // Extract our categories
+            $our_categories = [];
+            if (isset($categories['king-addons'])) {
+                $our_categories['king-addons'] = $categories['king-addons'];
+                unset($categories['king-addons']);
+            }
+            if (isset($categories['king-addons-woo-builder'])) {
+                $our_categories['king-addons-woo-builder'] = $categories['king-addons-woo-builder'];
+                unset($categories['king-addons-woo-builder']);
+            }
+
+            // Insert our categories after Layout and Basic
+            $reordered = [];
+            $insert_after = ['layout', 'basic']; // Categories after which we insert ours
+            $inserted = false;
+
+            foreach ($categories as $key => $value) {
+                $reordered[$key] = $value;
+                
+                // Insert our categories after the last target category
+                if (!$inserted && in_array($key, $insert_after, true)) {
+                    // Check if next category is also in our target list
+                    $keys = array_keys($categories);
+                    $current_index = array_search($key, $keys, true);
+                    $next_key = $keys[$current_index + 1] ?? null;
+                    
+                    // Only insert if the next category is NOT in our target list
+                    if ($next_key === null || !in_array($next_key, $insert_after, true)) {
+                        $reordered = array_merge($reordered, $our_categories);
+                        $inserted = true;
+                    }
+                }
+            }
+
+            // If target categories weren't found, append at the end
+            if (!$inserted) {
+                $reordered = array_merge($reordered, $our_categories);
+            }
+
+            // Set back the reordered array
+            $categories_property->setValue($elements_manager, $reordered);
+        } catch (\ReflectionException $e) {
+            // Silently fail if reflection doesn't work (e.g., future Elementor changes)
+        }
     }
 
     /**
@@ -371,6 +765,43 @@ final class Core
 
         // Get plugin options to check if a widget is enabled
         $options = get_option('king_addons_options');
+        $options = is_array($options) ? $options : [];
+
+        // Extension toggles (used to prevent loading dependent widgets when extension is disabled).
+        $wishlist_extension_enabled = !isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled';
+        if (defined('KING_ADDONS_EXT_WISHLIST') && KING_ADDONS_EXT_WISHLIST === false) {
+            $wishlist_extension_enabled = false;
+        }
+
+        // Ensure Woo Builder base class is available for single product widgets.
+        $abstract_single_widget = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Single_Widget.php';
+        if (file_exists($abstract_single_widget)) {
+            require_once $abstract_single_widget;
+        }
+
+        // Ensure Woo Builder base class is available for archive widgets.
+        $abstract_archive_widget = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Archive_Widget.php';
+        if (file_exists($abstract_archive_widget)) {
+            require_once $abstract_archive_widget;
+        }
+
+        // Ensure Woo Builder base class is available for cart widgets.
+        $abstract_cart_widget = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Cart_Widget.php';
+        if (file_exists($abstract_cart_widget)) {
+            require_once $abstract_cart_widget;
+        }
+
+        // Ensure Woo Builder base class is available for checkout widgets.
+        $abstract_checkout_widget = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Checkout_Widget.php';
+        if (file_exists($abstract_checkout_widget)) {
+            require_once $abstract_checkout_widget;
+        }
+
+        // Ensure Woo Builder base class is available for My Account widgets.
+        $abstract_my_account_widget = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_My_Account_Widget.php';
+        if (file_exists($abstract_my_account_widget)) {
+            require_once $abstract_my_account_widget;
+        }
 
         /**
          * Retrieve the array of broken widgets from the WordPress options.
@@ -428,8 +859,20 @@ final class Core
          * If a widget is in the broken list, we skip it to avoid repeated fatal errors.
          */
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget) {
+            // Hard-disable via constant (used to QA/rollout new widgets).
+            $widget_constant = 'KING_ADDONS_WGT_' . strtoupper(str_replace('-', '_', (string) $widget_id));
+            if (defined($widget_constant) && constant($widget_constant) === false) {
+                continue;
+            }
+
             // Check if the widget is enabled in the options
             if (!isset($options[$widget_id]) || $options[$widget_id] !== 'enabled') {
+                continue;
+            }
+
+            // Skip Wishlist widgets when Wishlist extension is disabled.
+            // This prevents fatals when wishlist classes aren't loaded.
+            if (!$wishlist_extension_enabled && strpos((string) $widget_id, 'wishlist-') === 0) {
                 continue;
             }
 
@@ -446,7 +889,14 @@ final class Core
             // Include the base widget class
             $widget_class = $widget['php-class'];
             $path_widget_class = "King_Addons\\" . $widget_class;
-            require_once(KING_ADDONS_PATH . 'includes/widgets/' . $widget_class . '/' . $widget_class . '.php');
+            $widget_file = KING_ADDONS_PATH . 'includes/widgets/' . $widget_class . '/' . $widget_class . '.php';
+            if (!file_exists($widget_file)) {
+                // Skip missing widget files to avoid fatal errors if registry is ahead of implementation.
+                $currentlyLoadingWidgetId = null;
+                continue;
+            }
+
+            require_once $widget_file;
 
             // Check if we can load the Pro version
             if (
@@ -485,6 +935,12 @@ final class Core
 
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget) {
 
+            // Hard-disable via constant (used to QA/rollout new widgets).
+            $widget_constant = 'KING_ADDONS_WGT_' . strtoupper(str_replace('-', '_', (string) $widget_id));
+            if (defined($widget_constant) && constant($widget_constant) === false) {
+                continue;
+            }
+
             if (!($options[$widget_id] ?? null)) {
                 $options[$widget_id] = 'enabled';
                 update_option('king_addons_options', $options);
@@ -492,22 +948,64 @@ final class Core
         }
     }
 
-    function enableFeatures(): void
+    /**
+     * Enable and bootstrap registered features.
+     *
+     * Loads free feature classes and, when available and licensed, their Pro counterparts.
+     *
+     * @return void
+     */
+    public function enableFeatures(): void
     {
         $options = get_option('king_addons_options');
 
         foreach (ModulesMap::getModulesMapArray()['features'] as $feature_id => $feature) {
+            // Hard-disable via constant (used to QA/rollout new features).
+            $feature_constant = 'KING_ADDONS_FEAT_' . strtoupper(str_replace('-', '_', (string) $feature_id));
+            if (defined($feature_constant) && constant($feature_constant) === false) {
+                continue;
+            }
 
             if (!($options[$feature_id] ?? null)) {
                 $options[$feature_id] = 'enabled';
                 update_option('king_addons_options', $options);
             }
 
-            if ($options[$feature_id] === 'enabled') {
-                $feature_class = $feature['php-class'];
-                $path_feature_class = "King_Addons\\" . $feature_class;
-                require_once(KING_ADDONS_PATH . 'includes/features/' . $feature_class . '/' . $feature_class . '.php');
-                new $path_feature_class;
+            if ($options[$feature_id] !== 'enabled') {
+                continue;
+            }
+
+            $feature_class = $feature['php-class'];
+            $path_feature_class = "King_Addons\\" . $feature_class;
+            $feature_file = KING_ADDONS_PATH . 'includes/features/' . $feature_class . '/' . $feature_class . '.php';
+
+            if (file_exists($feature_file)) {
+                require_once $feature_file;
+            }
+
+            $pro_loaded = false;
+
+            if (
+                !empty($feature['has-pro'])
+                && function_exists('king_addons_freemius')
+                && king_addons_freemius()->can_use_premium_code__premium_only()
+                && defined('KING_ADDONS_PRO_PATH')
+            ) {
+                $pro_file_path = KING_ADDONS_PRO_PATH . 'includes/features/' . $feature_class . '_Pro/' . $feature_class . '_Pro.php';
+
+                if (file_exists($pro_file_path)) {
+                    require_once $pro_file_path;
+
+                    $path_feature_class_pro = "King_Addons\\" . $feature_class . '_Pro';
+                    if (class_exists($path_feature_class_pro)) {
+                        new $path_feature_class_pro();
+                        $pro_loaded = true;
+                    }
+                }
+            }
+
+            if (!$pro_loaded && class_exists($path_feature_class)) {
+                new $path_feature_class();
             }
         }
     }
@@ -1053,7 +1551,7 @@ final class Core
                 $keys = [];
                 foreach (get_posts(['post_type' => $slug, 'posts_per_page' => -1]) as $post) {
                     // get_post_custom_keys can return null, so cast to array:
-                    foreach ((array)get_post_custom_keys($post->ID) as $meta_key) {
+                    foreach ((array) get_post_custom_keys($post->ID) as $meta_key) {
                         // Exclude protected keys (those beginning with "_").
                         if ($meta_key[0] !== '_') {
                             $keys[] = $meta_key;
@@ -1117,17 +1615,17 @@ final class Core
             'king-addons-ai-field',
             'KingAddonsAiField',
             [
-                'ajax_url'        => admin_url('admin-ajax.php'),
-                'generate_nonce'  => wp_create_nonce('king_addons_ai_generate_nonce'),
-                'change_nonce'    => wp_create_nonce('king_addons_ai_change_nonce'),
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'generate_nonce' => wp_create_nonce('king_addons_ai_generate_nonce'),
+                'change_nonce' => wp_create_nonce('king_addons_ai_change_nonce'),
                 'generate_action' => 'king_addons_ai_generate_text',
-                'change_action'   => 'king_addons_ai_change_text',
-                'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
+                'change_action' => 'king_addons_ai_change_text',
+                'icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
                 'rewrite_icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
-                'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
-                'plugin_url'      => KING_ADDONS_URL,
-                'is_pro'          => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
-                'premium_active'  => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
+                'settings_url' => admin_url('admin.php?page=king-addons-ai-settings'),
+                'plugin_url' => KING_ADDONS_URL,
+                'is_pro' => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
+                'premium_active' => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
                 'translator_enabled' => isset($ai_options['enable_ai_page_translator']) ? (bool) $ai_options['enable_ai_page_translator'] : true,
             ]
         );
@@ -1155,14 +1653,14 @@ final class Core
             'king-addons-ai-image-field',
             'KingAddonsAiImageField',
             [
-                'ajax_url'        => admin_url('admin-ajax.php'),
-                'generate_nonce'  => wp_create_nonce('king_addons_ai_generate_image_nonce'),
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'generate_nonce' => wp_create_nonce('king_addons_ai_generate_image_nonce'),
                 'generate_action' => 'king_addons_ai_generate_image',
-                'image_model'     => sanitize_text_field($ai_options['openai_image_model'] ?? ''),
-                'icon_url'        => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
+                'image_model' => sanitize_text_field($ai_options['openai_image_model'] ?? ''),
+                'icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
                 'rewrite_icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
-                'settings_url'    => admin_url('admin.php?page=king-addons-ai-settings'),
-                'plugin_url'      => KING_ADDONS_URL,
+                'settings_url' => admin_url('admin.php?page=king-addons-ai-settings'),
+                'plugin_url' => KING_ADDONS_URL,
             ]
         );
     }

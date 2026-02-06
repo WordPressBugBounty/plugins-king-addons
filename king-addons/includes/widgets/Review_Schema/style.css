@@ -1,0 +1,97 @@
+.king-addons-review {
+    width: 100%;
+    padding: 16px 18px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.king-addons-review__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.king-addons-review__item {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.king-addons-review__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #f59e0b;
+    font-weight: 700;
+}
+
+.king-addons-review__stars {
+    display: inline-flex;
+    gap: 2px;
+    font-size: 18px;
+}
+
+.king-addons-review__star {
+    display: inline-flex;
+    line-height: 1;
+}
+
+.king-addons-review__star.is-half {
+    opacity: 0.7;
+}
+
+.king-addons-review__star.is-empty {
+    color: #cbd5e1;
+}
+
+.king-addons-review__rating-value {
+    color: #475569;
+}
+
+.king-addons-review__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.king-addons-review__body {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.king-addons-review__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Pro: animations */
+.king-addons-review__rating.is-anim-pulse {
+    animation: king-addons-review-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes king-addons-review-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .king-addons-review {
+        padding: 14px 16px;
+    }
+}
+
+
+
+
+
+

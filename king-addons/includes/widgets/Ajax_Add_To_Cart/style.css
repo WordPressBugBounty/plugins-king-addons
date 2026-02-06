@@ -1,0 +1,160 @@
+.king-addons-ajax-atc {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.king-addons-ajax-atc__button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background-color: #111827;
+    color: #ffffff;
+    border: 1px solid #111827;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    overflow: hidden;
+    --king-addons-atc-indicator-size: 14px;
+    --king-addons-atc-indicator-color: currentColor;
+}
+
+.king-addons-ajax-atc__button:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+}
+
+.king-addons-ajax-atc__button.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.king-addons-ajax-atc__button.loading .king-addons-ajax-atc__label,
+.king-addons-ajax-atc__button.added .king-addons-ajax-atc__label,
+.king-addons-ajax-atc__button.loading .king-addons-ajax-atc__icon,
+.king-addons-ajax-atc__button.added .king-addons-ajax-atc__icon {
+    visibility: hidden;
+}
+
+.king-addons-ajax-atc__button.loading::after {
+    content: "";
+    display: inline-block;
+    width: var(--king-addons-atc-indicator-size, 14px);
+    height: var(--king-addons-atc-indicator-size, 14px);
+    border: 2px solid var(--king-addons-atc-indicator-color, currentColor);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: king-addons-ajax-atc-spin 0.8s linear infinite;
+    color: var(--king-addons-atc-indicator-color, currentColor);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.king-addons-ajax-atc__button.added::after {
+    content: "✓";
+    display: inline-block;
+    font-size: var(--king-addons-atc-indicator-size, 14px);
+    line-height: 1;
+    color: var(--king-addons-atc-indicator-color, currentColor);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.king-addons-ajax-atc__button.loading.added::after {
+    content: "";
+    display: inline-block;
+    width: var(--king-addons-atc-indicator-size, 14px);
+    height: var(--king-addons-atc-indicator-size, 14px);
+    border: 2px solid var(--king-addons-atc-indicator-color, currentColor);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: king-addons-ajax-atc-spin 0.8s linear infinite;
+    color: var(--king-addons-atc-indicator-color, currentColor);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.king-addons-ajax-atc__icon {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    font-size: 1em;
+}
+
+.king-addons-ajax-atc__icon svg,
+.king-addons-ajax-atc__icon img {
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+/* Make SVG icons follow the configured icon color (some SVGs ship with fixed fills). */
+.king-addons-ajax-atc__icon svg {
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+.king-addons-ajax-atc__icon svg [fill] {
+    fill: currentColor;
+}
+
+.king-addons-ajax-atc__icon svg [stroke] {
+    stroke: currentColor;
+}
+
+.king-addons-ajax-atc__icon i {
+    display: block;
+    font-size: 1em;
+    line-height: 1;
+}
+
+.king-addons-ajax-atc .added_to_cart {
+    display: none;
+    align-items: center;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.king-addons-ajax-atc__button.added + .added_to_cart {
+    display: inline-flex;
+}
+
+.king-addons-ajax-atc__notice {
+    font-size: 13px;
+    color: #16a34a;
+    min-height: 18px;
+}
+
+.king-addons-ajax-atc__quantity {
+    width: 70px;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+@keyframes king-addons-ajax-atc-spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+
+
+
+
+

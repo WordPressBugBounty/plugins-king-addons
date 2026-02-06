@@ -2,7 +2,6 @@
 
 namespace King_Addons;
 
-use DOMDocument;
 use Elementor\Controls_Manager;
 use Elementor\Plugin;
 use Elementor\Widget_Base;
@@ -92,8 +91,8 @@ $this->end_controls_section();
             return null;
         }
 
-        $type = get_post_meta(get_the_ID(), '_king_addons_template_type', true);
-        $has_css = 'internal' === get_option('elementor_css_print_method') || '' !== $type;
+        // Always include CSS for proper rendering in both editor and frontend
+        $has_css = true;
 
         return Plugin::instance()->frontend->get_builder_content_for_display($template_id, $has_css);
     }
@@ -102,38 +101,63 @@ $this->end_controls_section();
     {
         $settings = $this->get_settings_for_display();
         if (!empty($settings['kng_global_section_container_template'])) {
-            $html = $this->getOffCanvasTemplate(esc_html($settings['kng_global_section_container_template']));
-            $dom = new DOMDocument;
-            libxml_use_internal_errors(true); // Disable libxml errors
-            $dom->loadHTML($html);
-            libxml_clear_errors();
-
-            $tags = [];
-            $this->getTagsAndAttributes($dom->documentElement, $tags);
-
-            echo wp_kses($html, $tags);
-        } else {
-            echo '<p>' . esc_html__('Please select a template', 'king-addons') . '</p>';
-        }
-    }
-
-    public function getTagsAndAttributes($node, &$tags): void
-    {
-        if ($node->nodeType == XML_ELEMENT_NODE) {
-            $tagName = $node->nodeName;
-            if (!isset($tags[$tagName])) {
-                $tags[$tagName] = [];
+            $template_id = intval($settings['kng_global_section_container_template']);
+            
+            // Verify template exists and is an Elementor template
+            $template_post = get_post($template_id);
+            if (!$template_post || 'elementor_library' !== $template_post->post_type) {
+                echo '<p>' . esc_html__('Invalid template selected', 'king-addons') . '</p>';
+                return;
             }
-
-            foreach ($node->attributes as $attr) {
-                if (!isset($tags[$tagName][$attr->nodeName])) {
-                    $tags[$tagName][$attr->nodeName] = true;
+            
+            // Enqueue template styles in editor mode
+            $is_editor = Plugin::$instance->editor->is_edit_mode() || Plugin::$instance->preview->is_preview_mode();
+            if ($is_editor) {
+                if (class_exists('\Elementor\Core\Files\CSS\Post')) {
+                    $css_file = new \Elementor\Core\Files\CSS\Post($template_id);
+                    $css_file->enqueue();
                 }
             }
-        }
-
-        foreach ($node->childNodes as $child) {
-            $this->getTagsAndAttributes($child, $tags);
+            
+            $html = $this->getOffCanvasTemplate($template_id);
+            
+            if (empty($html)) {
+                echo '<p>' . esc_html__('Template is empty or not found', 'king-addons') . '</p>';
+                return;
+            }
+            
+            // Wrapper for editor animation reset
+            $widget_id = $this->get_id();
+            echo '<div class="king-addons-global-section-wrapper" data-widget-id="' . esc_attr($widget_id) . '">';
+            
+            // Elementor content is already sanitized by Elementor itself
+            // Using wp_kses strips inline styles with background-image url() which breaks the layout
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $html;
+            
+            echo '</div>';
+            
+            // In editor mode, reset entrance animations so content is visible immediately
+            if ($is_editor) {
+                ?>
+                <script>
+                (function() {
+                    var wrapper = document.querySelector('[data-widget-id="<?php echo esc_js($widget_id); ?>"]');
+                    if (wrapper) {
+                        // Remove animation classes and make elements visible
+                        var animatedElements = wrapper.querySelectorAll('.elementor-invisible, [class*="animated"]');
+                        animatedElements.forEach(function(el) {
+                            el.classList.remove('elementor-invisible');
+                            el.style.opacity = '1';
+                            el.style.visibility = 'visible';
+                        });
+                    }
+                })();
+                </script>
+                <?php
+            }
+        } else {
+            echo '<p>' . esc_html__('Please select a template', 'king-addons') . '</p>';
         }
     }
 }

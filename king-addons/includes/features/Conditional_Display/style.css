@@ -1,0 +1,184 @@
+/**
+ * Conditional Display Styles
+ *
+ * Styles for Elementor editor preview badge and hidden elements.
+ *
+ * @package King_Addons
+ */
+
+/* ============================================
+   EDITOR PREVIEW STYLES
+   ============================================ */
+
+.king-addons-cd-preview {
+    position: relative;
+}
+
+/* Badge Container */
+.king-addons-cd-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.king-addons-cd-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.king-addons-cd-badge-icon {
+    font-size: 12px;
+}
+
+.king-addons-cd-badge-label {
+    letter-spacing: 0.5px;
+}
+
+.king-addons-cd-badge-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 10px;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* Tooltip */
+.king-addons-cd-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    min-width: 180px;
+    max-width: 280px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.king-addons-cd-badge:hover .king-addons-cd-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.king-addons-cd-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 16px;
+    border-width: 0 6px 6px 6px;
+    border-style: solid;
+    border-color: transparent transparent #1e1e2e transparent;
+}
+
+.king-addons-cd-tooltip strong {
+    display: block;
+    color: #f5c2e7;
+    margin-bottom: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.king-addons-cd-tooltip ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.king-addons-cd-tooltip li {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(205, 214, 244, 0.1);
+    font-size: 12px;
+}
+
+.king-addons-cd-tooltip li:last-child {
+    border-bottom: none;
+}
+
+.king-addons-cd-tooltip li::before {
+    content: '•';
+    color: #89b4fa;
+    margin-right: 8px;
+}
+
+/* ============================================
+   HIDDEN ELEMENT STYLES (Frontend)
+   ============================================ */
+
+/* Hide element completely on frontend */
+.king-addons-cd-hidden {
+    display: none !important;
+}
+
+/* ============================================
+   FALLBACK MESSAGE STYLES
+   ============================================ */
+
+.king-addons-cd-fallback-message {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    border-radius: 8px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.king-addons-cd-fallback-message p {
+    margin: 0;
+}
+
+.king-addons-cd-fallback-template {
+    width: 100%;
+}
+
+/* ============================================
+   EDITOR PREVIEW OUTLINE
+   ============================================ */
+
+.king-addons-cd-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px dashed rgba(102, 126, 234, 0.4);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+
+
+
+
+
+

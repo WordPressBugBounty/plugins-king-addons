@@ -76,13 +76,18 @@ class Wrapper_Link
 
             if (!empty($wrapper_link_settings['url'])) {
 
+                $url = esc_url_raw($wrapper_link_settings['url']);
+                if (empty($url)) {
+                    return;
+                }
+
                 $link_target = ($wrapper_link_settings['is_external']) ? '_blank' : '_self';
 
                 $element->add_render_attribute(
                     '_wrapper',
                     [
                         'style' => 'cursor: pointer;',
-                        'onclick' => "window.open('" . esc_url($wrapper_link_settings['url']) . "', '" . esc_attr($link_target) . "');"
+                        'onclick' => 'window.open(' . wp_json_encode($url) . ', ' . wp_json_encode($link_target) . ');'
                     ]
                 );
             }

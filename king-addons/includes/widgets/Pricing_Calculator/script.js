@@ -56,6 +56,21 @@
                     }, wait);
                 };
             };
+
+            // Sanitize potentially user-controlled strings before inserting into HTML.
+            // Uses DOMPurify for robust XSS protection.
+            var sanitizeHtml = function(value) {
+                if (typeof DOMPurify !== 'undefined') {
+                    return DOMPurify.sanitize(String(value), {ALLOWED_TAGS: [], ALLOWED_ATTR: []});
+                }
+                // Fallback if DOMPurify not loaded
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            };
             
             // Initialize field values and events
             initFields($fields);
@@ -224,6 +239,8 @@
             
             /**
              * Calculate the total price based on all field values
+             * Fields are processed in DOM order, applying each operation sequentially.
+             * This allows for proper calculation order (e.g., multiply first two values, then add third).
              */
             function calculatePrice() {
                 try {
@@ -236,7 +253,7 @@
                     
                     // Advanced Formula will be applied after default calculation
                     
-                    // First handle additions
+                    // Process all fields in DOM order (sequential calculation)
                     $fields.each(function() {
                         var $field = $(this);
                         var fieldType = $field.data('field-type');
@@ -245,264 +262,137 @@
                         var fieldValue = 0;
                         var fieldPrice = 0;
                         var subTotal = 0;
-                        
-                        if (priceType !== 'add') {
-                            return; // Skip non-addition fields on first pass
-                        }
+                        var beforeOp = total;
                         
                         try {
+                            // Get field value and price based on field type
                             switch (fieldType) {
                                 case 'number':
                                     var $input = $field.find('input[type="number"]');
                                     fieldValue = parseFloat($input.val());
                                     fieldPrice = parseFloat($field.data('price'));
-                                    
-                                    if (!isNaN(fieldValue) && !isNaN(fieldPrice)) {
-                                        subTotal = fieldValue * fieldPrice;
-                                        total += subTotal;
-                                    }
                                     break;
                                     
                                 case 'range':
                                     var $range = $field.find('input[type="range"]');
                                     fieldValue = parseFloat($range.val());
                                     fieldPrice = parseFloat($field.data('price'));
-                                    
-                                    if (!isNaN(fieldValue) && !isNaN(fieldPrice)) {
-                                        subTotal = fieldValue * fieldPrice;
-                                        total += subTotal;
-                                    }
                                     break;
                                     
                                 case 'select':
                                     var $select = $field.find('select');
                                     var $option = $select.find('option:selected');
-                                    
                                     fieldValue = $option.text();
                                     fieldPrice = parseFloat($option.data('price'));
+                                    break;
                                     
+                                case 'radio':
+                                    var $radio = $field.find('input[type="radio"]:checked');
+                                    if ($radio.length) {
+                                        fieldValue = $radio.siblings('label').text();
+                                        fieldPrice = parseFloat($radio.data('price'));
+                                    }
+                                    break;
+                                    
+                                case 'checkbox':
+                                case 'switch':
+                                    var $checkbox = $field.find('input[type="checkbox"]');
+                                    if ($checkbox.is(':checked')) {
+                                        fieldValue = 'Yes';
+                                        fieldPrice = parseFloat($field.data('price'));
+                                    } else {
+                                        fieldValue = 'No';
+                                        fieldPrice = 0;
+                                    }
+                                    break;
+                            }
+                            
+                            // Apply the operation based on price type
+                            if (priceType === 'add') {
+                                // For number/range: multiply value by price per unit, then add
+                                if (fieldType === 'number' || fieldType === 'range') {
+                                    if (!isNaN(fieldValue) && !isNaN(fieldPrice)) {
+                                        subTotal = fieldValue * fieldPrice;
+                                        total += subTotal;
+                                    }
+                                } else {
+                                    // For select/radio/checkbox: add the price directly
                                     if (!isNaN(fieldPrice)) {
                                         subTotal = fieldPrice;
                                         total += subTotal;
                                     }
-                                    break;
-                                    
-                                case 'radio':
-                                    var $radio = $field.find('input[type="radio"]:checked');
-                                    
-                                    if ($radio.length) {
-                                        fieldValue = $radio.siblings('label').text();
-                                        fieldPrice = parseFloat($radio.data('price'));
-                                        
-                                        if (!isNaN(fieldPrice)) {
-                                            subTotal = fieldPrice;
-                                            total += subTotal;
-                                        }
-                                    }
-                                    break;
-                                    
-                                case 'checkbox':
-                                case 'switch':
-                                    var $checkbox = $field.find('input[type="checkbox"]');
-                                    
-                                    if ($checkbox.is(':checked')) {
-                                        fieldValue = 'Yes';
-                                        fieldPrice = parseFloat($field.data('price'));
-                                        
-                                        if (!isNaN(fieldPrice)) {
-                                            subTotal = fieldPrice;
-                                            total += subTotal;
-                                        }
-                                    } else {
-                                        fieldValue = 'No';
-                                    }
-                                    break;
-                            }
-                            
-                            // Add to summary if there's a value and subtotal
-                            if (fieldValue !== '' && fieldValue !== 0 && subTotal !== 0) {
-                                summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
-                                    '<span class="king-pricing-calculator__summary-label">' + fieldLabel + ': ' + fieldValue + '</span>' +
-                                    '<span class="king-pricing-calculator__summary-value">' + formatPrice(subTotal) + '</span>' +
-                                    '</div>';
-                            }
-                            
-                            // Debug info
-                            console.log('Field:', fieldLabel, 'Type:', fieldType, 'Value:', fieldValue, 'Price:', fieldPrice, 'Subtotal:', subTotal);
-                        
-                        } catch (fieldError) {
-                            console.error('Error processing field for addition:', fieldError);
-                        }
-                    });
-                    
-                    // Debug info
-                    console.log('After additions, total is:', total);
-                    
-                    // Then handle multiplications
-                    $fields.each(function() {
-                        var $field = $(this);
-                        var fieldType = $field.data('field-type');
-                        var priceType = $field.data('price-type');
-                        var fieldLabel = $field.find('.king-pricing-calculator__field-label').text();
-                        var fieldValue = 0;
-                        var fieldPrice = 0;
-                        var beforeMult = total;
-                        
-                        if (priceType !== 'multiply') {
-                            return; // Skip non-multiplication fields on second pass
-                        }
-                        
-                        try {
-                            switch (fieldType) {
-                                case 'number':
-                                    var $input = $field.find('input[type="number"]');
-                                    fieldValue = parseFloat($input.val());
-                                    
+                                }
+                                
+                                // Add to summary if there's a contribution
+                                if (subTotal !== 0) {
+                                    summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
+                                        '<span class="king-pricing-calculator__summary-label">' + sanitizeHtml(fieldLabel) + ': ' + sanitizeHtml(fieldValue) + '</span>' +
+                                        '<span class="king-pricing-calculator__summary-value">+' + sanitizeHtml(formatPrice(subTotal)) + '</span>' +
+                                        '</div>';
+                                }
+                                
+                                console.log('Field (add):', fieldLabel, 'Value:', fieldValue, 'Price:', fieldPrice, 'Subtotal:', subTotal, 'Total:', total);
+                                
+                            } else if (priceType === 'multiply') {
+                                // For number/range: multiply total by the field value
+                                if (fieldType === 'number' || fieldType === 'range') {
                                     if (!isNaN(fieldValue) && fieldValue !== 0) {
-                                        beforeMult = total;
+                                        beforeOp = total;
                                         total *= fieldValue;
                                         
                                         summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
-                                            '<span class="king-pricing-calculator__summary-label">' + fieldLabel + ': ' + fieldValue + '</span>' +
-                                            '<span class="king-pricing-calculator__summary-value">' + formatPrice(total - beforeMult) + '</span>' +
+                                            '<span class="king-pricing-calculator__summary-label">' + sanitizeHtml(fieldLabel) + ': ×' + sanitizeHtml(fieldValue) + '</span>' +
+                                            '<span class="king-pricing-calculator__summary-value">' + sanitizeHtml(formatPrice(total - beforeOp)) + '</span>' +
                                             '</div>';
                                     }
-                                    break;
-                                    
-                                case 'range':
-                                    var $range = $field.find('input[type="range"]');
-                                    fieldValue = parseFloat($range.val());
-                                    
-                                    if (!isNaN(fieldValue) && fieldValue !== 0) {
-                                        beforeMult = total;
-                                        total *= fieldValue;
-                                        
-                                        summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
-                                            '<span class="king-pricing-calculator__summary-label">' + fieldLabel + ': ' + fieldValue + '</span>' +
-                                            '<span class="king-pricing-calculator__summary-value">' + formatPrice(total - beforeMult) + '</span>' +
-                                            '</div>';
-                                    }
-                                    break;
-                                    
-                                case 'select':
-                                    var $select = $field.find('select');
-                                    var $option = $select.find('option:selected');
-                                    
-                                    fieldValue = $option.text();
-                                    fieldPrice = parseFloat($option.data('price'));
-                                    
+                                } else {
+                                    // For select/radio/checkbox: multiply total by the price
                                     if (!isNaN(fieldPrice) && fieldPrice !== 0) {
-                                        beforeMult = total;
+                                        beforeOp = total;
                                         total *= fieldPrice;
                                         
                                         summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
-                                            '<span class="king-pricing-calculator__summary-label">' + fieldLabel + ': ' + fieldValue + '</span>' +
-                                            '<span class="king-pricing-calculator__summary-value">' + formatPrice(total - beforeMult) + '</span>' +
+                                            '<span class="king-pricing-calculator__summary-label">' + sanitizeHtml(fieldLabel) + ': ' + sanitizeHtml(fieldValue) + ' (×' + sanitizeHtml(fieldPrice) + ')</span>' +
+                                            '<span class="king-pricing-calculator__summary-value">' + sanitizeHtml(formatPrice(total - beforeOp)) + '</span>' +
                                             '</div>';
                                     }
-                                    break;
-                                    
-                                case 'radio':
-                                    var $radio = $field.find('input[type="radio"]:checked');
-                                    
-                                    if ($radio.length) {
-                                        fieldValue = $radio.siblings('label').text();
-                                        fieldPrice = parseFloat($radio.data('price'));
-                                        
-                                        if (!isNaN(fieldPrice) && fieldPrice !== 0) {
-                                            beforeMult = total;
-                                            total *= fieldPrice;
-                                            
-                                            summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
-                                                '<span class="king-pricing-calculator__summary-label">' + fieldLabel + ': ' + fieldValue + '</span>' +
-                                                '<span class="king-pricing-calculator__summary-value">' + formatPrice(total - beforeMult) + '</span>' +
-                                                '</div>';
-                                        }
-                                    }
-                                    break;
-                                    
-                                case 'checkbox':
-                                case 'switch':
-                                    var $checkbox = $field.find('input[type="checkbox"]');
-                                    
-                                    if ($checkbox.is(':checked')) {
-                                        fieldValue = 'Yes';
-                                        fieldPrice = parseFloat($field.data('price'));
-                                        
-                                        if (!isNaN(fieldPrice) && fieldPrice !== 0) {
-                                            beforeMult = total;
-                                            total *= fieldPrice;
-                                            
-                                            summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
-                                                '<span class="king-pricing-calculator__summary-label">' + fieldLabel + ': ' + fieldValue + '</span>' +
-                                                '<span class="king-pricing-calculator__summary-value">' + formatPrice(total - beforeMult) + '</span>' +
-                                                '</div>';
-                                        }
-                                    }
-                                    break;
-                            }
-                            
-                            // Debug info
-                            console.log('Field (multiply):', fieldLabel, 'Type:', fieldType, 'Value:', fieldValue, 'BeforeMult:', beforeMult, 'After:', total);
-                        
-                        } catch (fieldError) {
-                            console.error('Error processing field for multiplication:', fieldError);
-                        }
-                    });
-                    
-                    // Then handle custom formula (fallback to addition in free version)
-                    $fields.each(function() {
-                        var $field = $(this);
-                        var fieldType = $field.data('field-type');
-                        var priceType = $field.data('price-type');
-                        
-                        if (priceType !== 'custom') {
-                            return; // Skip non-custom fields
-                        }
-                        
-                        try {
-                            // In the free version, just treat custom formula as add
-                            var fieldLabel = $field.find('.king-pricing-calculator__field-label').text();
-                            var fieldValue, fieldPrice, subTotal = 0;
-                            
-                            switch (fieldType) {
-                                case 'number':
-                                case 'range':
-                                    var $input = fieldType === 'number' ? 
-                                        $field.find('input[type="number"]') : 
-                                        $field.find('input[type="range"]');
-                                    
-                                    fieldValue = parseFloat($input.val());
-                                    fieldPrice = parseFloat($field.data('price'));
-                                    
+                                }
+                                
+                                console.log('Field (multiply):', fieldLabel, 'Value:', fieldValue, 'BeforeOp:', beforeOp, 'Total:', total);
+                                
+                            } else if (priceType === 'custom') {
+                                // In the free version, treat custom formula as add (fallback)
+                                if (fieldType === 'number' || fieldType === 'range') {
                                     if (!isNaN(fieldValue) && !isNaN(fieldPrice)) {
-                                        // Fallback to addition in free version
                                         subTotal = fieldValue * fieldPrice;
                                         total += subTotal;
                                         
                                         summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
                                             '<span class="king-pricing-calculator__summary-label">' + 
-                                                fieldLabel + ': ' + fieldValue + 
+                                                sanitizeHtml(fieldLabel) + ': ' + sanitizeHtml(fieldValue) + 
                                                 ' <small>(Pro formula fallback)</small>' +
                                             '</span>' +
-                                            '<span class="king-pricing-calculator__summary-value">' + formatPrice(subTotal) + '</span>' +
+                                            '<span class="king-pricing-calculator__summary-value">' + sanitizeHtml(formatPrice(subTotal)) + '</span>' +
                                             '</div>';
                                     }
-                                    break;
+                                } else if (!isNaN(fieldPrice)) {
+                                    subTotal = fieldPrice;
+                                    total += subTotal;
                                     
-                                case 'select':
-                                case 'radio':
-                                case 'checkbox':
-                                case 'switch':
-                                    // Handle similar to add, with pro notice
-                                    // Implementation follows similar pattern to the addition case
-                                    break;
+                                    summaryHtml += '<div class="king-pricing-calculator__summary-item">' +
+                                        '<span class="king-pricing-calculator__summary-label">' + 
+                                            sanitizeHtml(fieldLabel) + ': ' + sanitizeHtml(fieldValue) + 
+                                            ' <small>(Pro formula fallback)</small>' +
+                                        '</span>' +
+                                        '<span class="king-pricing-calculator__summary-value">' + sanitizeHtml(formatPrice(subTotal)) + '</span>' +
+                                        '</div>';
+                                }
+                                
+                                console.log('Field (custom/fallback):', fieldLabel, 'Added:', subTotal, 'Total:', total);
                             }
-                            
-                            console.log('Custom formula field (free fallback):', fieldLabel, 'Added:', subTotal);
-                            
+                        
                         } catch (fieldError) {
-                            console.error('Error processing custom formula field:', fieldError);
+                            console.error('Error processing field:', fieldLabel, fieldError);
                         }
                     });
                     

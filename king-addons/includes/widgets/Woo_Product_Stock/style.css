@@ -1,0 +1,36 @@
+.ka-woo-product-stock {
+    font-weight: 600;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.ka-woo-product-stock__icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: currentColor;
+    display: inline-flex;
+}
+
+.ka-woo-product-stock--in {
+    color: #2e7d32;
+}
+
+.ka-woo-product-stock--low {
+    color: #f57c00;
+}
+
+.ka-woo-product-stock--out {
+    color: #c62828;
+}
+
+.ka-woo-product-stock--backorder {
+    color: #2563eb;
+}
+
+
+
+
+
+

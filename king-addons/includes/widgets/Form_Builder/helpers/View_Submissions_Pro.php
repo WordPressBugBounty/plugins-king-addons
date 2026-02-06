@@ -56,7 +56,7 @@ class View_Submissions_Pro
             <?php if (!king_addons_freemius()->can_use_premium_code__premium_only()): ?>
                 <div class="king-addons-pb-preview-buttons">
                     <div class="kng-promo-btn-wrap">
-                        <a href="https://kingaddons.com/pricing/?rel=king-addons-fb-submissions-page" target="_blank">
+                        <a href="https://kingaddons.com/pricing/?utm_source=king-addons-fb-submissions-page" target="_blank">
                             <div class="kng-promo-btn-txt">
                                 <?php esc_html_e('Unlock Premium Features & 650+ Templates Today!', 'king-addons'); ?>
                             </div>
@@ -147,68 +147,63 @@ class View_Submissions_Pro
             }
 
             echo '<div class="king-addons-submissions-wrap">';
-            if (is_serialized($value[0])) {
+            $meta_value = $value[0];
 
-
-                if ($value[0]) {
-                    // Security fix: Use safe unserialize with validation
-                    $unserialized = @unserialize($value[0]);
-                    if ($unserialized !== false && is_array($unserialized)) {
-                        $value = $unserialized;
-                    } else {
-                        $value = $value[0]; // Fallback to original string if unserialize fails
-                    }
-                }
-
-                $prefix = "form_field-";
-                $key_title = !empty($value[2]) ? $value[2] : ucfirst(str_replace($prefix, "", $key));
-
-                if (str_contains($key, '_action_')) {
-                    $prefix = '_action_king_addons_form_builder_';
-                    $label = ucfirst(substr($key, strpos($key, $prefix) + strlen($prefix)));
-                    echo '<label>' . $label . '</label>';
-                    echo '<p class="notice notice-' . $value['status'] . '">' . ucfirst($value['message']) . '</p>';
-                } elseif ('file' == $value[0]) {
-                    echo '<label for="' . $key . '">' . $key_title . ' </label>';
-                    if (is_array($value[1])) {
-                        foreach ($value[1] as $index => $file) {
-                            echo '<a  id="' . $key . '_' . $index . '" target="_blank" href="' . $file . '">' . $file . '</a>';
-                        }
-                    }
-                } elseif ('textarea' == $value[0]) {
-                    echo '<label for="' . $key . '">' . $key_title . ' </label>';
-                    echo '<textarea   id="' . $key . '">' . $value[1] . '</textarea>';
+            if (is_serialized($meta_value)) {
+                $unserialized = maybe_unserialize($meta_value);
+                if (is_array($unserialized)) {
+                    $value = $unserialized;
                 } else {
-                    if ($value[0] === 'radio' || $value[0] === 'checkbox') {
-                        echo '<label for="' . $key . '" class="' . $key . '">' . $key_title . ' </label>';
-                        foreach ($value[1] as $index => $item) {
-                            $checked = $item[1] == 'true' ? 'checked' : '';
-                            echo '<input class="king-addons-inline"  type="' . $value[0] . '" name="' . $item[2] . '" id="' . $item[3] . '" value="' . $item[0] . '" ' . $checked . '>';
-                            echo '<label class="king-addons-inline" for="' . $item[2] . '">' . $item[0] . ' </label>';
-                        }
-                    } else {
-                        if ($value[0] == 'select') {
-                            if (is_array($value[1])) {
-                                $value[1] = implode(",", $value[1]);
-                            }
+                    $value = [$meta_value];
+                }
+            }
 
-                            echo '<label for="' . $key . '">' . $key_title . ' </label>';
-                            echo '<input  type="text" id="' . $key . '" value="' . $value[1] . '">';
+            $prefix = "form_field-";
+            $key_title = !empty($value[2]) ? esc_html($value[2]) : esc_html(ucfirst(str_replace($prefix, "", $key)));
 
-                        } else {
-                            echo '<label for="' . $key . '">' . $key_title . ' </label>';
-                            // Use 'text' if type is empty, and sanitize attributes
-                            $type_attr = ! empty( $value[0] ) ? $value[0] : 'text';
-                            echo '<input type="' . esc_attr( $type_attr ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $value[1] ) . '">';
-                        }
+            if (str_contains($key, '_action_')) {
+                $prefix = '_action_king_addons_form_builder_';
+                $label = ucfirst(substr($key, strpos($key, $prefix) + strlen($prefix)));
+                echo '<label>' . esc_html($label) . '</label>';
+                $status = isset($value['status']) ? sanitize_html_class($value['status']) : '';
+                $message = isset($value['message']) ? esc_html(ucfirst($value['message'])) : '';
+                echo '<p class="notice notice-' . esc_attr($status) . '">' . $message . '</p>';
+            } elseif (isset($value[0]) && 'file' === $value[0]) {
+                echo '<label for="' . esc_attr($key) . '">' . $key_title . ' </label>';
+                if (is_array($value[1])) {
+                    foreach ($value[1] as $index => $file) {
+                        $file_url = esc_url($file);
+                        echo '<a id="' . esc_attr($key . '_' . $index) . '" target="_blank" href="' . $file_url . '">' . $file_url . '</a>';
                     }
                 }
+            } elseif (isset($value[0]) && 'textarea' === $value[0]) {
+                echo '<label for="' . esc_attr($key) . '">' . $key_title . ' </label>';
+                $text_value = isset($value[1]) ? esc_textarea($value[1]) : '';
+                echo '<textarea id="' . esc_attr($key) . '">' . $text_value . '</textarea>';
+            } elseif (isset($value[0]) && ('radio' === $value[0] || 'checkbox' === $value[0])) {
+                echo '<label for="' . esc_attr($key) . '" class="' . esc_attr($key) . '">' . $key_title . ' </label>';
+                if (is_array($value[1])) {
+                    foreach ($value[1] as $index => $item) {
+                        $checked = (!empty($item[1]) && 'true' === $item[1]) ? 'checked' : '';
+                        $input_value = isset($item[0]) ? esc_attr($item[0]) : '';
+                        $input_name = isset($item[2]) ? esc_attr($item[2]) : '';
+                        $input_id = isset($item[3]) ? esc_attr($item[3]) : esc_attr($key . '_' . $index);
+                        echo '<input class="king-addons-inline" type="' . esc_attr($value[0]) . '" name="' . $input_name . '" id="' . $input_id . '" value="' . $input_value . '" ' . $checked . '>';
+                        echo '<label class="king-addons-inline" for="' . $input_name . '">' . esc_html($item[0] ?? '') . ' </label>';
+                    }
+                }
+            } elseif (isset($value[0]) && 'select' === $value[0]) {
+                $select_value = $value[1];
+                if (is_array($select_value)) {
+                    $select_value = implode(",", $select_value);
+                }
+                echo '<label for="' . esc_attr($key) . '">' . $key_title . ' </label>';
+                echo '<input type="text" id="' . esc_attr($key) . '" value="' . esc_attr($select_value) . '">';
             } else {
-                $prefix = "form_field-";
-                $key_title = !empty($value[2]) ? $value[2] : ucfirst(str_replace($prefix, "", $key));
-
-                echo '<label for="' . $key . '">' . $key_title . ' </label>';
-                echo '<input  type="text" id="' . $key . '" value="' . $value[0] . '">';
+                $type_attr = !empty($value[0]) ? $value[0] : 'text';
+                $input_val = isset($value[1]) ? $value[1] : (isset($value[0]) ? $value[0] : '');
+                echo '<label for="' . esc_attr($key) . '">' . $key_title . ' </label>';
+                echo '<input type="' . esc_attr($type_attr) . '" id="' . esc_attr($key) . '" value="' . esc_attr($input_val) . '">';
             }
             echo '</div>';
         }

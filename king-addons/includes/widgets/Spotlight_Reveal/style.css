@@ -1,0 +1,183 @@
+.king-addons-spotlight-reveal {
+    --ka-spotlight-size: 260px;
+    --ka-spotlight-softness: 32px;
+    --ka-spotlight-x: 50%;
+    --ka-spotlight-y: 50%;
+    --ka-spotlight-radius: calc(var(--ka-spotlight-size) / 2);
+    --ka-spotlight-softness-clamped: min(var(--ka-spotlight-softness), var(--ka-spotlight-radius));
+    --ka-spotlight-overlay-color: #0b1120;
+    --ka-spotlight-overlay-opacity: 0.65;
+    --ka-spotlight-base-opacity: 1;
+    --ka-spotlight-reveal-opacity: 1;
+    --ka-spotlight-base-padding: 40px;
+    --ka-spotlight-reveal-padding: 40px;
+    --ka-spotlight-base-gap: 12px;
+    --ka-spotlight-reveal-gap: 12px;
+    --ka-spotlight-base-justify: center;
+    --ka-spotlight-base-align: center;
+    --ka-spotlight-base-text-align: center;
+    --ka-spotlight-base-content-width: 100%;
+    --ka-spotlight-reveal-justify: center;
+    --ka-spotlight-reveal-align: center;
+    --ka-spotlight-reveal-text-align: center;
+    --ka-spotlight-reveal-content-width: 100%;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    width: 100%;
+    border-radius: 0;
+}
+
+.king-addons-spotlight-reveal__layer,
+.king-addons-spotlight-reveal__overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.king-addons-spotlight-reveal__layer {
+    display: flex;
+}
+
+.king-addons-spotlight-reveal__layer--base {
+    background: #0f172a;
+    color: #f8fafc;
+    opacity: var(--ka-spotlight-base-opacity);
+    padding: var(--ka-spotlight-base-padding, 40px);
+    text-align: var(--ka-spotlight-base-text-align, center);
+    align-items: var(--ka-spotlight-base-align, center);
+    justify-content: var(--ka-spotlight-base-justify, center);
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.king-addons-spotlight-reveal__layer--base .king-addons-spotlight-reveal__content {
+    width: 100%;
+    max-width: var(--ka-spotlight-base-content-width, 100%);
+}
+
+.king-addons-spotlight-reveal__layer--reveal {
+    background: linear-gradient(120deg, #4f46e5, #22d3ee);
+    color: #ffffff;
+    opacity: var(--ka-spotlight-reveal-opacity);
+    padding: var(--ka-spotlight-reveal-padding, 40px);
+    text-align: var(--ka-spotlight-reveal-text-align, center);
+    align-items: var(--ka-spotlight-reveal-align, center);
+    justify-content: var(--ka-spotlight-reveal-justify, center);
+    z-index: 2;
+    -webkit-mask-image: radial-gradient(
+        circle at var(--ka-spotlight-x) var(--ka-spotlight-y),
+        #ffffff 0,
+        #ffffff calc(var(--ka-spotlight-radius) - var(--ka-spotlight-softness-clamped, var(--ka-spotlight-softness))),
+        rgba(255, 255, 255, 0) var(--ka-spotlight-radius)
+    );
+    mask-image: radial-gradient(
+        circle at var(--ka-spotlight-x) var(--ka-spotlight-y),
+        #ffffff 0,
+        #ffffff calc(var(--ka-spotlight-radius) - var(--ka-spotlight-softness-clamped, var(--ka-spotlight-softness))),
+        rgba(255, 255, 255, 0) var(--ka-spotlight-radius)
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.king-addons-spotlight-reveal__layer--reveal .king-addons-spotlight-reveal__content {
+    width: 100%;
+    max-width: var(--ka-spotlight-reveal-content-width, 100%);
+}
+
+.king-addons-spotlight-reveal__text {
+    display: flex;
+    flex-direction: column;
+}
+
+.king-addons-spotlight-reveal__layer--base .king-addons-spotlight-reveal__text {
+    gap: var(--ka-spotlight-base-gap, 12px);
+}
+
+.king-addons-spotlight-reveal__layer--reveal .king-addons-spotlight-reveal__text {
+    gap: var(--ka-spotlight-reveal-gap, 12px);
+}
+
+.king-addons-spotlight-reveal__title {
+    margin: 0;
+}
+
+.king-addons-spotlight-reveal__description > *:first-child {
+    margin-top: 0;
+}
+
+.king-addons-spotlight-reveal__description > *:last-child {
+    margin-bottom: 0;
+}
+
+.king-addons-spotlight-reveal__overlay {
+    background-color: var(--ka-spotlight-overlay-color);
+    opacity: var(--ka-spotlight-overlay-opacity);
+    z-index: 3;
+    -webkit-mask-image: radial-gradient(
+        circle at var(--ka-spotlight-x) var(--ka-spotlight-y),
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0) calc(var(--ka-spotlight-radius) - var(--ka-spotlight-softness-clamped, var(--ka-spotlight-softness))),
+        rgba(0, 0, 0, 1) var(--ka-spotlight-radius)
+    );
+    mask-image: radial-gradient(
+        circle at var(--ka-spotlight-x) var(--ka-spotlight-y),
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0) calc(var(--ka-spotlight-radius) - var(--ka-spotlight-softness-clamped, var(--ka-spotlight-softness))),
+        rgba(0, 0, 0, 1) var(--ka-spotlight-radius)
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.king-addons-spotlight-reveal--dim-base.king-addons-spotlight-reveal--active
+    .king-addons-spotlight-reveal__layer--base {
+    opacity: var(--ka-spotlight-base-dim-opacity, var(--ka-spotlight-base-opacity));
+}
+
+.king-addons-spotlight-reveal--interaction-reveal .king-addons-spotlight-reveal__layer--base {
+    pointer-events: none;
+}
+
+.king-addons-spotlight-reveal--interaction-reveal .king-addons-spotlight-reveal__layer--reveal {
+    pointer-events: auto;
+}
+
+.king-addons-spotlight-reveal__content > *:last-child {
+    margin-bottom: 0;
+}
+
+.king-addons-spotlight-reveal:not(.king-addons-spotlight-reveal--active).king-addons-spotlight-reveal--fallback-visible
+    .king-addons-spotlight-reveal__layer--reveal {
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+.king-addons-spotlight-reveal:not(.king-addons-spotlight-reveal--active).king-addons-spotlight-reveal--fallback-visible
+    .king-addons-spotlight-reveal__overlay {
+    display: none;
+}
+
+body.elementor-editor-active
+    .king-addons-spotlight-reveal--editor-hide
+    .king-addons-spotlight-reveal__layer--reveal,
+body.elementor-editor-active
+    .king-addons-spotlight-reveal--editor-hide
+    .king-addons-spotlight-reveal__overlay {
+    display: none;
+}
+
+body.elementor-editor-active
+    .king-addons-spotlight-reveal--editor-hide
+    .king-addons-spotlight-reveal__layer--base {
+    opacity: var(--ka-spotlight-base-opacity);
+}
+
+@media (max-width: 767px) {
+    .king-addons-spotlight-reveal {
+        --ka-spotlight-base-padding: 28px;
+        --ka-spotlight-reveal-padding: 28px;
+    }
+}

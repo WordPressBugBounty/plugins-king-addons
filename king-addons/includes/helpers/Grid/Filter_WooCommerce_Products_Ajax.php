@@ -12,6 +12,20 @@ if (!defined('ABSPATH')) {
 
 class Filter_WooCommerce_Products_Ajax
 {
+    /**
+     * Upsell product IDs used for the current query.
+     *
+     * @var array<int, int>
+     */
+    private $my_upsells = [];
+
+    /**
+     * Cross-sell product IDs used for the current query.
+     *
+     * @var array<int, int>
+     */
+    private $crossell_ids = [];
+
     public function __construct()
     {
         add_action('wp_ajax_king_addons_filter_woocommerce_products', [$this, 'king_addons_filter_woocommerce_products']);
@@ -31,38 +45,40 @@ class Filter_WooCommerce_Products_Ajax
         return json_encode($relations);
     }
 
-    public function get_max_num_pages($settings)
+    /**
+     * Get max number of pages for the current query.
+     *
+     * @param array $settings Grid settings.
+     * @return int Max number of pages.
+     */
+    public function get_max_num_pages($settings): int
     {
         $query = new WP_Query($this->get_main_query_args());
-        $max_num_pages = (int) ceil($query->max_num_pages);
-
-        $adjustedTotalPosts = max(0, $query->found_posts - $query->query_vars['offset']);
-        $numberOfPages      = ceil($adjustedTotalPosts / $query->query_vars['posts_per_page']);
-
-        wp_send_json_success([
-            'page_count'     => $numberOfPages,
-            'max_num_pages'  => $max_num_pages,
-            'query_found'    => $query->found_posts,
-            'query_offset'   => $query->query_vars['offset'],
-            'query_num'      => $query->query_vars['posts_per_page']
-        ]);
-
+        $max_num_pages = (int) $query->max_num_pages;
         wp_reset_postdata();
-        return $max_num_pages;
+
+        return $max_num_pages > 0 ? $max_num_pages : 1;
     }
 
     public function get_main_query_args()
     {
-        $settings = $_POST['grid_settings'];
-        $taxonomy = $_POST['king_addons_taxonomy'];
-        $term     = $_POST['king_addons_filter'];
+        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        $taxonomy = isset($_POST['king_addons_taxonomy']) ? sanitize_key(wp_unslash($_POST['king_addons_taxonomy'])) : '';
+        $term     = isset($_POST['king_addons_filter']) ? sanitize_text_field(wp_unslash($_POST['king_addons_filter'])) : '*';
+        if ($term === '') {
+            $term = '*';
+        }
 
         // Limit "Pro" options if user does not have premium.
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-            if ($settings['query_selection'] === 'pro-cr') {
+        if (!king_addons_can_use_pro()) {
+            if (($settings['query_selection'] ?? '') === 'pro-cr') {
                 $settings['query_selection'] = 'dynamic';
             }
-            if ($settings['query_orderby'] === 'pro-rn') {
+            if (($settings['query_orderby'] ?? '') === 'pro-rn') {
                 $settings['query_orderby'] = 'date';
             }
         }
@@ -82,7 +98,7 @@ class Filter_WooCommerce_Products_Ajax
             'post_type'      => 'product',
             'tax_query'      => $this->get_tax_query_args(),
             'meta_query'     => $this->get_meta_query_args(),
-            'post__not_in'   => $settings['query_exclude_products'],
+            'post__not_in'   => isset($settings['query_exclude_products']) && is_array($settings['query_exclude_products']) ? array_map('intval', $settings['query_exclude_products']) : [],
             'posts_per_page' => $query_posts_per_page,
             'orderby'        => 'date',
             'paged'          => $paged,
@@ -291,14 +307,14 @@ class Filter_WooCommerce_Products_Ajax
 
         // Live search param.
         if (isset($_GET['psearch']) && !empty($_GET['psearch'])) {
-            $args['s'] = $_GET['psearch'];
+            $args['s'] = sanitize_text_field(wp_unslash($_GET['psearch']));
         }
 
         // If user selected a taxonomy filter from the widget
         if ($term !== '*') {
             if ($taxonomy === 'tag') {
                 // Convert "tag" => "product_tag"
-                $taxonomy = 'product_' . $_POST['king_addons_taxonomy'];
+                $taxonomy = 'product_' . $taxonomy;
             }
             $args['tax_query'][] = [
                 'taxonomy' => $taxonomy,
@@ -309,7 +325,7 @@ class Filter_WooCommerce_Products_Ajax
 
         // If we receive an extra offset from Ajax
         if (isset($_POST['king_addons_offset'])) {
-            $args['offset'] = $_POST['king_addons_offset'];
+            $args['offset'] = (int) wp_unslash($_POST['king_addons_offset']);
         }
 
         return $args;
@@ -335,32 +351,39 @@ class Filter_WooCommerce_Products_Ajax
             }
 
             if (isset($_GET['filter_product_cat'])) {
+                $cats_raw = wp_unslash($_GET['filter_product_cat']);
+                $cats = array_filter(array_map('sanitize_title', explode(',', (string) $cats_raw)));
                 $tax_query[] = [
                     'taxonomy'         => 'product_cat',
                     'field'            => 'slug',
-                    'terms'            => explode(',', $_GET['filter_product_cat']),
+                    'terms'            => $cats,
                     'operator'         => 'IN',
                     'include_children' => true,
                 ];
             }
 
             if (isset($_GET['filter_product_tag'])) {
+                $tags_raw = wp_unslash($_GET['filter_product_tag']);
+                $tags = array_filter(array_map('sanitize_title', explode(',', (string) $tags_raw)));
                 $tax_query[] = [
                     'taxonomy'         => 'product_tag',
                     'field'            => 'slug',
-                    'terms'            => explode(',', $_GET['filter_product_tag']),
+                    'terms'            => $tags,
                     'operator'         => 'IN',
                     'include_children' => true,
                 ];
             }
         } else {
             // Normal grid-based filter
-            $settings = $_POST['grid_settings'];
-            $taxonomy = $_POST['king_addons_taxonomy'];
-            $term     = $_POST['king_addons_filter'];
+            $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
+            if (!is_array($settings)) {
+                $settings = [];
+            }
+            $taxonomy = isset($_POST['king_addons_taxonomy']) ? sanitize_key(wp_unslash($_POST['king_addons_taxonomy'])) : '';
+            $term     = isset($_POST['king_addons_filter']) ? sanitize_text_field(wp_unslash($_POST['king_addons_filter'])) : '*';
 
             if (isset($_GET['king_addons_select_product_cat']) && $_GET['king_addons_select_product_cat'] !== '0') {
-                $category     = sanitize_text_field($_GET['king_addons_select_product_cat']);
+                $category = (int) sanitize_text_field(wp_unslash($_GET['king_addons_select_product_cat']));
                 $tax_query[] = [
                     'taxonomy' => 'product_cat',
                     'field'    => 'id',
@@ -369,7 +392,7 @@ class Filter_WooCommerce_Products_Ajax
             }
 
             if (isset($_GET['product_cat']) && $_GET['product_cat'] !== '0') {
-                $category     = sanitize_text_field($_GET['product_cat']);
+                $category = (int) sanitize_text_field(wp_unslash($_GET['product_cat']));
                 $tax_query[] = [
                     'taxonomy' => 'product_cat',
                     'field'    => 'id',
@@ -390,7 +413,7 @@ class Filter_WooCommerce_Products_Ajax
 
             if ($term !== '*') {
                 if ($taxonomy === 'tag') {
-                    $taxonomy = 'product_' . $_POST['king_addons_taxonomy'];
+                    $taxonomy = 'product_' . $taxonomy;
                 }
                 $tax_query[] = [
                     'taxonomy' => $taxonomy,
@@ -445,7 +468,7 @@ class Filter_WooCommerce_Products_Ajax
     public function get_image_effect_class($settings)
     {
         // Restrict pro effects if not premium
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+        if (!king_addons_can_use_pro()) {
             if (in_array($settings['image_effects'], ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo'], true)) {
                 $settings['image_effects'] = 'none';
             }
@@ -483,16 +506,24 @@ class Filter_WooCommerce_Products_Ajax
         echo '</div></div></div>';
     }
 
-    public function render_product_thumbnail($settings)
+    /**
+     * Render the current product thumbnail HTML.
+     *
+     * @param array $settings Widget settings.
+     * @param int|null $post_id Optional post ID for the current loop item.
+     * @return void
+     */
+    public function render_product_thumbnail($settings, $post_id = null): void
     {
-        $id  = get_post_thumbnail_id();
+        $current_id = $post_id ? (int) $post_id : (int) get_the_ID();
+        $id  = get_post_thumbnail_id($current_id);
         $src = Group_Control_Image_Size::get_attachment_image_src($id, 'layout_image_crop', $settings);
-        $alt = wp_get_attachment_caption($id) === '' ? get_the_title() : wp_get_attachment_caption($id);
+        $alt = wp_get_attachment_caption($id) === '' ? get_the_title($current_id) : wp_get_attachment_caption($id);
 
         $src2 = '';
-        if (get_post_meta(get_the_ID(), 'king_addons_secondary_image_id', true)) {
+        if (get_post_meta($current_id, 'king_addons_secondary_image_id', true)) {
             $src2 = Group_Control_Image_Size::get_attachment_image_src(
-                get_post_meta(get_the_ID(), 'king_addons_secondary_image_id', true),
+                get_post_meta($current_id, 'king_addons_secondary_image_id', true),
                 'layout_image_crop',
                 $settings
             );
@@ -511,19 +542,20 @@ class Filter_WooCommerce_Products_Ajax
     public function render_media_overlay($settings)
     {
         echo '<div class="king-addons-grid-media-hover-bg ' . esc_attr($this->get_animation_class($settings, 'overlay')) . '" data-url="' . esc_url(get_the_permalink()) . '">';
-        if (king_addons_freemius()->can_use_premium_code__premium_only() && !empty($settings['overlay_image']['url'])) {
-            echo '<img src="' . esc_url($settings['overlay_image']['url']) . '" alt="' . esc_attr($settings['overlay_image']['alt']) . '">';
+        if (king_addons_can_use_pro() && !empty($settings['overlay_image']['url'])) {
+            $alt = $settings['overlay_image']['alt'] ?? '';
+            echo '<img src="' . esc_url($settings['overlay_image']['url']) . '" alt="' . esc_attr($alt) . '">';
         }
         echo '</div>';
     }
 
     public function render_product_title($settings, $class)
     {
-        // Fallback for freemium
-        $title_pointer            = king_addons_freemius()->can_use_premium_code__premium_only() ? $_POST['grid_settings']['title_pointer'] : 'none';
-        $title_pointer_animation  = king_addons_freemius()->can_use_premium_code__premium_only() ? $_POST['grid_settings']['title_pointer_animation'] : 'fade';
+        // Freemium fallback
+        $title_pointer            = king_addons_can_use_pro() ? ($settings['title_pointer'] ?? 'none') : 'none';
+        $title_pointer_animation  = king_addons_can_use_pro() ? ($settings['title_pointer_animation'] ?? 'fade') : 'fade';
         $pointer_item_class       = ($title_pointer !== 'none') ? 'class="king-addons-pointer-item"' : '';
-        $open_links_in_new_tab    = ('yes' === $_POST['grid_settings']['open_links_in_new_tab']) ? '_blank' : '_self';
+        $open_links_in_new_tab    = ('yes' === ($settings['open_links_in_new_tab'] ?? '')) ? '_blank' : '_self';
 
         $class .= ' king-addons-pointer-' . $title_pointer;
         $class .= ' king-addons-pointer-line-fx king-addons-pointer-fx-' . $title_pointer_animation;
@@ -569,8 +601,8 @@ class Filter_WooCommerce_Products_Ajax
         }
 
         $count                       = 0;
-        $categories_pointer          = king_addons_freemius()->can_use_premium_code__premium_only() ? $_POST['grid_settings']['categories_pointer'] : 'none';
-        $categories_pointer_animation= king_addons_freemius()->can_use_premium_code__premium_only() ? $_POST['grid_settings']['categories_pointer_animation'] : 'fade';
+        $categories_pointer          = king_addons_can_use_pro() ? ($settings['categories_pointer'] ?? 'none') : 'none';
+        $categories_pointer_animation= king_addons_can_use_pro() ? ($settings['categories_pointer_animation'] ?? 'fade') : 'fade';
         $pointer_item_class          = ($categories_pointer !== 'none') ? 'class="king-addons-pointer-item"' : '';
 
         $class .= ' king-addons-pointer-' . $categories_pointer;
@@ -622,8 +654,8 @@ class Filter_WooCommerce_Products_Ajax
         }
 
         $count                  = 0;
-        $tags_pointer           = king_addons_freemius()->can_use_premium_code__premium_only() ? $_POST['grid_settings']['tags_pointer'] : 'none';
-        $tags_pointer_animation = king_addons_freemius()->can_use_premium_code__premium_only() ? $_POST['grid_settings']['tags_pointer_animation'] : 'fade';
+        $tags_pointer           = king_addons_can_use_pro() ? ($settings['tags_pointer'] ?? 'none') : 'none';
+        $tags_pointer_animation = king_addons_can_use_pro() ? ($settings['tags_pointer_animation'] ?? 'fade') : 'fade';
         $pointer_item_class     = ($tags_pointer !== 'none') ? 'class="king-addons-pointer-item"' : '';
 
         $class .= ' king-addons-pointer-' . $tags_pointer;
@@ -949,13 +981,13 @@ class Filter_WooCommerce_Products_Ajax
         ]));
 
         // Freemium fallback
-        $add_to_cart_animation = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? $_POST['grid_settings']['add_to_cart_animation']
+        $add_to_cart_animation = king_addons_can_use_pro()
+            ? ($settings['add_to_cart_animation'] ?? 'king-addons-button-none')
             : 'king-addons-button-none';
 
-        $popup_notification_animation          = $_POST['grid_settings']['popup_notification_animation'] ?? '';
-        $popup_notification_fade_out_in        = $_POST['grid_settings']['popup_notification_fade_out_in'] ?? '';
-        $popup_notification_animation_duration = $_POST['grid_settings']['popup_notification_animation_duration'] ?? '';
+        $popup_notification_animation          = $settings['popup_notification_animation'] ?? '';
+        $popup_notification_fade_out_in        = $settings['popup_notification_fade_out_in'] ?? '';
+        $popup_notification_animation_duration = $settings['popup_notification_animation_duration'] ?? '';
 
         $attributes = [
             'rel="nofollow"',
@@ -1011,7 +1043,7 @@ class Filter_WooCommerce_Products_Ajax
                 if (is_callable([$product, 'get_product_url'])) {
                     $attributes[] = 'href="' . esc_url($product->get_product_url()) . '"';
                     $text         = get_post_meta(get_the_ID(), '_button_text', true);
-                    $button_HTML .= $text ? $text : esc_html__('Buy Product');
+                    $button_HTML .= $text ? esc_html($text) : esc_html__('Buy Product', 'king-addons');
                 } else {
                     // fallback
                     $button_HTML .= esc_html__('View Product', 'king-addons');
@@ -1055,7 +1087,7 @@ class Filter_WooCommerce_Products_Ajax
 
     public function render_product_wishlist_button($settings, $class)
     {
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+        if (!king_addons_can_use_pro()) {
             return;
         }
         global $product;
@@ -1071,12 +1103,12 @@ class Filter_WooCommerce_Products_Ajax
             $wishlist = [];
         }
 
-        $popup_notification_animation          = $_POST['grid_settings']['popup_notification_animation'] ?? '';
-        $popup_notification_fade_out_in        = $_POST['grid_settings']['popup_notification_fade_out_in'] ?? '';
-        $popup_notification_animation_duration = $_POST['grid_settings']['popup_notification_animation_duration'] ?? '';
+        $popup_notification_animation          = $settings['popup_notification_animation'] ?? '';
+        $popup_notification_fade_out_in        = $settings['popup_notification_fade_out_in'] ?? '';
+        $popup_notification_animation_duration = $settings['popup_notification_animation_duration'] ?? '';
 
         $wishlist_attributes = [
-            'data-wishlist-url="' . (get_option('king_addons_wishlist_page') ?: '') . '"',
+            'data-wishlist-url="' . esc_attr((string) (get_option('king_addons_wishlist_page') ?: '')) . '"',
             'data-atw-popup="' . esc_attr($settings['element_show_added_to_wishlist_popup']) . '"',
             'data-atw-animation="' . esc_attr($popup_notification_animation) . '"',
             'data-atw-fade-out-in="' . esc_attr($popup_notification_fade_out_in) . '"',
@@ -1120,7 +1152,7 @@ class Filter_WooCommerce_Products_Ajax
 
     public function render_product_compare_button($settings, $class)
     {
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+        if (!king_addons_can_use_pro()) {
             return;
         }
         global $product;
@@ -1136,12 +1168,12 @@ class Filter_WooCommerce_Products_Ajax
             $compare = $this->get_compare_from_cookie();
         }
 
-        $popup_notification_animation          = $_POST['grid_settings']['popup_notification_animation'] ?? '';
-        $popup_notification_fade_out_in        = $_POST['grid_settings']['popup_notification_fade_out_in'] ?? '';
-        $popup_notification_animation_duration = $_POST['grid_settings']['popup_notification_animation_duration'] ?? '';
+        $popup_notification_animation          = $settings['popup_notification_animation'] ?? '';
+        $popup_notification_fade_out_in        = $settings['popup_notification_fade_out_in'] ?? '';
+        $popup_notification_animation_duration = $settings['popup_notification_animation_duration'] ?? '';
 
         $compare_attributes = [
-            'data-compare-url="' . (get_option('king_addons_compare_page') ?: '') . '"',
+            'data-compare-url="' . esc_attr((string) (get_option('king_addons_compare_page') ?: '')) . '"',
             'data-atcompare-popup="' . esc_attr($settings['element_show_added_to_compare_popup']) . '"',
             'data-atcompare-animation="' . esc_attr($popup_notification_animation) . '"',
             'data-atcompare-fade-out-in="' . esc_attr($popup_notification_fade_out_in) . '"',
@@ -1318,12 +1350,12 @@ class Filter_WooCommerce_Products_Ajax
                 $this->render_product_add_to_cart($settings, $class);
                 break;
             case 'wishlist-button':
-                if (king_addons_freemius()->can_use_premium_code__premium_only()) {
+                if (king_addons_can_use_pro()) {
                     $this->render_product_wishlist_button($settings, $class);
                 }
                 break;
             case 'compare-button':
-                if (king_addons_freemius()->can_use_premium_code__premium_only()) {
+                if (king_addons_can_use_pro()) {
                     $this->render_product_compare_button($settings, $class);
                 }
                 break;
@@ -1341,10 +1373,22 @@ class Filter_WooCommerce_Products_Ajax
     {
         $meta_query = WC()->query->get_meta_query();
         if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
+            $min = isset($_GET['min_price']) ? (float) wp_unslash($_GET['min_price']) : 0.0;
+            $max = isset($_GET['max_price']) ? (float) wp_unslash($_GET['max_price']) : 0.0;
+            if ($max <= 0 && $min > 0) {
+                $max = $min;
+            }
+            if ($min < 0) {
+                $min = 0.0;
+            }
+            if ($max < $min) {
+                $max = $min;
+            }
+
             $meta_query = array_merge(['relation' => 'AND'], $meta_query);
             $meta_query[] = [
                 'key'     => '_price',
-                'value'   => [$_GET['min_price'], $_GET['max_price']],
+                'value'   => [$min, $max],
                 'compare' => 'BETWEEN',
                 'type'    => 'NUMERIC'
             ];
@@ -1358,7 +1402,7 @@ class Filter_WooCommerce_Products_Ajax
         if (!empty($settings['grid_elements'])) {
             foreach ($settings['grid_elements'] as $data) {
                 $place   = $data['element_location'];
-                $align_v = king_addons_freemius()->can_use_premium_code__premium_only()
+                $align_v = king_addons_can_use_pro()
                     ? ($data['element_align_vr'] ?? 'middle')
                     : 'middle';
 
@@ -1444,8 +1488,8 @@ class Filter_WooCommerce_Products_Ajax
         $pages = $this->get_max_num_pages($settings);
         $paged = empty($paged) ? 1 : $paged;
 
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-            if ($settings['pagination_type'] === 'pro-is') {
+        if (!king_addons_can_use_pro()) {
+            if (($settings['pagination_type'] ?? '') === 'pro-is') {
                 $settings['pagination_type'] = 'default';
             }
         }
@@ -1617,16 +1661,57 @@ class Filter_WooCommerce_Products_Ajax
 
     public function king_addons_get_woocommerce_filtered_count()
     {
-        $settings   = $_POST['grid_settings'];
-        $page_count = $this->get_max_num_pages($settings);
+        if (!class_exists('WooCommerce') || !function_exists('WC')) {
+            wp_send_json_error(['message' => esc_html__('WooCommerce is not available.', 'king-addons')], 400);
+        }
 
-        wp_send_json_success(['page_count' => $page_count]);
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'king_addons_grid_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
+        }
+
+        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        $query = new WP_Query($this->get_main_query_args());
+        $max_num_pages = (int) $query->max_num_pages;
+        $max_num_pages = $max_num_pages > 0 ? $max_num_pages : 1;
+
+        $offset = isset($query->query_vars['offset']) ? (int) $query->query_vars['offset'] : 0;
+        $ppp = isset($query->query_vars['posts_per_page']) ? (int) $query->query_vars['posts_per_page'] : 0;
+        $adjusted_total_posts = max(0, (int) $query->found_posts - $offset);
+        $page_count = $ppp > 0 ? (int) ceil($adjusted_total_posts / $ppp) : $max_num_pages;
+
+        wp_reset_postdata();
+
+        wp_send_json_success([
+            'page_count' => $page_count,
+            'max_num_pages' => $max_num_pages,
+            'query_found' => (int) $query->found_posts,
+            'query_offset' => $offset,
+            'query_num' => $ppp,
+        ]);
         wp_die();
     }
 
     public function king_addons_filter_woocommerce_products()
     {
-        $settings = $_POST['grid_settings'];
+        if (!class_exists('WooCommerce') || !function_exists('WC')) {
+            wp_die(esc_html__('WooCommerce is not available.', 'king-addons'));
+        }
+
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'king_addons_grid_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
+        }
+
+        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
         $posts    = new WP_Query($this->get_main_query_args());
 
         if ($posts->have_posts()) {
@@ -1641,7 +1726,8 @@ class Filter_WooCommerce_Products_Ajax
                 $this->get_elements_by_location('above', $settings, get_the_ID());
 
                 if (has_post_thumbnail()) {
-                    echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '" data-overlay-link="' . esc_attr($settings['overlay_post_link']) . '">';
+                    $overlay_link = $settings['overlay_post_link'] ?? '';
+                    echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '" data-overlay-link="' . esc_attr($overlay_link) . '">';
                     $this->render_product_thumbnail($settings, get_the_ID());
                     echo '<div class="king-addons-grid-media-hover king-addons-animation-wrap">';
                     $this->render_media_overlay($settings);

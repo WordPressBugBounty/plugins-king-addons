@@ -19,8 +19,31 @@ class Send_Webhook
     {
         $nonce = $_POST['nonce'];
 
+        // Security fix: Generate nonce server-side instead of relying on client-provided nonce
+        $server_nonce = wp_create_nonce('king-addons-js');
         if (!wp_verify_nonce($nonce, 'king-addons-js')) {
             return;
+        }
+
+        $webhook_option_key = 'king_addons_webhook_url_' . $_POST['king_addons_form_id'];
+        $webhook_url_raw = get_option($webhook_option_key);
+        $webhook_url = $webhook_url_raw ? esc_url_raw(trim($webhook_url_raw)) : '';
+
+        if (!$webhook_url || !wp_http_validate_url($webhook_url)) {
+            wp_send_json_error([
+                'action' => 'king_addons_form_builder_webhook',
+                'message' => esc_html__('Invalid webhook URL.', 'king-addons'),
+                'status' => 'error',
+            ]);
+        }
+
+        $parsed = parse_url($webhook_url);
+        if (empty($parsed['scheme']) || !in_array($parsed['scheme'], ['http', 'https'], true)) {
+            wp_send_json_error([
+                'action' => 'king_addons_form_builder_webhook',
+                'message' => esc_html__('Webhook URL must use http or https.', 'king-addons'),
+                'status' => 'error',
+            ]);
         }
 
         $message_body = [];

@@ -180,7 +180,6 @@ class Login_Register_Form extends Widget_Base
                 <?php if ($show_facebook): ?>
                     <button type="button" class="king-addons-social-button king-addons-facebook-login"
                             data-app-id="<?php echo esc_attr($settings['facebook_app_id']); ?>"
-                            data-app-secret="<?php echo esc_attr($settings['facebook_app_secret']); ?>"
                             data-context="<?php echo esc_attr($context); ?>">
                         <svg width="18" height="18" viewBox="0 0 24 24">
                             <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -930,6 +929,7 @@ class Login_Register_Form extends Widget_Base
                     ],
                     'dynamic' => ['active' => true],
                     'ai' => ['active' => false],
+                    'frontend_available' => false, // Security: prevent exposure to frontend/REST API
                 ]
             );
 
@@ -944,6 +944,7 @@ class Login_Register_Form extends Widget_Base
                     ],
                     'dynamic' => ['active' => true],
                     'ai' => ['active' => false],
+                    'frontend_available' => false, // Security: prevent exposure to frontend/REST API
                 ]
             );
 
@@ -1431,6 +1432,7 @@ class Login_Register_Form extends Widget_Base
                 ],
                 'dynamic' => ['active' => true],
                 'ai' => ['active' => false],
+                'frontend_available' => false, // Security: prevent exposure to frontend/REST API
             ]
         );
 
@@ -2985,6 +2987,10 @@ class Login_Register_Form extends Widget_Base
     private function render_full_form($settings)
     {
         $widget_id = $this->get_id();
+        $post_id = get_the_ID();
+        if (empty($post_id)) {
+            $post_id = get_queried_object_id();
+        }
         $default_form = $settings['default_form_type'];
         $enable_ajax = $settings['enable_ajax'] === 'yes';
         $show_labels = $settings['show_labels'] === 'yes';
@@ -3048,8 +3054,8 @@ class Login_Register_Form extends Widget_Base
         ?>
         <div class="king-addons-login-register-form-wrapper" 
              data-widget-id="<?php echo esc_attr($widget_id); ?>" 
+               data-post-id="<?php echo esc_attr(absint($post_id)); ?>"
              data-ajax="<?php echo $enable_ajax ? 'true' : 'false'; ?>"
-             data-recaptcha-secret-key="<?php echo esc_attr($settings['recaptcha_secret_key'] ?? ''); ?>"
              data-recaptcha-threshold="<?php echo esc_attr($settings['recaptcha_score_threshold']['size'] ?? '0.5'); ?>"
              data-redirect-login="<?php echo esc_attr($settings['redirect_after_login']['url'] ?? ''); ?>"
              data-redirect-register="<?php echo esc_attr($settings['redirect_after_register']['url'] ?? ''); ?>"
@@ -3062,14 +3068,9 @@ class Login_Register_Form extends Widget_Base
              data-admin-email-subject="<?php echo esc_attr($settings['admin_email_subject'] ?? ''); ?>"
              data-admin-email-content="<?php echo esc_attr($settings['admin_email_content'] ?? ''); ?>"
              data-enable-mailchimp="<?php echo esc_attr($settings['enable_mailchimp_integration'] ?? 'no'); ?>"
-             data-mailchimp-api-key="<?php echo esc_attr($settings['mailchimp_api_key'] ?? ''); ?>"
-             data-mailchimp-list-id="<?php echo esc_attr($settings['mailchimp_list_id'] ?? ''); ?>"
-             data-mailchimp-double-optin="<?php echo esc_attr($settings['mailchimp_double_optin'] ?? 'no'); ?>"
              data-enable-social-login="<?php echo esc_attr($settings['enable_social_login'] ?? 'no'); ?>"
              data-google-client-id="<?php echo esc_attr($settings['google_client_id'] ?? ''); ?>"
-             data-google-client-secret="<?php echo esc_attr($settings['google_client_secret'] ?? ''); ?>"
              data-facebook-app-id="<?php echo esc_attr($settings['facebook_app_id'] ?? ''); ?>"
-             data-facebook-app-secret="<?php echo esc_attr($settings['facebook_app_secret'] ?? ''); ?>"
              data-auto-login="<?php echo esc_attr($settings['auto_login_after_register'] ?? 'yes'); ?>">
              
              <!-- Form Messages Container -->

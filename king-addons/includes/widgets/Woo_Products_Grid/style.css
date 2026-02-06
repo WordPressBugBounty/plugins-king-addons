@@ -1,0 +1,327 @@
+.ka-woo-products-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(var(--ka-grid-desktop, 4), minmax(0, 1fr));
+}
+
+.ka-woo-products-grid[data-layout-type="masonry"] {
+    grid-auto-rows: var(--ka-masonry-row, 8px);
+    grid-row-gap: 16px;
+}
+
+.ka-woo-products-grid--slider {
+    overflow: hidden;
+    position: relative;
+}
+
+.ka-woo-products-grid__track {
+    display: flex;
+    gap: 0;
+    transition: transform 0.3s ease;
+}
+
+.ka-woo-products-grid--slider .ka-woo-products-grid__slide,
+.ka-woo-products-grid--slider .ka-woo-products-grid__item {
+    min-width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .ka-woo-products-grid {
+        grid-template-columns: repeat(var(--ka-grid-tablet, 3), minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .ka-woo-products-grid {
+        grid-template-columns: repeat(var(--ka-grid-mobile, 2), minmax(0, 1fr));
+    }
+}
+
+.ka-woo-products-grid__item {
+    border: 1px solid #eee;
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.ka-woo-products-grid__item--list {
+    grid-template-columns: 180px 1fr;
+    align-items: start;
+    gap: 12px;
+}
+
+@media (max-width: 767px) {
+    .ka-woo-products-grid__item--list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ka-woo-products-grid__thumb-wrap {
+    position: relative;
+}
+
+.ka-woo-products-grid__thumb img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.ka-woo-products-grid__list-thumb .ka-woo-products-grid__thumb {
+    display: block;
+}
+
+.ka-woo-products-grid__list-body {
+    display: grid;
+    gap: 6px;
+}
+
+.ka-woo-products-grid__badges {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    z-index: 2;
+}
+
+.ka-woo-products-grid__badge {
+    background: #111827;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 999px;
+    position: relative;
+    font-weight: 600;
+    box-shadow: 0 6px 12px rgba(17, 24, 39, 0.18);
+}
+
+.ka-woo-products-grid__badge--best {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.ka-woo-products-grid__badge--custom {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.ka-woo-products-grid__title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.ka-woo-products-grid__title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.ka-woo-products-grid__price {
+    font-weight: 700;
+}
+
+.ka-woo-products-grid__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ka-woo-products-grid__excerpt {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #444;
+}
+
+.ka-woo-products-grid__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+}
+
+.ka-woo-products-grid__meta-item {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.ka-woo-products-grid__pagination {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.ka-woo-products-grid__load-more {
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    background: #f7f7f7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ka-woo-products-grid__load-more:hover {
+    background: #eee;
+}
+
+.ka-woo-products-grid__load-more.is-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.ka-woo-products-grid__load-more--skin-outline {
+    background: transparent;
+    border: 1px solid #111;
+    color: #111;
+}
+
+.ka-woo-products-grid__load-more--skin-outline:hover {
+    background: #111;
+    color: #fff;
+}
+
+.ka-woo-products-grid__load-more--skin-ghost {
+    background: transparent;
+    border: none;
+    color: #111;
+}
+
+.ka-woo-products-grid__load-more--skin-ghost:hover {
+    color: #555;
+}
+
+.ka-woo-products-grid__spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-top-color: rgba(0, 0, 0, 0.55);
+    animation: ka-woo-products-grid-spin 0.8s linear infinite;
+    display: none;
+}
+
+.ka-woo-products-grid__load-more.is-loading .ka-woo-products-grid__spinner {
+    display: inline-block;
+}
+
+.ka-woo-products-grid__slider-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.ka-woo-products-grid__slider-controls {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.ka-woo-products-grid__slider-btn {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.ka-woo-products-grid__slider-btn:hover {
+    background: #f4f4f4;
+}
+
+.ka-woo-products-grid__slider-dots {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.ka-woo-products-grid__slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #999;
+    background: #fff;
+    padding: 0;
+    cursor: pointer;
+}
+
+.ka-woo-products-grid__slider-dot.is-active {
+    background: #111;
+    border-color: #111;
+}
+
+.ka-woo-products-grid__sentinel {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ka-woo-products-grid__sentinel::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    border-top-color: rgba(0, 0, 0, 0.5);
+    animation: ka-woo-products-grid-spin 0.8s linear infinite;
+    opacity: 0.6;
+}
+
+.ka-woo-products-grid__lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.ka-woo-products-grid__lightbox.is-open {
+    display: flex;
+}
+
+.ka-woo-products-grid__lightbox-figure {
+    margin: 0;
+    max-width: 90vw;
+    max-height: 90vh;
+    color: #fff;
+    text-align: center;
+}
+
+.ka-woo-products-grid__lightbox img {
+    max-width: 100%;
+    max-height: 80vh;
+    display: block;
+    margin: 0 auto 8px;
+}
+
+.ka-woo-products-grid__lightbox-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+@keyframes ka-woo-products-grid-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+
+

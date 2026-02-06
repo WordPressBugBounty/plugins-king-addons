@@ -91,6 +91,22 @@ class Template_Catalog_Button
             $current_post_id = intval($_GET['post_id']);
         }
 
+        // Check if this is a Woo Builder template - don't show "Start with a Template" for them.
+        // We detect by our own meta as well as Elementor's template type, because on some flows
+        // ka_woo_template_type may not be saved yet when the editor first loads.
+        $is_woo_builder_template = false;
+        if ($current_post_id > 0) {
+            $post_type = get_post_type($current_post_id);
+            if ('elementor_library' === $post_type) {
+                $woo_template_type = get_post_meta($current_post_id, 'ka_woo_template_type', true);
+                $elementor_template_type = get_post_meta($current_post_id, '_elementor_template_type', true);
+
+                if (!empty($woo_template_type) || 'king-addons-woo-builder' === $elementor_template_type) {
+                    $is_woo_builder_template = true;
+                }
+            }
+        }
+
         // Localize script with template catalog data
         wp_localize_script(
             'king-addons-template-catalog-button',
@@ -98,7 +114,8 @@ class Template_Catalog_Button
             [
                 'templateCatalogUrl' => admin_url('admin.php?page=king-addons-templates'),
                 'templatesEnabled' => KING_ADDONS_EXT_TEMPLATES_CATALOG,
-                'buttonEnabled' => !$this->is_template_catalog_disabled(), // If script loaded, button is enabled
+                'buttonEnabled' => !$this->is_template_catalog_disabled() && !$is_woo_builder_template,
+                'isWooBuilderTemplate' => $is_woo_builder_template,
                 'buttonText' => $this->get_button_text(),
                 'nonce' => wp_create_nonce('king_addons_template_catalog'),
                 'ajaxUrl' => admin_url('admin-ajax.php'),

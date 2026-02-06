@@ -2295,7 +2295,7 @@ $this->end_controls_section();
                 'progressBar' => $settings['lightbox_popup_progressbar'],
                 'counter' => $settings['lightbox_popup_counter'],
                 'controls' => $settings['lightbox_popup_arrows'],
-                'getCaptionFromTitleOrAlt' => $settings['lightbox_popup_captions'],
+                'getCaptionFromTitleOrAlt' => false,
                 'thumbnail' => $settings['lightbox_popup_thumbnails'],
                 'showThumbByDefault' => $settings['lightbox_popup_thumbnails_default'],
                 'share' => $settings['lightbox_popup_sharing'],

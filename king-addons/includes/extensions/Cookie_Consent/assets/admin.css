@@ -1,0 +1,408 @@
+/**
+ * King Addons Cookie Consent Admin Styles
+ */
+
+/* ========== Layout ========== */
+.king-addons-cookie-admin {
+    max-width: 1400px;
+    margin-right: 20px;
+}
+
+.king-addons-cookie-admin h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.king-addons-cookie-admin > .description {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+/* ========== Tabs Layout ========== */
+.king-addons-cookie-tabs {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+@media (max-width: 1024px) {
+    .king-addons-cookie-tabs {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========== Tab Navigation ========== */
+.king-addons-cookie-tabs__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: sticky;
+    top: 32px;
+    align-self: start;
+}
+
+@media (max-width: 1024px) {
+    .king-addons-cookie-tabs__nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        position: static;
+    }
+}
+
+.king-addons-cookie-tabs__btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    transition: all 0.15s ease;
+}
+
+.king-addons-cookie-tabs__btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.king-addons-cookie-tabs__btn.is-active {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #fff;
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+@media (max-width: 1024px) {
+    .king-addons-cookie-tabs__btn {
+        width: auto;
+        flex: 0 0 auto;
+    }
+}
+
+/* ========== Tab Content ========== */
+.king-addons-cookie-tabs__content {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 24px 28px;
+}
+
+.king-addons-cookie-panel {
+    display: none;
+}
+
+.king-addons-cookie-panel.is-active {
+    display: block;
+}
+
+.king-addons-cookie-panel h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+}
+
+.king-addons-cookie-panel h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 24px 0 12px;
+    color: #374151;
+}
+
+/* ========== Form Tables ========== */
+.king-addons-cookie-panel .form-table {
+    margin-top: 0;
+}
+
+.king-addons-cookie-panel .form-table th {
+    width: 200px;
+    padding: 16px 12px 16px 0;
+    font-weight: 500;
+    color: #374151;
+    vertical-align: top;
+}
+
+.king-addons-cookie-panel .form-table td {
+    padding: 12px 0;
+}
+
+.king-addons-cookie-panel .form-table select,
+.king-addons-cookie-panel .form-table input[type="text"],
+.king-addons-cookie-panel .form-table input[type="url"],
+.king-addons-cookie-panel .form-table input[type="number"],
+.king-addons-cookie-panel .form-table textarea {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.king-addons-cookie-panel .form-table select:focus,
+.king-addons-cookie-panel .form-table input[type="text"]:focus,
+.king-addons-cookie-panel .form-table input[type="url"]:focus,
+.king-addons-cookie-panel .form-table input[type="number"]:focus,
+.king-addons-cookie-panel .form-table textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+.king-addons-cookie-panel .description {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+/* ========== Grid Layout ========== */
+.king-addons-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.king-addons-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.king-addons-grid input {
+    margin-top: 0 !important;
+}
+
+/* ========== Data Tables ========== */
+.king-addons-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.king-addons-table thead {
+    background: #f8fafc;
+}
+
+.king-addons-table th {
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #475569;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.king-addons-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+}
+
+.king-addons-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.king-addons-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.king-addons-table input[type="text"],
+.king-addons-table textarea,
+.king-addons-table select {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.king-addons-table textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+/* ========== Pro Badge ========== */
+.king-addons-badge-pro {
+    display: inline-block;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* ========== Pro CTA Box ========== */
+.king-addons-pro-cta {
+    background: linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%);
+    border: 1px dashed #93c5fd;
+    padding: 24px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.king-addons-pro-cta p {
+    margin: 0;
+    color: #1e40af;
+    font-size: 14px;
+}
+
+/* ========== Manual Blocks ========== */
+.king-addons-manual-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.king-addons-manual-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.king-addons-manual-block textarea {
+    grid-column: 1 / -1;
+    min-height: 80px;
+}
+
+/* ========== Logs Summary ========== */
+.king-addons-log-summary {
+    display: flex;
+    gap: 24px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+}
+
+.king-addons-log-summary > div {
+    background: #f8fafc;
+    padding: 16px 24px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    min-width: 120px;
+    text-align: center;
+}
+
+.king-addons-log-summary strong {
+    display: block;
+    font-size: 24px;
+    color: #1e293b;
+    margin-top: 4px;
+}
+
+.king-addons-log-clear-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ========== Inline Checkbox ========== */
+.king-addons-inline-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.king-addons-inline-checkbox input[type="checkbox"] {
+    margin: 0;
+}
+
+/* ========== Submit Button ========== */
+.king-addons-cookie-panel .submit {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.king-addons-cookie-panel .button-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.king-addons-cookie-panel .button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* ========== Notice Messages ========== */
+.king-addons-cookie-admin .notice {
+    margin: 16px 0;
+    border-radius: 8px;
+    border-left-width: 4px;
+}
+
+/* ========== Color Picker Adjustments ========== */
+.king-addons-grid .wp-picker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.king-addons-grid .wp-picker-container .wp-color-result {
+    margin: 0;
+}
+
+/* ========== Responsive Adjustments ========== */
+@media (max-width: 782px) {
+    .king-addons-cookie-tabs__content {
+        padding: 16px;
+    }
+    
+    .king-addons-cookie-panel .form-table th,
+    .king-addons-cookie-panel .form-table td {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+    }
+    
+    .king-addons-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .king-addons-manual-block {
+        grid-template-columns: 1fr;
+    }
+    
+    .king-addons-log-summary {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,241 @@
+.king-addons-parallax-depth-cards {
+    --ka-pdc-cols: 3;
+    --ka-pdc-col-gap: 24px;
+    --ka-pdc-row-gap: 24px;
+    --ka-pdc-card-min-height: 260px;
+    --ka-pdc-content-gap: 12px;
+    --ka-pdc-text-align: left;
+    --ka-pdc-content-align-x: flex-start;
+    --ka-pdc-content-align-y: flex-start;
+    --ka-pdc-media-width: 120px;
+    --ka-pdc-icon-size: 36px;
+    --ka-pdc-perspective: 900px;
+    --ka-pdc-badge-bg: #0f172a;
+    --ka-pdc-badge-color: #ffffff;
+    --ka-pdc-button-bg: #0f172a;
+    --ka-pdc-button-color: #ffffff;
+    --ka-pdc-button-border: #0f172a;
+    --ka-pdc-button-bg-hover: #1e293b;
+    --ka-pdc-button-color-hover: #ffffff;
+    --ka-pdc-button-border-hover: #1e293b;
+    --ka-pdc-icon-color: #0f172a;
+    --ka-pdc-media-radius: 14px;
+    --ka-pdc-hover-scale: 1;
+    --ka-pdc-hover-lift: 0px;
+    color: #0f172a;
+}
+
+.king-addons-parallax-depth-cards--align-left {
+    --ka-pdc-text-align: left;
+    --ka-pdc-content-align-x: flex-start;
+}
+
+.king-addons-parallax-depth-cards--align-center {
+    --ka-pdc-text-align: center;
+    --ka-pdc-content-align-x: center;
+}
+
+.king-addons-parallax-depth-cards--align-right {
+    --ka-pdc-text-align: right;
+    --ka-pdc-content-align-x: flex-end;
+}
+
+.king-addons-parallax-depth-cards--valign-top {
+    --ka-pdc-content-align-y: flex-start;
+}
+
+.king-addons-parallax-depth-cards--valign-center {
+    --ka-pdc-content-align-y: center;
+}
+
+.king-addons-parallax-depth-cards--valign-bottom {
+    --ka-pdc-content-align-y: flex-end;
+}
+
+.king-addons-parallax-depth-cards--height-auto {
+    --ka-pdc-card-min-height: auto;
+}
+
+.king-addons-parallax-depth-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--ka-pdc-cols), minmax(0, 1fr));
+    column-gap: var(--ka-pdc-col-gap);
+    row-gap: var(--ka-pdc-row-gap);
+}
+
+.king-addons-parallax-depth-cards--mode-single .king-addons-parallax-depth-cards__grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.king-addons-parallax-depth-cards__card {
+    position: relative;
+    min-height: var(--ka-pdc-card-min-height);
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    perspective: var(--ka-pdc-perspective);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+.king-addons-parallax-depth-cards__card:hover,
+.king-addons-parallax-depth-cards__card:focus-within {
+    border-color: #cbd5f5;
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14);
+    transform: scale(var(--ka-pdc-hover-scale)) translateY(var(--ka-pdc-hover-lift));
+}
+
+.king-addons-parallax-depth-cards__card-inner {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ka-pdc-content-gap);
+    align-items: var(--ka-pdc-content-align-x);
+    justify-content: var(--ka-pdc-content-align-y);
+    text-align: var(--ka-pdc-text-align);
+    transform-style: preserve-3d;
+}
+
+.king-addons-parallax-depth-cards__layer {
+    position: relative;
+    z-index: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.king-addons-parallax-depth-cards__layer--bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.king-addons-parallax-depth-cards__layer--media,
+.king-addons-parallax-depth-cards__layer--content {
+    width: 100%;
+}
+
+.king-addons-parallax-depth-cards__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ka-pdc-content-gap);
+    width: 100%;
+}
+
+.king-addons-parallax-depth-cards__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: var(--ka-pdc-badge-bg);
+    color: var(--ka-pdc-badge-color);
+}
+
+.king-addons-parallax-depth-cards__badge.is-left {
+    align-self: flex-start;
+}
+
+.king-addons-parallax-depth-cards__badge.is-right {
+    align-self: flex-end;
+}
+
+.king-addons-parallax-depth-cards__title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: inherit;
+}
+
+.king-addons-parallax-depth-cards__description {
+    margin: 0;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.king-addons-parallax-depth-cards__media {
+    width: var(--ka-pdc-media-width);
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-parallax-depth-cards__media.is-align-left {
+    margin-right: auto;
+}
+
+.king-addons-parallax-depth-cards__media.is-align-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.king-addons-parallax-depth-cards__media.is-align-right {
+    margin-left: auto;
+}
+
+.king-addons-parallax-depth-cards__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--ka-pdc-media-radius);
+}
+
+.king-addons-parallax-depth-cards__icon {
+    font-size: var(--ka-pdc-icon-size);
+    color: var(--ka-pdc-icon-color);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-parallax-depth-cards__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--ka-pdc-button-border);
+    background-color: var(--ka-pdc-button-bg);
+    color: var(--ka-pdc-button-color);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-parallax-depth-cards__button:hover {
+    background-color: var(--ka-pdc-button-bg-hover);
+    color: var(--ka-pdc-button-color-hover);
+    border-color: var(--ka-pdc-button-border-hover);
+}
+
+.king-addons-parallax-depth-cards__button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.king-addons-parallax-depth-cards__card.is-active .king-addons-parallax-depth-cards__card-inner,
+.king-addons-parallax-depth-cards__card.is-active .king-addons-parallax-depth-cards__layer {
+    will-change: transform;
+}
+
+@media (max-width: 767px) {
+    .king-addons-parallax-depth-cards__card-inner {
+        padding: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-parallax-depth-cards__card-inner,
+    .king-addons-parallax-depth-cards__layer {
+        transition: none !important;
+    }
+}

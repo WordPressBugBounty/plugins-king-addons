@@ -30,7 +30,7 @@ class Posts_Grid extends Widget_Base
 
     public function get_title()
     {
-        return esc_html__('Posts Grid & Slider/Carousel', 'king-addons');
+        return esc_html__('Posts Grid & Slider', 'king-addons');
     }
 
     public function get_icon()
@@ -9721,7 +9721,7 @@ $this->end_controls_section();
             'progressBar' => $settings['lightbox_popup_progressbar'],
             'counter' => $settings['lightbox_popup_counter'],
             'controls' => $settings['lightbox_popup_arrows'],
-            'getCaptionFromTitleOrAlt' => $settings['lightbox_popup_captions'],
+            'getCaptionFromTitleOrAlt' => false,
             'thumbnail' => $settings['lightbox_popup_thumbnails'],
             'showThumbByDefault' => $settings['lightbox_popup_thumbnails_default'],
             'share' => $settings['lightbox_popup_sharing'],
@@ -9806,7 +9806,7 @@ $this->end_controls_section();
             'progressBar' => $settings['lightbox_popup_progressbar'],
             'counter' => $settings['lightbox_popup_counter'],
             'controls' => $settings['lightbox_popup_arrows'],
-            'getCaptionFromTitleOrAlt' => $settings['lightbox_popup_captions'],
+            'getCaptionFromTitleOrAlt' => false,
             'thumbnail' => $settings['lightbox_popup_thumbnails'],
             'showThumbByDefault' => $settings['lightbox_popup_thumbnails_default'],
             'share' => $settings['lightbox_popup_sharing'],

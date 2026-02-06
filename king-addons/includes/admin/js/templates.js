@@ -177,7 +177,8 @@ jQuery(document).ready(function ($) {
             method: 'POST',
             body: new URLSearchParams({
                 action: 'import_elementor_page_with_images',
-                data: JSON.stringify(initial_data),
+                nonce: kingAddonsData.nonce,
+                data: JSON.stringify(initial_data)
             })
         })
             .then(response => {
@@ -213,6 +214,7 @@ jQuery(document).ready(function ($) {
                 method: 'POST',
                 body: new URLSearchParams({
                     action: 'process_import_images',
+                    nonce: kingAddonsData.nonce
                 })
             })
                 .then(response => {
@@ -398,6 +400,92 @@ jQuery(document).ready(function ($) {
         if (tabId === 'sections' && !window.sectionsLoaded) {
             loadSections();
         }
+
+        // Collections: List View only
+        if (tabId === 'collections') {
+            $('#collection-details-view').hide();
+            $('.collections-toolbar').show();
+            $('.collections-rows-wrapper').show();
+            if (!window.collectionRowsLoaded) {
+                loadCollectionRows(1);
+            }
+        }
+    });
+
+    // ===== COLLECTIONS FUNCTIONALITY =====
+
+    function openCollectionDetails(collectionId) {
+        if (!collectionId) return;
+
+        $('.collections-toolbar').hide();
+        $('.collections-rows-wrapper').hide();
+        $('#collection-details-view').show();
+        $('.collection-details-content').html('<div class="collection-loading">Loading collection...</div>');
+        $('#collection-search').val('');
+
+        $.ajax({
+            url: window.kingAddonsData.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'king_addons_get_collection_details',
+                nonce: window.kingAddonsData.nonce || '',
+                collection_id: collectionId
+            },
+            success: function(response) {
+                if (response.success) {
+                    var data = response.data;
+                    var html = '';
+
+                    if (data.templates_count > 0) {
+                        html += '<div class="collection-section-title"><h3>Templates (' + data.templates_count + ')</h3></div>';
+                        html += '<div class="templates-grid collection-templates-grid">' + data.templates_html + '</div>';
+                    }
+
+                    if (data.sections_count > 0) {
+                        html += '<div class="collection-section-title"><h3>Sections (' + data.sections_count + ')</h3></div>';
+                        html += '<div class="sections-grid collection-sections-grid">' + data.sections_html + '</div>';
+                    }
+
+                    if (data.templates_count === 0 && data.sections_count === 0) {
+                        html = '<div class="collection-empty">No items found in this collection.</div>';
+                    }
+
+                    $('.collection-details-content').html(html);
+                } else {
+                    $('.collection-details-content').html('<div class="collection-error">Error loading collection: ' + (response.data || 'Unknown error') + '</div>');
+                }
+            },
+            error: function() {
+                $('.collection-details-content').html('<div class="collection-error">Failed to load collection. Please try again.</div>');
+            }
+        });
+    }
+
+    // (Optional) If legacy grid cards ever exist, keep them working.
+    $(document).on('click', '.ka-collection-card', function () {
+        openCollectionDetails($(this).data('collection-id') || '');
+    });
+
+    // Back button
+    $(document).on('click', '.ka-back-button', function() {
+        $('#collection-details-view').hide();
+        $('.collections-toolbar').show();
+        $('.collections-rows-wrapper').fadeIn();
+    });
+
+    // Search in collection
+    $(document).on('keyup', '#collection-search', function() {
+        var value = $(this).val().toLowerCase();
+        
+        // Filter templates
+        $('.collection-templates-grid .template-item').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+        
+        // Filter sections
+        $('.collection-sections-grid .section-item').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
     });
 
     // ===== SECTIONS FUNCTIONALITY =====
@@ -490,23 +578,23 @@ jQuery(document).ready(function ($) {
                      data-category="${section.category || ''}"
                      data-tags="${(section.tags || []).join(',')}"
                      data-section-type="${section.section_type || ''}">
-                    <img class="kng-addons-section-thumbnail" loading="lazy"
-                         src="${screenshotUrl}" 
-                         alt="${section.title}"
-                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGY5ZmEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU3ZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iNzAiIHI9IjE2IiBmaWxsPSIjOWNhM2FmIiBvcGFjaXR5PSIwLjQiLz48cmVjdCB4PSIxMzQiIHk9Ijg2IiB3aWR0aD0iMzIiIGhlaWdodD0iNCIgZmlsbD0iIzljYTNhZiIgb3BhY2l0eT0iMC40IiByeD0iMiIvPjxyZWN0IHg9IjEyNiIgeT0iOTQiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0IiBmaWxsPSIjOWNhM2FmIiBvcGFjaXR5PSIwLjMiIHJ4PSIyIi8+PHRleHQgeD0iNTAlIiB5PSIxMjAiIGZvbnQtZmFtaWx5PSItYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2Yjc1ODQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNyI+U2VjdGlvbiBQcmV2aWV3PC90ZXh0Pjwvc3ZnPg=='">
-                    <div class="section-content">
-                        <h3>${section.title}</h3>
-                        <div class="section-plan section-plan-${section.plan}">${section.plan}</div>
-                    </div>
-                    <div class="section-overlay">
+                    <div class="section-preview">
+                        <img src="${screenshotUrl}" 
+                             alt="${section.title}"
+                             loading="lazy"
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGY5ZmEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU3ZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iNzAiIHI9IjE2IiBmaWxsPSIjOWNhM2FmIiBvcGFjaXR5PSIwLjQiLz48cmVjdCB4PSIxMzQiIHk9Ijg2IiB3aWR0aD0iMzIiIGhlaWdodD0iNCIgZmlsbD0iIzljYTNhZiIgb3BhY2l0eT0iMC40IiByeD0iMiIvPjxyZWN0IHg9IjEyNiIgeT0iOTQiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0IiBmaWxsPSIjOWNhM2FmIiBvcGFjaXR5PSIwLjMiIHJ4PSIyIi8+PHRleHQgeD0iNTAlIiB5PSIxMjAiIGZvbnQtZmFtaWx5PSItYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2Yjc1ODQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNyI+U2VjdGlvbiBQcmV2aWV3PC90ZXh0Pjwvc3ZnPg=='">
                         <div class="section-actions">
-                            <button class="section-import-btn" data-section-key="${section.section_key}" data-section-plan="${section.plan}">
-                                Import Section
+                            <button class="import-section-btn" data-section-key="${section.section_key}" data-section-plan="${section.plan}">
+                                <i class="eicon-file-download"></i> Import
                             </button>
-                            <a href="https://sections.kingaddons.com/${section.section_key}" class="section-preview-btn" target="_blank">
-                                Live Preview
+                            <a href="https://sections.kingaddons.com/${section.section_key}" class="live-preview-btn" target="_blank">
+                                <i class="eicon-preview-medium"></i> Live Preview
                             </a>
                         </div>
+                        ${section.plan === 'premium' ? '<span class="section-badge-pro">PRO</span>' : ''}
+                    </div>
+                    <div class="section-info">
+                        <h4>${section.title}</h4>
                     </div>
                 </div>
             `;
@@ -686,45 +774,85 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    // Section import button handler
-    $(document).on('click', '.section-import-btn', function(e) {
+    // Section Import Popup Logic
+    let pendingSectionImport = null;
+
+    // Open Import Popup
+    $(document).on('click', '.import-section-btn', function(e) {
         e.preventDefault();
-        e.stopPropagation(); // Prevent triggering parent click
+        e.stopPropagation();
         
-        var sectionKey = $(this).data('section-key');
-        var sectionPlan = $(this).data('section-plan');
+        let sectionKey = $(this).data('section-key');
+        let sectionPlan = $(this).data('section-plan');
+        let sectionTitle = $(this).closest('.section-item').find('h4').text();
         
-        // Check if this is a premium section and user doesn't have premium
-        var planActive = $('#install-template').attr('data-plan-active');
-        
+        // Check premium
+        let planActive = $('#install-template').attr('data-plan-active');
         if (sectionPlan === 'premium' && planActive !== 'premium') {
-            // Show premium promo popup
             $('#templates-catalog').addClass('kng-whole-overlay');
             $('#premium-promo-popup').fadeIn();
             return;
         }
-        
-        // For free sections or premium sections with premium license, trigger import
-        if (confirm('Import this section?\n\nSection: ' + sectionKey + '\nPlan: ' + sectionPlan + '\n\nNote: This will be added to your current page in Elementor.')) {
-            importSection(sectionKey, sectionPlan);
+
+        // Store pending import data
+        pendingSectionImport = {
+            key: sectionKey,
+            plan: sectionPlan
+        };
+
+        // Populate and show popup
+        $('#popup-section-name').text(sectionTitle);
+        $('#popup-section-plan').text(sectionPlan.charAt(0).toUpperCase() + sectionPlan.slice(1));
+        $('#section-import-popup').css('display', 'flex').hide().fadeIn(10, function() {
+            $(this).addClass('active');
+        });
+    });
+
+    // Live Preview Button - Stop Propagation
+    $(document).on('click', '.live-preview-btn', function(e) {
+        e.stopPropagation();
+    });
+
+    // Close Popup
+    function closeSectionPopup() {
+        $('#section-import-popup').removeClass('active');
+        setTimeout(function() {
+            $('#section-import-popup').fadeOut();
+        }, 300);
+        pendingSectionImport = null;
+    }
+
+    $(document).on('click', '#close-section-popup, #cancel-section-import', function(e) {
+        e.preventDefault();
+        closeSectionPopup();
+    });
+
+    // Confirm Import
+    $(document).on('click', '#confirm-section-import', function(e) {
+        e.preventDefault();
+        if (pendingSectionImport) {
+            importSection(pendingSectionImport.key, pendingSectionImport.plan);
+            closeSectionPopup();
         }
     });
 
-    // Section preview button handler (handled by href, but we can add tracking here)
-    $(document).on('click', '.section-preview-btn', function(e) {
-        e.stopPropagation(); // Prevent triggering parent click
-        // The link will open in new tab automatically due to target="_blank"
+    // Close on click outside
+    $(document).on('click', '#section-import-popup', function(e) {
+        if ($(e.target).is('#section-import-popup')) {
+            closeSectionPopup();
+        }
     });
 
     // Section item click handler - now only for general clicks (not on buttons)
     $(document).on('click', '.section-item', function(e) {
         // Don't trigger if clicking on buttons or overlay
-        if ($(e.target).closest('.section-overlay, .section-import-btn, .section-preview-btn').length) {
+        if ($(e.target).closest('.section-overlay, .import-section-btn, .live-preview-btn').length) {
             return;
         }
         
         var sectionKey = $(this).data('section-key');
         var sectionPlan = $(this).data('section-plan');
+        var sectionTitle = $(this).find('h4').text();
         
         // Check if this is a premium section and user doesn't have premium
         var planActive = $('#install-template').attr('data-plan-active');
@@ -736,10 +864,17 @@ jQuery(document).ready(function ($) {
             return;
         }
         
-        // For free sections or premium sections with premium license, trigger import
-        if (confirm('Import this section?\n\nSection: ' + sectionKey + '\nPlan: ' + sectionPlan + '\n\nNote: This will be added to your current page in Elementor.')) {
-            importSection(sectionKey, sectionPlan);
-        }
+        // Open the custom popup instead of confirm()
+        pendingSectionImport = {
+            key: sectionKey,
+            plan: sectionPlan
+        };
+
+        $('#popup-section-name').text(sectionTitle);
+        $('#popup-section-plan').text(sectionPlan.charAt(0).toUpperCase() + sectionPlan.slice(1));
+        $('#section-import-popup').css('display', 'flex').hide().fadeIn(10, function() {
+            $(this).addClass('active');
+        });
     });
 
     // Function to import section from main catalog
@@ -808,6 +943,7 @@ jQuery(document).ready(function ($) {
             type: 'POST',
             data: {
                 action: 'import_elementor_page_with_images',
+                nonce: window.kingAddonsData.nonce,
                 data: JSON.stringify(importData)
             },
             success: function(result) {
@@ -854,4 +990,185 @@ jQuery(document).ready(function ($) {
             }
         });
     }
+
+    // ===== COLLECTIONS (LIST VIEW ONLY) =====
+    
+    window.collectionRowsLoaded = false;
+    window.collectionRowsData = null;
+    window.collectionRowsPage = 1;
+    window.collectionRowsSearch = '';
+
+    function loadCollectionRows(page = 1) {
+        $('.collections-rows-container').html('<div class="collections-loading">Loading collections...</div>');
+        window.collectionRowsPage = page;
+        
+        $.ajax({
+            url: window.kingAddonsData.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'king_addons_get_collections_rows',
+                nonce: window.kingAddonsData.nonce || '',
+                page: page,
+                search: window.collectionRowsSearch || ''
+            },
+            success: function(response) {
+                if (response.success) {
+                    window.collectionRowsData = response.data;
+                    window.collectionRowsLoaded = true;
+                    renderCollectionRows();
+                } else {
+                    $('.collections-rows-container').html('<div class="collections-error">Error loading collections.</div>');
+                }
+            },
+            error: function() {
+                $('.collections-rows-container').html('<div class="collections-error">Failed to load collections.</div>');
+            }
+        });
+    }
+
+    function renderCollectionRows() {
+        if (!window.collectionRowsData || !window.collectionRowsData.collections) {
+            $('.collections-rows-container').html('<div class="collections-empty">No collections found.</div>');
+            return;
+        }
+
+        var html = '';
+        var collections = window.collectionRowsData.collections;
+
+        collections.forEach(function(collection) {
+            if (collection.templates.length === 0) return; // Skip empty collections
+
+            var templatesCount = collection.templates_count || 0;
+            var sectionsCount = collection.sections_count || 0;
+
+            html += `
+                <div class="collection-row">
+                    <div class="collection-row-header">
+                        <div class="collection-row-title-wrap">
+                            <h3 class="collection-row-title">${collection.name}</h3>
+                            <div class="collection-row-counts">
+                                <span class="collection-row-count" title="Templates">
+                                    <i class="eicon-document-file"></i> ${templatesCount}
+                                </span>
+                                <span class="collection-row-count" title="Sections">
+                                    <i class="eicon-section"></i> ${sectionsCount}
+                                </span>
+                            </div>
+                        </div>
+                        <a href="#" class="collection-row-view-all" data-collection-id="${collection.id}">
+                            View All <i class="eicon-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="collection-row-scroll-wrap">
+                        <div class="collection-row-scroll">
+            `;
+
+            collection.templates.forEach(function(template) {
+                var thumbUrl = `https://thumbnails.kingaddons.com/${template.key}.png?v=4`;
+                html += `
+                    <div class="collection-row-item template-item" 
+                         data-template-key="${template.key}" 
+                         data-template-plan="${template.plan}">
+                        <img src="${thumbUrl}" alt="${template.title}" loading="lazy">
+                        <div class="collection-row-item-info">
+                            <h4 class="collection-row-item-title">${template.title}</h4>
+                            <div class="collection-row-item-meta">
+                                <span class="template-plan template-plan-${template.plan}">${template.plan}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (!html || html.trim() === '') {
+            $('.collections-rows-container').html('<div class="collection-row-empty">No collections found.</div>');
+            $('.collections-rows-pagination').html('');
+            return;
+        }
+
+        $('.collections-rows-container').html(html);
+        
+        // Render Pagination
+        var pagination = window.collectionRowsData.pagination;
+        var paginationHtml = '';
+        
+        if (pagination && pagination.pages > 1) {
+            paginationHtml += '<div class="pagination-inner">';
+            
+            // Previous
+            if (pagination.current > 1) {
+                paginationHtml += `<a class="page-numbers collection-rows-page" href="#" data-page="${pagination.current - 1}"><i class="eicon-chevron-left"></i></a>`;
+            }
+            
+            // Smart Pagination Logic (1 2 3 ... 10)
+            var startPage = Math.max(1, pagination.current - 2);
+            var endPage = Math.min(pagination.pages, pagination.current + 2);
+            
+            if (startPage > 1) {
+                paginationHtml += `<a class="page-numbers collection-rows-page" href="#" data-page="1">1</a>`;
+                if (startPage > 2) {
+                    paginationHtml += `<span class="page-numbers dots">...</span>`;
+                }
+            }
+            
+            for (var i = startPage; i <= endPage; i++) {
+                if (i === pagination.current) {
+                    paginationHtml += `<span class="page-numbers current">${i}</span>`;
+                } else {
+                    paginationHtml += `<a class="page-numbers collection-rows-page" href="#" data-page="${i}">${i}</a>`;
+                }
+            }
+            
+            if (endPage < pagination.pages) {
+                if (endPage < pagination.pages - 1) {
+                    paginationHtml += `<span class="page-numbers dots">...</span>`;
+                }
+                paginationHtml += `<a class="page-numbers collection-rows-page" href="#" data-page="${pagination.pages}">${pagination.pages}</a>`;
+            }
+            
+            // Next
+            if (pagination.current < pagination.pages) {
+                paginationHtml += `<a class="page-numbers collection-rows-page" href="#" data-page="${pagination.current + 1}"><i class="eicon-chevron-right"></i></a>`;
+            }
+            
+            paginationHtml += '</div>';
+        }
+        
+        $('.collections-rows-pagination').html(paginationHtml);
+        
+        // Handle pagination click
+        $('.collection-rows-page').off('click').on('click', function(e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadCollectionRows(page);
+            $('html, body').animate({scrollTop: $('#collections-catalog').offset().top - 50}, 500);
+        });
+        
+        // Handle "View All" click to switch to details view
+        $('.collection-row-view-all').off('click').on('click', function(e) {
+            e.preventDefault();
+            var collectionId = $(this).data('collection-id');
+            openCollectionDetails(collectionId);
+        });
+    }
+
+    // Collections search (List View)
+    var collectionsSearchTimer = null;
+    $(document).on('input', '#collections-search', function() {
+        var value = $(this).val() || '';
+        window.collectionRowsSearch = value;
+        clearTimeout(collectionsSearchTimer);
+        collectionsSearchTimer = setTimeout(function() {
+            window.collectionRowsLoaded = false;
+            loadCollectionRows(1);
+        }, 250);
+    });
 });
+

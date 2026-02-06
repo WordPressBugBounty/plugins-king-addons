@@ -6,6 +6,8 @@
 
 namespace King_Addons;
 
+use King_Addons\Wishlist\Wishlist_Settings;
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
@@ -15,27 +17,56 @@ final class Admin
     public function __construct()
     {
         if (is_admin()) {
-            add_action('admin_menu', [$this, 'addAdminMenu']);
+            // Use priority 5 to ensure the main menu is created BEFORE feature submenus (which use priority 10 or higher)
+            add_action('admin_menu', [$this, 'addAdminMenu'], 5);
 
             // Always add the action, but check conditions inside addUpgradeMenu
-            add_action('admin_menu', [$this, 'addUpgradeMenu'], 999999999); // Highest priority to add at the very end
+            add_action('admin_menu', [$this, 'addUpgradeMenu'], 9999999999); // Highest priority to add at the very end
+
+            // Reorder submenu items after ALL entries are registered.
+            add_action('admin_menu', [$this, 'reorderKingAddonsSubmenu'], 1000000000);
 
             add_action('admin_init', [$this, 'createSettings']);
             add_action('admin_init', [$this, 'createAiSettings']);
+
+            // Only register wishlist settings when the Wishlist extension is enabled.
+            $options = get_option('king_addons_options', []);
+            $wishlist_enabled = (!isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled')
+                && (defined('KING_ADDONS_EXT_WISHLIST') ? KING_ADDONS_EXT_WISHLIST : true);
+            if ($wishlist_enabled) {
+                add_action('admin_init', [$this, 'createWishlistSettings']);
+            }
             add_action('admin_enqueue_scripts', [$this, 'enqueueUpgradeLinkScript']);
+            add_action('admin_enqueue_scripts', [$this, 'enqueueGlobalAdminStyles']);
+
+            // AJAX handler for Trinity Backup plugin installation
+            add_action('wp_ajax_king_addons_install_trinity_backup', [$this, 'handleInstallTrinityBackup']);
         }
     }
 
     function addAdminMenu(): void
     {
+        global $menu;
+        $menu['54.0'] = array( '', 'read', 'separator-king-addons-top', '', 'wp-menu-separator elementor' );
+
         add_menu_page(
             'King Addons for Elementor',
             'King Addons',
             'manage_options',
             'king-addons',
-            [$this, 'showAdminPage'],
+            [$this, 'showDashboardV3'],
             KING_ADDONS_URL . 'includes/admin/img/icon-for-admin.svg',
-            58.7
+            54.1
+        );
+
+        // Ensure the first submenu item is labeled "Dashboard" (instead of repeating "King Addons").
+        add_submenu_page(
+            'king-addons',
+            esc_html__('Dashboard', 'king-addons'),
+            esc_html__('Dashboard', 'king-addons'),
+            'manage_options',
+            'king-addons',
+            [$this, 'showDashboardV3']
         );
 
         add_submenu_page(
@@ -47,7 +78,110 @@ final class Admin
             [$this, 'showSettingsPage']
         );
 
-        if (KING_ADDONS_WGT_FORM_BUILDER) {
+        // Add AI Settings submenu under King Addons (kept near Settings; final ordering is enforced later).
+        add_submenu_page(
+            'king-addons',
+            esc_html__('AI Settings', 'king-addons'),
+            esc_html__('AI Settings', 'king-addons'),
+            'manage_options',
+            'king-addons-ai-settings',
+            [$this, 'showAiSettingsPage']
+        );
+
+        // Get options for extension toggle checks (before any extension checks)
+        $options = get_option('king_addons_options', []);
+
+        // Check Wishlist extension toggle
+        $wishlist_enabled = (!isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled')
+            && (defined('KING_ADDONS_EXT_WISHLIST') ? KING_ADDONS_EXT_WISHLIST : true);
+        if ($wishlist_enabled) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Wishlist', 'king-addons'),
+                esc_html__('Wishlist', 'king-addons'),
+                'manage_options',
+                'king-addons-wishlist',
+                [$this, 'renderWishlistPage']
+            );
+
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Wishlist Analytics', 'king-addons'),
+                esc_html__('Wishlist Analytics', 'king-addons'),
+                'manage_options',
+                'king-addons-wishlist-analytics',
+                [$this, 'renderWishlistAnalyticsPage']
+            );
+        }
+
+        // Check Cookie / Consent Bar extension toggle
+        $cookie_consent_enabled = !isset($options['ext_cookie-consent']) || $options['ext_cookie-consent'] === 'enabled';
+        if ($cookie_consent_enabled && (defined('KING_ADDONS_EXT_COOKIE_CONSENT') ? KING_ADDONS_EXT_COOKIE_CONSENT : true) && class_exists('King_Addons\Cookie_Consent')) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Cookie / Consent Bar', 'king-addons'),
+                esc_html__('Cookie / Consent Bar', 'king-addons'),
+                'manage_options',
+                'king-addons-cookie-consent',
+                [Cookie_Consent::instance(), 'render_admin_page']
+            );
+        }
+
+        // Check Age Gate extension toggle
+        $age_gate_enabled = !isset($options['ext_age-gate']) || $options['ext_age-gate'] === 'enabled';
+        if ($age_gate_enabled && (defined('KING_ADDONS_EXT_AGE_GATE') ? KING_ADDONS_EXT_AGE_GATE : true) && class_exists('King_Addons\Age_Gate')) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Age Gate', 'king-addons'),
+                esc_html__('Age Gate', 'king-addons'),
+                'manage_options',
+                'king-addons-age-gate',
+                [Age_Gate::instance(), 'render_admin_page']
+            );
+        }
+
+        // Check Live Chat extension toggle
+        $live_chat_enabled = !isset($options['ext_live-chat']) || $options['ext_live-chat'] === 'enabled';
+        if ($live_chat_enabled && (defined('KING_ADDONS_EXT_LIVE_CHAT') ? KING_ADDONS_EXT_LIVE_CHAT : true) && class_exists('King_Addons\Live_Chat')) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Live Chat', 'king-addons'),
+                esc_html__('Live Chat', 'king-addons'),
+                'manage_options',
+                'king-addons-live-chat',
+                [Live_Chat::instance(), 'render_admin_page']
+            );
+        }
+
+        // Check Docs & KB extension toggle
+        $docs_kb_enabled = !isset($options['ext_docs-kb']) || $options['ext_docs-kb'] === 'enabled';
+        if ($docs_kb_enabled && (defined('KING_ADDONS_EXT_DOCS_KB') ? KING_ADDONS_EXT_DOCS_KB : true) && class_exists('King_Addons\Docs_KB')) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Docs & Knowledge Base', 'king-addons'),
+                esc_html__('Docs & Knowledge Base Builder', 'king-addons'),
+                'manage_options',
+                'king-addons-docs-kb',
+                [Docs_KB::instance(), 'render_admin_page']
+            );
+        }
+
+        // Check Activity Log extension toggle
+        $activity_log_enabled = !isset($options['ext_activity-log']) || $options['ext_activity-log'] === 'enabled';
+        if ($activity_log_enabled && class_exists('King_Addons\\Activity_Log')) {
+            add_submenu_page(
+                'king-addons',
+                esc_html__('Activity Log', 'king-addons'),
+                esc_html__('Activity Log', 'king-addons'),
+                'manage_options',
+                'king-addons-activity-log',
+                [Activity_Log::instance(), 'render_admin_page']
+            );
+        }
+
+        // Check if Form Builder widget is enabled
+        $form_builder_enabled = !isset($options['form-builder']) || $options['form-builder'] === 'enabled';
+        if (KING_ADDONS_WGT_FORM_BUILDER && $form_builder_enabled) {
             add_submenu_page(
                 'king-addons',
                 esc_html__('Form Submissions', 'king-addons'),
@@ -57,49 +191,117 @@ final class Admin
             );
         }
 
-        if (KING_ADDONS_EXT_TEMPLATES_CATALOG) {
+        // Check Templates Catalog extension toggle
+        $templates_enabled = !isset($options['ext_templates-catalog']) || $options['ext_templates-catalog'] === 'enabled';
+        if ($templates_enabled && (defined('KING_ADDONS_EXT_TEMPLATES_CATALOG') ? KING_ADDONS_EXT_TEMPLATES_CATALOG : true) && class_exists('King_Addons\Templates')) {
             add_menu_page(
                 'King Addons for Elementor',
                 (!king_addons_freemius()->can_use_premium_code() ? esc_html__('Free Templates', 'king-addons') : esc_html__('Templates Pro', 'king-addons')),
                 'manage_options',
                 'king-addons-templates',
                 [Templates::instance(), 'render_template_catalog_page'],
-                KING_ADDONS_URL . 'includes/admin/img/icon-for-menu-templates.svg',
-                58.71
+                KING_ADDONS_URL . (!king_addons_freemius()->can_use_premium_code() ? 'includes/admin/img/icon-for-menu-templates.svg' : 'includes/admin/img/icon-for-menu-templates-v2.svg'),
+                54.2
             );
         }
 
-        if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER) {
+        // Check Header & Footer Builder extension toggle
+        $header_footer_enabled = !isset($options['ext_header-footer-builder']) || $options['ext_header-footer-builder'] === 'enabled';
+        if ($header_footer_enabled && (defined('KING_ADDONS_EXT_HEADER_FOOTER_BUILDER') ? KING_ADDONS_EXT_HEADER_FOOTER_BUILDER : true) && class_exists('King_Addons\Header_Footer_Builder')) {
             self::showHeaderFooterBuilder();
         }
 
-        if (KING_ADDONS_EXT_POPUP_BUILDER) {
+        // Check Popup Builder extension toggle
+        $popup_builder_enabled = !isset($options['ext_popup-builder']) || $options['ext_popup-builder'] === 'enabled';
+        if ($popup_builder_enabled && (defined('KING_ADDONS_EXT_POPUP_BUILDER') ? KING_ADDONS_EXT_POPUP_BUILDER : true) && class_exists('King_Addons\Popup_Builder')) {
             self::showPopupBuilder();
         }
 
-        // Add AI Settings submenu under King Addons
-        add_submenu_page(
-            'king-addons',
-            esc_html__('AI Settings', 'king-addons'),
-            esc_html__('AI Settings', 'king-addons'),
-            'manage_options',
-            'king-addons-ai-settings',
-            [$this, 'showAiSettingsPage']
-        );
+        // Check WooCommerce Builder extension toggle
+        $woo_builder_enabled = !isset($options['ext_woo-builder']) || $options['ext_woo-builder'] === 'enabled';
+        if (
+            $woo_builder_enabled
+            && (defined('KING_ADDONS_EXT_WOO_BUILDER') ? KING_ADDONS_EXT_WOO_BUILDER : true)
+            && class_exists('WooCommerce')
+            && function_exists('WC')
+        ) {
+            $this->showWooBuilder();
+        }
+
+        $menu['54.8'] = array( '', 'read', 'separator-king-addons-bottom', '', 'wp-menu-separator elementor' );
+
+    }
+
+    /**
+     * Enforce submenu order for King Addons:
+     * 1) Dashboard
+     * 2) Settings
+     * 3) AI Settings
+     * 4) Account (Freemius)
+     * 5) Contact Us (Freemius)
+     * 6) Everything else alphabetically
+     */
+    public function reorderKingAddonsSubmenu(): void
+    {
+        global $submenu;
+
+        if (!is_array($submenu) || empty($submenu['king-addons']) || !is_array($submenu['king-addons'])) {
+            return;
+        }
+
+        $priorityBySlug = [
+            'king-addons' => 0,
+            'king-addons-settings' => 1,
+            'king-addons-ai-settings' => 2,
+            'king-addons-account' => 3,
+            'king-addons-contact' => 4,
+        ];
+
+        $items = $submenu['king-addons'];
+
+        usort($items, static function ($a, $b) use ($priorityBySlug): int {
+            $aSlug = isset($a[2]) ? (string) $a[2] : '';
+            $bSlug = isset($b[2]) ? (string) $b[2] : '';
+
+            $aPriority = array_key_exists($aSlug, $priorityBySlug) ? $priorityBySlug[$aSlug] : null;
+            $bPriority = array_key_exists($bSlug, $priorityBySlug) ? $priorityBySlug[$bSlug] : null;
+
+            if ($aPriority !== null || $bPriority !== null) {
+                $aPriority = $aPriority ?? 9999;
+                $bPriority = $bPriority ?? 9999;
+                if ($aPriority !== $bPriority) {
+                    return $aPriority <=> $bPriority;
+                }
+            }
+
+            $aLabel = isset($a[0]) ? wp_strip_all_tags((string) $a[0]) : '';
+            $bLabel = isset($b[0]) ? wp_strip_all_tags((string) $b[0]) : '';
+
+            $cmp = strcasecmp($aLabel, $bLabel);
+            if ($cmp !== 0) {
+                return $cmp;
+            }
+
+            return strcasecmp($aSlug, $bSlug);
+        });
+
+        $submenu['king-addons'] = $items;
     }
 
     function addUpgradeMenu(): void
     {
         // Don't add menu if Freemius is showing opt-in/activation
         $fs = king_addons_freemius();
-        
+
         // Check if we're on any Freemius-related page
-        if (isset($_GET['fs_action']) || 
-            $fs->is_activation_mode() || 
-            (!$fs->is_registered() && !$fs->is_anonymous() && !$fs->is_tracking_prohibited())) {
+        if (
+            isset($_GET['fs_action']) ||
+            $fs->is_activation_mode() ||
+            (!$fs->is_registered() && !$fs->is_anonymous() && !$fs->is_tracking_prohibited())
+        ) {
             return;
         }
-        
+
         // Add Upgrade submenu under King Addons (only if premium is not active)
         if (!$fs->can_use_premium_code()) {
             add_submenu_page(
@@ -122,45 +324,77 @@ final class Admin
             'king-addons-popup-builder',
             [Popup_Builder::instance(), 'renderPopupBuilder'],
             KING_ADDONS_URL . 'includes/admin/img/icon-for-popup-builder.svg',
-            58.73
+            54.4
         );
     }
 
-    function showHeaderFooterBuilder(): void
+    /**
+     * Register WooCommerce Builder menu item.
+     *
+     * @return void
+     */
+    public function showWooBuilder(): void
     {
-        $post_type = 'king-addons-el-hf';
-        $menu_slug = 'edit.php?post_type=' . $post_type;
-
-        // Add Main Menu
         add_menu_page(
-            esc_html__('Elementor Header & Footer Builder', 'king-addons'),
-            esc_html__('Header & Footer', 'king-addons'),
+            esc_html__('WooCommerce Builder', 'king-addons'),
+            esc_html__('WooCommerce Builder', 'king-addons'),
             'manage_options',
-            $menu_slug, // Menu slug points to the custom post type edit screen
-            '', // No callback function needed
-            KING_ADDONS_URL . 'includes/admin/img/icon-for-header-footer-builder.svg',
-            58.72
-        );
-
-        // Add 'All Templates' Submenu - this will be the first submenu item
-        add_submenu_page(
-            $menu_slug, // Parent slug matches the main menu slug
-            esc_html__('All Templates', 'king-addons'),
-            esc_html__('All Templates', 'king-addons'),
-            'edit_posts',
-            $menu_slug
+            'king-addons-woo-builder',
+            [$this, 'renderWooBuilderPage'],
+            'dashicons-cart',
+            54.5
         );
     }
 
-    function showAdminPage(): void
+    /**
+     * Render WooCommerce Builder admin page.
+     *
+     * @return void
+     */
+    public function renderWooBuilderPage(): void
     {
         if (!current_user_can('manage_options')) {
             return;
         }
 
-        self::enqueueAdminAssets();
+        require_once KING_ADDONS_PATH . 'includes/admin/layouts/woo-builder-page.php';
+    }
 
-        require_once(KING_ADDONS_PATH . 'includes/admin/layouts/admin-page.php');
+    function showHeaderFooterBuilder(): void
+    {
+        $menu_slug = 'king-addons-el-hf';
+        $callback = [\King_Addons\Header_Footer_Builder::instance(), 'renderAdminPage'];
+
+        // Add Main Menu (new unified UI)
+        add_menu_page(
+            esc_html__('Elementor Header & Footer Builder', 'king-addons'),
+            esc_html__('Header & Footer', 'king-addons'),
+            'manage_options',
+            $menu_slug,
+            $callback,
+            KING_ADDONS_URL . 'includes/admin/img/icon-for-header-footer-builder.svg',
+            54.3
+        );
+
+        // Ensure the first submenu item is labeled "Templates"
+        add_submenu_page(
+            $menu_slug,
+            esc_html__('Templates', 'king-addons'),
+            esc_html__('Templates', 'king-addons'),
+            'manage_options',
+            $menu_slug,
+            $callback
+        );
+
+        // Display Settings submenu (same page, different tab)
+        add_submenu_page(
+            $menu_slug,
+            esc_html__('Display Settings', 'king-addons'),
+            esc_html__('Display Settings', 'king-addons'),
+            'manage_options',
+            $menu_slug . '&tab=settings',
+            $callback
+        );
     }
 
     function showSettingsPage(): void
@@ -172,6 +406,141 @@ final class Admin
         require_once(KING_ADDONS_PATH . 'includes/admin/layouts/settings-page.php');
 
         self::enqueueSettingsAssets();
+    }
+
+    function showDashboardV3(): void
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        require_once(KING_ADDONS_PATH . 'includes/admin/layouts/dashboard-v3/dashboard-v3.php');
+    }
+
+    /**
+     * Handle AJAX request to install/activate Trinity Backup plugin.
+     *
+     * @return void
+     */
+    public function handleInstallTrinityBackup(): void
+    {
+        check_ajax_referer('king_addons_install_plugin', 'nonce');
+
+        if (!current_user_can('install_plugins')) {
+            wp_send_json_error(esc_html__('Permission denied.', 'king-addons'));
+        }
+
+        $plugin_action = isset($_POST['plugin_action']) ? sanitize_text_field($_POST['plugin_action']) : '';
+        $plugin_slug = 'trinity-backup';
+        $plugin_file = 'trinity-backup/trinity-backup.php';
+        $plugin_path = WP_PLUGIN_DIR . '/' . $plugin_file;
+
+        // If action is activate and plugin exists, just activate it
+        if ($plugin_action === 'activate') {
+            if (file_exists($plugin_path)) {
+                $result = activate_plugin($plugin_file);
+                if (is_wp_error($result)) {
+                    wp_send_json_error($result->get_error_message());
+                }
+                wp_send_json_success(['message' => esc_html__('Plugin activated!', 'king-addons')]);
+            } else {
+                wp_send_json_error(esc_html__('Plugin not found.', 'king-addons'));
+            }
+            return;
+        }
+
+        // Install plugin
+        require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
+
+        // Get plugin info from WordPress.org
+        $api = plugins_api('plugin_information', [
+            'slug' => $plugin_slug,
+            'fields' => [
+                'short_description' => false,
+                'sections' => false,
+                'requires' => false,
+                'rating' => false,
+                'ratings' => false,
+                'downloaded' => false,
+                'last_updated' => false,
+                'added' => false,
+                'tags' => false,
+                'compatibility' => false,
+                'homepage' => false,
+                'donate_link' => false,
+            ],
+        ]);
+
+        if (is_wp_error($api)) {
+            wp_send_json_error($api->get_error_message());
+        }
+
+        $skin = new \WP_Ajax_Upgrader_Skin();
+        $upgrader = new \Plugin_Upgrader($skin);
+        $result = $upgrader->install($api->download_link);
+
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+
+        if ($result === false) {
+            wp_send_json_error(esc_html__('Installation failed.', 'king-addons'));
+        }
+
+        // Activate the plugin after installation
+        $activate_result = activate_plugin($plugin_file);
+        if (is_wp_error($activate_result)) {
+            // Installed but not activated
+            wp_send_json_success(['message' => esc_html__('Plugin installed! Please activate manually.', 'king-addons')]);
+        }
+
+        wp_send_json_success(['message' => esc_html__('Plugin installed and activated!', 'king-addons')]);
+    }
+
+    /**
+     * Render Wishlist admin page.
+     *
+     * @return void
+     */
+    public function renderWishlistPage(): void
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $options = get_option('king_addons_options', []);
+        $wishlist_enabled = (!isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled')
+            && (defined('KING_ADDONS_EXT_WISHLIST') ? KING_ADDONS_EXT_WISHLIST : true);
+        if (!$wishlist_enabled || !class_exists(Wishlist_Settings::class)) {
+            return;
+        }
+
+        self::enqueueSettingsAssets();
+        require_once KING_ADDONS_PATH . 'includes/admin/layouts/wishlist-page.php';
+    }
+
+    /**
+     * Render Wishlist analytics page.
+     *
+     * @return void
+     */
+    public function renderWishlistAnalyticsPage(): void
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $options = get_option('king_addons_options', []);
+        $wishlist_enabled = (!isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled')
+            && (defined('KING_ADDONS_EXT_WISHLIST') ? KING_ADDONS_EXT_WISHLIST : true);
+        if (!$wishlist_enabled || !class_exists(Wishlist_Settings::class)) {
+            return;
+        }
+
+        self::enqueueSettingsAssets();
+        require_once KING_ADDONS_PATH . 'includes/admin/layouts/wishlist-analytics.php';
     }
 
     function createSettings(): void
@@ -196,6 +565,12 @@ final class Admin
         );
 
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget_array) {
+            // Hide widgets hard-disabled via constants (QA rollout).
+            $widget_constant = 'KING_ADDONS_WGT_' . strtoupper(str_replace('-', '_', (string) $widget_id));
+            if (defined($widget_constant) && constant($widget_constant) === false) {
+                continue;
+            }
+
             add_settings_field(
                 $widget_id,
                 $widget_array['title'],
@@ -213,6 +588,12 @@ final class Admin
         }
 
         foreach (ModulesMap::getModulesMapArray()['features'] as $feature_id => $feature_array) {
+            // Hide features hard-disabled via constants (QA rollout).
+            $feature_constant = 'KING_ADDONS_FEAT_' . strtoupper(str_replace('-', '_', (string) $feature_id));
+            if (defined($feature_constant) && constant($feature_constant) === false) {
+                continue;
+            }
+
             add_settings_field(
                 $feature_id,
                 $feature_array['title'],
@@ -230,21 +611,85 @@ final class Admin
         }
     }
 
+    /**
+     * Register wishlist settings group.
+     *
+     * @return void
+     */
+    public function createWishlistSettings(): void
+    {
+        if (defined('KING_ADDONS_EXT_WISHLIST') && KING_ADDONS_EXT_WISHLIST === false) {
+            return;
+        }
+
+        if (!class_exists(Wishlist_Settings::class)) {
+            return;
+        }
+
+        register_setting(
+            'king_addons_wishlist',
+            'king_addons_wishlist_settings',
+            [
+                'type' => 'array',
+                'sanitize_callback' => [$this, 'sanitizeWishlistSettings'],
+                'default' => Wishlist_Settings::defaults(),
+            ]
+        );
+    }
+
+    /**
+     * Sanitize wishlist settings payload.
+     *
+     * @param array<string, mixed> $settings Raw settings.
+     * @return array<string, mixed> Sanitized settings.
+     */
+    public function sanitizeWishlistSettings(array $settings): array
+    {
+        if (!class_exists(Wishlist_Settings::class)) {
+            return [];
+        }
+
+        $defaults = Wishlist_Settings::defaults();
+
+        $sanitized = [
+            'enabled' => !empty($settings['enabled']),
+            'wishlist_page_id' => absint($settings['wishlist_page_id'] ?? 0),
+            'allow_guests' => !empty($settings['allow_guests']),
+            'guest_block_text' => sanitize_text_field($settings['guest_block_text'] ?? $defaults['guest_block_text']),
+            'button_add_text' => sanitize_text_field($settings['button_add_text'] ?? $defaults['button_add_text']),
+            'button_added_text' => sanitize_text_field($settings['button_added_text'] ?? $defaults['button_added_text']),
+            'button_display_mode' => in_array($settings['button_display_mode'] ?? 'icon_text', ['icon', 'icon_text'], true) ? $settings['button_display_mode'] : $defaults['button_display_mode'],
+            'button_position' => in_array($settings['button_position'] ?? 'after_add_to_cart', ['before_add_to_cart', 'after_add_to_cart'], true) ? $settings['button_position'] : $defaults['button_position'],
+            'show_in_archives' => !empty($settings['show_in_archives']),
+            'wishlist_columns' => array_values(
+                array_intersect(
+                    (array) ($settings['wishlist_columns'] ?? []),
+                    ['image', 'title', 'price', 'stock', 'notes', 'add_to_cart', 'remove']
+                )
+            ),
+            'cache_enabled' => !empty($settings['cache_enabled']),
+            'cache_ttl' => max(0, absint($settings['cache_ttl'] ?? 0)),
+            'icon_choice' => sanitize_text_field($settings['icon_choice'] ?? $defaults['icon_choice']),
+        ];
+
+        return wp_parse_args($sanitized, $defaults);
+    }
+
     function king_addons_section_widgets_callback($args): void
     {
-?>
-        <h2 id="<?php echo esc_attr($args['id']); ?>"
-            class="kng-section-title"><?php esc_html_e('Elements', 'king-addons'); ?></h2>
-    <?php
+        ?>
+        <h2 id="<?php echo esc_attr($args['id']); ?>" class="kng-section-title"><?php esc_html_e('Elements', 'king-addons'); ?>
+        </h2>
+        <?php
     }
 
     function king_addons_section_features_callback($args): void
     {
-    ?>
+        ?>
         <div class="kng-section-separator"></div>
-        <h2 id="<?php echo esc_attr($args['id']); ?>"
-            class="kng-section-title"><?php esc_html_e('Features', 'king-addons'); ?></h2>
-<?php
+        <h2 id="<?php echo esc_attr($args['id']); ?>" class="kng-section-title"><?php esc_html_e('Features', 'king-addons'); ?>
+        </h2>
+        <?php
     }
 
     function enqueueAdminAssets(): void
@@ -265,6 +710,11 @@ final class Admin
                 });
             ");
         }
+    }
+
+    public function enqueueGlobalAdminStyles(): void
+    {
+        wp_enqueue_style('king-addons-hide-spam', KING_ADDONS_URL . 'includes/admin/css/hide-spam-notifications.css', [], KING_ADDONS_VERSION);
     }
 
     function enqueueSettingsAssets(): void
@@ -475,16 +925,16 @@ final class Admin
         }
 
         // Sanitize Enable AI Buttons option.
-        $sanitized['enable_ai_buttons'] = ! empty($input['enable_ai_buttons']);
+        $sanitized['enable_ai_buttons'] = !empty($input['enable_ai_buttons']);
 
         // Sanitize Enable AI Image Generation button option.
-        $sanitized['enable_ai_image_generation_button'] = ! empty($input['enable_ai_image_generation_button']);
+        $sanitized['enable_ai_image_generation_button'] = !empty($input['enable_ai_image_generation_button']);
 
         // Sanitize Enable AI Alt Text Button option.
-        $sanitized['enable_ai_alt_text_button'] = ! empty($input['enable_ai_alt_text_button']);
+        $sanitized['enable_ai_alt_text_button'] = !empty($input['enable_ai_alt_text_button']);
 
         // Sanitize Enable AI Alt Text Auto Generation option.
-        $sanitized['enable_ai_alt_text_auto_generation'] = ! empty($input['enable_ai_alt_text_auto_generation']);
+        $sanitized['enable_ai_alt_text_auto_generation'] = !empty($input['enable_ai_alt_text_auto_generation']);
 
         // Sanitize AI Alt Text Generation Interval.
         if (isset($input['ai_alt_text_generation_interval'])) {
@@ -500,7 +950,24 @@ final class Admin
             : 'low';
 
         // Sanitize Enable AI Page Translator option
-        $sanitized['enable_ai_page_translator'] = ! empty($input['enable_ai_page_translator']);
+        $sanitized['enable_ai_page_translator'] = !empty($input['enable_ai_page_translator']);
+
+        // Validation / feedback (Settings API notice).
+        $ai_requires_key = (
+            !empty($sanitized['enable_ai_buttons'])
+            || !empty($sanitized['enable_ai_image_generation_button'])
+            || !empty($sanitized['enable_ai_alt_text_button'])
+            || !empty($sanitized['enable_ai_page_translator'])
+        );
+
+        if ($ai_requires_key && empty($sanitized['openai_api_key'])) {
+            add_settings_error(
+                'king_addons_ai',
+                'king_addons_ai_missing_api_key',
+                esc_html__('OpenAI API Key is required to enable AI features.', 'king-addons'),
+                'error'
+            );
+        }
 
         return $sanitized;
     }
@@ -522,7 +989,7 @@ final class Admin
      */
     public function showAiSettingsPage(): void
     {
-        if (! current_user_can('manage_options')) {
+        if (!current_user_can('manage_options')) {
             return;
         }
         require_once KING_ADDONS_PATH . 'includes/admin/layouts/ai-settings-page.php';
@@ -538,7 +1005,7 @@ final class Admin
     {
         // Enqueue admin base styles first for proper theming
         wp_enqueue_style('king-addons-admin', KING_ADDONS_URL . 'includes/admin/css/admin.css', '', KING_ADDONS_VERSION);
-        
+
         wp_enqueue_style(
             'king-addons-ai-settings',
             KING_ADDONS_URL . 'includes/admin/css/ai-settings.css',
@@ -558,11 +1025,11 @@ final class Admin
             'king-addons-ai-settings',
             'KingAddonsAiSettings',
             [
-                'ajax_url'        => admin_url('admin-ajax.php'),
-                'nonce'           => wp_create_nonce('king_addons_ai_refresh_models_nonce'),
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('king_addons_ai_refresh_models_nonce'),
                 'refreshing_text' => esc_html__('Refreshing...', 'king-addons'),
-                'refreshed_text'  => esc_html__('List updated.', 'king-addons'),
-                'error_text'      => esc_html__('Error updating list.', 'king-addons'),
+                'refreshed_text' => esc_html__('List updated.', 'king-addons'),
+                'error_text' => esc_html__('Error updating list.', 'king-addons'),
             ]
         );
     }
@@ -597,28 +1064,27 @@ final class Admin
             '</a>'
         );
         echo '</p>';
-        echo '<div style="background: #ffebe8; color: #a00; border: 1px solid #a00; padding: 10px; margin: 10px 0; border-radius: 4px;">';
+        echo '<div class="ka-ai-notice ka-ai-notice-warning">';
         echo '<strong>' . esc_html__('Important:', 'king-addons') . '</strong> ';
         echo esc_html__('You must top up your OpenAI account balance by at least $5 for the API to work. Free accounts are not supported.', 'king-addons');
         echo '</div>';
-        echo '<div style="background: #e7f3fe; color: #084d7a; border: 1px solid #b6e0fe; padding: 10px; margin: 10px 0; border-radius: 4px;">';
-        echo '<span style="font-weight: bold; color: #084d7a;">' . esc_html__('Info:', 'king-addons') . '</span> ';
+        echo '<div class="ka-ai-notice ka-ai-notice-info">';
+        echo '<strong>' . esc_html__('Info:', 'king-addons') . '</strong> ';
         echo esc_html__('With GPT-4o-mini, a $5 balance is enough for roughly 130,000–150,000 text generations.', 'king-addons');
         echo '</div>';
-        echo '<div style="background: #e7f3fe; color: #084d7a; border: 1px solid #b6e0fe; padding: 10px; margin: 10px 0; border-radius: 4px;">';
-        echo '<span style="font-weight: bold; color: #084d7a; display: block; margin-bottom: 4px;">' . esc_html__('Useful OpenAI Links:', 'king-addons') . '</span>';
-        echo '<ul style="margin: 0 0 0 18px; padding: 0; list-style: disc;">';
+        echo '<div class="ka-ai-notice ka-ai-notice-info">';
+        echo '<strong class="ka-ai-notice-title">' . esc_html__('Useful OpenAI Links:', 'king-addons') . '</strong>';
+        echo '<ul class="ka-ai-links-list">';
         $links = [
-            'API Pricing'         => 'https://openai.com/api/pricing/',
-            // 'API Documentation'        => 'https://platform.openai.com/docs',
-            'API Keys'                => 'https://platform.openai.com/api-keys',
-            'Usage Dashboard'         => 'https://platform.openai.com/account/usage',
-            'Billing Overview'             => 'https://platform.openai.com/account/billing/overview',
-            'Rate Limits'         => 'https://openai.com/pricing#rate-limits',
+            'API Pricing' => 'https://openai.com/api/pricing/',
+            'API Keys' => 'https://platform.openai.com/api-keys',
+            'Usage Dashboard' => 'https://platform.openai.com/account/usage',
+            'Billing Overview' => 'https://platform.openai.com/account/billing/overview',
+            'Rate Limits' => 'https://openai.com/pricing#rate-limits',
         ];
         foreach ($links as $label => $url) {
             printf(
-                '<li><a href="%s" target="_blank" rel="noopener noreferrer" style="color: #084d7a; text-decoration: underline;">%s</a></li>',
+                '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>',
                 esc_url($url),
                 esc_html($label)
             );
@@ -755,7 +1221,7 @@ final class Admin
     public function handleAiGenerateText(): void
     {
         check_ajax_referer('king_addons_ai_generate_nonce', 'nonce');
-        if (! current_user_can('manage_options')) {
+        if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
         $field_name = sanitize_text_field($_POST['field_name'] ?? '');
@@ -767,9 +1233,9 @@ final class Admin
         // Get editor type if provided
         $editor_type = sanitize_text_field($_POST['editor_type'] ?? 'text');
 
-        $options    = get_option('king_addons_ai_options', []);
-        $api_key    = $options['openai_api_key'] ?? '';
-        $model      = $options['openai_model']      ?? '';
+        $options = get_option('king_addons_ai_options', []);
+        $api_key = $options['openai_api_key'] ?? '';
+        $model = $options['openai_model'] ?? '';
 
         if (empty($api_key) || empty($model)) {
             wp_send_json_error(['message' => esc_html__('API key or model not set.', 'king-addons')], 400);
@@ -813,10 +1279,10 @@ final class Admin
             [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type'  => 'application/json',
+                    'Content-Type' => 'application/json',
                 ],
-                'body'    => wp_json_encode([
-                    'model'    => $model,
+                'body' => wp_json_encode([
+                    'model' => $model,
                     'messages' => $messages,
                     'max_tokens' => 500,
                     'temperature' => 0.7, // Slight creativity for better content
@@ -869,17 +1335,17 @@ final class Admin
     public function handleAiChangeText(): void
     {
         check_ajax_referer('king_addons_ai_change_nonce', 'nonce');
-        if (! current_user_can('manage_options')) {
+        if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
         $field_name = isset($_POST['field_name']) ? sanitize_text_field(wp_unslash($_POST['field_name'])) : '';
-        $prompt     = isset($_POST['prompt'])     ? sanitize_text_field(wp_unslash($_POST['prompt']))     : '';
-        $original   = isset($_POST['original'])   ? wp_kses_post(wp_unslash($_POST['original'])) : '';
+        $prompt = isset($_POST['prompt']) ? sanitize_text_field(wp_unslash($_POST['prompt'])) : '';
+        $original = isset($_POST['original']) ? wp_kses_post(wp_unslash($_POST['original'])) : '';
         $instruction_context = isset($_POST['instruction_context']) ? sanitize_textarea_field(wp_unslash($_POST['instruction_context'])) : '';
 
         $options = get_option('king_addons_ai_options', []);
         $api_key = $options['openai_api_key'] ?? '';
-        $model   = $options['openai_model']     ?? '';
+        $model = $options['openai_model'] ?? '';
 
         if (empty($api_key) || empty($model) || empty($prompt) || empty($original)) {
             wp_send_json_error(['message' => esc_html__('Missing data for AI change.', 'king-addons')], 400);
@@ -1023,7 +1489,7 @@ final class Admin
 
             // Convert text numbers to digits
             if (is_numeric($number_text)) {
-                $requested_paragraphs = (int)$number_text;
+                $requested_paragraphs = (int) $number_text;
             } else {
                 // For words like "several", "few", "couple", etc.
                 switch (strtolower($number_text)) {
@@ -1099,11 +1565,11 @@ final class Admin
             'model' => $model,
             'messages' => [
                 [
-                    'role'    => 'system',
+                    'role' => 'system',
                     'content' => $system_message,
                 ],
                 [
-                    'role'    => 'user',
+                    'role' => 'user',
                     'content' => ($contains_add_keyword && $requested_paragraphs > 0)
                         ? sprintf(
                             "Original Text for context: %s\n\nInstruction: Generate %d new paragraphs to add to this text, following the same style and continuing the topic. Return ONLY the new paragraphs.",
@@ -1148,9 +1614,9 @@ final class Admin
             [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type'  => 'application/json',
+                    'Content-Type' => 'application/json',
                 ],
-                'body'    => wp_json_encode($body),
+                'body' => wp_json_encode($body),
                 'timeout' => 30,
             ]
         );
@@ -1342,12 +1808,12 @@ final class Admin
         $daily_used = $this->getAiDailyUsage();
         // Check if API key and model are set
         $api_key = $options['openai_api_key'] ?? '';
-        $model   = $options['openai_model']    ?? '';
+        $model = $options['openai_model'] ?? '';
         $api_key_valid = !empty($api_key) && !empty($model);
 
         wp_send_json_success([
-            'daily_used'    => $daily_used,
-            'daily_limit'   => $daily_limit,
+            'daily_used' => $daily_used,
+            'daily_limit' => $daily_limit,
             'limit_reached' => ($daily_limit > 0 && $daily_used >= $daily_limit),
             'api_key_valid' => $api_key_valid,
         ]);
@@ -1361,7 +1827,7 @@ final class Admin
     public function handleAiImageCheckLimits(): void
     {
         check_ajax_referer('king_addons_ai_generate_image_nonce', 'nonce');
-        if (! current_user_can('manage_options')) {
+        if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
 
@@ -1370,16 +1836,16 @@ final class Admin
         $daily_used = $this->getAiDailyUsage();
         // Check if API key and model are set
         $api_key = $options['openai_api_key'] ?? '';
-        $model   = $options['openai_model']    ?? '';
+        $model = $options['openai_model'] ?? '';
         $api_key_valid = !empty($api_key) && !empty($model);
 
         wp_send_json_success([
-            'daily_used'    => $daily_used,
-            'daily_limit'   => $daily_limit,
+            'daily_used' => $daily_used,
+            'daily_limit' => $daily_limit,
             'limit_reached' => ($daily_limit > 0 && $daily_used >= $daily_limit),
             'api_key_valid' => $api_key_valid,
         ]);
-        
+
     }
 
 
@@ -1463,7 +1929,7 @@ final class Admin
     public function renderAiAltTextAutoGenerationField(): void
     {
         $options = get_option('king_addons_ai_options', []);
-        $is_pro =  !king_addons_freemius()->can_use_premium_code();
+        $is_pro = !king_addons_freemius()->can_use_premium_code();
         // Default to false if option has never been saved, otherwise use saved value
         $enabled = array_key_exists('enable_ai_alt_text_auto_generation', $options) ? (bool) $options['enable_ai_alt_text_auto_generation'] : false;
         printf(
@@ -1521,10 +1987,10 @@ final class Admin
         printf(
             /* translators: %1$s: URL to OpenAI Organization Settings */
             wp_kses(
-                __( 'Select the default model for AI image generation. By default, the model is DALL·E 3. For now, your organization must be verified to use the model GPT Image 1. Please go to <a href="%1$s" target="_blank" rel="noopener noreferrer">OpenAI Organization Settings</a> to verify. If you just verified, it can take up to 15 minutes for access to propagate.', 'king-addons' ),
-                [ 'a' => [ 'href' => [], 'target' => [], 'rel' => [] ] ]
+                __('Select the default model for AI image generation. By default, the model is DALL·E 3. For now, your organization must be verified to use the model GPT Image 1. Please go to <a href="%1$s" target="_blank" rel="noopener noreferrer">OpenAI Organization Settings</a> to verify. If you just verified, it can take up to 15 minutes for access to propagate.', 'king-addons'),
+                ['a' => ['href' => [], 'target' => [], 'rel' => []]]
             ),
-            esc_url( 'https://platform.openai.com/settings/organization/general' )
+            esc_url('https://platform.openai.com/settings/organization/general')
         );
         echo '</p>';
     }
@@ -1534,20 +2000,37 @@ final class Admin
      *
      * @return void
      */
+    public function set_openai_curl_options($handle, $r, $url): void
+    {
+        if (!is_string($url) || $url === '') {
+            return;
+        }
+
+        // Apply these cURL options only to OpenAI requests to avoid affecting other outbound HTTP calls.
+        if (strpos($url, 'openai.com') === false) {
+            return;
+        }
+
+        // Increase connect timeout to 60s, and total timeout to 5m.
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 60);
+        curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 300);
+        curl_setopt($handle, CURLOPT_TIMEOUT, 300);
+    }
+
     public function handleAiGenerateImage(): void
     {
         // Verify nonce and permissions
         check_ajax_referer('king_addons_ai_generate_image_nonce', 'nonce');
-        if (! current_user_can('manage_options')) {
+        if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
 
         // Gather input parameters
-        $prompt  = isset($_POST['prompt'])  ? sanitize_textarea_field(wp_unslash($_POST['prompt']))  : '';
+        $prompt = isset($_POST['prompt']) ? sanitize_textarea_field(wp_unslash($_POST['prompt'])) : '';
         $quality = isset($_POST['quality']) ? sanitize_text_field(wp_unslash($_POST['quality'])) : '';
-        $size    = isset($_POST['size'])    ? sanitize_text_field(wp_unslash($_POST['size']))    : '';
+        $size = isset($_POST['size']) ? sanitize_text_field(wp_unslash($_POST['size'])) : '';
         // Model from frontend selector
-        $model   = isset($_POST['model'])   ? sanitize_text_field(wp_unslash($_POST['model']))   : 'dall-e-3';
+        $model = isset($_POST['model']) ? sanitize_text_field(wp_unslash($_POST['model'])) : 'dall-e-3';
 
         $options = get_option('king_addons_ai_options', []);
         $api_key = $options['openai_api_key'] ?? '';
@@ -1560,31 +2043,26 @@ final class Admin
 
         // Build request body based on selected model
         $body = [
-            'model'  => $model,
+            'model' => $model,
             'prompt' => $prompt,
-            'size'   => $size,
+            'size' => $size,
         ];
         if ($model === 'dall-e-3') {
             // DALL·E 3 parameters
-            $body['n']       = 1;
+            $body['n'] = 1;
             $body['quality'] = ($quality === 'hd') ? 'hd' : 'standard';
         } elseif ($model === 'gpt-image-1') {
             // GPT Image 1 parameters
             // Only include background when transparent is requested
-            if ( ! empty($_POST['background']) && 'transparent' === sanitize_text_field(wp_unslash($_POST['background'])) ) {
+            if (!empty($_POST['background']) && 'transparent' === sanitize_text_field(wp_unslash($_POST['background']))) {
                 $body['background'] = 'transparent';
             }
-            $body['quality']    = in_array($quality, ['low','medium','high','auto'], true)
+            $body['quality'] = in_array($quality, ['low', 'medium', 'high', 'auto'], true)
                 ? $quality
                 : 'auto';
         }
 
-        add_action('http_api_curl', function ($handle, $r) {
-            // increase connect timeout to 60s, and total timeout to 5m
-            curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 60);
-            curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 300);
-            curl_setopt($handle, CURLOPT_TIMEOUT, 300);
-        }, 10, 2);
+        add_action('http_api_curl', [$this, 'set_openai_curl_options'], 10, 3);
 
         // Call OpenAI Image Generations API
         $response = wp_remote_post(
@@ -1592,9 +2070,9 @@ final class Admin
             [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type'  => 'application/json',
+                    'Content-Type' => 'application/json',
                 ],
-                'body'    => wp_json_encode($body),
+                'body' => wp_json_encode($body),
                 'timeout' => 300,
             ]
         );
@@ -1612,19 +2090,19 @@ final class Admin
             $image_base64 = $data['data'][0]['b64_json'];
 
             $bytes = base64_decode($image_base64);
-            if (! $bytes) {
+            if (!$bytes) {
                 wp_send_json_error(['message' => 'Invalid image data from API.'], 500);
             }
 
             // Create a temp file and write it
             $tmp = wp_tempnam('gpt-image-1.png');
-            if (! $tmp || ! file_put_contents($tmp, $bytes)) {
+            if (!$tmp || !file_put_contents($tmp, $bytes)) {
                 wp_send_json_error(['message' => 'Failed to write temp image file.'], 500);
             }
 
             // Prepare for sideload
             $file = [
-                'name'     => substr(sanitize_file_name($prompt), 0, 100) . '.png',
+                'name' => substr(sanitize_file_name($prompt), 0, 100) . '.png',
                 'tmp_name' => $tmp,
             ];
 
@@ -1670,7 +2148,7 @@ final class Admin
             // Respond with attachment details
             wp_send_json_success([
                 'attachment_id' => $attachment_id,
-                'url'           => $attachment_url,
+                'url' => $attachment_url,
             ]);
         }
     }
@@ -1760,7 +2238,7 @@ final class Admin
         // Prepare translation prompt
         $from_lang_name = ($from_lang === 'auto') ? 'auto-detected language' : $this->getLanguageName($from_lang);
         $to_lang_name = $this->getLanguageName($to_lang);
-        
+
         // Enhanced system message for better custom language and prompt handling
         $system_message = 'You are a professional translator with expertise in languages, dialects, writing styles, and custom translation approaches. You can handle:
         
@@ -1778,14 +2256,14 @@ final class Admin
         - Only return the translated/adapted text without explanations
         
         If the target is a style rather than a language, transform the text to match that style while keeping the same language.';
-        
+
         // Enhanced user message with better context for custom languages and prompts
         if ($from_lang === 'auto') {
             $user_message = "Transform the following text to {$to_lang_name}:\n\n{$text}";
         } else {
             // Check if it looks like a style prompt rather than a language
             $is_style_prompt = $this->isStylePrompt($to_lang_name);
-            
+
             if ($is_style_prompt) {
                 $user_message = "Transform the following text from {$from_lang_name} using this style/approach: {$to_lang_name}:\n\n{$text}";
             } else {
@@ -1888,37 +2366,76 @@ final class Admin
     private function isStylePrompt(string $text): bool
     {
         $text_lower = strtolower($text);
-        
+
         // Common style/tone indicators
         $style_indicators = [
-            'formal', 'casual', 'professional', 'business', 'academic', 'technical',
-            'friendly', 'serious', 'humorous', 'dramatic', 'poetic', 'simple',
-            'complex', 'detailed', 'brief', 'conversational', 'literary',
-            'scientific', 'medical', 'legal', 'marketing', 'sales',
-            'tone', 'style', 'manner', 'approach', 'way', 'voice',
-            'pirate', 'shakespeare', 'baby', 'child', 'elderly',
-            'slang', 'jargon', 'dialect', 'accent'
+            'formal',
+            'casual',
+            'professional',
+            'business',
+            'academic',
+            'technical',
+            'friendly',
+            'serious',
+            'humorous',
+            'dramatic',
+            'poetic',
+            'simple',
+            'complex',
+            'detailed',
+            'brief',
+            'conversational',
+            'literary',
+            'scientific',
+            'medical',
+            'legal',
+            'marketing',
+            'sales',
+            'tone',
+            'style',
+            'manner',
+            'approach',
+            'way',
+            'voice',
+            'pirate',
+            'shakespeare',
+            'baby',
+            'child',
+            'elderly',
+            'slang',
+            'jargon',
+            'dialect',
+            'accent'
         ];
-        
+
         // Check if any style indicators are present
         foreach ($style_indicators as $indicator) {
             if (strpos($text_lower, $indicator) !== false) {
                 return true;
             }
         }
-        
+
         // Check if it contains descriptive phrases
         $descriptive_patterns = [
-            'for ', 'like ', 'as if ', 'in the style of', 'in a ', 'with a ',
-            'using ', 'speaking ', 'written ', 'sound like', 'talk like'
+            'for ',
+            'like ',
+            'as if ',
+            'in the style of',
+            'in a ',
+            'with a ',
+            'using ',
+            'speaking ',
+            'written ',
+            'sound like',
+            'talk like'
         ];
-        
+
         foreach ($descriptive_patterns as $pattern) {
             if (strpos($text_lower, $pattern) !== false) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }

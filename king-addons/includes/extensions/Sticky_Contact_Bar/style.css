@@ -1,0 +1,386 @@
+/**
+ * Sticky Contact Bar - Frontend Styles
+ *
+ * @package King_Addons
+ */
+
+/* Base bar styles */
+.ka-sticky-contact-bar {
+    position: fixed;
+    z-index: var(--ka-scbar-z, 9999);
+    background: var(--ka-scbar-bg, rgba(20, 20, 20, 0.95));
+    border-radius: var(--ka-scbar-radius, 14px);
+    box-shadow: var(--ka-scbar-shadow, 0 10px 30px rgba(0, 0, 0, 0.18));
+    color: #fff;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    pointer-events: none;
+    max-width: 94vw;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.ka-sticky-contact-bar.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ka-sticky-contact-bar.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ka-sticky-contact-bar__inner {
+    display: flex;
+    gap: var(--ka-scbar-gap, 10px);
+    align-items: center;
+    padding: 10px;
+}
+
+/* Bottom position */
+.ka-position-bottom {
+    left: 50%;
+    transform: translate(-50%, 20px);
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+}
+
+.ka-position-bottom.is-visible {
+    transform: translate(-50%, 0);
+}
+
+.ka-position-bottom.is-hidden {
+    transform: translate(-50%, 100%);
+}
+
+/* Left/Right positions */
+.ka-position-left,
+.ka-position-right {
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ka-position-left {
+    left: 16px;
+}
+
+.ka-position-left.is-hidden {
+    transform: translateY(-50%) translateX(-100%);
+}
+
+.ka-position-right {
+    right: 16px;
+}
+
+.ka-position-right.is-hidden {
+    transform: translateY(-50%) translateX(100%);
+}
+
+.ka-position-left .ka-sticky-contact-bar__inner,
+.ka-position-right .ka-sticky-contact-bar__inner {
+    flex-direction: column;
+}
+
+/* Alignment for bottom position */
+.ka-align-left.ka-position-bottom {
+    left: 16px;
+    right: auto;
+    transform: translate(0, 20px);
+}
+
+.ka-align-right.ka-position-bottom {
+    left: auto;
+    right: 16px;
+    transform: translate(0, 20px);
+}
+
+.ka-align-center.ka-position-bottom {
+    left: 50%;
+    right: auto;
+}
+
+.ka-align-left.ka-position-bottom.is-visible,
+.ka-align-right.ka-position-bottom.is-visible {
+    transform: translate(0, 0);
+}
+
+.ka-align-left.ka-position-bottom.is-hidden,
+.ka-align-right.ka-position-bottom.is-hidden {
+    transform: translate(0, 100%);
+}
+
+/* Contact item buttons */
+.ka-sticky-contact-item {
+    width: var(--ka-scbar-size, 48px);
+    height: var(--ka-scbar-size, 48px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--ka-scbar-item-bg, #111);
+    color: var(--ka-scbar-icon-color, #fff);
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ka-sticky-contact-item:hover,
+.ka-sticky-contact-item:focus-visible {
+    background: var(--ka-scbar-item-bg-hover, var(--ka-scbar-item-bg, #111));
+    color: var(--ka-scbar-icon-color-hover, var(--ka-scbar-icon-color, #fff));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ka-sticky-contact-item:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* Icon container */
+.ka-sticky-contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Icon sizing - FontAwesome/icon fonts */
+.ka-sticky-contact-item i {
+    font-size: calc(var(--ka-scbar-size, 48px) * 0.45);
+}
+
+/* Icon sizing - SVG */
+.ka-sticky-contact-icon svg {
+    width: calc(var(--ka-scbar-size, 48px) * 0.45);
+    height: calc(var(--ka-scbar-size, 48px) * 0.45);
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+/* Shape variants */
+.ka-shape-circle .ka-sticky-contact-item {
+    border-radius: 999px;
+}
+
+.ka-shape-rounded .ka-sticky-contact-item {
+    border-radius: 12px;
+}
+
+.ka-shape-square .ka-sticky-contact-item {
+    border-radius: 6px;
+}
+
+/* Label tooltip - Left/Right positions */
+.ka-sticky-contact-item__label {
+    position: absolute;
+    white-space: nowrap;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Left position - label on right side */
+.ka-position-left .ka-sticky-contact-item__label {
+    left: 100%;
+    margin-left: 10px;
+    top: 50%;
+    transform: translateY(-50%) translateX(6px);
+}
+
+/* Right position - label on left side */
+.ka-position-right .ka-sticky-contact-item__label {
+    right: 100%;
+    left: auto;
+    margin-right: 10px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-6px);
+}
+
+/* Bottom position - label on top */
+.ka-position-bottom .ka-sticky-contact-item__label {
+    bottom: 100%;
+    left: 50%;
+    top: auto;
+    margin-bottom: 8px;
+    margin-left: 0;
+    margin-right: 0;
+    transform: translateX(-50%) translateY(6px);
+}
+
+/* Show label on hover */
+.ka-sticky-contact-item--label-visible:hover .ka-sticky-contact-item__label,
+.ka-sticky-contact-item--label-visible:focus-visible .ka-sticky-contact-item__label {
+    opacity: 1;
+}
+
+.ka-position-left .ka-sticky-contact-item--label-visible:hover .ka-sticky-contact-item__label,
+.ka-position-left .ka-sticky-contact-item--label-visible:focus-visible .ka-sticky-contact-item__label {
+    transform: translateY(-50%) translateX(0);
+}
+
+.ka-position-right .ka-sticky-contact-item--label-visible:hover .ka-sticky-contact-item__label,
+.ka-position-right .ka-sticky-contact-item--label-visible:focus-visible .ka-sticky-contact-item__label {
+    transform: translateY(-50%) translateX(0);
+}
+
+.ka-position-bottom .ka-sticky-contact-item--label-visible:hover .ka-sticky-contact-item__label,
+.ka-position-bottom .ka-sticky-contact-item--label-visible:focus-visible .ka-sticky-contact-item__label {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Badge */
+.ka-sticky-contact-item__badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff3b30;
+    color: #fff;
+    border-radius: 999px;
+    padding: 3px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    min-width: 16px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
+    animation: ka-badge-bounce 0.3s ease;
+}
+
+@keyframes ka-badge-bounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Pulse effect */
+.ka-sticky-contact-item--pulse::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: currentColor;
+    opacity: 0;
+    animation: ka-scbar-pulse 2s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes ka-scbar-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Device visibility */
+.ka-mobile-only {
+    display: none !important;
+}
+
+.ka-desktop-only {
+    display: inline-flex !important;
+}
+
+/* Default button colors by type */
+.ka-type-whatsapp {
+    --ka-scbar-item-bg: #25D366;
+    --ka-scbar-item-bg-hover: #1da851;
+}
+
+.ka-type-telegram {
+    --ka-scbar-item-bg: #0088cc;
+    --ka-scbar-item-bg-hover: #006daa;
+}
+
+.ka-type-messenger {
+    --ka-scbar-item-bg: #0084ff;
+    --ka-scbar-item-bg-hover: #006acc;
+}
+
+.ka-type-viber {
+    --ka-scbar-item-bg: #7360f2;
+    --ka-scbar-item-bg-hover: #5a48d5;
+}
+
+.ka-type-phone {
+    --ka-scbar-item-bg: #34c759;
+    --ka-scbar-item-bg-hover: #2aa147;
+}
+
+.ka-type-email {
+    --ka-scbar-item-bg: #5856d6;
+    --ka-scbar-item-bg-hover: #4644b3;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .ka-sticky-contact-bar,
+    .ka-sticky-contact-item,
+    .ka-sticky-contact-item__label,
+    .ka-sticky-contact-item__badge {
+        transition: none;
+        animation: none;
+    }
+
+    .ka-sticky-contact-item--pulse::before {
+        animation: none;
+        display: none;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+    .ka-mobile-only {
+        display: inline-flex !important;
+    }
+
+    .ka-desktop-only {
+        display: none !important;
+    }
+
+    .ka-sticky-contact-bar__inner {
+        padding: 8px 10px;
+    }
+
+    .ka-position-bottom {
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        max-width: calc(100vw - 32px);
+    }
+
+    .ka-position-left {
+        left: 10px;
+    }
+
+    .ka-position-right {
+        right: 10px;
+    }
+
+    /* Adjust item size on mobile */
+    .ka-sticky-contact-item {
+        width: var(--ka-scbar-size-mobile, var(--ka-scbar-size, 44px));
+        height: var(--ka-scbar-size-mobile, var(--ka-scbar-size, 44px));
+    }
+}
+
+
+
+
+
+
+

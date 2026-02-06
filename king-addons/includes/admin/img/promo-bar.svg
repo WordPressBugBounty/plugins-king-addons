@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
+  <rect x="5" y="35" width="90" height="30" rx="6" fill="url(#g)"/>
+  <rect x="15" y="45" width="40" height="5" rx="2" fill="#fff" opacity="0.9"/>
+  <rect x="15" y="53" width="25" height="4" rx="1" fill="#fff" opacity="0.6"/>
+  <rect x="70" y="44" width="18" height="12" rx="4" fill="#fff" opacity="0.3"/>
+  <text x="79" y="53" font-family="Arial" font-size="8" fill="url(#g)" text-anchor="middle" font-weight="bold">GO</text>
+  <path d="M92 42l-4 4 4 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+</svg>

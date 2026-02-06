@@ -12,8 +12,6 @@ if (!defined('ABSPATH')) {
 
 class Charts extends Widget_Base
 {
-    
-
 
     public function get_name()
     {
@@ -59,7 +57,7 @@ class Charts extends Widget_Base
 
     public function get_custom_help_url()
     {
-        return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
+        return 'https://kingaddons.com/elementor/charts/';
     }
 
     public function add_control_choose_chart_data_source()
@@ -412,7 +410,7 @@ class Charts extends Widget_Base
                 'charts_repeater_labels_data_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 Data Labels are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-charts-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 Data Labels are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-charts-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );
@@ -551,7 +549,7 @@ class Charts extends Widget_Base
                 'charts_repeater_pro_notice',
                 [
                     'type' => Controls_Manager::RAW_HTML,
-                    'raw' => 'More than 3 Items are available<br> in the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-charts-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong>',
+                    'raw' => 'More than 3 Items are available<br> in the <strong><a href="https://kingaddons.com/pricing/?ref=kng-module-charts-settings-upgrade-pro" target="_blank">Pro version</a></strong>',
                     'content_classes' => 'king-addons-pro-notice',
                 ]
             );
@@ -2419,157 +2417,13 @@ class Charts extends Widget_Base
             ]
         );
 
-        
-        
-
-$this->end_controls_section();
-    
-        
+        $this->end_controls_section();
     }
 
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        // Security fix: Extract only specific safe settings to prevent variable injection
-        $chart_type = $settings['chart_type'] ?? '';
-        $charts_labels_data = $settings['charts_labels_data'] ?? '';
-        $charts_datasets_data = $settings['charts_datasets_data'] ?? '';
-        $chart_title = $settings['chart_title'] ?? '';
-        $chart_title_show = $settings['chart_title_show'] ?? '';
-        $chart_legend_show = $settings['chart_legend_show'] ?? '';
-        $chart_tooltips_show = $settings['chart_tooltips_show'] ?? '';
-        $chart_options = $settings['chart_options'] ?? '';
-        $chart_height = $settings['chart_height'] ?? '';
-        $chart_width = $settings['chart_width'] ?? '';
-        $chart_responsive = $settings['chart_responsive'] ?? '';
-        $chart_maintain_aspect_ratio = $settings['chart_maintain_aspect_ratio'] ?? '';
-        $chart_animation_duration = $settings['chart_animation_duration'] ?? '';
-        $chart_animation_easing = $settings['chart_animation_easing'] ?? '';
-        $chart_show_labels = $settings['chart_show_labels'] ?? '';
-        $chart_label_position = $settings['chart_label_position'] ?? '';
-        $chart_label_color = $settings['chart_label_color'] ?? '';
-        $chart_label_font_size = $settings['chart_label_font_size'] ?? '';
-        $chart_label_font_family = $settings['chart_label_font_family'] ?? '';
-        $chart_label_font_style = $settings['chart_label_font_style'] ?? '';
-        $chart_label_font_weight = $settings['chart_label_font_weight'] ?? '';
-        $chart_grid_lines = $settings['chart_grid_lines'] ?? '';
-        $chart_grid_color = $settings['chart_grid_color'] ?? '';
-        $chart_grid_line_width = $settings['chart_grid_line_width'] ?? '';
-        $chart_point_radius = $settings['chart_point_radius'] ?? '';
-        $chart_point_hover_radius = $settings['chart_point_hover_radius'] ?? '';
-        $chart_point_background_color = $settings['chart_point_background_color'] ?? '';
-        $chart_point_border_color = $settings['chart_point_border_color'] ?? '';
-        $chart_point_border_width = $settings['chart_point_border_width'] ?? '';
-        $chart_line_tension = $settings['chart_line_tension'] ?? '';
-        $chart_line_border_width = $settings['chart_line_border_width'] ?? '';
-        $chart_line_border_color = $settings['chart_line_border_color'] ?? '';
-        $chart_line_background_color = $settings['chart_line_background_color'] ?? '';
-        $chart_bar_border_width = $settings['chart_bar_border_width'] ?? '';
-        $chart_bar_border_color = $settings['chart_bar_border_color'] ?? '';
-        $chart_bar_background_color = $settings['chart_bar_background_color'] ?? '';
-        $chart_doughnut_cutout = $settings['chart_doughnut_cutout'] ?? '';
-        $chart_doughnut_circumference = $settings['chart_doughnut_circumference'] ?? '';
-        $chart_doughnut_rotation = $settings['chart_doughnut_rotation'] ?? '';
-        $chart_polar_area_start_angle = $settings['chart_polar_area_start_angle'] ?? '';
-        $chart_polar_area_start_angle = $settings['chart_polar_area_start_angle'] ?? '';
-        $chart_radar_point_labels = $settings['chart_radar_point_labels'] ?? '';
-        $chart_radar_angle_lines = $settings['chart_radar_angle_lines'] ?? '';
-        $chart_radar_grid_lines = $settings['chart_radar_grid_lines'] ?? '';
-        $chart_radar_point_radius = $settings['chart_radar_point_radius'] ?? '';
-        $chart_radar_point_hover_radius = $settings['chart_radar_point_hover_radius'] ?? '';
-        $chart_radar_point_background_color = $settings['chart_radar_point_background_color'] ?? '';
-        $chart_radar_point_border_color = $settings['chart_radar_point_border_color'] ?? '';
-        $chart_radar_point_border_width = $settings['chart_radar_point_border_width'] ?? '';
-        $chart_radar_line_tension = $settings['chart_radar_line_tension'] ?? '';
-        $chart_radar_line_border_width = $settings['chart_radar_line_border_width'] ?? '';
-        $chart_radar_line_border_color = $settings['chart_radar_line_border_color'] ?? '';
-        $chart_radar_line_background_color = $settings['chart_radar_line_background_color'] ?? '';
-
-        // Additional chart settings
-        $charts_data_set = $settings['charts_data_set'] ?? '';
-        $animation_transition_type = $settings['animation_transition_type'] ?? '';
-        $axis_grid_line_color_r = $settings['axis_grid_line_color_r'] ?? '';
-        $axis_grid_line_color_x = $settings['axis_grid_line_color_x'] ?? '';
-        $axis_grid_line_color_y = $settings['axis_grid_line_color_y'] ?? '';
-        $axis_title_color_x = $settings['axis_title_color_x'] ?? '';
-        $axis_title_color_y = $settings['axis_title_color_y'] ?? '';
-        $axis_title_font_family_x = $settings['axis_title_font_family_x'] ?? '';
-        $axis_title_font_family_y = $settings['axis_title_font_family_y'] ?? '';
-        $axis_title_font_style_x = $settings['axis_title_font_style_x'] ?? '';
-        $axis_title_font_style_y = $settings['axis_title_font_style_y'] ?? '';
-        $axis_title_font_weight_x = $settings['axis_title_font_weight_x'] ?? '';
-        $axis_title_font_weight_y = $settings['axis_title_font_weight_y'] ?? '';
-        $border_dash_length = $settings['border_dash_length'] ?? '';
-        $border_dash_length_r = $settings['border_dash_length_r'] ?? '';
-        $border_dash_offset = $settings['border_dash_offset'] ?? '';
-        $border_dash_offset_r = $settings['border_dash_offset_r'] ?? '';
-        $border_dash_spacing = $settings['border_dash_spacing'] ?? '';
-        $border_dash_spacing_r = $settings['border_dash_spacing_r'] ?? '';
-        $chart_interaction_mode = $settings['chart_interaction_mode'] ?? '';
-        $chart_tooltip_bg_color = $settings['chart_tooltip_bg_color'] ?? '';
-        $chart_tooltip_item_align = $settings['chart_tooltip_item_align'] ?? '';
-        $chart_tooltip_item_color = $settings['chart_tooltip_item_color'] ?? '';
-        $chart_tooltip_item_font = $settings['chart_tooltip_item_font'] ?? '';
-        $chart_tooltip_title_align = $settings['chart_tooltip_title_align'] ?? '';
-        $chart_tooltip_title_color = $settings['chart_tooltip_title_color'] ?? '';
-        $chart_tooltip_title_font = $settings['chart_tooltip_title_font'] ?? '';
-        $data_source = $settings['data_source'] ?? '';
-        $display_r_axis = $settings['display_r_axis'] ?? '';
-        $display_r_ticks = $settings['display_r_ticks'] ?? '';
-        $display_x_axis = $settings['display_x_axis'] ?? '';
-        $display_x_axis_title = $settings['display_x_axis_title'] ?? '';
-        $display_x_ticks = $settings['display_x_ticks'] ?? '';
-        $display_y_axis = $settings['display_y_axis'] ?? '';
-        $display_y_axis_title = $settings['display_y_axis_title'] ?? '';
-        $display_y_ticks = $settings['display_y_ticks'] ?? '';
-        $exclude_dataset_on_click = $settings['exclude_dataset_on_click'] ?? '';
-        $grid_line_width_r = $settings['grid_line_width_r'] ?? '';
-        $grid_line_width_x = $settings['grid_line_width_x'] ?? '';
-        $grid_line_width_y = $settings['grid_line_width_y'] ?? '';
-        $inner_datalabels = $settings['inner_datalabels'] ?? '';
-        $inner_datalabels_color = $settings['inner_datalabels_color'] ?? '';
-        $charts_legend_align = $settings['charts_legend_align'] ?? '';
-        $legend_box_width = $settings['legend_box_width'] ?? '';
-        $legend_font_family = $settings['legend_font_family'] ?? '';
-        $legend_font_size = $settings['legend_font_size'] ?? '';
-        $legend_font_style = $settings['legend_font_style'] ?? '';
-        $legend_font_weight = $settings['legend_font_weight'] ?? '';
-        $chart_legend_padding = $settings['chart_legend_padding'] ?? '';
-        $charts_legend_position = $settings['charts_legend_position'] ?? '';
-        $charts_legend_shape = $settings['charts_legend_shape'] ?? '';
-        $chart_legend_text_color = $settings['chart_legend_text_color'] ?? '';
-        $max_value = $settings['max_value'] ?? '';
-        $min_value = $settings['min_value'] ?? '';
-        $point_labels_font_family_r = $settings['point_labels_font_family_r'] ?? '';
-        $point_labels_font_style_r = $settings['point_labels_font_style_r'] ?? '';
-        $point_labels_font_weight_r = $settings['point_labels_font_weight_r'] ?? '';
-        $r_step_size = $settings['r_step_size'] ?? '';
-        $reverse_legend = $settings['reverse_legend'] ?? '';
-        $reverse_x = $settings['reverse_x'] ?? '';
-        $reverse_y = $settings['reverse_y'] ?? '';
-        $labels_rotation_x_axis = $settings['labels_rotation_x_axis'] ?? '';
-        $labels_rotation_y_axis = $settings['labels_rotation_y_axis'] ?? '';
-        $data_csv_separator = $settings['data_csv_separator'] ?? '';
-        $show_chart_legend = $settings['show_chart_legend'] ?? '';
-        $show_chart_title = $settings['show_chart_title'] ?? '';
-        $show_chart_tooltip = $settings['show_chart_tooltip'] ?? '';
-        $chart_ticks_color_x = $settings['chart_ticks_color_x'] ?? '';
-        $ticks_font_family_x = $settings['ticks_font_family_x'] ?? '';
-        $ticks_font_family_y = $settings['ticks_font_family_y'] ?? '';
-        $ticks_font_style_x = $settings['ticks_font_style_x'] ?? '';
-        $ticks_font_style_y = $settings['ticks_font_style_y'] ?? '';
-        $ticks_font_weight_x = $settings['ticks_font_weight_x'] ?? '';
-        $ticks_font_weight_y = $settings['ticks_font_weight_y'] ?? '';
-        $title_font_family = $settings['title_font_family'] ?? '';
-        $title_font_weight = $settings['title_font_weight'] ?? '';
-        $tooltips_percent = $settings['tooltips_percent'] ?? '';
-        $chart_tooltip_position = $settings['chart_tooltip_position'] ?? '';
-        $trigger_tooltip_on = $settings['trigger_tooltip_on'] ?? '';
-        $data_source_csv_file = $settings['data_source_csv_file'] ?? '';
-        $x_axis_title = $settings['x_axis_title'] ?? '';
-        $x_step_size = $settings['x_step_size'] ?? '';
-        $y_axis_title = $settings['y_axis_title'] ?? '';
-        $y_step_size = $settings['y_step_size'] ?? '';
+        extract($settings);
 
         $premium = king_addons_freemius()->can_use_premium_code__premium_only();
         $data_charts_array = [];

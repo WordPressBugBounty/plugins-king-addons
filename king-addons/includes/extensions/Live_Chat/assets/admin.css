@@ -1,0 +1,14 @@
+/**
+ * Live Chat Admin Styles
+ *
+ * @package King_Addons
+ */
+
+/* Additional admin styles not in template */
+.ka-live-chat-page .ka-tabs {
+    margin-bottom: 24px;
+}
+
+.ka-live-chat-page .ka-tab {
+    text-decoration: none;
+}

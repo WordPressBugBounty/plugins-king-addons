@@ -1,0 +1,1627 @@
+/**
+ * Site Preloader Admin Styles.
+ *
+ * Premium style inspired admin UI for the Site Preloader extension.
+ * Extends the shared V3 admin styles.
+ *
+ * @package King_Addons
+ * @since 1.0.0
+ */
+
+/* ===== PRELOADER SPECIFIC OVERRIDES ===== */
+.ka-preloader-admin .ka-admin-header-icon.orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+/* Select dropdown with arrow (scoped to this admin page only) */
+.ka-preloader-admin select {
+    padding-right: 38px !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%231d1d1f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 18px 18px !important;
+}
+
+body.ka-v3-dark .ka-preloader-admin select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+.ka-preloader-admin select::-ms-expand {
+    display: none;
+}
+
+/* ===== NOTICE STYLES ===== */
+.ka-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    font-size: 15px;
+    animation: kaNoticeSlideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes kaNoticeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ka-notice .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.ka-notice-success {
+    background: rgba(52, 199, 89, 0.12);
+    color: #34c759;
+    border: 1px solid rgba(52, 199, 89, 0.2);
+}
+
+.ka-notice-error {
+    background: rgba(255, 59, 48, 0.12);
+    color: #ff3b30;
+    border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+body.ka-v3-dark .ka-notice-success {
+    background: rgba(52, 199, 89, 0.2);
+}
+
+body.ka-v3-dark .ka-notice-error {
+    background: rgba(255, 59, 48, 0.2);
+}
+
+/* ===== DASHBOARD ===== */
+.ka-preloader-dashboard__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 1100px) {
+    .ka-preloader-dashboard__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Quick Enable Card */
+.ka-preloader-quick-enable .ka-card-body {
+    padding: 32px;
+}
+
+.ka-preloader-quick-enable__content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.ka-preloader-quick-enable__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ka-preloader-quick-enable__icon .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+}
+
+.ka-preloader-quick-enable__text h3 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-preloader-quick-enable__text h3 {
+    color: #f5f5f7;
+}
+
+.ka-preloader-quick-enable__text p {
+    margin: 0;
+    color: #86868b;
+    font-size: 15px;
+}
+
+.ka-preloader-quick-enable__form {
+    margin-left: auto;
+}
+
+/* Preview Card */
+.ka-preloader-preview-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.ka-preloader-preview-area {
+    flex: 1;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+body.ka-v3-dark .ka-preloader-preview-area {
+    background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
+}
+
+.ka-preloader-preview-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+body.ka-v3-dark .ka-preloader-preview-area::before {
+    background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+.ka-preloader-preview-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    --kng-preloader-accent: #0071e3;
+    --kng-preloader-size: 48px;
+}
+
+.ka-preloader-preview-card .ka-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.ka-v3-dark .ka-preloader-preview-card .ka-card-footer {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Action Cards */
+.ka-preloader-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.ka-preloader-action-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+body.ka-v3-dark .ka-preloader-action-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.ka-preloader-action-card:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: #f97316;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.15);
+}
+
+body.ka-v3-dark .ka-preloader-action-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ka-preloader-action-card .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #f97316;
+    margin-bottom: 12px;
+}
+
+.ka-preloader-action-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 4px;
+}
+
+body.ka-v3-dark .ka-preloader-action-card__title {
+    color: #f5f5f7;
+}
+
+.ka-preloader-action-card__desc {
+    font-size: 13px;
+    color: #86868b;
+}
+
+/* Stats override for smaller values */
+.ka-preloader-stats .ka-stat-value--small {
+    font-size: 18px;
+}
+
+/* ===== SETTINGS PAGE ===== */
+.ka-preloader-settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+}
+
+@media (max-width: 1100px) {
+    .ka-preloader-settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ka-preloader-settings-sidebar {
+        order: -1;
+    }
+}
+
+.ka-preloader-settings-main {
+    min-width: 0;
+}
+
+.ka-preloader-settings-sidebar {
+    position: relative;
+}
+
+.ka-preloader-live-preview {
+    position: sticky;
+    top: 50px;
+}
+
+.ka-preloader-preview-frame {
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+body.ka-v3-dark .ka-preloader-preview-frame {
+    background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
+}
+
+.ka-preloader-preview-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+body.ka-v3-dark .ka-preloader-preview-frame::before {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+#ka-live-preview-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Settings subheading */
+.ka-settings-subheading {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #86868b;
+    margin: 24px 0 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.ka-v3-dark .ka-settings-subheading {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.ka-settings-subheading:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+/* Checkbox group */
+.ka-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ka-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: #1d1d1f;
+    cursor: pointer;
+}
+
+body.ka-v3-dark .ka-checkbox-item {
+    color: #f5f5f7;
+}
+
+.ka-checkbox-item input[type="checkbox"],
+.ka-checkbox-item input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #f97316;
+}
+
+.ka-checkbox-item .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #86868b;
+}
+
+/* Range slider */
+.ka-range-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ka-range-wrap input[type="range"] {
+    width: 200px;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    outline: none;
+}
+
+body.ka-v3-dark .ka-range-wrap input[type="range"] {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ka-range-wrap input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #f97316;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.ka-range-wrap input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.ka-range-value {
+    min-width: 40px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-range-value {
+    color: #f5f5f7;
+}
+
+/* Unit label */
+.ka-unit {
+    color: #86868b;
+    font-size: 14px;
+    margin-left: 6px;
+}
+
+/* Image upload */
+.ka-image-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ka-image-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 2px dashed rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+body.ka-v3-dark .ka-image-preview {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ka-image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Multiselect */
+.ka-multiselect {
+    min-height: 120px;
+}
+
+/* Submit footer */
+.ka-preloader-submit {
+    margin-top: 24px;
+    padding: 24px;
+    background: rgba(249, 115, 22, 0.04);
+    border: 1px solid rgba(249, 115, 22, 0.1);
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+body.ka-v3-dark .ka-preloader-submit {
+    background: rgba(249, 115, 22, 0.08);
+    border-color: rgba(249, 115, 22, 0.2);
+}
+
+.ka-preloader-submit .ka-btn-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.ka-preloader-submit .ka-btn-primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+}
+
+/* Display Rules: ensure plus icon matches button text color */
+#ka-add-rule-btn .dashicons {
+    color: inherit !important;
+}
+
+/* ===== TEMPLATES PAGE ===== */
+.ka-preloader-templates-intro {
+    color: #86868b;
+    margin-bottom: 24px;
+}
+
+.ka-preloader-templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.ka-preloader-template-card {
+    background: rgba(0, 0, 0, 0.02);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+}
+
+body.ka-v3-dark .ka-preloader-template-card {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.ka-preloader-template-card:hover {
+    border-color: rgba(249, 115, 22, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+body.ka-v3-dark .ka-preloader-template-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.ka-preloader-template-card.active {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.04);
+}
+
+body.ka-v3-dark .ka-preloader-template-card.active {
+    background: rgba(249, 115, 22, 0.1);
+}
+
+.ka-preloader-template-card.pro-only {
+    opacity: 0.7;
+}
+
+.ka-preloader-template-card.pro-only:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.ka-preloader-template-card__preview {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+    position: relative;
+}
+
+body.ka-v3-dark .ka-preloader-template-card__preview {
+    background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
+}
+
+.ka-preloader-template-card__animation {
+    transform: scale(0.75);
+}
+
+.ka-preloader-template-card__info {
+    padding: 16px;
+}
+
+.ka-preloader-template-card__title {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d1d1f;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+body.ka-v3-dark .ka-preloader-template-card__title {
+    color: #f5f5f7;
+}
+
+.ka-preloader-template-card__desc {
+    margin: 0;
+    font-size: 13px;
+    color: #86868b;
+}
+
+.ka-preloader-template-card__check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f97316;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ka-preloader-template-card__check .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #fff;
+}
+
+/* ===== RULES PAGE ===== */
+.ka-preloader-rules-intro {
+    color: #86868b;
+    margin-bottom: 24px;
+}
+
+.ka-card-header-actions {
+    margin-left: auto;
+}
+
+.ka-preloader-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ka-preloader-rule-item {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+body.ka-v3-dark .ka-preloader-rule-item {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.ka-preloader-rule-item__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+}
+
+.ka-preloader-rule-item__drag {
+    cursor: grab;
+    color: #86868b;
+}
+
+.ka-preloader-rule-item__info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ka-preloader-rule-item__type {
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-preloader-rule-item__type {
+    color: #f5f5f7;
+}
+
+.ka-preloader-rule-item__value {
+    color: #86868b;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 6px;
+}
+
+body.ka-v3-dark .ka-preloader-rule-item__value {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ka-preloader-rule-item__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.ka-preloader-rule-item__details {
+    padding: 0 20px 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.ka-v3-dark .ka-preloader-rule-item__details {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.ka-preloader-rule-form {
+    padding-top: 16px;
+}
+
+.ka-preloader-rule-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.ka-v3-dark .ka-preloader-rule-form__actions {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+/* New rule item from JS */
+.ka-preloader-rule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+}
+
+.ka-preloader-rule-title {
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-preloader-rule-title {
+    color: #f5f5f7;
+}
+
+.ka-preloader-rule-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.ka-preloader-rule-remove {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #86868b;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.ka-preloader-rule-remove:hover {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+}
+
+.ka-preloader-rule-content {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.ka-v3-dark .ka-preloader-rule-content {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.ka-preloader-rule-item.expanded .ka-preloader-rule-content {
+    display: block;
+}
+
+.ka-preloader-rule-field {
+    margin-bottom: 16px;
+}
+
+.ka-preloader-rule-field:last-child {
+    margin-bottom: 0;
+}
+
+.ka-preloader-rule-field label {
+    display: block;
+    font-weight: 500;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+}
+
+body.ka-v3-dark .ka-preloader-rule-field label {
+    color: #f5f5f7;
+}
+
+.ka-preloader-rule-field input[type="text"],
+.ka-preloader-rule-field select {
+    width: 100%;
+    padding: 10px 14px;
+    background: #f5f5f7;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1d1d1f;
+    transition: all 0.2s ease;
+}
+
+body.ka-v3-dark .ka-preloader-rule-field input[type="text"],
+body.ka-v3-dark .ka-preloader-rule-field select {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f5f5f7;
+}
+
+.ka-preloader-rule-field input[type="text"]:focus,
+.ka-preloader-rule-field select:focus {
+    outline: none;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+.ka-preloader-rule-field input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Toggle small variant */
+.ka-toggle-sm .ka-toggle-slider {
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+}
+
+.ka-toggle-sm .ka-toggle-slider::after {
+    width: 20px;
+    height: 20px;
+    top: 2px;
+    left: 2px;
+}
+
+.ka-toggle-sm input:checked + .ka-toggle-slider::after {
+    transform: translateX(16px);
+}
+
+/* ===== IMPORT/EXPORT ===== */
+.ka-preloader-import-export-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+    .ka-preloader-import-export-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* File upload */
+.ka-file-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ka-file-upload input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.ka-file-upload__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 2px dashed rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+body.ka-v3-dark .ka-file-upload__label {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ka-file-upload__label:hover {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.04);
+}
+
+.ka-file-upload__label .dashicons {
+    color: #86868b;
+}
+
+.ka-file-upload__text {
+    color: #86868b;
+}
+
+.ka-file-upload__filename {
+    font-size: 14px;
+    color: #1d1d1f;
+    font-weight: 500;
+}
+
+body.ka-v3-dark .ka-file-upload__filename {
+    color: #f5f5f7;
+}
+
+/* Danger button */
+.ka-btn-danger {
+    background: linear-gradient(135deg, #ff3b30 0%, #dc2626 100%);
+    color: #fff;
+}
+
+.ka-btn-danger:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4);
+    color: #fff;
+}
+
+/* Info box */
+.ka-info-box {
+    background: rgba(0, 113, 227, 0.06);
+    border: 1px solid rgba(0, 113, 227, 0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+body.ka-v3-dark .ka-info-box {
+    background: rgba(10, 132, 255, 0.1);
+    border-color: rgba(10, 132, 255, 0.2);
+}
+
+.ka-info-box .dashicons {
+    color: #0071e3;
+    float: left;
+    margin-right: 12px;
+    margin-top: 2px;
+}
+
+body.ka-v3-dark .ka-info-box .dashicons {
+    color: #0a84ff;
+}
+
+.ka-info-box p {
+    margin: 0 0 12px;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-info-box p {
+    color: #f5f5f7;
+}
+
+.ka-info-box ul {
+    margin: 0;
+    padding-left: 32px;
+    color: #86868b;
+}
+
+.ka-info-box ul li {
+    margin-bottom: 4px;
+}
+
+.ka-info-box pre {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    margin: 12px 0 0;
+    font-size: 13px;
+}
+
+body.ka-v3-dark .ka-info-box pre {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.ka-info-box code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-info-box code {
+    color: #f5f5f7;
+}
+
+/* Code textarea */
+.ka-code-textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    padding: 16px !important;
+    background: rgba(0, 0, 0, 0.02) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    resize: vertical;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+body.ka-v3-dark .ka-code-textarea {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f5f5f7;
+}
+
+/* ===== PREVIEW MODAL ===== */
+.ka-preloader-preview-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ka-preloader-preview-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.ka-preloader-preview-modal__content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+}
+
+.ka-preloader-preview-modal__close {
+    position: absolute;
+    top: -48px;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.ka-preloader-preview-modal__close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ka-preloader-preview-modal__close .dashicons {
+    color: #fff;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.ka-preloader-preview-modal__frame {
+    aspect-ratio: 16 / 9;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#ka-preloader-preview-container {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ka-preloader-preview-modal__info {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.ka-preloader-preview-modal__label {
+    font-weight: 500;
+    color: #fff;
+}
+
+/* ===== NEW RULES UI STYLES ===== */
+
+/* Button Group */
+.ka-btn-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.ka-rule-action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.ka-rule-action-btns .ka-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.02);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #86868b;
+}
+
+body.ka-v3-dark .ka-rule-action-btns .ka-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #a1a1a6;
+}
+
+.ka-rule-action-btns .ka-btn:hover {
+    border-color: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.ka-rule-action-btns .ka-btn.active {
+    border-color: #0071e3;
+    background: rgba(0, 113, 227, 0.08);
+    color: #0071e3;
+}
+
+.ka-rule-action-btns .ka-btn[data-action="show"].active {
+    border-color: #34c759;
+    background: rgba(52, 199, 89, 0.1);
+    color: #34c759;
+}
+
+.ka-rule-action-btns .ka-btn[data-action="hide"].active {
+    border-color: #ff9500;
+    background: rgba(255, 149, 0, 0.1);
+    color: #ff9500;
+}
+
+.ka-rule-action-btns .ka-btn[data-action="override"].active {
+    border-color: #5856d6;
+    background: rgba(88, 86, 214, 0.1);
+    color: #5856d6;
+}
+
+.ka-rule-action-btns .ka-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Rule Summary in Header */
+.ka-preloader-rule-item__summary {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ka-rule-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ka-rule-action .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.ka-rule-action--show {
+    background: rgba(52, 199, 89, 0.15);
+    color: #34c759;
+}
+
+.ka-rule-action--hide {
+    background: rgba(255, 149, 0, 0.15);
+    color: #ff9500;
+}
+
+.ka-rule-action--override {
+    background: rgba(88, 86, 214, 0.15);
+    color: #5856d6;
+}
+
+.ka-rule-on {
+    color: #86868b;
+    font-size: 13px;
+}
+
+.ka-rule-condition,
+.ka-preloader-rule-item__summary .ka-rule-condition {
+    font-weight: 600;
+    color: #1d1d1f;
+    font-size: 14px;
+}
+
+body.ka-v3-dark .ka-rule-condition,
+body.ka-v3-dark .ka-preloader-rule-item__summary .ka-rule-condition {
+    color: #f5f5f7;
+}
+
+.ka-rule-value {
+    color: #86868b;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.ka-v3-dark .ka-rule-value {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ka-rule-template-badge {
+    color: #5856d6;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Rule Disabled State */
+.ka-rule-disabled {
+    opacity: 0.6;
+}
+
+.ka-rule-disabled .ka-preloader-rule-item__summary {
+    opacity: 0.7;
+}
+
+/* Action Button Group */
+.ka-rule-action-group {
+    display: flex;
+    gap: 8px;
+}
+
+.ka-rule-action-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #86868b;
+}
+
+body.ka-v3-dark .ka-rule-action-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #a1a1a6;
+}
+
+.ka-rule-action-btn:hover {
+    border-color: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.04);
+}
+
+body.ka-v3-dark .ka-rule-action-btn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ka-rule-action-btn.active {
+    border-color: #0071e3;
+    background: rgba(0, 113, 227, 0.08);
+    color: #0071e3;
+}
+
+body.ka-v3-dark .ka-rule-action-btn.active {
+    border-color: #0a84ff;
+    background: rgba(10, 132, 255, 0.15);
+    color: #0a84ff;
+}
+
+/* Action type specific colors */
+.ka-rule-action-btn[data-action="show"].active {
+    border-color: #34c759;
+    background: rgba(52, 199, 89, 0.1);
+    color: #34c759;
+}
+
+.ka-rule-action-btn[data-action="hide"].active {
+    border-color: #ff9500;
+    background: rgba(255, 149, 0, 0.1);
+    color: #ff9500;
+}
+
+.ka-rule-action-btn[data-action="override"].active {
+    border-color: #5856d6;
+    background: rgba(88, 86, 214, 0.1);
+    color: #5856d6;
+}
+
+/* Form Row */
+.ka-rule-form-row {
+    margin-bottom: 20px;
+}
+
+.ka-rule-form-row:last-child {
+    margin-bottom: 0;
+}
+
+.ka-rule-form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 12px;
+    color: #1d1d1f;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+body.ka-v3-dark .ka-rule-form-label {
+    color: #f5f5f7;
+}
+
+.ka-rule-form-field {
+    width: 100%;
+}
+
+.ka-rule-form-field select,
+.ka-rule-form-field input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: #f5f5f7;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1d1d1f;
+    transition: all 0.2s ease;
+}
+
+body.ka-v3-dark .ka-rule-form-field select,
+body.ka-v3-dark .ka-rule-form-field input[type="text"] {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+}
+
+.ka-rule-form-field select:focus,
+.ka-rule-form-field input[type="text"]:focus {
+    outline: none;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+.ka-rule-form-hint {
+    font-size: 12px;
+    color: #86868b;
+    font-weight: 400;
+    margin-top: 6px;
+}
+
+.ka-rule-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.ka-v3-dark .ka-rule-form-actions {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Multi-select for pages */
+.ka-rule-pages {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px 14px;
+    background: #f5f5f7;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    font-size: 14px;
+    color: #1d1d1f;
+    transition: all 0.2s ease;
+}
+
+body.ka-v3-dark .ka-rule-pages {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+}
+
+.ka-rule-pages:focus {
+    outline: none;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+.ka-rule-pages option {
+    padding: 8px 4px;
+}
+
+/* Conditional rows (hidden by default) */
+.ka-rule-pages-row,
+.ka-rule-posttype-row,
+.ka-rule-url-row {
+    display: none;
+}
+
+/* Template Row - hidden by default, shown for override action */
+.ka-rule-template-row {
+    display: none;
+}
+
+/* Colors Grid */
+.ka-rule-colors-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.ka-rule-color-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ka-rule-color-field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #86868b;
+}
+
+.ka-rule-color-field input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+/* WP color picker (alpha) inside rules */
+.ka-rule-color-field .wp-picker-container {
+    width: 100%;
+}
+
+.ka-rule-color-field .wp-color-result {
+    height: 40px;
+    border-radius: 10px;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.ka-v3-dark .ka-rule-color-field .wp-color-result {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ka-rule-color-field .wp-picker-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ka-rule-color-field input.ka-color-picker.wp-color-picker {
+    height: 40px;
+    border-radius: 10px;
+}
+
+body.ka-v3-dark .ka-rule-color-field input[type="color"] {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ka-rule-color-input {
+    width: 100%;
+    flex: 1;
+}
+
+.ka-rule-color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+}
+
+body.ka-v3-dark .ka-rule-color-preview {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon Button */
+.ka-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    color: #86868b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ka-btn-icon:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-btn-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+}
+
+.ka-btn-icon .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.ka-rule-delete-btn:hover {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+}
+
+/* Rule Header Action Badge */
+.ka-preloader-rule-item__action {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 8px;
+}
+
+.ka-preloader-rule-item__action[data-action="show"] {
+    background: rgba(52, 199, 89, 0.15);
+    color: #34c759;
+}
+
+.ka-preloader-rule-item__action[data-action="hide"] {
+    background: rgba(255, 149, 0, 0.15);
+    color: #ff9500;
+}
+
+.ka-preloader-rule-item__action[data-action="override"] {
+    background: rgba(88, 86, 214, 0.15);
+    color: #5856d6;
+}
+
+/* Empty Rules State */
+.ka-rules-empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: #86868b;
+}
+
+.ka-rules-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.ka-rules-empty h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+body.ka-v3-dark .ka-rules-empty h3 {
+    color: #f5f5f7;
+}
+
+.ka-rules-empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ka-rule-action-group {
+        flex-direction: column;
+    }
+    
+    .ka-rule-colors-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,52 @@
+.ka-woo-checkout-payment {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 12px 22px rgba(17, 24, 39, 0.08);
+}
+
+.ka-wc-payment__icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-right: 6px;
+}
+
+.ka-woo-checkout-payment .wc_payment_method {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fff;
+    display: grid;
+    gap: 8px;
+}
+
+.ka-woo-checkout-payment .wc_payment_method.is-active {
+    border-color: #2563eb;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12);
+}
+
+.ka-woo-checkout-payment .wc_payment_method label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.ka-woo-checkout-payment .payment_box {
+    margin-top: 8px;
+}
+
+.ka-wc-payment__custom-desc {
+    font-size: 13px;
+    color: #4b5563;
+    font-weight: 400;
+}
+
+
+
+
+

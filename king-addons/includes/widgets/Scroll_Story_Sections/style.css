@@ -1,0 +1,282 @@
+.king-addons-scroll-story {
+    --kng-scroll-story-left: 40%;
+    --kng-scroll-story-right: 60%;
+    --kng-scroll-story-gap: 32px;
+    --kng-scroll-story-step-bg: #ffffff;
+    --kng-scroll-story-step-bg-active: #ecfeff;
+    --kng-scroll-story-step-border: #e5e7eb;
+    --kng-scroll-story-step-border-active: #14b8a6;
+    --kng-scroll-story-step-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    --kng-scroll-story-accent: #e5e7eb;
+    --kng-scroll-story-accent-active: #14b8a6;
+    --kng-scroll-story-accent-width: 3px;
+    --kng-scroll-story-accent-offset: 10px;
+    --kng-scroll-story-icon-size: 18px;
+    --kng-scroll-story-icon-gap: 12px;
+    --kng-scroll-story-completed-opacity: 0.75;
+    --kng-scroll-story-panel-bg: #ffffff;
+    --kng-scroll-story-panel-border: #e5e7eb;
+    --kng-scroll-story-panel-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+    --kng-scroll-story-transition-duration: 320ms;
+    --kng-scroll-story-transition-duration-slide: 380ms;
+    --kng-scroll-story-media-fit: cover;
+    --kng-scroll-story-media-ratio: auto;
+    --kng-scroll-story-media-max-height: none;
+    --kng-scroll-story-text: #111827;
+    --kng-scroll-story-subtle: #6b7280;
+    color: var(--kng-scroll-story-text);
+}
+
+.king-addons-scroll-story__inner {
+    width: 100%;
+}
+
+.king-addons-scroll-story__grid {
+    display: flex;
+    gap: var(--kng-scroll-story-gap);
+    align-items: flex-start;
+}
+
+.king-addons-scroll-story__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 0 0 var(--kng-scroll-story-left);
+    max-width: var(--kng-scroll-story-left);
+}
+
+.king-addons-scroll-story__content {
+    flex: 1 1 var(--kng-scroll-story-right);
+    max-width: var(--kng-scroll-story-right);
+}
+
+.king-addons-scroll-story__step {
+    position: relative;
+    background-color: var(--kng-scroll-story-step-bg);
+    border: 1px solid var(--kng-scroll-story-step-border);
+    border-radius: 16px;
+    padding: 16px 18px 16px 26px;
+    transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.king-addons-scroll-story__step.is-active {
+    background-color: var(--kng-scroll-story-step-bg-active);
+    border-color: var(--kng-scroll-story-step-border-active);
+}
+
+.king-addons-scroll-story__step.is-completed {
+    opacity: var(--kng-scroll-story-completed-opacity);
+}
+
+.king-addons-scroll-story__step-button {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--kng-scroll-story-icon-gap);
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+}
+
+.king-addons-scroll-story__step-button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+
+.king-addons-scroll-story__step-accent {
+    position: absolute;
+    left: var(--kng-scroll-story-accent-offset);
+    top: 14px;
+    bottom: 14px;
+    width: var(--kng-scroll-story-accent-width);
+    border-radius: 999px;
+    background-color: var(--kng-scroll-story-accent);
+}
+
+.king-addons-scroll-story__step.is-active .king-addons-scroll-story__step-accent {
+    background-color: var(--kng-scroll-story-accent-active);
+}
+
+.king-addons-scroll-story__step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--kng-scroll-story-icon-size);
+    color: var(--kng-scroll-story-subtle);
+}
+
+.king-addons-scroll-story__step.is-active .king-addons-scroll-story__step-icon {
+    color: var(--kng-scroll-story-text);
+}
+
+.king-addons-scroll-story__step-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.king-addons-scroll-story__step-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.king-addons-scroll-story__step-subtitle {
+    font-size: 13px;
+    color: var(--kng-scroll-story-subtle);
+}
+
+.king-addons-scroll-story__panel {
+    display: none;
+    background-color: var(--kng-scroll-story-panel-bg);
+    border: 1px solid var(--kng-scroll-story-panel-border);
+    border-radius: 20px;
+    box-shadow: var(--kng-scroll-story-panel-shadow);
+}
+
+.king-addons-scroll-story__panel.is-active {
+    display: block;
+}
+
+.king-addons-scroll-story__panel-inner {
+    padding: 28px;
+}
+
+.king-addons-scroll-story__panel-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.king-addons-scroll-story__panel-subtitle {
+    font-size: 14px;
+    color: var(--kng-scroll-story-subtle);
+    margin-bottom: 16px;
+}
+
+.king-addons-scroll-story__panel-description {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.king-addons-scroll-story__panel-description p:last-child {
+    margin-bottom: 0;
+}
+
+.king-addons-scroll-story__panel-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background-color: #111827;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease,
+        color 200ms ease, border-color 200ms ease;
+}
+
+.king-addons-scroll-story__panel-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.18);
+}
+
+.king-addons-scroll-story__panel-media {
+    padding: 0 28px 28px;
+}
+
+.king-addons-scroll-story__panel-media img,
+.king-addons-scroll-story__panel-media video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+    max-height: var(--kng-scroll-story-media-max-height);
+    aspect-ratio: var(--kng-scroll-story-media-ratio);
+    object-fit: var(--kng-scroll-story-media-fit);
+}
+
+.king-addons-scroll-story--preset-minimal .king-addons-scroll-story__step {
+    background-color: transparent;
+    border-color: transparent;
+    padding-left: 22px;
+}
+
+.king-addons-scroll-story--preset-card .king-addons-scroll-story__step {
+    box-shadow: var(--kng-scroll-story-step-shadow);
+}
+
+.king-addons-scroll-story--preset-highlighted .king-addons-scroll-story__step.is-active {
+    box-shadow: var(--kng-scroll-story-step-shadow);
+}
+
+.king-addons-scroll-story--transition-fade .king-addons-scroll-story__panel.is-active {
+    animation: kng-scroll-story-fade var(--kng-scroll-story-transition-duration) ease;
+}
+
+.king-addons-scroll-story--transition-slide .king-addons-scroll-story__panel.is-active {
+    animation: kng-scroll-story-slide var(--kng-scroll-story-transition-duration-slide) ease;
+}
+
+.king-addons-scroll-story--transition-none .king-addons-scroll-story__panel.is-active {
+    animation: none;
+}
+
+@keyframes kng-scroll-story-fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes kng-scroll-story-slide {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 767px) {
+    .king-addons-scroll-story__grid {
+        flex-direction: column;
+    }
+
+    .king-addons-scroll-story__steps,
+    .king-addons-scroll-story__content {
+        max-width: 100%;
+        flex: 1 1 auto;
+    }
+
+    .king-addons-scroll-story__panel-inner {
+        padding: 22px;
+    }
+
+    .king-addons-scroll-story__panel-media {
+        padding: 0 22px 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-scroll-story__step,
+    .king-addons-scroll-story__panel,
+    .king-addons-scroll-story__panel.is-active,
+    .king-addons-scroll-story__panel-cta {
+        transition: none;
+        animation: none;
+    }
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <rect x="18" y="30" width="6" height="20" rx="3" fill="#f97316">
+    <animate attributeName="height" values="20;30;20" dur="1s" begin="-0.45s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="30;25;30" dur="1s" begin="-0.45s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="28" y="30" width="6" height="20" rx="3" fill="#f97316">
+    <animate attributeName="height" values="20;30;20" dur="1s" begin="-0.3s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="30;25;30" dur="1s" begin="-0.3s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="38" y="30" width="6" height="20" rx="3" fill="#f97316">
+    <animate attributeName="height" values="20;30;20" dur="1s" begin="-0.15s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="30;25;30" dur="1s" begin="-0.15s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="48" y="30" width="6" height="20" rx="3" fill="#f97316">
+    <animate attributeName="height" values="20;30;20" dur="1s" begin="-0.3s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="30;25;30" dur="1s" begin="-0.3s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="58" y="30" width="6" height="20" rx="3" fill="#f97316">
+    <animate attributeName="height" values="20;30;20" dur="1s" begin="-0.45s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="30;25;30" dur="1s" begin="-0.45s" repeatCount="indefinite"/>
+  </rect>
+</svg>

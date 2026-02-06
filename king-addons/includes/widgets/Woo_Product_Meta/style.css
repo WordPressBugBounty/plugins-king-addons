@@ -1,0 +1,74 @@
+.ka-woo-product-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ka-woo-product-meta--inline .ka-woo-product-meta__item {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.ka-woo-product-meta__label {
+    font-weight: 600;
+}
+
+.ka-woo-product-meta__value a {
+    text-decoration: none;
+}
+
+.ka-woo-product-meta--format-pipe .ka-woo-product-meta__item {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.ka-woo-product-meta--format-pipe .ka-woo-product-meta__item:not(:last-child)::after {
+    content: '|';
+    padding: 0 6px;
+    opacity: 0.6;
+}
+
+.ka-woo-product-meta--format-bullets {
+    gap: 4px;
+}
+
+.ka-woo-product-meta--format-bullets .ka-woo-product-meta__item {
+    position: relative;
+    padding-left: 10px;
+}
+
+.ka-woo-product-meta--format-bullets .ka-woo-product-meta__item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: currentColor;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+}
+
+.ka-woo-product-meta--format-badges .ka-woo-product-meta__value a {
+    display: inline-flex;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+.ka-woo-product-meta--label-uppercase .ka-woo-product-meta__label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.ka-woo-product-meta--label-caps .ka-woo-product-meta__label {
+    text-transform: capitalize;
+}
+
+
+
+
+
+

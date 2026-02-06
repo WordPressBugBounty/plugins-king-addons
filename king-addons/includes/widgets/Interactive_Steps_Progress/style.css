@@ -1,0 +1,560 @@
+.king-addons-interactive-steps {
+    position: relative;
+    --kng-isp-gap: 24px;
+    --kng-isp-marker-size: 36px;
+    --kng-isp-dot-size: 12px;
+    --kng-isp-current-marker-size: var(--kng-isp-marker-size);
+    --kng-isp-marker-gap: 16px;
+    --kng-isp-line-thickness: 2px;
+    --kng-isp-line-offset: 0px;
+    --kng-isp-line-color: #e5e7eb;
+    --kng-isp-line-active-color: #2563eb;
+    --kng-isp-marker-bg: #ffffff;
+    --kng-isp-marker-border-color: #d1d5db;
+    --kng-isp-marker-color: #111827;
+    --kng-isp-marker-bg-active: #2563eb;
+    --kng-isp-marker-border-active: #2563eb;
+    --kng-isp-marker-color-active: #ffffff;
+    --kng-isp-marker-bg-completed: #10b981;
+    --kng-isp-marker-border-completed: #10b981;
+    --kng-isp-marker-color-completed: #ffffff;
+    --kng-isp-icon-size: 18px;
+    --kng-isp-icon-gap: 10px;
+    --kng-isp-icon-color: #111827;
+    --kng-isp-icon-color-active: #111827;
+    --kng-isp-icon-color-completed: #111827;
+    --kng-isp-label-color: #6b7280;
+    --kng-isp-progress-ratio: 0;
+    --kng-isp-progress-percent: 0%;
+    --kng-isp-content-padding: 0px;
+    --kng-isp-step-min-width: 220px;
+    --kng-isp-progress-gap: 16px;
+    --kng-isp-progress-duration: 300ms;
+    --kng-isp-progress-ease: ease;
+    --kng-isp-active-duration: 250ms;
+    --kng-isp-active-ease: ease;
+    --kng-isp-reveal-duration: 400ms;
+    --kng-isp-reveal-ease: ease-out;
+    --kng-isp-sticky-offset: 0px;
+    --kng-isp-sticky-padding: 12px 0;
+    --kng-isp-sticky-shadow: none;
+}
+
+.king-addons-isp-empty {
+    padding: 16px;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.king-addons-isp-progress-dots {
+    --kng-isp-current-marker-size: var(--kng-isp-dot-size);
+}
+
+.king-addons-isp__sticky {
+    position: relative;
+    z-index: 2;
+    margin-bottom: var(--kng-isp-progress-gap);
+    padding: var(--kng-isp-sticky-padding);
+}
+
+.king-addons-isp--sticky .king-addons-isp__sticky {
+    position: sticky;
+    top: var(--kng-isp-sticky-offset);
+    background: var(--kng-isp-sticky-bg, transparent);
+    box-shadow: var(--kng-isp-sticky-shadow, none);
+}
+
+.king-addons-isp__progress {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    row-gap: 8px;
+}
+
+.king-addons-isp-progress__bar {
+    flex: 1 1 auto;
+    height: 6px;
+    background: var(--kng-isp-line-color);
+    border-radius: 999px;
+    overflow: hidden;
+    min-width: 140px;
+}
+
+.king-addons-isp-progress__steps {
+    display: none;
+    gap: 8px;
+    align-items: center;
+}
+
+.king-addons-isp-sticky-header .king-addons-isp-progress__bar {
+    display: none;
+}
+
+.king-addons-isp-sticky-header .king-addons-isp-progress__steps {
+    display: inline-flex;
+}
+
+.king-addons-isp-progress-step {
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--kng-isp-line-color);
+}
+
+.king-addons-isp-progress-step:focus-visible {
+    outline: 2px solid var(--kng-isp-line-active-color);
+    outline-offset: 3px;
+}
+
+.king-addons-isp-progress-step.is-active {
+    background: var(--kng-isp-line-active-color);
+}
+
+.king-addons-isp-progress-step.is-completed {
+    background: var(--kng-isp-marker-bg-completed);
+}
+
+.king-addons-isp-completed-no .king-addons-isp-progress-step.is-completed {
+    background: var(--kng-isp-line-color);
+}
+
+.king-addons-isp-progress__fill {
+    display: block;
+    width: var(--kng-isp-progress-percent);
+    height: 100%;
+    background: var(--kng-isp-line-active-color);
+}
+
+.king-addons-isp-progress-animated .king-addons-isp-progress__fill {
+    transition: width var(--kng-isp-progress-duration) var(--kng-isp-progress-ease);
+}
+
+.king-addons-isp-progress__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--kng-isp-label-color);
+}
+
+.king-addons-isp-progress__count,
+.king-addons-isp-progress__percent {
+    font-weight: 600;
+    color: inherit;
+}
+
+.king-addons-isp__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: grid;
+    row-gap: var(--kng-isp-gap);
+}
+
+.king-addons-isp__list::before,
+.king-addons-isp__list::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}
+
+.king-addons-isp-layout-vertical .king-addons-isp__list::before,
+.king-addons-isp-layout-vertical .king-addons-isp__list::after {
+    top: calc(var(--kng-isp-current-marker-size) / 2);
+    bottom: calc(var(--kng-isp-current-marker-size) / 2);
+    left: calc(var(--kng-isp-current-marker-size) / 2 + var(--kng-isp-line-offset));
+    width: var(--kng-isp-line-thickness);
+}
+
+.king-addons-isp-layout-vertical .king-addons-isp__list::before {
+    background: var(--kng-isp-line-color);
+}
+
+.king-addons-isp-layout-vertical .king-addons-isp__list::after {
+    background: var(--kng-isp-line-active-color);
+    transform-origin: top;
+    transform: scaleY(var(--kng-isp-progress-ratio));
+}
+
+.king-addons-isp-layout-horizontal .king-addons-isp__list {
+    display: flex;
+    column-gap: var(--kng-isp-gap);
+    row-gap: var(--kng-isp-gap);
+    align-items: flex-start;
+}
+
+.king-addons-isp-layout-horizontal .king-addons-isp__list::before,
+.king-addons-isp-layout-horizontal .king-addons-isp__list::after {
+    top: calc(var(--kng-isp-current-marker-size) / 2 + var(--kng-isp-line-offset));
+    left: calc(var(--kng-isp-current-marker-size) / 2);
+    right: calc(var(--kng-isp-current-marker-size) / 2);
+    height: var(--kng-isp-line-thickness);
+}
+
+.king-addons-isp-layout-horizontal .king-addons-isp__list::before {
+    background: var(--kng-isp-line-color);
+}
+
+.king-addons-isp-layout-horizontal .king-addons-isp__list::after {
+    background: var(--kng-isp-line-active-color);
+    transform-origin: left;
+    transform: scaleX(var(--kng-isp-progress-ratio));
+}
+
+.king-addons-isp-line-hide .king-addons-isp__list::before,
+.king-addons-isp-line-hide .king-addons-isp__list::after {
+    display: none;
+}
+
+.king-addons-isp-completed-no .king-addons-isp__list::after {
+    display: none;
+}
+
+.king-addons-isp-progress-animated .king-addons-isp__list::after {
+    transition: transform var(--kng-isp-progress-duration) var(--kng-isp-progress-ease);
+}
+
+.king-addons-isp-wrap-wrap .king-addons-isp__list {
+    flex-wrap: wrap;
+}
+
+.king-addons-isp-wrap-nowrap .king-addons-isp__list {
+    flex-wrap: nowrap;
+}
+
+.king-addons-isp-scroll-yes .king-addons-isp__list {
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.king-addons-isp-layout-vertical .king-addons-isp-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--kng-isp-current-marker-size) 1fr;
+    column-gap: var(--kng-isp-marker-gap);
+    align-items: flex-start;
+    z-index: 1;
+}
+
+.king-addons-isp-layout-horizontal .king-addons-isp-step {
+    flex: 0 0 var(--kng-isp-step-min-width);
+    min-width: var(--kng-isp-step-min-width);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.king-addons-isp-layout-horizontal .king-addons-isp-step__marker {
+    margin-bottom: var(--kng-isp-marker-gap);
+}
+
+.king-addons-isp-layout-horizontal.king-addons-isp-equal-yes .king-addons-isp-step {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.king-addons-isp-step__marker {
+    width: var(--kng-isp-current-marker-size);
+    height: var(--kng-isp-current-marker-size);
+    border-radius: 999px;
+    border: 1px solid var(--kng-isp-marker-border-color);
+    background: var(--kng-isp-marker-bg);
+    color: var(--kng-isp-marker-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    line-height: 1;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.king-addons-isp-markers-clickable .king-addons-isp-step__marker {
+    cursor: pointer;
+}
+
+.king-addons-isp-step.is-active .king-addons-isp-step__marker {
+    background: var(--kng-isp-marker-bg-active);
+    border-color: var(--kng-isp-marker-border-active);
+    color: var(--kng-isp-marker-color-active);
+}
+
+.king-addons-isp-step.is-completed .king-addons-isp-step__marker {
+    background: var(--kng-isp-marker-bg-completed);
+    border-color: var(--kng-isp-marker-border-completed);
+    color: var(--kng-isp-marker-color-completed);
+}
+
+.king-addons-isp-completed-no .king-addons-isp-step.is-completed .king-addons-isp-step__marker {
+    background: var(--kng-isp-marker-bg);
+    border-color: var(--kng-isp-marker-border-color);
+    color: var(--kng-isp-marker-color);
+}
+
+.king-addons-isp-progress-dots .king-addons-isp-step__number {
+    display: none;
+}
+
+.king-addons-isp-step__body {
+    padding: var(--kng-isp-content-padding);
+}
+
+.king-addons-isp-card-yes .king-addons-isp-step__body {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.king-addons-isp-card-no .king-addons-isp-step__body {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.king-addons-isp-animate-active .king-addons-isp-step__body {
+    transition: transform var(--kng-isp-active-duration) var(--kng-isp-active-ease),
+        box-shadow var(--kng-isp-active-duration) var(--kng-isp-active-ease),
+        border-color var(--kng-isp-active-duration) var(--kng-isp-active-ease);
+}
+
+.king-addons-isp-animate-active .king-addons-isp-step.is-active .king-addons-isp-step__body {
+    transform: translateY(-2px);
+}
+
+.king-addons-isp-step__button {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--kng-isp-icon-gap);
+    width: 100%;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.king-addons-isp-step__button:focus-visible {
+    outline: 2px solid var(--kng-isp-marker-bg-active);
+    outline-offset: 4px;
+}
+
+.king-addons-isp-step__heading {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--kng-isp-icon-gap);
+}
+
+.king-addons-isp-icon-top {
+    flex-direction: column;
+}
+
+.king-addons-isp-step__icon {
+    color: var(--kng-isp-icon-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-isp-step.is-active .king-addons-isp-step__icon {
+    color: var(--kng-isp-icon-color-active);
+}
+
+.king-addons-isp-step.is-completed .king-addons-isp-step__icon {
+    color: var(--kng-isp-icon-color-completed);
+}
+
+.king-addons-isp-step__icon i,
+.king-addons-isp-step__icon svg {
+    width: var(--kng-isp-icon-size);
+    height: var(--kng-isp-icon-size);
+    font-size: var(--kng-isp-icon-size);
+}
+
+.king-addons-isp-step__text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.king-addons-isp-step__label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--kng-isp-label-color);
+}
+
+.king-addons-isp-progress-numbers .king-addons-isp-step__label {
+    display: none;
+}
+
+.king-addons-isp-step__title {
+    font-weight: 600;
+    margin: 0;
+}
+
+.king-addons-isp-step__description {
+    margin: 0;
+    color: #4b5563;
+}
+
+.king-addons-isp-step__panel {
+    display: none;
+    margin-top: 12px;
+}
+
+.king-addons-isp-step__panel[hidden] {
+    display: none;
+}
+
+.king-addons-isp-expand-none .king-addons-isp-step__panel,
+.king-addons-isp-step.is-open .king-addons-isp-step__panel {
+    display: block;
+}
+
+.king-addons-isp-step__details > *:first-child {
+    margin-top: 0;
+}
+
+.king-addons-isp-step__details > *:last-child {
+    margin-bottom: 0;
+}
+
+.king-addons-isp-step__points {
+    margin: 12px 0 0;
+    padding-left: 18px;
+}
+
+.king-addons-isp-step__points li {
+    margin: 6px 0;
+}
+
+.king-addons-isp-step__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    color: #111827;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-isp-align-center .king-addons-isp-step__button {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-isp-align-center .king-addons-isp-step__heading,
+.king-addons-isp-align-center .king-addons-isp-step__text {
+    align-items: center;
+}
+
+.king-addons-isp-align-center .king-addons-isp-step__panel {
+    text-align: center;
+}
+
+.king-addons-isp-align-center .king-addons-isp-step__body {
+    text-align: center;
+}
+
+.king-addons-isp-layout-horizontal.king-addons-isp-align-center .king-addons-isp-step {
+    align-items: center;
+}
+
+.king-addons-isp-reveal .king-addons-isp-step.is-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity var(--kng-isp-reveal-duration) var(--kng-isp-reveal-ease),
+        transform var(--kng-isp-reveal-duration) var(--kng-isp-reveal-ease);
+}
+
+.king-addons-isp-reveal-slide .king-addons-isp-step.is-reveal {
+    transform: translateY(24px);
+}
+
+.king-addons-isp-reveal-scale .king-addons-isp-step.is-reveal {
+    transform: scale(0.96);
+}
+
+.king-addons-isp-reveal .king-addons-isp-step.is-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+.king-addons-isp-reduced-full .king-addons-isp-step.is-reveal,
+.king-addons-isp-reduced-full .king-addons-isp-step.is-revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+
+.king-addons-isp-reduced-full .king-addons-isp-progress__fill,
+.king-addons-isp-reduced-full .king-addons-isp__list::after,
+.king-addons-isp-reduced-full .king-addons-isp-step__body {
+    transition: none;
+}
+
+.king-addons-isp-reduced-minimal {
+    --kng-isp-progress-duration: 150ms;
+    --kng-isp-active-duration: 150ms;
+}
+
+.king-addons-isp-reduced-minimal .king-addons-isp-step.is-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+
+@media (max-width: 767px) {
+    .king-addons-isp-mobile-vertical.king-addons-isp-layout-horizontal .king-addons-isp__list {
+        display: grid;
+        row-gap: var(--kng-isp-gap);
+    }
+
+    .king-addons-isp-mobile-vertical.king-addons-isp-layout-horizontal .king-addons-isp-step {
+        display: grid;
+        grid-template-columns: var(--kng-isp-current-marker-size) 1fr;
+        column-gap: var(--kng-isp-marker-gap);
+        align-items: flex-start;
+    }
+
+    .king-addons-isp-mobile-vertical.king-addons-isp-layout-horizontal .king-addons-isp__list::before,
+    .king-addons-isp-mobile-vertical.king-addons-isp-layout-horizontal .king-addons-isp__list::after {
+        top: calc(var(--kng-isp-current-marker-size) / 2);
+        bottom: calc(var(--kng-isp-current-marker-size) / 2);
+        left: calc(var(--kng-isp-current-marker-size) / 2 + var(--kng-isp-line-offset));
+        width: var(--kng-isp-line-thickness);
+        height: auto;
+    }
+
+    .king-addons-isp-mobile-vertical.king-addons-isp-layout-horizontal .king-addons-isp__list::after {
+        transform-origin: top;
+    }
+
+    .king-addons-isp-sticky-compact .king-addons-isp__sticky {
+        padding: 8px 0;
+    }
+}
+
+body.elementor-editor-active .king-addons-isp--sticky .king-addons-isp__sticky {
+    position: static;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-interactive-steps:not(.king-addons-isp-reduced-off) * {
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+    }
+}

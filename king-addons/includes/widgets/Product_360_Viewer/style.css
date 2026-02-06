@@ -1,0 +1,171 @@
+.king-addons-product-360-viewer {
+    position: relative;
+    width: 100%;
+    background-color: #f7f7f7;
+    overflow: hidden;
+}
+
+.king-addons-product-360-viewer__canvas {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--ka-360-aspect, 1.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.king-addons-product-360-viewer__frame {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 180ms ease-out;
+    user-select: none;
+    pointer-events: none;
+    touch-action: none;
+}
+
+.king-addons-product-360-viewer--zoomed .king-addons-product-360-viewer__frame {
+    transform: scale(var(--ka-360-zoom-scale, 1.35));
+    cursor: grab;
+}
+
+.king-addons-product-360-viewer__loader,
+.king-addons-product-360-viewer__hint,
+.king-addons-product-360-viewer__progress,
+.king-addons-product-360-viewer__zoom {
+    position: absolute;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.king-addons-product-360-viewer__loader {
+    inset: 12px;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.king-addons-product-360-viewer__hint {
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.king-addons-product-360-viewer__progress {
+    top: 12px;
+    left: 12px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border-radius: 6px;
+}
+
+.king-addons-product-360-viewer__zoom {
+    top: 12px;
+    right: 12px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 160ms ease;
+}
+
+.king-addons-product-360-viewer__zoom:hover,
+.king-addons-product-360-viewer__zoom:focus-visible {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.king-addons-product-360-viewer--loading .king-addons-product-360-viewer__frame {
+    opacity: 0.65;
+}
+
+.king-addons-product-360-viewer__hotspots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.king-addons-product-360-viewer__hotspot {
+    position: absolute;
+    width: var(--ka-360-hotspot-size, 14px);
+    height: var(--ka-360-hotspot-size, 14px);
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 160ms ease;
+}
+
+.king-addons-product-360-viewer__hotspot.is-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.king-addons-product-360-viewer__hotspot-dot {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #ff6d34;
+    box-shadow: 0 0 0 6px rgba(255, 109, 52, 0.22);
+    display: block;
+    flex-shrink: 0;
+}
+
+.king-addons-product-360-viewer__hotspot-label {
+    background: rgba(18, 19, 20, 0.82);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+    .king-addons-product-360-viewer__hint {
+        bottom: 10px;
+    }
+
+    .king-addons-product-360-viewer__progress {
+        top: 10px;
+        left: 10px;
+    }
+
+    .king-addons-product-360-viewer__zoom {
+        top: 10px;
+        right: 10px;
+    }
+
+    .king-addons-product-360-viewer__hotspot-label {
+        font-size: 11px;
+    }
+}
+
+
+
+

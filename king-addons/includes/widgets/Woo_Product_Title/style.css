@@ -1,0 +1,31 @@
+.ka-woo-product-title {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.ka-woo-product-title--preset-hero {
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+.ka-woo-product-title--preset-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ka-woo-product-title--preset-compact {
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+}
+
+
+
+
+
+

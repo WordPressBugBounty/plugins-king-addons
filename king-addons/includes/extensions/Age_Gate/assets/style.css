@@ -1,0 +1,317 @@
+/**
+ * King Addons Age Gate Frontend Styles
+ */
+
+/* ========== Base Container ========== */
+.king-addons-age-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.king-addons-age-gate--visible {
+    display: flex;
+}
+
+/* ========== Overlay ========== */
+.king-addons-age-gate__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--ka-age-overlay, #0d0d0d);
+    opacity: var(--ka-age-overlay-opacity, 0.7);
+    transition: opacity 0.25s ease;
+}
+
+/* ========== Card ========== */
+.king-addons-age-gate__card {
+    position: relative;
+    background: var(--ka-age-card-bg, #ffffff);
+    width: calc(100% - 32px);
+    max-width: var(--ka-age-card-width, 520px);
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    color: var(--ka-age-text, #111827);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+}
+
+.king-addons-age-gate__card--bottom {
+    align-self: flex-end;
+    margin-bottom: 32px;
+}
+
+/* ========== Content ========== */
+.king-addons-age-gate__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ========== Logo ========== */
+.king-addons-age-gate__logo {
+    max-height: 50px;
+    width: auto;
+    margin: 0 auto 8px;
+    object-fit: contain;
+}
+
+/* ========== Typography ========== */
+.king-addons-age-gate__title {
+    margin: 0;
+    font-size: var(--ka-age-title-size, 26px);
+    font-weight: var(--ka-age-title-weight, 700);
+    line-height: 1.2;
+    color: inherit;
+}
+
+.king-addons-age-gate__subtitle {
+    margin: 0;
+    font-size: var(--ka-age-body-size, 16px);
+    font-weight: var(--ka-age-body-weight, 400);
+    line-height: 1.6;
+    opacity: 0.85;
+}
+
+/* ========== Buttons ========== */
+.king-addons-age-gate__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+    justify-content: center;
+}
+
+.king-addons-age-gate__button {
+    flex: 1 1 140px;
+    max-width: 200px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.king-addons-age-gate__button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 3px;
+}
+
+.king-addons-age-gate__button:active {
+    transform: scale(0.98);
+}
+
+/* Allow button */
+.king-addons-age-gate__button--allow {
+    color: var(--ka-age-btn-yes-color, #ffffff);
+    background: var(--ka-age-btn-yes-bg, #10b981);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.king-addons-age-gate__button--allow:hover {
+    background: var(--ka-age-btn-yes-hover-bg, var(--ka-age-btn-yes-bg, #0f9c75));
+    color: var(--ka-age-btn-yes-hover-color, var(--ka-age-btn-yes-color, #ffffff));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35);
+}
+
+/* Deny button */
+.king-addons-age-gate__button--deny {
+    color: var(--ka-age-btn-no-color, #ffffff);
+    background: var(--ka-age-btn-no-bg, #ef4444);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
+}
+
+.king-addons-age-gate__button--deny:hover {
+    background: var(--ka-age-btn-no-hover-bg, var(--ka-age-btn-no-bg, #d92d20));
+    color: var(--ka-age-btn-no-hover-color, var(--ka-age-btn-no-color, #ffffff));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(239, 68, 68, 0.3);
+}
+
+/* ========== Message ========== */
+.king-addons-age-gate__message {
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.08);
+    color: #b91c1c;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ========== Form Fields ========== */
+.king-addons-age-gate__field-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.king-addons-age-gate__input,
+.king-addons-age-gate__select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    font-size: 16px;
+    background: #fff;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.king-addons-age-gate__input:focus,
+.king-addons-age-gate__select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.king-addons-age-gate__input::placeholder {
+    color: #9ca3af;
+}
+
+/* ========== Consent Checkbox ========== */
+.king-addons-age-gate__consent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.king-addons-age-gate__consent input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2563eb;
+}
+
+/* ========== Elementor Template ========== */
+.king-addons-age-gate__template {
+    margin-bottom: 12px;
+}
+
+/* ========== Background Image ========== */
+.king-addons-age-gate__background {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+/* ========== Animations ========== */
+.king-addons-age-gate--animate-fade .king-addons-age-gate__card {
+    animation: ka-age-fade 0.35s ease-out;
+}
+
+.king-addons-age-gate--animate-slide-up .king-addons-age-gate__card {
+    animation: ka-age-slide-up 0.4s ease-out;
+}
+
+.king-addons-age-gate--animate-slide-down .king-addons-age-gate__card {
+    animation: ka-age-slide-down 0.4s ease-out;
+}
+
+.king-addons-age-gate--animate-zoom .king-addons-age-gate__card {
+    animation: ka-age-zoom 0.35s ease-out;
+}
+
+@keyframes ka-age-fade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ka-age-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ka-age-slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ka-age-zoom {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========== Accessibility ========== */
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-age-gate__card,
+    .king-addons-age-gate__overlay,
+    .king-addons-age-gate__button {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 600px) {
+    .king-addons-age-gate__card {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+
+    .king-addons-age-gate__title {
+        font-size: calc(var(--ka-age-title-size, 26px) * 0.85);
+    }
+
+    .king-addons-age-gate__buttons {
+        flex-direction: column;
+    }
+    
+    .king-addons-age-gate__button {
+        max-width: none;
+        width: 100%;
+    }
+    
+    .king-addons-age-gate__field-grid {
+        max-width: none;
+    }
+}
+
+/* ========== Portal Container ========== */
+.king-addons-age-gate__portal {
+    position: fixed;
+    z-index: 999998;
+    pointer-events: none;
+}

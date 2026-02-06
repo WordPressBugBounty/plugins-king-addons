@@ -1,0 +1,62 @@
+.ka-woo-product-atc {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ka-woo-product-atc__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ka-woo-product-atc__button.is-loading {
+    opacity: 0.75;
+    cursor: progress;
+}
+
+.ka-woo-product-atc__button.is-success {
+    box-shadow: 0 0 0 1px #2ecc71 inset;
+}
+
+.ka-woo-product-atc__button.is-error {
+    box-shadow: 0 0 0 1px #e74c3c inset;
+}
+
+.ka-woo-product-atc__qty input[type="number"] {
+    width: 72px;
+    padding: 8px;
+}
+
+.ka-woo-product-atc__notice {
+    margin-top: 8px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.ka-woo-product-atc__state {
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+}
+
+.ka-woo-product-atc__state.is-visible {
+    display: block;
+}
+
+.ka-woo-product-atc__state[data-state="success"] {
+    color: #2ecc71;
+}
+
+.ka-woo-product-atc__state[data-state="error"] {
+    color: #e74c3c;
+}
+
+
+
+
+
+

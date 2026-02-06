@@ -1,0 +1,27 @@
+.ka-woo-my-account-address {
+    width: 100%;
+    display: grid;
+    gap: 12px;
+}
+
+.ka-woo-my-account-address .woocommerce-Addresses .woocommerce-Address {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px;
+    background: #fff;
+    box-shadow: 0 8px 16px rgba(17, 24, 39, 0.08);
+}
+
+.ka-woo-my-account-address .woocommerce-Addresses .woocommerce-Address header {
+    margin-bottom: 8px;
+}
+
+.ka-woo-my-account-address .edit {
+    margin-top: 8px;
+}
+
+
+
+
+
+

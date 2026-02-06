@@ -28,7 +28,7 @@ class Magazine_Grid extends Widget_Base
 
     public function get_title()
     {
-        return esc_html__('Magazine Grid & Slider/Carousel', 'king-addons');
+        return esc_html__('Magazine Grid & Slider', 'king-addons');
     }
 
     public function get_icon()

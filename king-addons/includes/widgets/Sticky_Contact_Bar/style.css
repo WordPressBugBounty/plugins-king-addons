@@ -1,0 +1,124 @@
+.king-addons-sticky-contact-bar {
+    position: fixed;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 240px;
+    max-width: 90vw;
+    padding: 14px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.16);
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-sticky-contact-bar.is-offline {
+    opacity: 0.96;
+}
+
+.king-addons-sticky-contact-bar__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.king-addons-sticky-contact-bar__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.king-addons-sticky-contact-bar.is-offline .king-addons-sticky-contact-bar__dot {
+    background-color: #ef4444;
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.12);
+}
+
+.king-addons-sticky-contact-bar__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.king-addons-sticky-contact-bar__note {
+    display: none;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+    padding: 8px 10px;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+}
+
+.king-addons-sticky-contact-bar__note.is-visible {
+    display: block;
+}
+
+.king-addons-sticky-contact-bar__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.king-addons-sticky-contact-bar__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid #0f172a;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.king-addons-sticky-contact-bar__item:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+    transform: translateY(-1px);
+}
+
+.king-addons-sticky-contact-bar__item.is-hidden {
+    display: none;
+}
+
+.king-addons-sticky-contact-bar__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+}
+
+.king-addons-sticky-contact-bar__label {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.king-addons-sticky-contact-bar.no-labels .king-addons-sticky-contact-bar__label {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .king-addons-sticky-contact-bar {
+        width: 88vw;
+        right: 6vw;
+        left: 6vw;
+    }
+}
+
+
+
+

@@ -1,0 +1,37 @@
+.king-addons-active-filters__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.king-addons-active-filters__item {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+}
+
+.king-addons-active-filters__item:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.king-addons-active-filters__item::after {
+  content: '✕';
+  font-size: 11px;
+  color: #6b7280;
+}
+
+
+
+
+
+

@@ -24,6 +24,9 @@ final class RegisterAssets
         self::registerElementorStyles();
         self::registerElementorScripts();
 
+        // Register Pro assets if available
+        self::registerProAssets();
+
         // Register general files
         self::registerLibrariesFiles();
     }
@@ -109,7 +112,7 @@ final class RegisterAssets
         if(KING_ADDONS_WGT_FORM_BUILDER) {
             wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-script', 'KingAddonsFormBuilderData', [
                 'ajaxurl' => admin_url('admin-ajax.php'),
-                'nonce'   => wp_create_nonce('king-addons-js'),
+                // Security fix: Remove public nonce exposure - generate dynamically in AJAX handlers
                 'input_empty' => esc_html__('Please fill out this field', 'king-addons'),
                 'select_empty' => esc_html__('Nothing selected', 'king-addons'),
                 'file_empty' => esc_html__('Please upload a file', 'king-addons'),
@@ -118,11 +121,11 @@ final class RegisterAssets
             ]);
         }
 
-        // Localize form builder script
+        // Localize form builder script - Security fix: Remove public nonce exposure
         if (KING_ADDONS_WGT_FORM_BUILDER) {
             wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-script', 'king_addons_form_builder_vars', [
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('king_addons_form_builder_nonce'),
+                // Security fix: Remove public nonce exposure - generate dynamically in AJAX handlers
                 'required_text' => esc_html__('This field is required', 'king-addons'),
                 'email_text' => esc_html__('Enter a valid email', 'king-addons'),
                 'select_empty' => esc_html__('Nothing selected', 'king-addons'),
@@ -162,6 +165,77 @@ final class RegisterAssets
             'wishlistPageURL' => get_permalink(get_option('king_addons_wishlist_page')),
         ]);
 
+    }
+/**
+     * Register Pro widget assets when premium is available
+     */
+    function registerProAssets(): void
+    {
+        // Only register Pro assets if Freemius premium is available
+        if (
+            !function_exists('king_addons_freemius') ||
+            !king_addons_freemius()->can_use_premium_code__premium_only() ||
+            !defined('KING_ADDONS_PRO_PATH') ||
+            !defined('KING_ADDONS_PRO_URL')
+        ) {
+            return;
+        }
+
+        // In Elementor editor/preview we want instant reflection of changes,
+        // even when WP_DEBUG/SCRIPT_DEBUG are off (browser cache is aggressive).
+        $is_elementor_edit_or_preview = false;
+        if (defined('ELEMENTOR_VERSION') && class_exists('\\Elementor\\Plugin')) {
+            try {
+                $elementor = \Elementor\Plugin::$instance;
+                $is_elementor_edit_or_preview = (
+                    (isset($elementor->editor) && method_exists($elementor->editor, 'is_edit_mode') && $elementor->editor->is_edit_mode())
+                    || (isset($elementor->preview) && method_exists($elementor->preview, 'is_preview_mode') && $elementor->preview->is_preview_mode())
+                );
+            } catch (\Throwable $e) {
+                $is_elementor_edit_or_preview = false;
+            }
+        }
+
+        // Register Pro assets for widgets that have Pro versions
+        foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget_array) {
+            if (empty($widget_array['has-pro'])) {
+                continue;
+            }
+
+            $widget_class = $widget_array['php-class'];
+            $pro_widget_dir = KING_ADDONS_PRO_PATH . 'includes/widgets/' . $widget_class . '_Pro/';
+
+            // Register Pro CSS if exists
+            $pro_css_path = $pro_widget_dir . 'style.css';
+            if (file_exists($pro_css_path)) {
+                $use_filemtime = $is_elementor_edit_or_preview || (defined('WP_DEBUG') && WP_DEBUG) || (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG);
+                $pro_css_ver = ($use_filemtime && function_exists('filemtime'))
+                    ? (string) filemtime($pro_css_path)
+                    : (defined('KING_ADDONS_PRO_VERSION') ? KING_ADDONS_PRO_VERSION : KING_ADDONS_VERSION);
+                wp_register_style(
+                    KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-pro-style',
+                    KING_ADDONS_PRO_URL . 'includes/widgets/' . $widget_class . '_Pro/style.css',
+                    null,
+                    $pro_css_ver
+                );
+            }
+
+            // Register Pro JS if exists
+            $pro_js_path = $pro_widget_dir . 'script.js';
+            if (file_exists($pro_js_path)) {
+                $use_filemtime = $is_elementor_edit_or_preview || (defined('WP_DEBUG') && WP_DEBUG) || (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG);
+                $pro_js_ver = ($use_filemtime && function_exists('filemtime'))
+                    ? (string) filemtime($pro_js_path)
+                    : (defined('KING_ADDONS_PRO_VERSION') ? KING_ADDONS_PRO_VERSION : KING_ADDONS_VERSION);
+                wp_register_script(
+                    KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-pro-script',
+                    KING_ADDONS_PRO_URL . 'includes/widgets/' . $widget_class . '_Pro/script.js',
+                    array('jquery'),
+                    $pro_js_ver,
+                    true
+                );
+            }
+        }
     }
 }
 

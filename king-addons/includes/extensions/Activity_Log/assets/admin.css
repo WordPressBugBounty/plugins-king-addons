@@ -1,0 +1,387 @@
+/* Activity Log admin styles */
+
+.kng-activity-tabs .ka-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.kng-activity-dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.kng-activity-chart {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
+    align-items: end;
+    gap: 10px;
+    min-height: 180px;
+}
+
+.kng-activity-bar {
+    display: grid;
+    align-items: end;
+    justify-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.kng-activity-bar::before {
+    content: '';
+    width: 100%;
+    height: var(--kng-bar-height, 0%);
+    min-height: 6px;
+    background: linear-gradient(180deg, rgba(0, 113, 227, 0.9), rgba(0, 113, 227, 0.4));
+    border-radius: 999px;
+    transition: height 0.3s ease;
+}
+
+.kng-activity-bar-count {
+    font-size: 11px;
+    color: #6e6e73;
+}
+
+.kng-activity-bar-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #a1a1a6;
+}
+
+.kng-activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.kng-activity-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.kng-activity-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Inputs/selects in Activity Log UI (filters + alert/settings fields)
+   Some templates don't use .ka-row-field, so we style them explicitly. */
+.kng-activity-admin .kng-activity-filters input[type="search"],
+.kng-activity-admin .kng-activity-filters input[type="text"],
+.kng-activity-admin .kng-activity-filters input[type="date"],
+.kng-activity-admin .kng-activity-filters input[type="number"],
+.kng-activity-admin .kng-activity-filters select,
+.kng-activity-admin .kng-field input[type="text"],
+.kng-activity-admin .kng-field input[type="number"],
+.kng-activity-admin .kng-field input[type="email"],
+.kng-activity-admin .kng-field input[type="password"],
+.kng-activity-admin .kng-field textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background: #fff;
+    color: #1d1d1f;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.kng-activity-admin .kng-activity-filters input:focus,
+.kng-activity-admin .kng-activity-filters select:focus,
+.kng-activity-admin .kng-field input:focus,
+.kng-activity-admin .kng-field textarea:focus {
+    outline: none;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+}
+
+.kng-activity-admin .kng-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: inherit;
+    margin-bottom: 8px;
+}
+
+.kng-activity-admin .kng-field small {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6e6e73;
+}
+
+body.ka-v3-dark .kng-activity-admin .kng-activity-filters input,
+body.ka-v3-dark .kng-activity-admin .kng-activity-filters select,
+body.ka-v3-dark .kng-activity-admin .kng-field input,
+body.ka-v3-dark .kng-activity-admin .kng-field textarea {
+    background: #2c2c2e;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .kng-activity-admin .kng-activity-filters input:focus,
+body.ka-v3-dark .kng-activity-admin .kng-activity-filters select:focus,
+body.ka-v3-dark .kng-activity-admin .kng-field input:focus,
+body.ka-v3-dark .kng-activity-admin .kng-field textarea:focus {
+    border-color: #0a84ff;
+    box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.2);
+}
+
+body.ka-v3-dark .kng-activity-admin .kng-field small {
+    color: #a1a1a6;
+}
+
+/* Select dropdown arrow (match Custom Cursor admin UI)
+   Keep this narrowly scoped to avoid conflicts with other select skins. */
+.kng-activity-admin .ka-row-field select:not([multiple]):not(.ka-al-select),
+.kng-activity-admin .kng-activity-filters select:not([multiple]):not(.ka-al-select) {
+    padding-right: 44px !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%231d1d1f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 18px 18px !important;
+}
+
+body.ka-v3-dark .kng-activity-admin .ka-row-field select:not([multiple]):not(.ka-al-select),
+body.ka-v3-dark .kng-activity-admin .kng-activity-filters select:not([multiple]):not(.ka-al-select) {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+.kng-activity-filters input,
+.kng-activity-filters select {
+    min-width: 160px;
+}
+
+.kng-activity-filter-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.kng-activity-muted {
+    display: block;
+    font-size: 11px;
+    color: #6e6e73;
+}
+
+.kng-activity-table small {
+    display: block;
+    margin-top: 4px;
+}
+
+.kng-severity-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.kng-severity-info {
+    background: rgba(0, 113, 227, 0.12);
+    color: #0071e3;
+}
+
+.kng-severity-notice {
+    background: rgba(52, 199, 89, 0.12);
+    color: #34c759;
+}
+
+.kng-severity-warning {
+    background: rgba(255, 159, 10, 0.16);
+    color: #ff9f0a;
+}
+
+.kng-severity-critical {
+    background: rgba(255, 59, 48, 0.15);
+    color: #ff3b30;
+}
+
+.kng-activity-pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.kng-activity-pagination a {
+    display: inline-flex;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+    font-size: 13px;
+}
+
+.kng-activity-pagination a.active {
+    background: #0071e3;
+    color: #fff;
+    border-color: #0071e3;
+}
+
+.kng-activity-drawer {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 100000;
+}
+
+.kng-activity-drawer.is-open {
+    display: block;
+}
+
+.kng-activity-drawer-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.kng-activity-drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(520px, 96vw);
+    height: 100%;
+    background: #fff;
+    padding: 24px;
+    overflow-y: auto;
+    box-shadow: -20px 0 40px rgba(0, 0, 0, 0.12);
+}
+
+.kng-activity-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.kng-activity-drawer-close {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.kng-activity-drawer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.kng-activity-section {
+    margin-bottom: 18px;
+}
+
+.kng-activity-json {
+    background: rgba(0, 0, 0, 0.04);
+    padding: 12px;
+    border-radius: 12px;
+    max-height: 220px;
+    overflow: auto;
+}
+
+.kng-activity-alert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.kng-activity-pro-list {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.kng-activity-module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.kng-activity-exclusions {
+    display: grid;
+    gap: 12px;
+}
+
+.kng-activity-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.kng-pro-input {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.kng-pro-input .ka-pro-badge {
+    position: absolute;
+    right: 10px;
+}
+
+body.ka-v3-dark .kng-activity-drawer-panel {
+    background: #0f0f12;
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .kng-activity-bar-count,
+body.ka-v3-dark .kng-activity-muted,
+body.ka-v3-dark .kng-activity-bar-label {
+    color: #a1a1a6;
+}
+
+body.ka-v3-dark .kng-activity-list li,
+body.ka-v3-dark .kng-activity-json,
+body.ka-v3-dark .kng-activity-pagination a,
+body.ka-v3-dark .kng-activity-drawer-panel {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+body.ka-v3-dark .kng-activity-pagination a {
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .kng-activity-pagination a.active {
+    background: #0071e3;
+    border-color: #0071e3;
+    color: #fff;
+}
+
+body.ka-v3-dark .kng-activity-drawer-overlay {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 1200px) {
+    .kng-activity-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kng-activity-drawer-grid {
+        grid-template-columns: 1fr;
+    }
+}

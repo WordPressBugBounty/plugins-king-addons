@@ -59,7 +59,12 @@ class Team_Member_Slider extends Widget_Base {
         return ['team', 'members', 'slider', 'carousel', 'staff', 'profile'];
     }
 
-    protected function register_controls(): void {
+        public function get_custom_help_url()
+        {
+            return 'mailto:bug@kingaddons.com?subject=Bug Report - King Addons&body=Please describe the issue';
+        }
+
+        protected function register_controls(): void {
         // Slider behavior settings
         $this->start_controls_section(
             'section_slider_settings',

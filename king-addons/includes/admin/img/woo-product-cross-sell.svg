@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
+  <rect x="8" y="30" width="25" height="45" rx="3" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <rect x="12" y="35" width="17" height="18" rx="2" fill="url(#g)" opacity="0.3"/>
+  <rect x="12" y="58" width="14" height="3" rx="1" fill="url(#g)" opacity="0.5"/>
+  <rect x="38" y="30" width="25" height="45" rx="3" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <rect x="42" y="35" width="17" height="18" rx="2" fill="url(#g)" opacity="0.3"/>
+  <rect x="42" y="58" width="14" height="3" rx="1" fill="url(#g)" opacity="0.5"/>
+  <rect x="68" y="30" width="25" height="45" rx="3" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <rect x="72" y="35" width="17" height="18" rx="2" fill="url(#g)" opacity="0.3"/>
+  <rect x="72" y="58" width="14" height="3" rx="1" fill="url(#g)" opacity="0.5"/>
+  <path d="M40 15h20M50 5v20" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/>
+</svg>

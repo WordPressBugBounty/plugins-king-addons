@@ -1,0 +1,423 @@
+/**
+ * Fomo Notifications - Frontend CSS
+ * Lightweight notification styles
+ *
+ * @package King_Addons
+ */
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+
+:root {
+    --kng-fomo-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    --kng-fomo-z-index: 99999;
+}
+
+/* ============================================
+   Notification Container
+   ============================================ */
+
+.kng-fomo-notification-wrap {
+    position: fixed;
+    z-index: var(--kng-fomo-z-index, 99999);
+    pointer-events: none;
+    font-family: var(--kng-fomo-font);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Positions */
+.kng-fomo-notification-wrap--bottom-left {
+    bottom: 24px;
+    left: 24px;
+}
+
+.kng-fomo-notification-wrap--bottom-right {
+    bottom: 24px;
+    right: 24px;
+}
+
+.kng-fomo-notification-wrap--top-left {
+    top: 24px;
+    left: 24px;
+}
+
+.kng-fomo-notification-wrap--top-right {
+    top: 24px;
+    right: 24px;
+}
+
+.kng-fomo-notification-wrap--bottom-center {
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.kng-fomo-notification-wrap--top-center {
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* ============================================
+   Notification Card
+   ============================================ */
+
+.kng-fomo-notification {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--kng-fomo-bg, #ffffff);
+    color: var(--kng-fomo-text, #1d1d1f);
+    border-radius: var(--kng-fomo-radius, 16px);
+    max-width: 360px;
+    min-width: 300px;
+    pointer-events: auto;
+    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.kng-fomo-notification.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Shadow variant */
+.kng-fomo-notification--shadow {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Clickable */
+.kng-fomo-notification--clickable {
+    cursor: pointer;
+}
+
+.kng-fomo-notification--clickable:hover {
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   Animation Variants
+   ============================================ */
+
+/* Slide animation */
+.kng-fomo-notification--slide {
+    transform: translateX(-100%);
+}
+
+.kng-fomo-notification-wrap--bottom-right .kng-fomo-notification--slide,
+.kng-fomo-notification-wrap--top-right .kng-fomo-notification--slide {
+    transform: translateX(100%);
+}
+
+.kng-fomo-notification--slide.is-visible {
+    transform: translateX(0);
+}
+
+/* Fade animation */
+.kng-fomo-notification--fade {
+    transform: none;
+}
+
+/* Bounce animation */
+.kng-fomo-notification--bounce.is-visible {
+    animation: kng-fomo-bounce 0.5s ease;
+}
+
+@keyframes kng-fomo-bounce {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Scale animation */
+.kng-fomo-notification--scale {
+    transform: scale(0.8);
+}
+
+.kng-fomo-notification--scale.is-visible {
+    transform: scale(1);
+}
+
+/* ============================================
+   Notification Image
+   ============================================ */
+
+.kng-fomo-notification__image {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.kng-fomo-notification__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.kng-fomo-notification__image--avatar {
+    border-radius: 50%;
+}
+
+/* ============================================
+   Notification Content
+   ============================================ */
+
+.kng-fomo-notification__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.kng-fomo-notification__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--kng-fomo-text, #1d1d1f);
+    margin: 0 0 4px;
+    line-height: 1.4;
+}
+
+.kng-fomo-notification__message {
+    font-size: 13px;
+    color: var(--kng-fomo-text, #1d1d1f);
+    opacity: 0.75;
+    margin: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.kng-fomo-notification__time {
+    font-size: 11px;
+    color: var(--kng-fomo-accent, #0071e3);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.kng-fomo-notification__time svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* ============================================
+   Call to Action
+   ============================================ */
+
+.kng-fomo-notification__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #ffffff;
+    background: var(--kng-fomo-accent, #0071e3);
+    border-radius: 100px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.kng-fomo-notification__cta:hover {
+    opacity: 0.9;
+}
+
+.kng-fomo-notification__cta svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* ============================================
+   Close Button
+   ============================================ */
+
+.kng-fomo-notification__close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    padding: 0;
+}
+
+.kng-fomo-notification:hover .kng-fomo-notification__close {
+    opacity: 1;
+}
+
+.kng-fomo-notification__close:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.kng-fomo-notification__close svg {
+    width: 12px;
+    height: 12px;
+    color: var(--kng-fomo-text, #1d1d1f);
+    opacity: 0.6;
+}
+
+/* ============================================
+   Notification Bar (Top/Bottom Bar)
+   ============================================ */
+
+.kng-fomo-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: var(--kng-fomo-z-index, 99999);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background: var(--kng-fomo-bg, #1d1d1f);
+    color: var(--kng-fomo-text, #ffffff);
+    font-family: var(--kng-fomo-font);
+    font-size: 14px;
+    text-align: center;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.kng-fomo-bar--top {
+    top: 0;
+    transform: translateY(-100%);
+}
+
+.kng-fomo-bar--bottom {
+    bottom: 0;
+    top: auto;
+    transform: translateY(100%);
+}
+
+.kng-fomo-bar.is-visible {
+    transform: translateY(0);
+}
+
+.kng-fomo-bar__message {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.kng-fomo-bar__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--kng-fomo-bg, #1d1d1f);
+    background: var(--kng-fomo-text, #ffffff);
+    border-radius: 100px;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+}
+
+.kng-fomo-bar__cta:hover {
+    opacity: 0.9;
+}
+
+.kng-fomo-bar__close {
+    position: absolute;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    padding: 0;
+}
+
+.kng-fomo-bar__close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.kng-fomo-bar__close svg {
+    width: 14px;
+    height: 14px;
+    color: currentColor;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 480px) {
+    .kng-fomo-notification-wrap {
+        left: 12px !important;
+        right: 12px !important;
+        bottom: 12px !important;
+        top: auto !important;
+        transform: none !important;
+    }
+    
+    .kng-fomo-notification {
+        max-width: 100%;
+        min-width: auto;
+    }
+    
+    .kng-fomo-bar {
+        padding: 12px 48px 12px 16px;
+        font-size: 13px;
+        flex-wrap: wrap;
+    }
+    
+    .kng-fomo-bar__cta {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ============================================
+   Print - Hide notifications
+   ============================================ */
+
+@media print {
+    .kng-fomo-notification-wrap,
+    .kng-fomo-bar {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .kng-fomo-notification,
+    .kng-fomo-bar {
+        transition: opacity 0.15s ease;
+        transform: none !important;
+    }
+    
+    .kng-fomo-notification--bounce.is-visible {
+        animation: none;
+    }
+}

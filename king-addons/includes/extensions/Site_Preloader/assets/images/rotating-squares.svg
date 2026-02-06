@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <rect x="28" y="28" width="12" height="12" rx="2" fill="#f97316">
+    <animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="1.8s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="40" y="40" width="12" height="12" rx="2" fill="#f97316" opacity="0.6">
+    <animateTransform attributeName="transform" type="rotate" from="360 40 40" to="0 40 40" dur="1.8s" repeatCount="indefinite"/>
+  </rect>
+</svg>

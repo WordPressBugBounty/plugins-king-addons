@@ -97,6 +97,19 @@
                             // Skip if in elementor editor
                             if ($("body").hasClass("elementor-editor-active")) return;
 
+                            const normalizeSafeUrl = (rawUrl) => {
+                                if (!rawUrl || typeof rawUrl !== "string") return null;
+                                try {
+                                    const url = new URL(rawUrl, window.location.href);
+                                    if (url.protocol === "http:" || url.protocol === "https:") {
+                                        return url.href;
+                                    }
+                                } catch (e) {
+                                    // ignore
+                                }
+                                return null;
+                            };
+
                             // Hide the timer
                             if (dataActions.hasOwnProperty("hide-timer")) {
                                 countDownWrap.hide();
@@ -115,15 +128,20 @@
                                         .children(".elementor-widget-container")
                                         .children(messageSelector).length
                                 ) {
-                                    countDownWrap.after(
-                                        `<div class="king-addons-countdown-message">${dataActions["message"]}</div>`
-                                    );
+                                    const $msg = $("<div />", {
+                                        class: "king-addons-countdown-message",
+                                        text: String(dataActions["message"] ?? ""),
+                                    });
+                                    countDownWrap.after($msg);
                                 }
                             }
 
                             // Redirect
                             if (dataActions.hasOwnProperty("redirect")) {
-                                window.location.href = dataActions["redirect"];
+                                const destinationUrl = normalizeSafeUrl(dataActions["redirect"]);
+                                if (destinationUrl) {
+                                    window.location.href = destinationUrl;
+                                }
                             }
 
                             // Load a template (show the next .elementor section)

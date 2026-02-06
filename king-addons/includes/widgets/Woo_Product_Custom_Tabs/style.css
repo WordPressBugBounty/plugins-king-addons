@@ -1,0 +1,83 @@
+.ka-woo-custom-tabs {
+    display: grid;
+    gap: 12px;
+}
+
+.ka-woo-custom-tabs--tabs {
+    gap: 10px;
+}
+
+.ka-woo-custom-tabs__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ka-woo-custom-tabs__tab {
+    border: 1px solid #e0e0e0;
+    background: #f8f8f8;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ka-woo-custom-tabs__tab.is-active {
+    background: #fff;
+    border-color: #111;
+}
+
+.ka-woo-custom-tabs__panels {
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+}
+
+.ka-woo-custom-tabs__panel {
+    display: none;
+}
+
+.ka-woo-custom-tabs__panel.is-active {
+    display: block;
+}
+
+.ka-woo-custom-tabs__title {
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+
+.ka-woo-custom-tabs__content {
+    line-height: 1.6;
+}
+
+.ka-woo-custom-tabs--accordion .ka-woo-custom-tabs__item {
+    border: 1px solid #e0e0e0;
+}
+
+.ka-woo-custom-tabs__accordion-toggle {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    background: #f8f8f8;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.ka-woo-custom-tabs__accordion-toggle.is-active {
+    background: #fff;
+}
+
+.ka-woo-custom-tabs__accordion-body {
+    display: none;
+    padding: 12px;
+}
+
+.ka-woo-custom-tabs__item + .ka-woo-custom-tabs__item {
+    margin-top: 8px;
+}
+
+
+
+
+
+

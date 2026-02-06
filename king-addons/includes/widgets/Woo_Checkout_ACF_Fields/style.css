@@ -1,0 +1,23 @@
+.ka-woo-checkout-acf-fields {
+    display: grid;
+    gap: 12px;
+    padding: 12px 0;
+}
+
+.ka-woo-checkout-acf-fields__heading {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ka-woo-checkout-acf-fields label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+}
+
+
+
+
+

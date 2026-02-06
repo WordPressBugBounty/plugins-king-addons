@@ -1,0 +1,563 @@
+.king-addons-card-slider {
+    --kng-card-slider-nav-size: 44px;
+    --kng-card-slider-nav-icon-size: 12px;
+    --kng-card-slider-nav-gap: 12px;
+    --kng-card-slider-nav-offset: 25px;
+    --kng-card-slider-nav-padding: 12px;
+    --kng-card-slider-pagination-size: 8px;
+    --kng-card-slider-pagination-gap: 10px;
+    --kng-card-slider-pagination-offset: 14px;
+    --kng-card-slider-pagination-active-width: 22px;
+
+    --kng-badge-offset-x: 12px;
+    --kng-badge-offset-y: 12px;
+    --kng-badge-rotate: 0deg;
+
+    position: relative;
+}
+
+.king-addons-card-slider__track {
+    position: relative;
+    padding: 16px 16px 40px;
+    overflow: hidden;
+}
+
+.king-addons-card-slider__wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+.king-addons-card-slider__slide {
+    height: auto;
+}
+
+.king-addons-card-slider__slide[data-card-link] .king-addons-card-slider__card {
+    cursor: pointer;
+}
+
+.elementor-editor-active .king-addons-card-slider__slide[data-card-link] .king-addons-card-slider__card {
+    cursor: default;
+}
+
+.king-addons-card-slider__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: var(--kng-card-slider-card-shadow, 0 16px 40px rgba(17, 24, 39, 0.06));
+}
+
+.king-addons-card-slider__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.king-addons-card-slider__media {
+    position: relative;
+}
+
+.king-addons-card-slider__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background-color: #111827;
+    color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    box-shadow: 0 8px 18px rgba(17, 24, 39, 0.12);
+}
+
+.king-addons-card-slider__badge--tone-accent {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.king-addons-card-slider__badge--tone-neutral {
+    background-color: #f3f4f6;
+    color: #111827;
+    border-color: #e5e7eb;
+}
+
+.king-addons-card-slider__badge--tone-contrast {
+    background-color: #ffffff;
+    color: #111827;
+    border-color: #e5e7eb;
+}
+
+.king-addons-card-slider__badge-wrap {
+    position: absolute;
+    top: var(--kng-badge-offset-y);
+    left: var(--kng-badge-offset-x);
+    right: auto;
+    display: flex;
+    justify-content: flex-start;
+    pointer-events: none;
+    transform: rotate(var(--kng-badge-rotate));
+    transform-origin: center;
+}
+
+.king-addons-card-slider__badge-wrap .king-addons-card-slider__badge {
+    pointer-events: auto;
+}
+
+.king-addons-card-slider--badge-pos-center .king-addons-card-slider__badge-wrap {
+    left: 0;
+    right: 0;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-pos-right .king-addons-card-slider__badge-wrap {
+    left: auto;
+    right: var(--kng-badge-offset-x);
+    justify-content: flex-end;
+}
+
+.king-addons-card-slider--badge-shape-circle .king-addons-card-slider__badge {
+    border-radius: 999px;
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-square .king-addons-card-slider__badge {
+    border-radius: 6px;
+}
+
+.king-addons-card-slider--badge-shape-star .king-addons-card-slider__badge {
+    padding: 10px;
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-star-burst .king-addons-card-slider__badge {
+    padding: 10px;
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 60% 25%, 85% 15%, 72% 40%, 98% 50%, 72% 60%, 85% 85%, 60% 75%, 50% 100%, 40% 75%, 15% 85%, 28% 60%, 2% 50%, 28% 40%, 15% 15%, 40% 25%);
+    min-width: 42px;
+    min-height: 42px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-star-burst-8 .king-addons-card-slider__badge {
+    padding: 10px;
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 60% 20%, 80% 10%, 70% 30%, 90% 50%, 70% 70%, 80% 90%, 60% 80%, 50% 100%, 40% 80%, 20% 90%, 30% 70%, 10% 50%, 30% 30%, 20% 10%, 40% 20%);
+    min-width: 42px;
+    min-height: 42px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-star-burst-12 .king-addons-card-slider__badge {
+    padding: 10px;
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 58% 14%, 72% 8%, 68% 24%, 82% 18%, 78% 34%, 92% 32%, 82% 46%, 96% 50%, 82% 54%, 92% 68%, 78% 66%, 82% 82%, 68% 76%, 72% 92%, 58% 86%, 50% 100%, 42% 86%, 28% 92%, 32% 76%, 18% 82%, 22% 66%, 8% 68%, 18% 54%, 4% 50%, 18% 46%, 8% 32%, 22% 34%, 18% 18%, 32% 24%, 28% 8%, 42% 14%);
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-hexagon .king-addons-card-slider__badge {
+    border-radius: 0;
+    clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-pentagon .king-addons-card-slider__badge {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 38%, 81% 100%, 19% 100%, 0 38%);
+    min-width: 38px;
+    min-height: 38px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-diamond .king-addons-card-slider__badge {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0 50%);
+    min-width: 38px;
+    min-height: 38px;
+    justify-content: center;
+}
+
+.king-addons-card-slider--badge-shape-triangle .king-addons-card-slider__badge {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 100%, 0 100%);
+    min-width: 38px;
+    min-height: 38px;
+    justify-content: center;
+}
+
+.king-addons-card-slider__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+.king-addons-card-slider--text-align-left .king-addons-card-slider__body {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.king-addons-card-slider--text-align-center .king-addons-card-slider__body {
+    align-items: center;
+    text-align: center;
+}
+
+.king-addons-card-slider--text-align-right .king-addons-card-slider__body {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.king-addons-card-slider__title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #111827;
+}
+
+.king-addons-card-slider__description {
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.king-addons-card-slider__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    width: fit-content;
+    background-color: #111827;
+    color: #ffffff;
+    border: 1px solid #111827;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-card-slider--button-align-left .king-addons-card-slider__button {
+    align-self: flex-start;
+}
+
+.king-addons-card-slider--button-align-center .king-addons-card-slider__button {
+    align-self: center;
+}
+
+.king-addons-card-slider--button-align-right .king-addons-card-slider__button {
+    align-self: flex-end;
+}
+
+.king-addons-card-slider--button-text-align-left .king-addons-card-slider__button {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.king-addons-card-slider--button-text-align-center .king-addons-card-slider__button {
+    justify-content: center;
+    text-align: center;
+}
+
+.king-addons-card-slider--button-text-align-right .king-addons-card-slider__button {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.king-addons-card-slider__button:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(17, 24, 39, 0.18);
+}
+
+.king-addons-card-slider__navigation {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--kng-card-slider-nav-gap);
+    pointer-events: none;
+    margin-top: 0;
+}
+
+.king-addons-card-slider--nav-align-flex-start .king-addons-card-slider__navigation {
+    top: var(--kng-card-slider-nav-offset);
+    transform: none;
+}
+
+.king-addons-card-slider--nav-align-center .king-addons-card-slider__navigation {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.king-addons-card-slider--nav-align-flex-end .king-addons-card-slider__navigation {
+    top: auto;
+    bottom: var(--kng-card-slider-nav-offset);
+    transform: none;
+}
+
+.king-addons-card-slider--nav-inside .king-addons-card-slider__track {
+    padding-left: calc(var(--kng-card-slider-nav-size) + var(--kng-card-slider-nav-offset) + 8px);
+    padding-right: calc(var(--kng-card-slider-nav-size) + var(--kng-card-slider-nav-offset) + 8px);
+}
+
+.king-addons-card-slider__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--kng-card-slider-nav-size);
+    height: var(--kng-card-slider-nav-size);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    pointer-events: auto;
+}
+
+.king-addons-card-slider__arrow:after {
+    display: none;
+    content: none;
+}
+
+.king-addons-card-slider__arrow--prev {
+    left: var(--kng-card-slider-nav-offset);
+}
+
+.king-addons-card-slider__arrow--next {
+    right: var(--kng-card-slider-nav-offset);
+}
+
+.king-addons-card-slider--nav-outside .king-addons-card-slider__arrow--prev {
+    left: calc(-1 * var(--kng-card-slider-nav-offset) - (var(--kng-card-slider-nav-size) / 2));
+}
+
+.king-addons-card-slider--nav-outside .king-addons-card-slider__arrow--next {
+    right: calc(-1 * var(--kng-card-slider-nav-offset) - (var(--kng-card-slider-nav-size) / 2));
+}
+
+.king-addons-card-slider--nav-hide-tablet .king-addons-card-slider__navigation,
+.king-addons-card-slider--nav-hide-tablet .king-addons-card-slider__arrow {
+    display: none;
+}
+
+.king-addons-card-slider--nav-hide-mobile .king-addons-card-slider__navigation,
+.king-addons-card-slider--nav-hide-mobile .king-addons-card-slider__arrow {
+    display: none;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .king-addons-card-slider--nav-hide-tablet .king-addons-card-slider__navigation,
+    .king-addons-card-slider--nav-hide-tablet .king-addons-card-slider__arrow {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .king-addons-card-slider--nav-hide-mobile .king-addons-card-slider__navigation,
+    .king-addons-card-slider--nav-hide-mobile .king-addons-card-slider__arrow {
+        display: none;
+    }
+}
+
+.king-addons-card-slider__arrow:hover {
+    background-color: #111827;
+    color: #ffffff;
+    border-color: #111827;
+    box-shadow: 0 12px 28px rgba(17, 24, 39, 0.14);
+}
+
+.king-addons-card-slider__arrow-icon {
+    display: block;
+    width: var(--kng-card-slider-nav-icon-size);
+    height: var(--kng-card-slider-nav-icon-size);
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: rotate(135deg);
+}
+
+.king-addons-card-slider__arrow--next .king-addons-card-slider__arrow-icon {
+    transform: rotate(-45deg);
+}
+
+.king-addons-card-slider__pagination {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: var(--kng-card-slider-pagination-gap);
+    margin-top: var(--kng-card-slider-pagination-offset);
+    justify-content: center;
+}
+
+.king-addons-card-slider--pagination-align-flex-start .king-addons-card-slider__pagination {
+    justify-content: flex-start;
+}
+
+.king-addons-card-slider--pagination-align-center .king-addons-card-slider__pagination {
+    justify-content: center;
+}
+
+.king-addons-card-slider--pagination-align-flex-end .king-addons-card-slider__pagination {
+    justify-content: flex-end;
+}
+
+.king-addons-card-slider--pagination-inside .king-addons-card-slider__pagination {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--kng-card-slider-pagination-offset);
+    margin-top: 0;
+    pointer-events: none;
+}
+
+.king-addons-card-slider--pagination-inside .king-addons-card-slider__pagination .swiper-pagination-bullet {
+    pointer-events: auto;
+}
+
+.king-addons-card-slider__pagination .swiper-pagination-bullet {
+    width: var(--kng-card-slider-pagination-size);
+    height: var(--kng-card-slider-pagination-size);
+    background-color: #d1d5db;
+    opacity: 1;
+    border-radius: 999px;
+    transition: width 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.king-addons-card-slider__pagination .swiper-pagination-bullet-active {
+    width: var(--kng-card-slider-pagination-active-width);
+    background-color: #111827;
+}
+
+.king-addons-card-slider--nav-style-solid .king-addons-card-slider__arrow {
+    background-color: #111827;
+    color: #ffffff;
+    border-color: #111827;
+}
+
+.king-addons-card-slider--nav-style-ghost .king-addons-card-slider__arrow {
+    background-color: transparent;
+    color: #111827;
+    border-color: rgba(17, 24, 39, 0.28);
+    box-shadow: none;
+}
+
+.king-addons-card-slider--nav-style-minimal .king-addons-card-slider__arrow {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.king-addons-card-slider__navigation {
+    pointer-events: none;
+}
+
+.king-addons-card-slider--pagination-style-pill .king-addons-card-slider__pagination .swiper-pagination-bullet {
+    width: calc(var(--kng-card-slider-pagination-size) * 2);
+    border-radius: 999px;
+}
+
+.king-addons-card-slider--pagination-style-outlined .king-addons-card-slider__pagination .swiper-pagination-bullet {
+    background-color: transparent;
+    border: 1px solid #d1d5db;
+}
+
+.king-addons-card-slider--pagination-style-outlined .king-addons-card-slider__pagination .swiper-pagination-bullet-active {
+    background-color: #111827;
+    border-color: #111827;
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-lift .king-addons-card-slider__card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-lift:hover .king-addons-card-slider__card {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 38px rgba(17, 24, 39, 0.18);
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-zoom .king-addons-card-slider__media img {
+    transition: transform 0.25s ease;
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-zoom:hover .king-addons-card-slider__media img {
+    transform: scale(1.04);
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-tilt .king-addons-card-slider__card {
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    transform-style: preserve-3d;
+    transform-origin: center;
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-tilt:hover .king-addons-card-slider__card {
+    transform: translateY(-8px) rotate3d(1, 1, 0, 6deg) perspective(700px) translateX(-4px);
+    box-shadow: 0 22px 44px rgba(17, 24, 39, 0.22);
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-float .king-addons-card-slider__card {
+    transition: transform 0.32s ease, box-shadow 0.32s ease;
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-float:hover .king-addons-card-slider__card {
+    transform: translateY(-12px) scale(1.01);
+    box-shadow: 0 20px 32px rgba(17, 24, 39, 0.18);
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-scale-fade .king-addons-card-slider__card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.king-addons-card-slider__slide-inner.is-anim-hover-scale-fade:hover .king-addons-card-slider__card {
+    transform: scale(1.03);
+    box-shadow: 0 22px 44px rgba(17, 24, 39, 0.22);
+    opacity: 0.94;
+}
+
+.king-addons-card-slider .swiper {
+    padding-bottom: 0;
+}
+
+@media (max-width: 767px) {
+    .king-addons-card-slider__track {
+        padding: 12px 12px 36px;
+    }
+
+    .king-addons-card-slider__card {
+        padding: 16px;
+    }
+}
+
+
+
+
+
+
+
+

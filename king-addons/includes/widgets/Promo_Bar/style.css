@@ -1,0 +1,130 @@
+.king-addons-promo-bar {
+    width: 100%;
+    position: relative;
+    color: #0f172a;
+    background-color: #fef3c7;
+    border: 1px solid #fcd34d;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 9999;
+}
+
+.king-addons-promo-bar[data-position="top"] {
+    top: 0;
+}
+
+.king-addons-promo-bar[data-position="bottom"] {
+    bottom: 0;
+}
+
+.king-addons-promo-bar[data-sticky="yes"] {
+    position: sticky;
+}
+
+.king-addons-promo-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+}
+
+.king-addons-promo-bar__content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.king-addons-promo-bar__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    background-color: #f97316;
+    color: #fff;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.king-addons-promo-bar__title {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.king-addons-promo-bar__description {
+    color: #475569;
+    font-size: 15px;
+}
+
+.king-addons-promo-bar__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.king-addons-promo-bar__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: #111827;
+    color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #111827;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.king-addons-promo-bar__button:hover {
+    background-color: #0b1220;
+    border-color: #0b1220;
+}
+
+.king-addons-promo-bar__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.king-addons-promo-bar__close:hover {
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+.king-addons-promo-bar.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+}
+
+@media (max-width: 768px) {
+    .king-addons-promo-bar__inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .king-addons-promo-bar__actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+
+
+
+
+

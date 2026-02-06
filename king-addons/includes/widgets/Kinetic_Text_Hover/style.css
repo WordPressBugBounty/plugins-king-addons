@@ -1,0 +1,288 @@
+.king-addons-kinetic-text-hover {
+    --kng-kt-color: #0f172a;
+    --kng-kt-hover-color: #1d4ed8;
+    --kng-kt-stroke-color: rgba(15, 23, 42, 0.35);
+    --kng-kt-intensity: 0.35;
+    --kng-kt-speed: 420ms;
+    --kng-kt-out-speed: 320ms;
+    --kng-kt-ease: ease;
+    --kng-kt-underline-thickness: 2px;
+    --kng-kt-underline-offset: 6px;
+    --kng-kt-underline-radius: 4px;
+    --kng-kt-underline-color: currentColor;
+    --kng-kt-stroke-width: 1px;
+    --kng-kt-glow-blur: 12px;
+    --kng-kt-glow-intensity: 0.5;
+    --kng-kt-glow-color: currentColor;
+    --kng-kt-chroma-distance: 5px;
+    --kng-kt-chroma-opacity: 0.4;
+    --kng-kt-chroma-color-1: rgba(255, 0, 96, 0.4);
+    --kng-kt-chroma-color-2: rgba(0, 209, 255, 0.4);
+    --kng-kt-chroma-color-3: rgba(140, 0, 255, 0.4);
+    --kng-kt-sheen-angle: 120deg;
+    --kng-kt-sheen-duration: 1400ms;
+    --kng-kt-sheen-brightness: 0.65;
+    --kng-kt-mask-softness: 12%;
+    --kng-kt-reveal-duration: 600ms;
+    --kng-kt-reveal-delay: 0ms;
+    --kng-kt-reveal-shift: 18px;
+    --kng-kt-letter-spacing-hover: 0px;
+    display: inline-block;
+    position: relative;
+}
+
+.king-addons-kinetic-text-hover.is-link {
+    cursor: pointer;
+}
+
+.king-addons-kinetic-text-hover__inner {
+    display: inline-block;
+    position: relative;
+}
+
+.king-addons-kinetic-text-hover__link {
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.king-addons-kinetic-text-hover__link:focus-visible {
+    outline: 2px solid var(--kng-kt-hover-color);
+    outline-offset: 4px;
+}
+
+.king-addons-kinetic-text-hover__visual {
+    display: inline-block;
+    position: relative;
+    color: var(--kng-kt-color);
+    white-space: pre-wrap;
+    transition: color var(--kng-kt-speed) var(--kng-kt-ease), 
+                text-shadow var(--kng-kt-speed) var(--kng-kt-ease),
+                letter-spacing var(--kng-kt-speed) var(--kng-kt-ease);
+}
+
+.king-addons-kinetic-text-hover.is-active .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover:hover .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover:focus-within .king-addons-kinetic-text-hover__visual {
+    color: var(--kng-kt-hover-color);
+    letter-spacing: var(--kng-kt-letter-spacing-hover);
+}
+
+.king-addons-kinetic-text-hover.is-gradient-text .king-addons-kinetic-text-hover__visual {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.king-addons-kinetic-text-hover__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.king-addons-kinetic-text-hover__visual .kng-kt-char {
+    display: inline-block;
+    transform: translate3d(var(--kng-kt-char-x, 0px), var(--kng-kt-char-y, 0px), 0);
+    transition: transform var(--kng-kt-out-speed) var(--kng-kt-ease);
+    will-change: transform;
+}
+
+.king-addons-kinetic-text-hover.is-active .kng-kt-char,
+.king-addons-kinetic-text-hover:hover .kng-kt-char,
+.king-addons-kinetic-text-hover:focus-within .kng-kt-char {
+    transition-duration: var(--kng-kt-speed);
+}
+
+.king-addons-kinetic-text-hover.is-preset-split-underline .king-addons-kinetic-text-hover__visual::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(-1 * var(--kng-kt-underline-offset));
+    height: var(--kng-kt-underline-thickness);
+    background-image: linear-gradient(var(--kng-kt-underline-color), var(--kng-kt-underline-color)), 
+                      linear-gradient(var(--kng-kt-underline-color), var(--kng-kt-underline-color));
+    background-position: left bottom, right bottom;
+    background-repeat: no-repeat;
+    background-size: 0% var(--kng-kt-underline-thickness), 0% var(--kng-kt-underline-thickness);
+    border-radius: var(--kng-kt-underline-radius);
+    transition: background-size var(--kng-kt-speed) var(--kng-kt-ease);
+}
+
+.king-addons-kinetic-text-hover.is-preset-split-underline.is-active .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-preset-split-underline:hover .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-preset-split-underline:focus-within .king-addons-kinetic-text-hover__visual::after {
+    background-size: 50% var(--kng-kt-underline-thickness), 50% var(--kng-kt-underline-thickness);
+}
+
+.king-addons-kinetic-text-hover.is-preset-glow-stroke .king-addons-kinetic-text-hover__visual {
+    -webkit-text-stroke: var(--kng-kt-stroke-width) var(--kng-kt-stroke-color);
+}
+
+.king-addons-kinetic-text-hover.is-preset-glow-stroke.is-active .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-preset-glow-stroke:hover .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-preset-glow-stroke:focus-within .king-addons-kinetic-text-hover__visual {
+    text-shadow: 0 0 calc(var(--kng-kt-glow-blur) * var(--kng-kt-glow-intensity)) var(--kng-kt-glow-color);
+}
+
+.king-addons-kinetic-text-hover.is-preset-chroma-shift.is-active .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-preset-chroma-shift:hover .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-preset-chroma-shift:focus-within .king-addons-kinetic-text-hover__visual {
+    text-shadow:
+        calc(-1 * var(--kng-kt-chroma-distance) * var(--kng-kt-intensity)) 0 var(--kng-kt-chroma-color-1),
+        calc(var(--kng-kt-chroma-distance) * var(--kng-kt-intensity)) 0 var(--kng-kt-chroma-color-2),
+        0 calc(var(--kng-kt-chroma-distance) * 0.6 * var(--kng-kt-intensity)) var(--kng-kt-chroma-color-3);
+}
+
+.king-addons-kinetic-text-hover.is-preset-sheen-sweep .king-addons-kinetic-text-hover__visual::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+        var(--kng-kt-sheen-angle),
+        transparent 0%,
+        rgba(255, 255, 255, calc(var(--kng-kt-sheen-brightness) * var(--kng-kt-intensity))) 45%,
+        transparent 60%
+    );
+    background-size: 200% 100%;
+    background-position: 120% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    opacity: 0;
+    white-space: pre-wrap;
+    transition: opacity var(--kng-kt-speed) var(--kng-kt-ease);
+}
+
+.king-addons-kinetic-text-hover.is-preset-sheen-sweep.is-active .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-preset-sheen-sweep:hover .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-preset-sheen-sweep:focus-within .king-addons-kinetic-text-hover__visual::after {
+    opacity: 1;
+    animation: kng-kt-sheen var(--kng-kt-sheen-duration) var(--kng-kt-ease) both;
+}
+
+@keyframes kng-kt-sheen {
+    0% {
+        background-position: -120% 0;
+    }
+    100% {
+        background-position: 120% 0;
+    }
+}
+
+.king-addons-kinetic-text-hover.is-preset-mask-reveal .king-addons-kinetic-text-hover__visual::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    color: var(--kng-kt-hover-color);
+    opacity: 0;
+    transition: clip-path var(--kng-kt-speed) var(--kng-kt-ease), opacity var(--kng-kt-speed) var(--kng-kt-ease);
+    white-space: pre-wrap;
+    pointer-events: none;
+}
+
+.king-addons-kinetic-text-hover.is-preset-mask-reveal.is-mask-left .king-addons-kinetic-text-hover__visual::after {
+    clip-path: inset(0 100% 0 0);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+}
+
+.king-addons-kinetic-text-hover.is-preset-mask-reveal.is-mask-right .king-addons-kinetic-text-hover__visual::after {
+    clip-path: inset(0 0 0 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+    mask-image: linear-gradient(to left, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+}
+
+.king-addons-kinetic-text-hover.is-preset-mask-reveal.is-mask-up .king-addons-kinetic-text-hover__visual::after {
+    clip-path: inset(100% 0 0 0);
+    -webkit-mask-image: linear-gradient(to top, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+    mask-image: linear-gradient(to top, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+}
+
+.king-addons-kinetic-text-hover.is-preset-mask-reveal.is-mask-down .king-addons-kinetic-text-hover__visual::after {
+    clip-path: inset(0 0 100% 0);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 var(--kng-kt-mask-softness), #000 100%);
+}
+
+.king-addons-kinetic-text-hover.is-preset-mask-reveal.is-active .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-preset-mask-reveal:hover .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-preset-mask-reveal:focus-within .king-addons-kinetic-text-hover__visual::after {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+}
+
+.king-addons-kinetic-text-hover.is-varfont-enabled .king-addons-kinetic-text-hover__visual {
+    font-variation-settings: "wght" var(--kng-kt-var-wght, 400), "wdth" var(--kng-kt-var-wdth, 100);
+}
+
+.king-addons-kinetic-text-hover.has-reveal {
+    opacity: 0;
+    transform: translate3d(0, var(--kng-kt-reveal-shift), 0);
+    transition: opacity var(--kng-kt-reveal-duration) var(--kng-kt-ease) var(--kng-kt-reveal-delay),
+        transform var(--kng-kt-reveal-duration) var(--kng-kt-ease) var(--kng-kt-reveal-delay);
+}
+
+.king-addons-kinetic-text-hover.has-reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.king-addons-kinetic-text-hover.has-reveal.reveal-clip {
+    overflow: hidden;
+}
+
+.king-addons-kinetic-text-hover.has-reveal.reveal-clip .king-addons-kinetic-text-hover__visual {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path var(--kng-kt-reveal-duration) var(--kng-kt-ease) var(--kng-kt-reveal-delay);
+}
+
+.king-addons-kinetic-text-hover.has-reveal.reveal-clip.is-visible .king-addons-kinetic-text-hover__visual {
+    clip-path: inset(0 0 0 0);
+}
+
+.king-addons-kinetic-text-hover.has-reveal.reveal-slide {
+    transform: translate3d(0, calc(var(--kng-kt-reveal-shift) * 1.2), 0);
+}
+
+.king-addons-kinetic-text-hover.is-motion-disabled.is-active .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-motion-disabled:hover .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-motion-disabled:focus-within .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-hover-disabled:hover .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-hover-disabled:focus-within .king-addons-kinetic-text-hover__visual {
+    color: var(--kng-kt-color);
+}
+
+.king-addons-kinetic-text-hover.is-motion-disabled .king-addons-kinetic-text-hover__visual,
+.king-addons-kinetic-text-hover.is-hover-disabled .king-addons-kinetic-text-hover__visual {
+    text-shadow: none;
+}
+
+.king-addons-kinetic-text-hover.is-motion-disabled .kng-kt-char,
+.king-addons-kinetic-text-hover.is-hover-disabled .kng-kt-char {
+    transform: none;
+    transition: none;
+}
+
+.king-addons-kinetic-text-hover.is-motion-disabled .king-addons-kinetic-text-hover__visual::after,
+.king-addons-kinetic-text-hover.is-hover-disabled .king-addons-kinetic-text-hover__visual::after {
+    animation: none;
+    opacity: 0;
+    background-size: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-kinetic-text-hover.is-motion-disabled .king-addons-kinetic-text-hover__visual,
+    .king-addons-kinetic-text-hover.is-motion-disabled .kng-kt-char {
+        transition: none;
+    }
+}
