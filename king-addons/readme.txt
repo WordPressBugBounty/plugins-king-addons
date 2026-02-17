@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.58
+Stable tag: 51.1.59
 Tested up to: 6.9
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -59,6 +59,7 @@ https://youtu.be/9aYsLn9065k
 - **Site Preloader** - Display a loading screen/animation while the page content loads.
 - **Maintenance Mode** - Show a maintenance/coming soon page while you work on your site.
 - **Age Gate** - Require age confirmation before accessing selected content.
+- **Custom Code Manager** - Add custom CSS, JavaScript, and HTML snippets anywhere on your site. Manage all snippets from a single dashboard with code editor, activation toggle, and placement controls.
 - **Unlimited Image Optimizer** - Optimize images in your Media Library to reduce file sizes, improve website performance, and boost SEO.
 - **WooCommerce Builder** - Build custom WooCommerce pages with Elementor. 10 widgets for products, cart, checkout, my account, and more with full styling controls.
 
@@ -256,6 +257,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.59 - February 18, 2026 =
+* **New:** Custom Code Manager extension – Add custom CSS, JavaScript, and HTML snippets anywhere on your site. Features a built-in code editor, activation toggle, snippet type and scope selection, placement controls (header, footer, before/after content), import/export, and dark mode support.
 
 = King Addons for Elementor version 51.1.58 - February 5, 2026 =
 * **Improved:** Performance optimizations across all widgets and templates for faster load times and smoother interactions.

@@ -347,7 +347,7 @@
         function checkLottie() {
             const lottieLib = getLottieLibrary();
             if (lottieLib) {
-                console.log('Lottie library found, initializing animations');
+                // console.log('Lottie library found, initializing animations');
                 kingAddonsInitializeLottieLogos($mainMenu);
             } else if (attempts < maxAttempts) {
                 attempts++;

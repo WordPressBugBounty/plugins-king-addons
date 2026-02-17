@@ -10,74 +10,453 @@
 :root {
     --kng-v3-primary: #0071e3;
     --kng-v3-primary-hover: #0077ed;
+    --kng-v3-primary-light: rgba(0, 113, 227, 0.15);
     --kng-v3-danger: #ff3b30;
+    --kng-v3-danger-light: rgba(255, 59, 48, 0.12);
     --kng-v3-success: #34c759;
+    --kng-v3-success-light: rgba(52, 199, 89, 0.12);
     --kng-v3-warning: #ff9500;
     --kng-v3-accent: #bf5af2;
     
     --kng-v3-bg: #f5f5f7;
+    --kng-v3-bg-secondary: #ebebed;
     --kng-v3-card-bg: #ffffff;
     --kng-v3-text: #1d1d1f;
     --kng-v3-muted: #86868b;
     --kng-v3-border: rgba(0, 0, 0, 0.08);
     --kng-v3-border-hover: rgba(0, 0, 0, 0.16);
+    --kng-v3-divider: rgba(0, 0, 0, 0.06);
     
     --kng-v3-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --kng-v3-font-mono: 'SF Mono', Monaco, Consolas, monospace;
+    --kng-v3-mono: 'SF Mono', Monaco, Consolas, monospace;
 }
 
-/* Dark Mode */
-.kng-v3-dark {
+/* Dark Mode Variables */
+.kng-v3-dark,
+body.ka-v3-dark {
     --kng-v3-bg: #000000;
+    --kng-v3-bg-secondary: #1c1c1e;
     --kng-v3-card-bg: #1c1c1e;
     --kng-v3-text: #f5f5f7;
     --kng-v3-muted: #98989d;
     --kng-v3-border: rgba(255, 255, 255, 0.12);
     --kng-v3-border-hover: rgba(255, 255, 255, 0.24);
+    --kng-v3-divider: rgba(255, 255, 255, 0.08);
+    --kng-v3-primary-light: rgba(0, 113, 227, 0.25);
+    --kng-v3-danger-light: rgba(255, 59, 48, 0.2);
+    --kng-v3-success-light: rgba(52, 199, 89, 0.2);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root:not(.kng-v3-light) {
-        --kng-v3-bg: #000000;
-        --kng-v3-card-bg: #1c1c1e;
-        --kng-v3-text: #f5f5f7;
-        --kng-v3-muted: #98989d;
-        --kng-v3-border: rgba(255, 255, 255, 0.12);
-        --kng-v3-border-hover: rgba(255, 255, 255, 0.24);
-    }
-    
-    /* Dark mode specific overrides */
-    .kng-cc-admin .kng-v3-input,
-    .kng-cc-admin .kng-v3-select,
-    .kng-cc-admin .kng-v3-textarea,
-    .kng-cc-admin .kng-cc-title-input,
-    .kng-cc-admin select,
-    .kng-cc-admin input[type="text"],
-    .kng-cc-admin input[type="number"],
-    .kng-cc-admin input[type="url"],
-    .kng-cc-admin textarea {
-        background: #2c2c2e !important;
-        color: #f5f5f7 !important;
-        border-color: rgba(255, 255, 255, 0.12) !important;
-    }
-    
-    .kng-cc-admin .kng-cc-settings-card-header,
-    .kng-cc-admin .kng-cc-sidebar-title {
-        background: rgba(255, 255, 255, 0.04) !important;
-    }
-    
-    .kng-cc-admin .kng-cc-table thead {
-        background: rgba(255, 255, 255, 0.04) !important;
-    }
+/* ============================================
+   Segmented Theme Control
+   ============================================ */
+
+.kng-cc-admin .ka-v3-segmented {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    padding: 2px;
+    border-radius: 980px;
+    background: rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    min-width: 240px;
+    height: 40px;
+    overflow: hidden;
+}
+
+.kng-cc-admin .ka-v3-segmented-indicator {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    width: calc(33.333% - 2px);
+    border-radius: 980px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    transform: translateX(0);
+    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 0;
+}
+
+.kng-cc-admin .ka-v3-segmented[data-active="dark"] .ka-v3-segmented-indicator {
+    transform: translateX(100%);
+}
+
+.kng-cc-admin .ka-v3-segmented[data-active="auto"] .ka-v3-segmented-indicator {
+    transform: translateX(200%);
+}
+
+.kng-cc-admin .ka-v3-segmented-btn {
+    position: relative;
+    z-index: 1;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 980px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1d1d1f;
+    cursor: pointer;
+    transition: color 0.25s ease, transform 0.25s ease;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.kng-cc-admin .ka-v3-segmented-btn:active {
+    transform: scale(0.98);
+}
+
+.kng-cc-admin .ka-v3-segmented-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.kng-cc-admin .ka-v3-segmented-btn[aria-pressed="false"] {
+    color: #86868b;
+}
+
+/* ============================================
+   Dark Mode Overrides
+   ============================================ */
+
+/* Segmented control in dark */
+body.ka-v3-dark .kng-cc-admin .ka-v3-segmented {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+body.ka-v3-dark .kng-cc-admin .ka-v3-segmented-indicator {
+    background: #636366;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.ka-v3-dark .kng-cc-admin .ka-v3-segmented-btn {
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .kng-cc-admin .ka-v3-segmented-btn[aria-pressed="false"] {
+    color: #8e8e93;
+}
+
+/* Base page background */
+body.ka-v3-dark.toplevel_page_king-addons-custom-code {
+    background: #000000 !important;
+}
+
+body.ka-v3-dark.toplevel_page_king-addons-custom-code #wpcontent,
+body.ka-v3-dark.toplevel_page_king-addons-custom-code #wpbody,
+body.ka-v3-dark.toplevel_page_king-addons-custom-code #wpbody-content {
+    background: #000000 !important;
+}
+
+/* Inputs & form elements */
+body.ka-v3-dark .kng-cc-admin .kng-v3-input,
+body.ka-v3-dark .kng-cc-admin .kng-v3-select,
+body.ka-v3-dark .kng-cc-admin .kng-v3-textarea,
+body.ka-v3-dark .kng-cc-admin .kng-cc-title-input,
+body.ka-v3-dark .kng-cc-admin select,
+body.ka-v3-dark .kng-cc-admin input[type="text"],
+body.ka-v3-dark .kng-cc-admin input[type="number"],
+body.ka-v3-dark .kng-cc-admin input[type="url"],
+body.ka-v3-dark .kng-cc-admin textarea {
+    background-color: #2c2c2e !important;
+    color: #f5f5f7 !important;
+    border-color: transparent !important;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-v3-input:focus,
+body.ka-v3-dark .kng-cc-admin .kng-v3-select:focus,
+body.ka-v3-dark .kng-cc-admin .kng-v3-textarea:focus,
+body.ka-v3-dark .kng-cc-admin input[type="text"]:focus,
+body.ka-v3-dark .kng-cc-admin input[type="number"]:focus,
+body.ka-v3-dark .kng-cc-admin select:focus,
+body.ka-v3-dark .kng-cc-admin textarea:focus {
+    border-color: var(--kng-v3-primary) !important;
+}
+
+/* Table */
+body.ka-v3-dark .kng-cc-admin .kng-cc-table thead {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Buttons */
+body.ka-v3-dark .kng-cc-admin .kng-v3-btn--secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-v3-btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-v3-btn--ghost {
+    color: #64d2ff;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-v3-btn--ghost:hover {
+    background: rgba(100, 210, 255, 0.1);
+    color: #64d2ff;
+}
+
+/* Edit action button */
+body.ka-v3-dark .kng-cc-admin .kng-cc-action-btn--edit {
+    background: var(--kng-v3-primary);
+    color: #fff;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-action-btn--edit:hover {
+    background: var(--kng-v3-primary-hover);
+    color: #fff;
+}
+
+/* Action buttons */
+body.ka-v3-dark .kng-cc-admin .kng-cc-action-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Checkbox */
+body.ka-v3-dark .kng-cc-admin .kng-cc-checkbox-custom {
+    background: #2c2c2e;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Scope & type badges */
+body.ka-v3-dark .kng-cc-admin .kng-cc-scope-badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: #98989d;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-type-css {
+    background: rgba(0, 113, 227, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-type-js {
+    background: rgba(255, 149, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-type-html {
+    background: rgba(191, 90, 242, 0.2);
+}
+
+/* Code editor */
+body.ka-v3-dark .kng-cc-admin .CodeMirror {
+    background: #1c1c1e;
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .kng-cc-admin .CodeMirror-gutters {
+    background: #1c1c1e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+body.ka-v3-dark .kng-cc-admin .CodeMirror-linenumber {
+    color: #636366;
+}
+
+body.ka-v3-dark .kng-cc-code-editor-wrap .CodeMirror-selected {
+    background: rgba(0, 113, 227, 0.35) !important;
+}
+
+body.ka-v3-dark .kng-cc-code-editor-wrap .CodeMirror-focused .CodeMirror-selected {
+    background: rgba(0, 113, 227, 0.4) !important;
+}
+
+body.ka-v3-dark .kng-cc-admin .CodeMirror-cursor {
+    border-left-color: #f5f5f7;
+}
+
+/* Radio cards */
+body.ka-v3-dark .kng-cc-admin .kng-cc-radio-card {
+    background: transparent;
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-radio-card.is-selected {
+    border-color: var(--kng-v3-primary);
+    background: rgba(0, 113, 227, 0.1);
+}
+
+/* Pro upsell */
+body.ka-v3-dark .kng-cc-admin .kng-cc-pro-upsell-content {
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.08) 0%, rgba(0, 113, 227, 0.08) 100%);
+    border-color: rgba(191, 90, 242, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-pro-upsell-content:hover {
+    border-color: rgba(191, 90, 242, 0.35);
+    box-shadow: 0 4px 20px rgba(191, 90, 242, 0.1);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-pro-upsell-icon {
+    background: rgba(191, 90, 242, 0.15);
+}
+
+/* Import dropzone */
+body.ka-v3-dark .kng-cc-admin .kng-cc-import-dropzone {
+    background: #2c2c2e;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-import-dropzone:hover {
+    border-color: var(--kng-v3-primary);
+    background: rgba(0, 113, 227, 0.06);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.08);
+}
+
+/* Settings & IE cards */
+body.ka-v3-dark .kng-cc-admin .kng-cc-settings-card {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-settings-card:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-ie-card {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-ie-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-ie-card-icon {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-import-results-content {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Empty state */
+body.ka-v3-dark .kng-cc-admin .kng-cc-empty {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-empty-icon {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Table wrap, toolbar */
+body.ka-v3-dark .kng-cc-admin .kng-cc-table-wrap {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-toolbar {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Header title gradient */
+body.ka-v3-dark .kng-cc-admin .kng-cc-title {
+    background: linear-gradient(135deg, #f5f5f7 0%, #a1a1a6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Popup dark mode */
+body.ka-v3-dark .kng-cc-pro-popup {
+    background: #2c2c2e;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+body.ka-v3-dark .kng-cc-pro-popup-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+body.ka-v3-dark .kng-cc-pro-popup-features {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Pro section dark */
+body.ka-v3-dark .kng-cc-admin .kng-cc-pro-section {
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.06) 0%, rgba(0, 113, 227, 0.06) 100%);
+    border-color: rgba(191, 90, 242, 0.18);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-pro-box-icon {
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.18), rgba(0, 113, 227, 0.18));
+}
+
+/* Search results dropdown dark */
+body.ka-v3-dark .kng-cc-admin .kng-cc-rule-search-results {
+    background: #2c2c2e;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-search-result:hover {
+    background: rgba(0, 113, 227, 0.15);
+}
+
+/* Type tab active in dark */
+body.ka-v3-dark .kng-cc-admin .kng-cc-type-tab.is-active {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-type-tab:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Radio card selected glow in dark */
+body.ka-v3-dark .kng-cc-admin .kng-cc-radio-card.is-selected .kng-cc-radio-card-content,
+body.ka-v3-dark .kng-cc-admin .kng-cc-radio-card input:checked + .kng-cc-radio-card-content {
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.12);
+}
+
+/* Sidebar section dark */
+body.ka-v3-dark .kng-cc-admin .kng-cc-sidebar-section {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Code section dark */
+body.ka-v3-dark .kng-cc-admin .kng-cc-code-section {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-title-section {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.ka-v3-dark .kng-cc-admin .kng-cc-notes-section {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Back button */
+body.ka-v3-dark .kng-cc-admin .kng-cc-back-btn {
+    color: #64d2ff;
+}
+
+/* Toggle */
+body.ka-v3-dark .kng-cc-admin .kng-v3-toggle-slider {
+    background: #48484a;
+}
+
+body.ka-v3-dark .kng-cc-admin input:checked + .kng-v3-toggle-slider {
+    background: var(--kng-v3-success);
 }
 
 /* ============================================
    Base Reset
    ============================================ */
 
-body.king-addons_page_king-addons-custom-code #wpcontent,
-body.king-addons_page_king-addons-custom-code #wpbody,
-body.king-addons_page_king-addons-custom-code #wpbody-content {
+body.toplevel_page_king-addons-custom-code #wpcontent,
+body.toplevel_page_king-addons-custom-code #wpbody,
+body.toplevel_page_king-addons-custom-code #wpbody-content {
     background: var(--kng-v3-bg) !important;
     padding: 0 !important;
 }
@@ -90,7 +469,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     font-family: var(--kng-v3-font);
     max-width: 1400px;
     margin: 0 auto;
-    padding: 60px 40px;
+    padding: 40px 40px 80px;
     color: var(--kng-v3-text);
 }
 
@@ -107,12 +486,29 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 48px;
+    gap: 24px;
 }
 
 .kng-cc-header-left {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.kng-cc-header-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.kng-cc-header-icon svg {
+    color: #fff;
+    stroke: #fff;
 }
 
 .kng-cc-header-right {
@@ -129,7 +525,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     text-decoration: none;
     font-size: 15px;
     font-weight: 400;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
     margin-bottom: 8px;
 }
 
@@ -146,36 +542,29 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     font-size: 48px;
     font-weight: 700;
     letter-spacing: -0.015em;
-    margin: 0;
+    margin: 0 0 8px;
     line-height: 1.1;
-    color: var(--kng-v3-text);
+    background: linear-gradient(135deg, #1d1d1f 0%, #515154 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .kng-cc-subtitle {
     font-size: 19px;
     font-weight: 400;
     color: var(--kng-v3-muted);
-    margin: 4px 0 0;
+    margin: 0;
     line-height: 1.5;
 }
 
-.kng-cc-count {
-    font-size: 19px;
-    font-weight: 400;
+.kng-cc-meta {
+    font-size: 13px;
+    font-weight: 500;
     color: var(--kng-v3-muted);
-    margin: 4px 0 0;
-    line-height: 1.5;
-}
-
-.kng-cc-limit-badge {
-    display: inline-flex;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--kng-v3-warning);
-    background: rgba(255, 149, 0, 0.12);
-    border-radius: 100px;
-    margin-left: 12px;
+    margin: 6px 0 0;
+    line-height: 1.4;
+    opacity: 0.7;
 }
 
 /* ============================================
@@ -203,7 +592,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     border: none;
     color: var(--kng-v3-muted);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
@@ -237,10 +626,6 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.kng-cc-admin * {
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
 /* ============================================
    Buttons
    ============================================ */
@@ -254,7 +639,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     font-size: 15px;
     font-weight: 400;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1), color 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     cursor: pointer;
     border: none;
     white-space: nowrap;
@@ -292,6 +677,19 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     color: var(--kng-v3-primary-hover);
 }
 
+.kng-v3-btn--accent {
+    background: linear-gradient(135deg, #bf5af2 0%, #8944c6 100%);
+    color: #fff;
+    font-weight: 500;
+}
+
+.kng-v3-btn--accent:hover {
+    background: linear-gradient(135deg, #c96ef5 0%, #9a55d3 100%);
+    color: #fff;
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(191, 90, 242, 0.3);
+}
+
 .kng-v3-btn--sm {
     padding: 10px 18px;
     font-size: 14px;
@@ -310,17 +708,29 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 .kng-v3-select,
 .kng-v3-textarea {
     width: 100%;
-    padding: 12px 16px;
-    font-size: 15px;
+    padding: 10px 14px;
+    font-size: 14px;
     font-family: var(--kng-v3-font);
     color: var(--kng-v3-text);
-    background-color: var(--kng-v3-card-bg);
-    border: 1px solid var(--kng-v3-border);
-    border-radius: 12px;
-    transition: all 0.2s ease;
+    background-color: var(--kng-v3-bg);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, background-color 0.2s ease;
     outline: none;
     -webkit-appearance: none;
     appearance: none;
+}
+
+.kng-cc-admin input[type="text"],
+.kng-cc-admin input[type="number"],
+.kng-cc-admin input[type="url"],
+.kng-cc-admin input[type="email"],
+.kng-cc-admin select,
+.kng-cc-admin textarea {
+    border: 1px solid transparent;
+    background-color: var(--kng-v3-bg);
+    border-radius: 10px;
+    box-shadow: none;
 }
 
 /* Ensure select dropdowns work properly */
@@ -341,7 +751,18 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 .kng-v3-select:focus,
 .kng-v3-textarea:focus {
     border-color: var(--kng-v3-primary);
-    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.08);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.08);
+}
+
+.kng-cc-admin input[type="text"]:focus,
+.kng-cc-admin input[type="number"]:focus,
+.kng-cc-admin input[type="url"]:focus,
+.kng-cc-admin input[type="email"]:focus,
+.kng-cc-admin select:focus,
+.kng-cc-admin textarea:focus {
+    border-color: var(--kng-v3-primary);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.08);
+    outline: none;
 }
 
 .kng-v3-label {
@@ -393,7 +814,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     height: 24px;
     background: var(--kng-v3-border);
     border-radius: 12px;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
     flex-shrink: 0;
 }
 
@@ -407,7 +828,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     background: #ffffff;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .kng-v3-toggle-wrap input:checked + .kng-v3-toggle-slider {
@@ -437,9 +858,12 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 32px;
+    padding: 14px 24px;
     background: var(--kng-v3-card-bg);
-    border-bottom: 1px solid var(--kng-v3-divider);
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--kng-v3-divider);
+    margin-bottom: 16px;
 }
 
 .kng-cc-toolbar-left,
@@ -508,7 +932,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     background: var(--kng-v3-card-bg);
     border: 2px solid var(--kng-v3-border);
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
     position: relative;
 }
 
@@ -534,20 +958,15 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
    ============================================ */
 
 .kng-cc-list {
-    padding: 24px 32px;
+    padding: 0;
 }
 
 .kng-cc-table-wrap {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     overflow: hidden;
-    border: 1px solid var(--kng-v3-border);
-    transition: box-shadow 0.3s ease;
-}
-
-.kng-cc-table-wrap:hover {
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--kng-v3-divider);
 }
 
 .kng-cc-table {
@@ -560,21 +979,22 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 }
 
 .kng-cc-table th {
-    padding: 16px 20px;
-    font-size: 12px;
+    padding: 14px 20px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--kng-v3-muted);
     text-align: left;
     border-bottom: 1px solid var(--kng-v3-border);
+    white-space: nowrap;
 }
 
 .kng-cc-table td {
-    padding: 18px 20px;
-    font-size: 15px;
+    padding: 16px 20px;
+    font-size: 14px;
     color: var(--kng-v3-text);
-    border-bottom: 1px solid var(--kng-v3-border);
+    border-bottom: 1px solid var(--kng-v3-divider);
     vertical-align: middle;
 }
 
@@ -634,12 +1054,15 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 /* Type badges */
 .kng-cc-type-badge {
     display: inline-flex;
-    padding: 6px 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
     font-size: 11px;
     font-weight: 600;
-    border-radius: 100px;
+    border-radius: 6px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    min-width: 44px;
 }
 
 .kng-cc-type-css {
@@ -665,10 +1088,11 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 /* Scope badges */
 .kng-cc-scope-badge {
     display: inline-flex;
-    padding: 3px 8px;
+    align-items: center;
+    padding: 4px 8px;
     font-size: 11px;
-    font-weight: 500;
-    border-radius: 4px;
+    font-weight: 600;
+    border-radius: 6px;
 }
 
 .kng-cc-scope-global {
@@ -700,27 +1124,48 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 /* Actions */
 .kng-cc-actions {
     display: flex;
-    gap: 4px;
+    gap: 6px;
+    align-items: center;
 }
 
 .kng-cc-action-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 32px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--kng-v3-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
     text-decoration: none;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--kng-v3-font);
+    white-space: nowrap;
 }
 
 .kng-cc-action-btn:hover {
     background: var(--kng-v3-bg);
     color: var(--kng-v3-text);
+}
+
+.kng-cc-action-btn--edit {
+    width: auto;
+    padding: 6px 14px;
+    background: var(--kng-v3-primary);
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.kng-cc-action-btn--edit:hover {
+    background: var(--kng-v3-primary-hover);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 113, 227, 0.25);
 }
 
 .kng-cc-action-btn--danger:hover {
@@ -736,30 +1181,43 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     text-align: center;
     padding: 80px 40px;
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 20px;
+    border: 2px dashed var(--kng-v3-border);
+    box-shadow: none;
 }
 
 .kng-cc-empty-icon {
-    color: var(--kng-v3-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: var(--kng-v3-bg);
+    border-radius: 50%;
+    color: var(--kng-v3-muted);
     margin-bottom: 24px;
+}
+
+.kng-cc-empty-icon svg {
+    width: 40px;
+    height: 40px;
 }
 
 .kng-cc-empty h3 {
     font-size: 20px;
     font-weight: 600;
     color: var(--kng-v3-text);
-    margin: 0 0 12px;
+    margin: 0 0 8px;
 }
 
 .kng-cc-empty p {
     font-size: 14px;
     color: var(--kng-v3-muted);
-    margin: 0 0 24px;
+    margin: 0 0 28px;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.6;
 }
 
 /* ============================================
@@ -767,21 +1225,35 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
    ============================================ */
 
 .kng-cc-pro-upsell {
-    margin: 0 32px 32px;
+    margin: 24px 0 0;
 }
 
 .kng-cc-pro-upsell-content {
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 20px 24px;
-    background: linear-gradient(135deg, rgba(191, 90, 242, 0.1) 0%, rgba(0, 113, 227, 0.1) 100%);
-    border: 1px solid rgba(191, 90, 242, 0.2);
-    border-radius: 28px;
+    padding: 20px 28px;
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.06) 0%, rgba(0, 113, 227, 0.06) 100%);
+    border: 1px solid rgba(191, 90, 242, 0.12);
+    border-radius: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kng-cc-pro-upsell-content:hover {
+    border-color: rgba(191, 90, 242, 0.24);
+    box-shadow: 0 4px 20px rgba(191, 90, 242, 0.08);
 }
 
 .kng-cc-pro-upsell-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(191, 90, 242, 0.1);
+    border-radius: 12px;
     color: var(--kng-v3-accent);
+    flex-shrink: 0;
 }
 
 .kng-cc-pro-upsell-text {
@@ -799,6 +1271,128 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     font-size: 13px;
     color: var(--kng-v3-muted);
     margin: 0;
+    line-height: 1.5;
+}
+
+/* ============================================
+   Pro Upgrade Popup
+   ============================================ */
+
+.kng-cc-pro-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: kngPopupFadeIn 0.2s ease;
+}
+
+@keyframes kngPopupFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes kngPopupSlideIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.kng-cc-pro-popup {
+    position: relative;
+    width: 420px;
+    max-width: 90vw;
+    background: var(--kng-v3-card-bg, #ffffff);
+    border-radius: 20px;
+    padding: 40px 32px 32px;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+    animation: kngPopupSlideIn 0.3s ease;
+}
+
+.kng-cc-pro-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    color: var(--kng-v3-muted, #86868b);
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+}
+
+.kng-cc-pro-popup-close:hover {
+    background: var(--kng-v3-bg, #f5f5f7);
+}
+
+.kng-cc-pro-popup-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.15), rgba(0, 113, 227, 0.15));
+    border-radius: 50%;
+    color: var(--kng-v3-accent, #bf5af2);
+    margin-bottom: 16px;
+}
+
+.kng-cc-pro-popup h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--kng-v3-text, #1d1d1f);
+    margin: 0 0 8px;
+}
+
+.kng-cc-pro-popup p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--kng-v3-muted, #86868b);
+    margin: 0 0 20px;
+}
+
+.kng-cc-pro-popup-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    text-align: left;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: var(--kng-v3-bg, #f5f5f7);
+    border-radius: 12px;
+    border: 1px solid var(--kng-v3-divider, rgba(0,0,0,0.06));
+}
+
+.kng-cc-pro-popup-features span {
+    font-size: 13px;
+    color: var(--kng-v3-text, #1d1d1f);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.kng-cc-pro-popup-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kng-cc-pro-popup-actions .kng-v3-btn--accent {
+    justify-content: center;
+}
+
+.kng-cc-pro-popup-actions .kng-v3-btn--ghost {
+    width: 100%;
+    justify-content: center;
 }
 
 /* ============================================
@@ -806,16 +1400,15 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
    ============================================ */
 
 .kng-cc-editor-page {
-    padding: 60px 40px;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .kng-cc-editor-page .kng-cc-header {
-    position: sticky;
-    top: 32px;
-    z-index: 100;
-    background: var(--kng-v3-bg);
-    padding: 24px 0;
-    margin-bottom: 32px;
+    background: transparent;
+    padding: 16px 0;
+    margin-bottom: 24px;
     flex-direction: row;
     align-items: center;
 }
@@ -823,6 +1416,32 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 .kng-cc-editor-page .kng-cc-header-left {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0;
+}
+
+.kng-cc-editor-page .kng-cc-title {
+    font-size: 24px;
+    background: none;
+    -webkit-text-fill-color: var(--kng-v3-text);
+    color: var(--kng-v3-text);
+}
+
+/* Sub-pages with back button (settings, import/export) */
+.kng-cc-header-left:has(> .kng-cc-back-btn) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.kng-cc-header-left:has(> .kng-cc-back-btn) .kng-cc-title {
+    font-size: 24px;
+    background: none;
+    -webkit-text-fill-color: var(--kng-v3-text);
+    color: var(--kng-v3-text);
+}
+
+.kng-cc-header-left:has(> .kng-cc-back-btn) .kng-cc-subtitle {
+    font-size: 15px;
 }
 
 .kng-cc-editor-form {
@@ -831,35 +1450,35 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-editor-layout {
     display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 32px;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
 }
 
 .kng-cc-editor-main {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
 }
 
 .kng-cc-editor-sidebar {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
 }
 
 /* Title Section */
 .kng-cc-title-section {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    padding: 8px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: 4px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .kng-cc-title-input {
     width: 100%;
-    padding: 20px 24px;
-    font-size: 24px;
+    padding: 16px 20px;
+    font-size: 22px;
     font-weight: 600;
     font-family: var(--kng-v3-font);
     color: var(--kng-v3-text);
@@ -875,9 +1494,9 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 /* Code Section */
 .kng-cc-code-section {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     overflow: hidden;
     flex: 1;
     display: flex;
@@ -888,7 +1507,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--kng-v3-divider);
 }
 
@@ -911,24 +1530,25 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     color: var(--kng-v3-muted);
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .kng-cc-type-tab:hover:not(:disabled) {
     color: var(--kng-v3-text);
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .kng-cc-type-tab.is-active {
     background: var(--kng-v3-card-bg);
     color: var(--kng-v3-text);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    font-weight: 600;
 }
 
 .kng-cc-type-tab:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
 }
 
 .kng-cc-type-tab.is-pro {
@@ -954,7 +1574,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     color: var(--kng-v3-accent);
     background: rgba(191, 90, 242, 0.15);
     border-radius: 4px;
-    margin-left: 6px;
+    margin-top: 4px;
 }
 
 .kng-cc-code-actions {
@@ -973,7 +1593,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     border-radius: 6px;
     color: var(--kng-v3-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .kng-cc-code-action:hover {
@@ -1035,13 +1655,23 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 }
 
 .kng-cc-code-editor-wrap .CodeMirror-selected {
-    background: var(--kng-v3-primary-light) !important;
+    background: rgba(0, 113, 227, 0.2) !important;
+}
+
+.kng-cc-code-editor-wrap .CodeMirror-focused .CodeMirror-selected {
+    background: rgba(0, 113, 227, 0.25) !important;
 }
 
 .kng-cc-code-editor-wrap .CodeMirror-line::selection,
 .kng-cc-code-editor-wrap .CodeMirror-line > span::selection,
 .kng-cc-code-editor-wrap .CodeMirror-line > span > span::selection {
-    background: var(--kng-v3-primary-light);
+    background: rgba(0, 113, 227, 0.25);
+}
+
+.kng-cc-code-editor-wrap .CodeMirror-line::-moz-selection,
+.kng-cc-code-editor-wrap .CodeMirror-line > span::-moz-selection,
+.kng-cc-code-editor-wrap .CodeMirror-line > span > span::-moz-selection {
+    background: rgba(0, 113, 227, 0.25);
 }
 
 /* Syntax highlighting improvements */
@@ -1165,9 +1795,9 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 /* Notes Section */
 .kng-cc-notes-section {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     overflow: hidden;
 }
 
@@ -1177,7 +1807,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     justify-content: space-between;
     padding: 16px 20px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 .kng-cc-section-header:hover {
@@ -1213,23 +1843,22 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-sidebar-section {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .kng-cc-sidebar-title {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 20px 24px;
-    font-size: 15px;
+    padding: 16px 20px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--kng-v3-text);
     margin: 0;
-    border-bottom: 1px solid var(--kng-v3-border);
-    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid var(--kng-v3-divider);
+    background: transparent;
 }
 
 .kng-cc-sidebar-title svg {
@@ -1239,7 +1868,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 }
 
 .kng-cc-sidebar-content {
-    padding: 24px;
+    padding: 16px 20px;
 }
 
 /* Status wrap in header */
@@ -1274,6 +1903,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     opacity: 0;
     width: 0;
     height: 0;
+    opacity: 0 !important;
 }
 
 .kng-cc-radio-card-content {
@@ -1285,7 +1915,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     background: var(--kng-v3-bg);
     border: 2px solid transparent;
     border-radius: 12px;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .kng-cc-radio-card:hover .kng-cc-radio-card-content {
@@ -1294,8 +1924,9 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-radio-card.is-selected .kng-cc-radio-card-content,
 .kng-cc-radio-card input:checked + .kng-cc-radio-card-content {
-    background: rgba(0, 113, 227, 0.1);
+    background: rgba(0, 113, 227, 0.06);
     border-color: var(--kng-v3-primary);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.08);
 }
 
 .kng-cc-radio-icon {
@@ -1311,6 +1942,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     font-size: 12px;
     font-weight: 500;
     color: var(--kng-v3-text);
+    text-align: center;
 }
 
 /* Rules Builder */
@@ -1330,7 +1962,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 .kng-cc-rule {
     background: var(--kng-v3-bg);
     border-radius: 12px;
-    overflow: hidden;
+    position: relative;
 }
 
 .kng-cc-rule-header {
@@ -1355,7 +1987,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     border-radius: 4px;
     color: var(--kng-v3-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .kng-cc-rule-remove:hover {
@@ -1367,24 +1999,72 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     padding: 0 12px 12px;
 }
 
+.kng-cc-rule-search-wrap {
+    position: relative;
+}
+
+.kng-cc-rule-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--kng-v3-card-bg);
+    border: 1px solid var(--kng-v3-border);
+    border-radius: 10px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.kng-cc-search-result {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--kng-v3-text);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.kng-cc-search-result:hover {
+    background: var(--kng-v3-primary-light);
+}
+
+.kng-cc-search-result:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.kng-cc-search-result:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
+.kng-cc-search-result:only-child {
+    border-radius: 10px;
+}
+
+.kng-cc-search-no-results {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--kng-v3-muted);
+}
+
 .kng-cc-add-rule-btn {
     width: 100%;
 }
 
 /* Pro field indicator */
 .is-pro-field {
-    opacity: 0.6;
     pointer-events: none;
 }
 
 /* Pro Box */
 .kng-cc-pro-section {
-    background: linear-gradient(135deg, rgba(191, 90, 242, 0.08) 0%, rgba(0, 113, 227, 0.08) 100%);
-    border: 1px solid rgba(191, 90, 242, 0.15);
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.04) 0%, rgba(0, 113, 227, 0.04) 100%);
+    border: 1px solid rgba(191, 90, 242, 0.12);
 }
 
 .kng-cc-pro-box {
-    padding: 24px;
+    padding: 28px 24px;
     text-align: center;
 }
 
@@ -1392,10 +2072,10 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: rgba(191, 90, 242, 0.1);
-    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, rgba(191, 90, 242, 0.12), rgba(0, 113, 227, 0.12));
+    border-radius: 16px;
     color: var(--kng-v3-accent);
     margin-bottom: 16px;
 }
@@ -1416,17 +2096,19 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-pro-features-list li {
     position: relative;
-    padding: 6px 0 6px 24px;
+    padding: 6px 0 6px 28px;
     font-size: 13px;
-    color: var(--kng-v3-muted);
+    color: var(--kng-v3-text);
+    line-height: 1.5;
 }
 
 .kng-cc-pro-features-list li::before {
     content: '✓';
     position: absolute;
-    left: 0;
+    left: 4px;
     color: var(--kng-v3-success);
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 /* ============================================
@@ -1446,16 +2128,21 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-settings-card {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.kng-cc-settings-card:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .kng-cc-settings-card-header {
-    padding: 20px 28px;
-    background: rgba(0, 0, 0, 0.02);
-    border-bottom: 1px solid var(--kng-v3-border);
+    padding: 16px 24px;
+    background: transparent;
+    border-bottom: 1px solid var(--kng-v3-divider);
 }
 
 .kng-cc-settings-card-header h3 {
@@ -1475,7 +2162,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 }
 
 .kng-cc-settings-card-content {
-    padding: 28px;
+    padding: 24px 28px;
 }
 
 .kng-cc-settings-row {
@@ -1510,21 +2197,34 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-ie-card {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 20px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     padding: 40px 32px;
     text-align: center;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.kng-cc-ie-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
 }
 
 .kng-cc-ie-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: var(--kng-v3-bg);
+    border-radius: 20px;
     color: var(--kng-v3-muted);
     margin-bottom: 20px;
 }
 
 .kng-cc-ie-card-icon svg {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     stroke-width: 1.5;
 }
 
@@ -1550,17 +2250,18 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 /* Dropzone */
 .kng-cc-import-dropzone {
     border: 2px dashed var(--kng-v3-border);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 32px;
     margin-bottom: 20px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .kng-cc-import-dropzone:hover,
 .kng-cc-import-dropzone.is-dragover {
     border-color: var(--kng-v3-primary);
-    background: rgba(0, 113, 227, 0.05);
+    background: rgba(0, 113, 227, 0.04);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.06);
 }
 
 .kng-cc-dropzone-content {
@@ -1595,7 +2296,7 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     border-radius: 4px;
     color: var(--kng-v3-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .kng-cc-file-remove:hover {
@@ -1610,9 +2311,9 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-import-results-content {
     background: var(--kng-v3-card-bg);
-    border-radius: 28px;
-    border: 1px solid var(--kng-v3-border);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    border: 1px solid var(--kng-v3-divider);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     padding: 32px;
     text-align: center;
 }
@@ -1667,6 +2368,84 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
 }
 
 /* ============================================
+   Save Button States
+   ============================================ */
+
+#kng-cc-save-btn {
+    transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+                box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.kng-cc-btn-icons {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.kng-cc-btn-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.kng-cc-save-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.kng-cc-spinner {
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+.kng-cc-check-icon {
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+/* Saving state */
+#kng-cc-save-btn.is-saving .kng-cc-save-icon {
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+#kng-cc-save-btn.is-saving .kng-cc-spinner {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Saved (success) state */
+#kng-cc-save-btn.is-saved {
+    background-color: #30d158;
+}
+
+#kng-cc-save-btn.is-saved:hover {
+    background-color: #30d158;
+    transform: none;
+}
+
+#kng-cc-save-btn.is-saved .kng-cc-save-icon {
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+#kng-cc-save-btn.is-saved .kng-cc-spinner {
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+#kng-cc-save-btn.is-saved .kng-cc-check-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ============================================
    Responsive
    ============================================ */
 
@@ -1677,6 +2456,12 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     
     .kng-cc-editor-sidebar {
         order: -1;
+    }
+}
+
+@media (max-width: 960px) {
+    .kng-cc-title {
+        font-size: 36px;
     }
 }
 
@@ -1694,6 +2479,22 @@ body.king-addons_page_king-addons-custom-code #wpbody-content {
     
     .kng-cc-import-export-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 782px) {
+    .kng-cc-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .kng-cc-header-left {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .kng-cc-header-right {
+        justify-content: center;
     }
 }
 

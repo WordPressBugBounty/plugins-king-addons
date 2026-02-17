@@ -42,6 +42,21 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                 </h1>
             </div>
             <div class="kng-cc-header-right">
+                <div class="ka-v3-segmented" id="ka-v3-theme-segment" role="radiogroup" aria-label="<?php echo esc_attr(esc_html__('Theme', 'king-addons')); ?>" data-active="<?php echo esc_attr($theme_mode); ?>">
+                    <span class="ka-v3-segmented-indicator" aria-hidden="true"></span>
+                    <button type="button" class="ka-v3-segmented-btn" data-theme="light" aria-pressed="<?php echo $theme_mode === 'light' ? 'true' : 'false'; ?>">
+                        <span class="ka-v3-segmented-icon" aria-hidden="true">☀︎</span>
+                        <?php esc_html_e('Light', 'king-addons'); ?>
+                    </button>
+                    <button type="button" class="ka-v3-segmented-btn" data-theme="dark" aria-pressed="<?php echo $theme_mode === 'dark' ? 'true' : 'false'; ?>">
+                        <span class="ka-v3-segmented-icon" aria-hidden="true">☾</span>
+                        <?php esc_html_e('Dark', 'king-addons'); ?>
+                    </button>
+                    <button type="button" class="ka-v3-segmented-btn" data-theme="auto" aria-pressed="<?php echo $theme_mode === 'auto' ? 'true' : 'false'; ?>">
+                        <span class="ka-v3-segmented-icon" aria-hidden="true">◐</span>
+                        <?php esc_html_e('Auto', 'king-addons'); ?>
+                    </button>
+                </div>
                 <div class="kng-cc-status-wrap">
                     <label class="kng-v3-toggle-wrap">
                         <input type="checkbox" name="status" id="kng-cc-status" <?php checked($config['status'], 'enabled'); ?> />
@@ -52,16 +67,21 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                     </span>
                 </div>
                 <button type="submit" class="kng-v3-btn kng-v3-btn--primary" id="kng-cc-save-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="kng-cc-save-icon">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                        <polyline points="17 21 17 13 7 13 7 21"/>
-                        <polyline points="7 3 7 8 15 8"/>
-                    </svg>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="kng-cc-spinner" style="display: none;">
-                        <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32">
-                            <animate attributeName="stroke-dashoffset" values="32;0;32" dur="1s" repeatCount="indefinite"/>
-                        </circle>
-                    </svg>
+                    <span class="kng-cc-btn-icons">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="kng-cc-save-icon kng-cc-btn-icon">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="kng-cc-spinner kng-cc-btn-icon">
+                            <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32">
+                                <animate attributeName="stroke-dashoffset" values="32;0;32" dur="1s" repeatCount="indefinite"/>
+                            </circle>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" class="kng-cc-check-icon kng-cc-btn-icon">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </span>
                     <span class="kng-cc-save-text"><?php esc_html_e('Save Snippet', 'king-addons'); ?></span>
                 </button>
             </div>
@@ -196,9 +216,9 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                 <!-- JS Options (only for JS type) -->
                 <div class="kng-cc-sidebar-section kng-cc-js-options" id="kng-cc-js-options" style="<?php echo $config['type'] !== 'js' ? 'display: none;' : ''; ?>">
                     <h3 class="kng-cc-sidebar-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/>
-                            <polyline points="17 2 12 7 7 2"/>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                         </svg>
                         <?php esc_html_e('JavaScript Options', 'king-addons'); ?>
                     </h3>
@@ -271,8 +291,8 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                                         <span class="kng-cc-radio-text"><?php esc_html_e('Global', 'king-addons'); ?></span>
                                     </span>
                                 </label>
-                                <label class="kng-cc-radio-card <?php echo $config['scope_mode'] === 'include' ? 'is-selected' : ''; ?>">
-                                    <input type="radio" name="scope_mode" value="include" <?php checked($config['scope_mode'], 'include'); ?> />
+                                <label class="kng-cc-radio-card <?php echo $config['scope_mode'] === 'include' ? 'is-selected' : ''; ?> <?php echo !$has_pro ? 'is-pro-field' : ''; ?>">
+                                    <input type="radio" name="scope_mode" value="include" <?php checked($config['scope_mode'], 'include'); ?> <?php echo !$has_pro ? 'disabled' : ''; ?> />
                                     <span class="kng-cc-radio-card-content">
                                         <span class="kng-cc-radio-icon">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
@@ -280,11 +300,11 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                                                 <polyline points="22 4 12 14.01 9 11.01"/>
                                             </svg>
                                         </span>
-                                        <span class="kng-cc-radio-text"><?php esc_html_e('Include', 'king-addons'); ?></span>
+                                        <span class="kng-cc-radio-text"><?php esc_html_e('Include', 'king-addons'); ?><?php if (!$has_pro): ?> <span class="kng-cc-pro-badge-sm">PRO</span><?php endif; ?></span>
                                     </span>
                                 </label>
-                                <label class="kng-cc-radio-card <?php echo $config['scope_mode'] === 'exclude' ? 'is-selected' : ''; ?>">
-                                    <input type="radio" name="scope_mode" value="exclude" <?php checked($config['scope_mode'], 'exclude'); ?> />
+                                <label class="kng-cc-radio-card <?php echo $config['scope_mode'] === 'exclude' ? 'is-selected' : ''; ?> <?php echo !$has_pro ? 'is-pro-field' : ''; ?>">
+                                    <input type="radio" name="scope_mode" value="exclude" <?php checked($config['scope_mode'], 'exclude'); ?> <?php echo !$has_pro ? 'disabled' : ''; ?> />
                                     <span class="kng-cc-radio-card-content">
                                         <span class="kng-cc-radio-icon">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
@@ -292,7 +312,7 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                                                 <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
                                             </svg>
                                         </span>
-                                        <span class="kng-cc-radio-text"><?php esc_html_e('Exclude', 'king-addons'); ?></span>
+                                        <span class="kng-cc-radio-text"><?php esc_html_e('Exclude', 'king-addons'); ?><?php if (!$has_pro): ?> <span class="kng-cc-pro-badge-sm">PRO</span><?php endif; ?></span>
                                     </span>
                                 </label>
                             </div>
@@ -330,21 +350,21 @@ window.kngCCInitialConfig = <?php echo wp_json_encode($config); ?>;
                 <div class="kng-cc-sidebar-section kng-cc-pro-section">
                     <div class="kng-cc-pro-box">
                         <div class="kng-cc-pro-box-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                             </svg>
                         </div>
-                        <h4><?php esc_html_e('Pro Features', 'king-addons'); ?></h4>
+                        <h4><?php esc_html_e('Unlock All Features', 'king-addons'); ?></h4>
+                        <p class="kng-cc-pro-box-subtitle"><?php esc_html_e('Get the most out of Custom Code Manager', 'king-addons'); ?></p>
                         <ul class="kng-cc-pro-features-list">
-                            <li><?php esc_html_e('HTML snippets', 'king-addons'); ?></li>
                             <li><?php esc_html_e('Unlimited snippets', 'king-addons'); ?></li>
+                            <li><?php esc_html_e('Include & Exclude targeting', 'king-addons'); ?></li>
+                            <li><?php esc_html_e('HTML snippet support', 'king-addons'); ?></li>
                             <li><?php esc_html_e('Body Open & Custom Hooks', 'king-addons'); ?></li>
-                            <li><?php esc_html_e('Advanced JS attributes', 'king-addons'); ?></li>
-                            <li><?php esc_html_e('User role rules', 'king-addons'); ?></li>
-                            <li><?php esc_html_e('Device targeting', 'king-addons'); ?></li>
-                            <li><?php esc_html_e('URL regex matching', 'king-addons'); ?></li>
+                            <li><?php esc_html_e('Defer, Async & ES Module', 'king-addons'); ?></li>
+                            <li><?php esc_html_e('User role & device rules', 'king-addons'); ?></li>
                         </ul>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=king-addons-upgrade')); ?>" class="kng-v3-btn kng-v3-btn--accent kng-v3-btn--sm">
+                        <a href="https://kingaddons.com/pricing/?utm_source=kng-custom-code&utm_medium=wp-admin&utm_campaign=kng" target="_blank" rel="noopener" class="kng-v3-btn kng-v3-btn--accent kng-v3-btn--sm" style="width:100%;justify-content:center;">
                             <?php esc_html_e('Upgrade to Pro', 'king-addons'); ?>
                         </a>
                     </div>

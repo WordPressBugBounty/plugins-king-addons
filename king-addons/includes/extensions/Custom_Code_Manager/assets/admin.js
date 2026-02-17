@@ -65,6 +65,13 @@
 
         // Delete button
         $(document).on('click', '.kng-cc-delete-btn', handleDelete);
+
+        // Pro upgrade popup
+        $('#kng-cc-add-new-limit').on('click', showProPopup);
+        $('#kng-cc-pro-popup-close, .kng-cc-pro-popup-dismiss').on('click', hideProPopup);
+        $('#kng-cc-pro-popup').on('click', function(e) {
+            if (e.target === this) hideProPopup();
+        });
     }
 
     function filterSnippets() {
@@ -174,6 +181,15 @@
         e.preventDefault();
         const id = $(this).data('id');
 
+        // Check limit client-side first
+        if (!kngCCAdmin.hasPro) {
+            const currentCount = $('.kng-cc-row').length;
+            if (currentCount >= kngCCAdmin.freeLimit) {
+                showProPopup();
+                return;
+            }
+        }
+
         $.ajax({
             url: kngCCAdmin.ajaxUrl,
             method: 'POST',
@@ -187,7 +203,12 @@
                     showNotice(kngCCAdmin.strings.duplicated, 'success');
                     location.reload();
                 } else {
-                    showNotice(response.data.message || kngCCAdmin.strings.error, 'error');
+                    // If server returns limit error, show popup instead of error
+                    if (!kngCCAdmin.hasPro && response.data && (response.data.limit || (response.data.message && response.data.message.indexOf('limit') !== -1))) {
+                        showProPopup();
+                    } else {
+                        showNotice(response.data.message || kngCCAdmin.strings.error, 'error');
+                    }
                 }
             },
             error: function() {
@@ -209,8 +230,27 @@
                 id: id
             },
             success: function(response) {
-                if (response.success) {
-                    downloadJSON(response.data.export, 'snippet-' + id + '.json');
+                if (response.success && response.data.export.snippets && response.data.export.snippets.length) {
+                    var snippet = response.data.export.snippets[0];
+                    var code = snippet.code || '';
+                    var type = snippet.type || 'txt';
+                    var title = (snippet.title || 'snippet').replace(/[^a-zA-Z0-9_-]/g, '_');
+
+                    var extMap = { css: '.css', js: '.js', html: '.html' };
+                    var mimeMap = { css: 'text/css', js: 'application/javascript', html: 'text/html' };
+                    var ext = extMap[type] || '.txt';
+                    var mime = mimeMap[type] || 'text/plain';
+
+                    var blob = new Blob([code], { type: mime });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = title + ext;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
                     showNotice(kngCCAdmin.strings.exportReady, 'success');
                 } else {
                     showNotice(response.data.message || kngCCAdmin.strings.error, 'error');
@@ -450,8 +490,6 @@
 
     function saveSnippet() {
         const $btn = $('#kng-cc-save-btn');
-        const $saveIcon = $btn.find('.kng-cc-save-icon');
-        const $spinner = $btn.find('.kng-cc-spinner');
         const $text = $btn.find('.kng-cc-save-text');
 
         // Collect form data
@@ -483,9 +521,8 @@
             return;
         }
 
-        // Show loading
-        $saveIcon.hide();
-        $spinner.show();
+        // Show saving state
+        $btn.removeClass('is-saved').addClass('is-saving');
         $text.text(kngCCAdmin.strings.saving);
         $btn.prop('disabled', true);
 
@@ -499,6 +536,8 @@
             },
             success: function(response) {
                 if (response.success) {
+                    // Show success state: green + checkmark
+                    $btn.removeClass('is-saving').addClass('is-saved');
                     $text.text(kngCCAdmin.strings.saved);
                     
                     // Update ID if new snippet
@@ -510,12 +549,12 @@
                         window.history.replaceState({}, '', newUrl);
                     }
 
+                    // Return to normal after delay
                     setTimeout(function() {
-                        $spinner.hide();
-                        $saveIcon.show();
+                        $btn.removeClass('is-saved');
                         $text.text('Save Snippet');
                         $btn.prop('disabled', false);
-                    }, 1500);
+                    }, 2000);
                 } else {
                     showNotice(response.data.message || kngCCAdmin.strings.error, 'error');
                     resetSaveButton();
@@ -528,8 +567,7 @@
         });
 
         function resetSaveButton() {
-            $spinner.hide();
-            $saveIcon.show();
+            $btn.removeClass('is-saving is-saved');
             $text.text('Save Snippet');
             $btn.prop('disabled', false);
         }
@@ -647,7 +685,7 @@
             case 'page':
             case 'post':
                 html = '<div class="kng-cc-rule-search-wrap">' +
-                    '<input type="text" class="kng-v3-input kng-cc-rule-search" placeholder="Search ' + type + 's..." data-type="' + type + '" />' +
+                    '<input type="text" class="kng-v3-input kng-cc-rule-search" placeholder="Search by title or ID..." data-type="' + type + '" />' +
                     '<input type="hidden" class="kng-cc-rule-value-input" name="rules[' + index + '][value]" value="' + (rule.value || '') + '" />' +
                     '<div class="kng-cc-rule-search-results"></div>' +
                     '</div>';
@@ -760,7 +798,7 @@
                             let html = '';
                             response.data.forEach(function(item) {
                                 html += '<div class="kng-cc-search-result" data-id="' + item.id + '" data-title="' + escapeHtml(item.title) + '">' +
-                                    escapeHtml(item.title) +
+                                    escapeHtml(item.title) + ' <span style="color:var(--kng-v3-muted);font-size:12px;">(ID: ' + item.id + ')</span>' +
                                     '</div>';
                             });
                             $results.html(html).show();
@@ -1005,6 +1043,14 @@
     // Utilities
     // =========================================================================
 
+    function showProPopup() {
+        $('#kng-cc-pro-popup').fadeIn(200);
+    }
+
+    function hideProPopup() {
+        $('#kng-cc-pro-popup').fadeOut(150);
+    }
+
     function showNotice(message, type) {
         // Remove existing notices
         $('.kng-cc-notice').remove();
@@ -1163,139 +1209,82 @@
 })();
 
 // =========================================================================
-// Theme Switcher
+// Theme Switcher (ka-v3-theme-segment)
 // =========================================================================
 
-(function initThemeSwitcher() {
+(function initThemeSwitcher($) {
     'use strict';
-    
-    const THEME_KEY = 'kng_cc_theme';
-    const $admin = $('.kng-cc-admin');
-    
-    if (!$admin.length) return;
-    
-    // Get saved theme or default to auto
-    let currentTheme = localStorage.getItem(THEME_KEY) || 'auto';
-    
-    // Apply saved theme
-    applyTheme(currentTheme);
-    
-    // Create theme switcher if in header
-    const $headerRight = $('.kng-cc-header-right');
-    if ($headerRight.length && !$('.kng-cc-theme-switcher').length) {
-        const switcher = `
-            <div class="kng-cc-theme-switcher">
-                <button type="button" class="kng-cc-theme-btn" data-theme="light" title="Light Theme">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="5"/>
-                        <line x1="12" y1="1" x2="12" y2="3"/>
-                        <line x1="12" y1="21" x2="12" y2="23"/>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                        <line x1="1" y1="12" x2="3" y2="12"/>
-                        <line x1="21" y1="12" x2="23" y2="12"/>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                    </svg>
-                </button>
-                <button type="button" class="kng-cc-theme-btn" data-theme="auto" title="Auto Theme">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                        <line x1="8" y1="21" x2="16" y2="21"/>
-                        <line x1="12" y1="17" x2="12" y2="21"/>
-                    </svg>
-                </button>
-                <button type="button" class="kng-cc-theme-btn" data-theme="dark" title="Dark Theme">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                </button>
-            </div>
-        `;
-        $headerRight.prepend(switcher);
-        
-        // Add event listeners
-        $('.kng-cc-theme-btn').on('click', function() {
-            const theme = $(this).data('theme');
-            setTheme(theme);
+
+    var $segment = $('#ka-v3-theme-segment');
+    if (!$segment.length) return;
+
+    var $buttons = $segment.find('.ka-v3-segmented-btn');
+    var mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    var mode = ($segment.attr('data-active') || 'dark').toString();
+    var mqlHandler = null;
+
+    function saveUISetting(value) {
+        if (!window.kngCCAdmin) return;
+        $.post(kngCCAdmin.ajaxUrl, {
+            action: 'king_addons_save_dashboard_ui',
+            nonce: kngCCAdmin.themeNonce,
+            key: 'theme_mode',
+            value: value
         });
     }
-    
-    function applyTheme(theme) {
-        currentTheme = theme;
-        
-        // Remove all theme classes
-        $admin.removeClass('kng-theme-light kng-theme-dark').removeAttr('data-theme');
-        
-        // Update active button
-        $('.kng-cc-theme-btn').removeClass('is-active');
-        $(`.kng-cc-theme-btn[data-theme="${theme}"]`).addClass('is-active');
-        
-        if (theme === 'light') {
-            $admin.attr('data-theme', 'light');
-        } else if (theme === 'dark') {
-            $admin.attr('data-theme', 'dark').addClass('kng-theme-dark');
-        }
-        // 'auto' - no class, uses prefers-color-scheme
+
+    function updateSegment(activeMode) {
+        $segment.attr('data-active', activeMode);
+        $buttons.each(function() {
+            var theme = ($(this).data('theme') || 'dark').toString();
+            $(this).attr('aria-pressed', theme === activeMode ? 'true' : 'false');
+        });
     }
-    
-    function setTheme(theme) {
-        applyTheme(theme);
-        localStorage.setItem(THEME_KEY, theme);
-        
-        // Show subtle feedback
-        showThemeNotice(theme);
+
+    function applyTheme(isDark) {
+        $('body').toggleClass('ka-v3-dark', isDark);
+        document.documentElement.classList.toggle('ka-v3-dark', isDark);
     }
-    
-    function showThemeNotice(theme) {
-        const themeNames = {
-            light: 'Light Theme',
-            dark: 'Dark Theme',
-            auto: 'Auto Theme'
-        };
-        
-        const $notice = $(`
-            <div class="kng-cc-theme-notice">
-                ${themeNames[theme]} activated
-            </div>
-        `);
-        
-        $('body').append($notice);
-        
-        setTimeout(() => {
-            $notice.addClass('is-visible');
-        }, 10);
-        
-        setTimeout(() => {
-            $notice.removeClass('is-visible');
-            setTimeout(() => $notice.remove(), 300);
-        }, 2000);
+
+    function setThemeMode(nextMode, save) {
+        mode = (nextMode || 'dark').toString();
+        updateSegment(mode);
+
+        if (mqlHandler && mql) {
+            if (mql.removeEventListener) {
+                mql.removeEventListener('change', mqlHandler);
+            } else if (mql.removeListener) {
+                mql.removeListener(mqlHandler);
+            }
+            mqlHandler = null;
+        }
+
+        if (mode === 'auto') {
+            applyTheme(!!(mql && mql.matches));
+            mqlHandler = function(e) {
+                if (mode !== 'auto') return;
+                applyTheme(!!e.matches);
+            };
+            if (mql) {
+                if (mql.addEventListener) {
+                    mql.addEventListener('change', mqlHandler);
+                } else if (mql.addListener) {
+                    mql.addListener(mqlHandler);
+                }
+            }
+        } else {
+            applyTheme(mode === 'dark');
+        }
+
+        if (save) {
+            saveUISetting(mode);
+        }
     }
-    
-    // Add notice styles
-    const style = document.createElement('style');
-    style.textContent = `
-        .kng-cc-theme-notice {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            background: var(--kng-v3-card-bg);
-            color: var(--kng-v3-text);
-            padding: 12px 20px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            box-shadow: var(--kng-v3-shadow-lg);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10000;
-            border: 1px solid var(--kng-v3-border);
-        }
-        .kng-cc-theme-notice.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    `;
-    document.head.appendChild(style);
-})();
+
+    $segment.on('click', '.ka-v3-segmented-btn', function(e) {
+        e.preventDefault();
+        setThemeMode(($(this).data('theme') || 'dark').toString(), true);
+    });
+
+    setThemeMode(mode, false);
+})(jQuery);

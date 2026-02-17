@@ -18,15 +18,48 @@ use King_Addons\Custom_Code_Manager;
     <!-- Header -->
     <header class="kng-cc-header">
         <div class="kng-cc-header-left">
-            <h1 class="kng-cc-title">
-                <?php esc_html_e('Custom Code', 'king-addons'); ?>
-                <?php if (!$has_pro): ?>
-                <span class="kng-cc-limit-badge"><?php echo esc_html($snippet_count); ?>/<?php echo esc_html(Custom_Code_Manager::FREE_LIMIT); ?></span>
-                <?php endif; ?>
-            </h1>
-            <p class="kng-cc-subtitle"><?php echo esc_html($snippet_count); ?> <?php esc_html_e('snippets', 'king-addons'); ?></p>
+            <div class="kng-cc-header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div>
+                <h1 class="kng-cc-title">
+                    <?php esc_html_e('Custom Code', 'king-addons'); ?>
+                </h1>
+                <p class="kng-cc-subtitle"><?php esc_html_e('Add custom CSS, JavaScript, and HTML snippets anywhere on your site.', 'king-addons'); ?></p>
+                <p class="kng-cc-meta">
+                    <?php if (!$has_pro): ?>
+                        <?php printf(
+                            /* translators: %1$d: current count, %2$d: max limit */
+                            esc_html__('%1$d of %2$d snippets (Free)', 'king-addons'),
+                            $snippet_count,
+                            Custom_Code_Manager::FREE_LIMIT
+                        ); ?>
+                    <?php else: ?>
+                        <?php printf(
+                            /* translators: %d: total count */
+                            esc_html(_n('%d snippet', '%d snippets', $snippet_count, 'king-addons')),
+                            $snippet_count
+                        ); ?>
+                    <?php endif; ?>
+                </p>
+            </div>
         </div>
         <div class="kng-cc-header-right">
+            <div class="ka-v3-segmented" id="ka-v3-theme-segment" role="radiogroup" aria-label="<?php echo esc_attr(esc_html__('Theme', 'king-addons')); ?>" data-active="<?php echo esc_attr($theme_mode); ?>">
+                <span class="ka-v3-segmented-indicator" aria-hidden="true"></span>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="light" aria-pressed="<?php echo $theme_mode === 'light' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">☀︎</span>
+                    <?php esc_html_e('Light', 'king-addons'); ?>
+                </button>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="dark" aria-pressed="<?php echo $theme_mode === 'dark' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">☾</span>
+                    <?php esc_html_e('Dark', 'king-addons'); ?>
+                </button>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="auto" aria-pressed="<?php echo $theme_mode === 'auto' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">◐</span>
+                    <?php esc_html_e('Auto', 'king-addons'); ?>
+                </button>
+            </div>
             <a href="<?php echo esc_url(admin_url('admin.php?page=king-addons-custom-code&view=import-export')); ?>" class="kng-v3-btn kng-v3-btn--ghost">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -43,7 +76,7 @@ use King_Addons\Custom_Code_Manager;
                 <?php esc_html_e('Settings', 'king-addons'); ?>
             </a>
             <?php if ($at_limit): ?>
-            <button type="button" class="kng-v3-btn kng-v3-btn--primary" disabled title="<?php esc_attr_e('Free version limit reached', 'king-addons'); ?>">
+            <button type="button" class="kng-v3-btn kng-v3-btn--primary" id="kng-cc-add-new-limit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -76,7 +109,7 @@ use King_Addons\Custom_Code_Manager;
                     <option value="disable"><?php esc_html_e('Disable', 'king-addons'); ?></option>
                     <option value="delete"><?php esc_html_e('Delete', 'king-addons'); ?></option>
                 </select>
-                <button type="button" class="kng-v3-btn kng-v3-btn--ghost kng-v3-btn--sm" id="kng-cc-bulk-apply">
+                <button type="button" class="kng-v3-btn kng-v3-btn--secondary kng-v3-btn--sm" id="kng-cc-bulk-apply">
                     <?php esc_html_e('Apply', 'king-addons'); ?>
                 </button>
             </div>
@@ -121,7 +154,7 @@ use King_Addons\Custom_Code_Manager;
         <?php if (empty($snippets)): ?>
         <div class="kng-cc-empty">
             <div class="kng-cc-empty-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
                     <polyline points="16 18 22 12 16 6"/>
                     <polyline points="8 6 2 12 8 18"/>
                 </svg>
@@ -233,12 +266,13 @@ use King_Addons\Custom_Code_Manager;
                         <td class="kng-cc-col-actions">
                             <div class="kng-cc-actions">
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=king-addons-custom-code&view=edit&id=' . $snippet['id'])); ?>" 
-                                   class="kng-cc-action-btn" 
+                                   class="kng-cc-action-btn kng-cc-action-btn--edit" 
                                    title="<?php esc_attr_e('Edit', 'king-addons'); ?>">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                     </svg>
+                                    <?php esc_html_e('Edit', 'king-addons'); ?>
                                 </a>
                                 <button type="button" 
                                         class="kng-cc-action-btn kng-cc-duplicate-btn" 
@@ -293,10 +327,46 @@ use King_Addons\Custom_Code_Manager;
                 <h4><?php esc_html_e('Unlock Pro Features', 'king-addons'); ?></h4>
                 <p><?php esc_html_e('Get HTML snippets, unlimited code blocks, body open injection, custom hooks, advanced rules, and more.', 'king-addons'); ?></p>
             </div>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=king-addons-upgrade')); ?>" class="kng-v3-btn kng-v3-btn--accent">
+            <a href="https://kingaddons.com/pricing/?utm_source=kng-custom-code&utm_medium=wp-admin&utm_campaign=kng" target="_blank" rel="noopener" class="kng-v3-btn kng-v3-btn--accent">
                 <?php esc_html_e('Upgrade to Pro', 'king-addons'); ?>
             </a>
         </div>
     </div>
     <?php endif; ?>
 </div>
+
+<?php if (!$has_pro): ?>
+<!-- Pro Upgrade Popup -->
+<div class="kng-cc-pro-popup-overlay" id="kng-cc-pro-popup" style="display:none;">
+    <div class="kng-cc-pro-popup">
+        <button type="button" class="kng-cc-pro-popup-close" id="kng-cc-pro-popup-close">&times;</button>
+        <div class="kng-cc-pro-popup-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+        </div>
+        <h3><?php esc_html_e('Snippet Limit Reached', 'king-addons'); ?></h3>
+        <p><?php
+            printf(
+                /* translators: %d: free limit number */
+                esc_html__('You\'ve reached the free limit of %d snippets. Upgrade to Pro for unlimited code snippets and advanced features.', 'king-addons'),
+                Custom_Code_Manager::FREE_LIMIT
+            );
+        ?></p>
+        <div class="kng-cc-pro-popup-features">
+            <span>✓ <?php esc_html_e('Unlimited snippets', 'king-addons'); ?></span>
+            <span>✓ <?php esc_html_e('HTML support', 'king-addons'); ?></span>
+            <span>✓ <?php esc_html_e('Advanced targeting', 'king-addons'); ?></span>
+            <span>✓ <?php esc_html_e('Custom hooks', 'king-addons'); ?></span>
+        </div>
+        <div class="kng-cc-pro-popup-actions">
+            <a href="https://kingaddons.com/pricing/?utm_source=kng-custom-code&utm_medium=wp-admin&utm_campaign=kng" target="_blank" rel="noopener" class="kng-v3-btn kng-v3-btn--accent">
+                <?php esc_html_e('Upgrade to Pro', 'king-addons'); ?>
+            </a>
+            <button type="button" class="kng-v3-btn kng-v3-btn--ghost kng-cc-pro-popup-dismiss">
+                <?php esc_html_e('Maybe Later', 'king-addons'); ?>
+            </button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

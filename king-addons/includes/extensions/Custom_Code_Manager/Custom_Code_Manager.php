@@ -117,11 +117,15 @@ final class Custom_Code_Manager
         add_action('wp_ajax_kng_cc_search_content', [$this, 'ajax_search_content']);
         add_action('wp_ajax_kng_cc_get_snippet', [$this, 'ajax_get_snippet']);
         add_action('wp_ajax_kng_cc_bulk_action', [$this, 'ajax_bulk_action']);
+        add_action('wp_ajax_kng_cc_save_settings', [$this, 'ajax_save_settings']);
 
         // Frontend injection
         add_action('wp_head', [$this, 'inject_head'], 1);
         add_action('wp_footer', [$this, 'inject_footer'], 99);
         add_action('wp_body_open', [$this, 'inject_body_open'], 1);
+
+        // Register custom hooks for snippets with custom_hook location
+        add_action('init', [$this, 'register_custom_hooks'], 20);
 
         // Script attributes filter
         add_filter('script_loader_tag', [$this, 'modify_script_tag'], 10, 3);
@@ -181,6 +185,35 @@ final class Custom_Code_Manager
         $view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'list';
         $snippet_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+        // Theme mode (shared across all views)
+        $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
+        if (!in_array($theme_mode, ['light', 'dark', 'auto'], true)) {
+            $theme_mode = 'dark';
+        }
+        // Store for sub-renderers
+        $this->theme_mode = $theme_mode;
+
+        // Early theme application script — runs before DOM renders to prevent flash
+        ?>
+        <script>
+        (function() {
+            var mode = '<?php echo esc_js($theme_mode); ?>';
+            var mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+            function apply(isDark) {
+                document.documentElement.classList.toggle('ka-v3-dark', isDark);
+                if (document.body) document.body.classList.toggle('ka-v3-dark', isDark);
+            }
+            function onBody(fn) {
+                if (document.body) { fn(); return; }
+                document.addEventListener('DOMContentLoaded', fn, { once: true });
+            }
+            var isDark = mode === 'auto' ? !!(mql && mql.matches) : mode === 'dark';
+            apply(isDark);
+            onBody(function() { apply(isDark); });
+        })();
+        </script>
+        <?php
+
         switch ($view) {
             case 'edit':
             case 'new':
@@ -209,6 +242,7 @@ final class Custom_Code_Manager
         $snippet_count = count($snippets);
         $has_pro = self::hasPro();
         $at_limit = !$has_pro && $snippet_count >= self::FREE_LIMIT;
+        $theme_mode = $this->theme_mode;
 
         include __DIR__ . '/templates/admin-list.php';
     }
@@ -234,6 +268,7 @@ final class Custom_Code_Manager
         $has_pro = self::hasPro();
         $defaults = $this->get_default_snippet();
         $config = $snippet ? array_merge($defaults, $snippet) : $defaults;
+        $theme_mode = $this->theme_mode;
 
         include __DIR__ . '/templates/admin-editor.php';
     }
@@ -247,6 +282,7 @@ final class Custom_Code_Manager
     {
         $settings = $this->get_settings();
         $has_pro = self::hasPro();
+        $theme_mode = $this->theme_mode;
 
         include __DIR__ . '/templates/admin-settings.php';
     }
@@ -259,6 +295,7 @@ final class Custom_Code_Manager
     private function render_import_export_page(): void
     {
         $has_pro = self::hasPro();
+        $theme_mode = $this->theme_mode;
 
         include __DIR__ . '/templates/admin-import-export.php';
     }
@@ -300,8 +337,10 @@ final class Custom_Code_Manager
         wp_localize_script('king-addons-cc-admin', 'kngCCAdmin', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('kng_cc_admin'),
+            'themeNonce' => wp_create_nonce('king_addons_dashboard_ui'),
             'hasPro' => self::hasPro(),
             'freeLimit' => self::FREE_LIMIT,
+            'upgradeUrl' => 'https://kingaddons.com/pricing/?utm_source=kng-custom-code&utm_medium=wp-admin&utm_campaign=kng',
             'strings' => [
                 'confirmDelete' => __('Are you sure you want to delete this snippet?', 'king-addons'),
                 'confirmBulkDelete' => __('Are you sure you want to delete the selected snippets?', 'king-addons'),
@@ -705,6 +744,10 @@ final class Custom_Code_Manager
                 'message' => __('Snippet duplicated', 'king-addons'),
             ]);
         } else {
+            $has_pro = self::hasPro();
+            if (!$has_pro) {
+                wp_send_json_error(['message' => __('Free version limit reached', 'king-addons'), 'limit' => true]);
+            }
             wp_send_json_error(['message' => __('Failed to duplicate snippet', 'king-addons')]);
         }
     }
@@ -862,6 +905,23 @@ final class Custom_Code_Manager
 
         $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
         $content_type = isset($_POST['content_type']) ? sanitize_key($_POST['content_type']) : 'page';
+
+        // If search is a numeric ID, fetch that specific post directly
+        if (ctype_digit($search)) {
+            $post = get_post((int)$search);
+            if ($post && $post->post_type === $content_type && $post->post_status === 'publish') {
+                wp_send_json_success([
+                    [
+                        'id' => $post->ID,
+                        'title' => $post->post_title,
+                        'type' => $post->post_type,
+                    ]
+                ]);
+            } else {
+                wp_send_json_success([]);
+            }
+            return;
+        }
 
         $args = [
             'post_type' => $content_type,
@@ -1229,12 +1289,27 @@ final class Custom_Code_Manager
     }
 
     /**
+     * Checks if the extension is enabled in settings.
+     *
+     * @return bool
+     */
+    private function is_enabled(): bool
+    {
+        $settings = $this->get_settings();
+        return !empty($settings['enabled']);
+    }
+
+    /**
      * Injects code into wp_head.
      *
      * @return void
      */
     public function inject_head(): void
     {
+        if (!$this->is_enabled()) {
+            return;
+        }
+
         $snippets = $this->get_snippets_for_current_page('head');
         $this->output_snippets($snippets);
     }
@@ -1246,6 +1321,10 @@ final class Custom_Code_Manager
      */
     public function inject_footer(): void
     {
+        if (!$this->is_enabled()) {
+            return;
+        }
+
         $snippets = $this->get_snippets_for_current_page('footer');
         $this->output_snippets($snippets);
     }
@@ -1257,12 +1336,91 @@ final class Custom_Code_Manager
      */
     public function inject_body_open(): void
     {
-        if (!self::hasPro()) {
+        if (!$this->is_enabled() || !self::hasPro()) {
             return;
         }
 
         $snippets = $this->get_snippets_for_current_page('body_open');
         $this->output_snippets($snippets);
+    }
+
+    /**
+     * Registers custom hooks for snippets with custom_hook location.
+     *
+     * @return void
+     */
+    public function register_custom_hooks(): void
+    {
+        if (!$this->is_enabled() || !self::hasPro()) {
+            return;
+        }
+
+        $snippets = $this->get_all_snippets([
+            'post_status' => 'publish',
+        ]);
+
+        $hooks_registered = [];
+
+        foreach ($snippets as $snippet) {
+            if ($snippet['location'] !== 'custom_hook' || empty($snippet['custom_hook'])) {
+                continue;
+            }
+
+            $hook_name = $snippet['custom_hook'];
+
+            // Register each unique hook only once
+            if (isset($hooks_registered[$hook_name])) {
+                continue;
+            }
+
+            $hooks_registered[$hook_name] = true;
+
+            add_action($hook_name, function () use ($hook_name) {
+                if (!$this->is_enabled()) {
+                    return;
+                }
+
+                $snippets = $this->get_snippets_for_custom_hook($hook_name);
+                $this->output_snippets($snippets);
+            }, 10);
+        }
+    }
+
+    /**
+     * Gets snippets for a specific custom hook.
+     *
+     * @param string $hook_name Hook name.
+     * @return array
+     */
+    private function get_snippets_for_custom_hook(string $hook_name): array
+    {
+        if ($this->cached_snippets === null) {
+            $this->cached_snippets = $this->get_all_snippets([
+                'post_status' => 'publish',
+            ]);
+        }
+
+        $matching = [];
+
+        foreach ($this->cached_snippets as $snippet) {
+            if ($snippet['location'] !== 'custom_hook' || $snippet['custom_hook'] !== $hook_name) {
+                continue;
+            }
+
+            if ($this->should_load_snippet($snippet)) {
+                $matching[] = $snippet;
+            }
+        }
+
+        usort($matching, function ($a, $b) {
+            $priority_diff = $a['priority'] - $b['priority'];
+            if ($priority_diff !== 0) {
+                return $priority_diff;
+            }
+            return $a['id'] - $b['id'];
+        });
+
+        return $matching;
     }
 
     /**
@@ -1326,12 +1484,8 @@ final class Custom_Code_Manager
             if ($snippet['js_module']) {
                 $attrs[] = 'type="module"';
             }
-            if ($snippet['js_defer']) {
-                $attrs[] = 'defer';
-            }
-            if ($snippet['js_async']) {
-                $attrs[] = 'async';
-            }
+            // Note: defer and async attributes are only effective on scripts with a src attribute.
+            // For inline scripts they have no effect per HTML spec, so we don't add them here.
         }
 
         echo '<script ' . implode(' ', $attrs) . ">\n";
@@ -1389,6 +1543,40 @@ final class Custom_Code_Manager
     }
 
     /**
+     * AJAX: Save settings.
+     *
+     * @return void
+     */
+    public function ajax_save_settings(): void
+    {
+        check_ajax_referer('kng_cc_admin', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permission denied', 'king-addons')]);
+        }
+
+        $data = isset($_POST['settings']) ? json_decode(wp_unslash($_POST['settings']), true) : [];
+
+        if (empty($data) || !is_array($data)) {
+            wp_send_json_error(['message' => __('Invalid data', 'king-addons')]);
+        }
+
+        $settings = [
+            'enabled' => !empty($data['enabled']),
+            'default_location_css' => sanitize_key($data['default_location_css'] ?? 'head'),
+            'default_location_js' => sanitize_key($data['default_location_js'] ?? 'footer'),
+            'default_priority' => (int)($data['default_priority'] ?? 10),
+            'debug_mode' => !empty($data['debug_mode']),
+        ];
+
+        if ($this->save_settings($settings)) {
+            wp_send_json_success(['message' => __('Settings saved', 'king-addons')]);
+        } else {
+            wp_send_json_error(['message' => __('Failed to save settings', 'king-addons')]);
+        }
+    }
+
+    /**
      * Checks if debug mode is enabled.
      *
      * @return bool
@@ -1414,13 +1602,10 @@ final class Custom_Code_Manager
         echo "<script>\n";
         echo "console.group('King Addons Custom Code Manager');\n";
         foreach ($this->debug_log as $entry) {
-            $status = $entry['result'] ? '✓' : '✗';
+            $status = $entry['result'] ? '🟢' : '🔴';
             echo "console.log('" . $status . " " . esc_js($entry['snippet']) . " (ID: " . $entry['id'] . ")');\n";
         }
         echo "console.groupEnd();\n";
         echo "</script>\n";
     }
 }
-
-// Initialize
-Custom_Code_Manager::getInstance();

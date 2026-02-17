@@ -25,6 +25,23 @@ use King_Addons\Custom_Code_Manager;
             <h1 class="kng-cc-title"><?php esc_html_e('Import / Export', 'king-addons'); ?></h1>
             <p class="kng-cc-subtitle"><?php esc_html_e('Backup, restore, or migrate your custom code snippets', 'king-addons'); ?></p>
         </div>
+        <div class="kng-cc-header-right">
+            <div class="ka-v3-segmented" id="ka-v3-theme-segment" role="radiogroup" aria-label="<?php echo esc_attr(esc_html__('Theme', 'king-addons')); ?>" data-active="<?php echo esc_attr($theme_mode); ?>">
+                <span class="ka-v3-segmented-indicator" aria-hidden="true"></span>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="light" aria-pressed="<?php echo $theme_mode === 'light' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">☀︎</span>
+                    <?php esc_html_e('Light', 'king-addons'); ?>
+                </button>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="dark" aria-pressed="<?php echo $theme_mode === 'dark' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">☾</span>
+                    <?php esc_html_e('Dark', 'king-addons'); ?>
+                </button>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="auto" aria-pressed="<?php echo $theme_mode === 'auto' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">◐</span>
+                    <?php esc_html_e('Auto', 'king-addons'); ?>
+                </button>
+            </div>
+        </div>
     </header>
 
     <div class="kng-cc-import-export-content">

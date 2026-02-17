@@ -26,6 +26,23 @@ use King_Addons\Custom_Code_Manager;
             <h1 class="kng-cc-title"><?php esc_html_e('Settings', 'king-addons'); ?></h1>
             <p class="kng-cc-subtitle"><?php esc_html_e('Configure Custom Code Manager behavior', 'king-addons'); ?></p>
         </div>
+        <div class="kng-cc-header-right">
+            <div class="ka-v3-segmented" id="ka-v3-theme-segment" role="radiogroup" aria-label="<?php echo esc_attr(esc_html__('Theme', 'king-addons')); ?>" data-active="<?php echo esc_attr($theme_mode); ?>">
+                <span class="ka-v3-segmented-indicator" aria-hidden="true"></span>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="light" aria-pressed="<?php echo $theme_mode === 'light' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">☀︎</span>
+                    <?php esc_html_e('Light', 'king-addons'); ?>
+                </button>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="dark" aria-pressed="<?php echo $theme_mode === 'dark' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">☾</span>
+                    <?php esc_html_e('Dark', 'king-addons'); ?>
+                </button>
+                <button type="button" class="ka-v3-segmented-btn" data-theme="auto" aria-pressed="<?php echo $theme_mode === 'auto' ? 'true' : 'false'; ?>">
+                    <span class="ka-v3-segmented-icon" aria-hidden="true">◐</span>
+                    <?php esc_html_e('Auto', 'king-addons'); ?>
+                </button>
+            </div>
+        </div>
     </header>
 
     <div class="kng-cc-settings-content">
@@ -57,8 +74,8 @@ use King_Addons\Custom_Code_Manager;
             <div class="kng-cc-settings-card">
                 <div class="kng-cc-settings-card-header">
                     <h3>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                            <path d="M12 3v18M3 12h18"/>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                            <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
                         </svg>
                         <?php esc_html_e('Defaults', 'king-addons'); ?>
                     </h3>
