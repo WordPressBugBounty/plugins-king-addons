@@ -17,6 +17,7 @@
         wizardData: {
             step: 1,
             notification_id: 0,
+            name: '',
             type: '',
             source: '',
             source_config: {},
@@ -104,16 +105,24 @@
                 self.nextStep();
             });
 
-            // Notification type selection
-            $(document).on('change', 'input[name="notification_type"]', function() {
-                self.wizardData.type = $(this).val();
-                self.updateSourceOptions();
+            // Notification name (separate from content title)
+            $(document).on('change input', '#kng-fomo-notif-name', function() {
+                self.wizardData.name = $(this).val();
             });
 
-            // Source selection
-            $(document).on('change', 'input[name="notification_source"]', function() {
-                self.wizardData.source = $(this).val();
+            // Notification type selection — type also determines the source
+            $(document).on('change', 'input[name="notification_type"]', function() {
+                var type = $(this).val();
+                var isNewType = (self.wizardData.type !== type);
+                self.wizardData.type = type;
+                self.wizardData.source = type; // type IS the source
+                self.updateSourceOptions();
                 self.updateSourceConfig();
+
+                // Auto-populate content defaults and source_config for the selected type
+                if (isNewType) {
+                    self.applyTypeDefaults(type);
+                }
             });
 
             // Design template selection
@@ -484,6 +493,7 @@
         saveNotification: function() {
             const self = this;
             const $btn = $('.kng-fomo-save-notification');
+            const normalizedDisplay = this.buildDisplayPayload(this.wizardData.display || {});
 
             $btn.prop('disabled', true).addClass('is-loading');
 
@@ -494,14 +504,15 @@
                     action: 'kng_fomo_save_notification',
                     nonce: kngFomoAdmin.nonce,
                     id: this.wizardData.notification_id,
-                    title: this.wizardData.content.title || 'Untitled Notification',
+                    name: this.wizardData.name || this.wizardData.content.title || 'Untitled Notification',
+                    title: this.wizardData.content.title || '',
                     status: 'disabled',
                     type: this.wizardData.type,
                     source: this.wizardData.source,
                     source_config: JSON.stringify(this.wizardData.source_config),
                     design: JSON.stringify(this.wizardData.design),
                     content: JSON.stringify(this.wizardData.content),
-                    display: JSON.stringify(this.wizardData.display),
+                    display: JSON.stringify(normalizedDisplay),
                     customize: JSON.stringify(this.wizardData.customize)
                 },
                 success: function(response) {
@@ -541,6 +552,10 @@
                 },
                 success: function(response) {
                     if (response.success) {
+                        if (response.data && response.data.display) {
+                            response.data.display = self.normalizeDisplayFromServer(response.data.display);
+                        }
+
                         self.wizardData = $.extend(true, self.wizardData, response.data);
                         self.populateWizardFields();
                         self.goToStep(1);
@@ -559,17 +574,37 @@
          */
         populateWizardFields: function() {
             const data = this.wizardData;
+            data.display = this.normalizeDisplayFromServer(data.display || {});
+
+            // Notification name (separate from content title)
+            if (data.name) {
+                $('#kng-fomo-notif-name').val(data.name);
+            }
 
             // Type
             if (data.type) {
                 $('input[name="notification_type"][value="' + data.type + '"]').prop('checked', true);
+                // Source = type (wizard has no separate source selector)
+                if (!data.source || data.source === 'manual') {
+                    data.source = data.type;
+                }
                 this.updateSourceOptions();
+                this.updateSourceConfig();
             }
 
-            // Source
-            if (data.source) {
-                $('input[name="notification_source"][value="' + data.source + '"]').prop('checked', true);
-                this.updateSourceConfig();
+            // Source config (populate form fields FROM saved data)
+            if (data.source_config && typeof data.source_config === 'object') {
+                var sc = data.source_config;
+                Object.keys(sc).forEach(function(key) {
+                    var $el = $('[data-field="' + key + '"][data-section="source_config"]');
+                    if ($el.length) {
+                        if ($el.is('select[multiple]') && Array.isArray(sc[key])) {
+                            $el.val(sc[key]);
+                        } else {
+                            $el.val(sc[key]);
+                        }
+                    }
+                });
             }
 
             // Design - Template
@@ -593,22 +628,35 @@
             $('[data-field="border_radius"]').val(data.design.border_radius);
             $('[data-field="shadow"]').prop('checked', data.design.shadow);
 
-            // Content
-            $('[data-field="title"]').val(data.content.title);
-            $('[data-field="message"]').val(data.content.message);
+            // Content (title template, message template)
+            $('[data-field="title"][data-section="content"]').val(data.content.title);
+            $('[data-field="message"][data-section="content"]').val(data.content.message);
             $('[data-field="cta_text"]').val(data.content.cta_text);
             $('[data-field="cta_url"]').val(data.content.cta_url);
+
+            // Show auto-hint if content has {{}} templates
+            if (data.content.title && data.content.title.indexOf('{{') !== -1) {
+                $('.kng-fomo-content-auto-hint').show();
+            }
 
             // Display
             $('[data-field="delay"]').val(data.display.delay);
             $('[data-field="duration"]').val(data.display.duration);
             $('[data-field="interval"]').val(data.display.interval);
             $('[data-field="max_per_session"]').val(data.display.max_per_session);
+            $('[data-field="pages"]').val(data.display.pages || 'all');
+            $('[data-field="audience"]').val(data.display.audience || 'all');
+            $('[data-field="loop"]').prop('checked', data.display.loop !== false);
+            $('[data-field="random"]').prop('checked', !!data.display.random);
 
             // Devices
-            data.display.devices.forEach(function(device) {
+            $('.kng-fomo-device-check').prop('checked', false);
+            (data.display.devices || []).forEach(function(device) {
                 $('.kng-fomo-device-check[value="' + device + '"]').prop('checked', true);
             });
+
+            // Page rules
+            this.renderPageRules(data.display.page_rules || []);
 
             // Customize
             $('[data-field="z_index"]').val(data.customize.z_index);
@@ -617,6 +665,167 @@
             $('[data-field="analytics"]').prop('checked', data.customize.analytics);
 
             this.updatePreview();
+        },
+
+        /**
+         * Apply type-specific defaults when user selects a notification type.
+         * Auto-fills content templates, source_config defaults, and shows hint.
+         */
+        applyTypeDefaults: function(type) {
+            var defaults = (window.kngFomoAdmin && kngFomoAdmin.typeDefaults) ? kngFomoAdmin.typeDefaults[type] : null;
+            if (!defaults) return;
+
+            // Auto-fill content templates if currently empty or non-template
+            var cd = defaults.content_defaults || {};
+            var currentTitle = this.wizardData.content.title || '';
+            var currentMessage = this.wizardData.content.message || '';
+
+            if (!currentTitle || currentTitle.indexOf('{{') === -1) {
+                this.wizardData.content.title = cd.title || '';
+                $('[data-field="title"][data-section="content"]').val(this.wizardData.content.title);
+            }
+            if (!currentMessage || currentMessage.indexOf('{{') === -1) {
+                this.wizardData.content.message = cd.message || '';
+                $('[data-field="message"][data-section="content"]').val(this.wizardData.content.message);
+            }
+
+            // Show auto-hint if we set templates
+            if (this.wizardData.content.title && this.wizardData.content.title.indexOf('{{') !== -1) {
+                $('.kng-fomo-content-auto-hint').show();
+            } else {
+                $('.kng-fomo-content-auto-hint').hide();
+            }
+
+            // Auto-populate source_config with defaults from server
+            var scd = defaults.source_config_defaults || {};
+            Object.keys(scd).forEach(function(key) {
+                if (this.wizardData.source_config[key] === undefined) {
+                    this.wizardData.source_config[key] = scd[key];
+                }
+                // Also set in the form
+                var $el = $('[data-field="' + key + '"][data-section="source_config"]');
+                if ($el.length && !$el.val()) {
+                    $el.val(scd[key]);
+                }
+            }.bind(this));
+
+            // Also set image type default for certain types
+            if (type === 'wordpress_comments' || type === 'reviews' || type === 'email_subscription') {
+                this.wizardData.content.image_type = 'avatar';
+                $('[data-field="image_type"]').val('avatar');
+            } else if (type === 'woocommerce_sales') {
+                this.wizardData.content.image_type = 'product';
+                $('[data-field="image_type"]').val('product');
+            }
+
+            this.updatePreview();
+        },
+
+        /**
+         * Normalize server display payload to wizard shape
+         */
+        normalizeDisplayFromServer: function(display) {
+            const out = $.extend(true, {
+                delay: 3,
+                duration: 5,
+                interval: 10,
+                max_per_session: 5,
+                devices: ['desktop', 'tablet', 'mobile'],
+                pages: 'all',
+                page_rules: [],
+                audience: 'all',
+                exclude_logged_in: false,
+                loop: true,
+                random: false
+            }, display || {});
+
+            if (!Array.isArray(out.devices) || !out.devices.length) {
+                out.devices = ['desktop', 'tablet', 'mobile'];
+            }
+
+            // Audience legacy -> wizard
+            if (!out.audience) {
+                const displayFor = out.display_for || 'everyone';
+                if (displayFor === 'logged_in') out.audience = 'logged_in';
+                else if (displayFor === 'logged_out' || displayFor === 'guests') out.audience = 'logged_out';
+                else out.audience = 'all';
+            }
+
+            // Pages/rules legacy -> wizard
+            if (!Array.isArray(out.page_rules)) {
+                out.page_rules = [];
+            }
+
+            if (!out.pages) {
+                out.pages = 'all';
+            }
+
+            if (!out.page_rules.length && (out.show_on === 'include' || out.show_on === 'exclude')) {
+                const ids = out.show_on === 'include' ? (out.include_pages || []) : (out.exclude_pages || []);
+                if (Array.isArray(ids) && ids.length) {
+                    out.pages = 'specific';
+                    out.page_rules = ids.map(function(id) {
+                        return {
+                            type: out.show_on,
+                            condition: 'page',
+                            value: String(id)
+                        };
+                    });
+                }
+            }
+
+            if (out.page_rules.length) {
+                out.pages = 'specific';
+            }
+
+            return out;
+        },
+
+        /**
+         * Build display payload with legacy-compatible keys
+         */
+        buildDisplayPayload: function(display) {
+            const out = $.extend(true, {}, display || {});
+
+            // Audience wizard -> legacy
+            if (out.audience === 'logged_in') out.display_for = 'logged_in';
+            else if (out.audience === 'logged_out') out.display_for = 'logged_out';
+            else out.display_for = 'everyone';
+
+            // Page rules wizard -> legacy
+            const rules = Array.isArray(out.page_rules) ? out.page_rules : [];
+            if (out.pages === 'specific' && rules.length) {
+                const includeIds = [];
+                const excludeIds = [];
+
+                rules.forEach(function(rule) {
+                    if (!rule || (rule.condition !== 'page' && rule.condition !== 'post')) return;
+                    if (!/^\d+$/.test(String(rule.value || '').trim())) return;
+                    const id = parseInt(rule.value, 10);
+                    if (rule.type === 'exclude') excludeIds.push(id);
+                    else includeIds.push(id);
+                });
+
+                if (includeIds.length) {
+                    out.show_on = 'include';
+                    out.include_pages = includeIds;
+                    out.exclude_pages = [];
+                } else if (excludeIds.length) {
+                    out.show_on = 'exclude';
+                    out.exclude_pages = excludeIds;
+                    out.include_pages = [];
+                } else {
+                    out.show_on = 'everywhere';
+                    out.include_pages = [];
+                    out.exclude_pages = [];
+                }
+            } else {
+                out.show_on = 'everywhere';
+                out.include_pages = [];
+                out.exclude_pages = [];
+            }
+
+            return out;
         },
 
         /**
@@ -748,6 +957,54 @@
             $container.append(template);
         },
 
+        renderPageRules: function(rules) {
+            const $container = $('.kng-fomo-page-rules');
+            if (!$container.length) return;
+
+            $container.empty();
+            if (!Array.isArray(rules) || !rules.length) {
+                this.collectPageRules();
+                return;
+            }
+
+            const escHtml = function(str) {
+                return String(str === undefined || str === null ? '' : str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            };
+
+            rules.forEach(function(rule) {
+                const type = rule.type === 'exclude' ? 'exclude' : 'include';
+                const condition = ['page', 'post', 'url_contains', 'url_is'].includes(rule.condition) ? rule.condition : 'url_contains';
+                const value = escHtml(rule.value || '');
+
+                const row = `
+                    <div class="kng-fomo-page-rule">
+                        <select class="kng-fomo-input kng-fomo-input--sm kng-fomo-rule-type">
+                            <option value="include" ${type === 'include' ? 'selected' : ''}>Include</option>
+                            <option value="exclude" ${type === 'exclude' ? 'selected' : ''}>Exclude</option>
+                        </select>
+                        <select class="kng-fomo-input kng-fomo-input--sm kng-fomo-rule-condition">
+                            <option value="page" ${condition === 'page' ? 'selected' : ''}>Page</option>
+                            <option value="post" ${condition === 'post' ? 'selected' : ''}>Post</option>
+                            <option value="url_contains" ${condition === 'url_contains' ? 'selected' : ''}>URL Contains</option>
+                            <option value="url_is" ${condition === 'url_is' ? 'selected' : ''}>URL Is</option>
+                        </select>
+                        <input type="text" class="kng-fomo-input kng-fomo-input--sm kng-fomo-rule-value" placeholder="Value" value="${value}">
+                        <button type="button" class="kng-fomo-btn kng-fomo-btn--sm kng-fomo-btn--danger kng-fomo-remove-rule">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                `;
+
+                $container.append(row);
+            });
+
+            this.collectPageRules();
+        },
+
         /**
          * Collect page rules
          */
@@ -792,7 +1049,7 @@
                 data: {
                     action: 'kng_fomo_get_analytics',
                     nonce: kngFomoAdmin.nonce,
-                    range: range
+                    period: range
                 },
                 success: function(response) {
                     if (response.success) {
@@ -821,11 +1078,11 @@
             this.chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.labels,
+                    labels: data.chart.labels,
                     datasets: [
                         {
                             label: 'Views',
-                            data: data.views,
+                            data: data.chart.views,
                             borderColor: '#0071e3',
                             backgroundColor: 'rgba(0, 113, 227, 0.1)',
                             tension: 0.4,
@@ -833,7 +1090,7 @@
                         },
                         {
                             label: 'Clicks',
-                            data: data.clicks,
+                            data: data.chart.clicks,
                             borderColor: '#34c759',
                             backgroundColor: 'rgba(52, 199, 89, 0.1)',
                             tension: 0.4,
@@ -957,7 +1214,7 @@
                 data: {
                     action: 'kng_fomo_save_settings',
                     nonce: kngFomoAdmin.nonce,
-                    settings: JSON.stringify(settings)
+                    settings: settings
                 },
                 success: function(response) {
                     if (response.success) {
@@ -985,7 +1242,7 @@
                 url: kngFomoAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'kng_fomo_export',
+                    action: 'kng_fomo_export_notification',
                     nonce: kngFomoAdmin.nonce
                 },
                 success: function(response) {
@@ -1048,9 +1305,9 @@
                 url: kngFomoAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'kng_fomo_import',
+                    action: 'kng_fomo_import_notification',
                     nonce: kngFomoAdmin.nonce,
-                    import_data: JSON.stringify(data)
+                    data: JSON.stringify(data)
                 },
                 success: function(response) {
                     if (response.success) {

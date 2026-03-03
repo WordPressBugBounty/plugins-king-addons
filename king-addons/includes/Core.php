@@ -321,9 +321,13 @@ final class Core
 
             // ADDITIONAL CLASSES
 
-            // Alt Text Generator for Media Library
-            require_once(KING_ADDONS_PATH . 'includes/extensions/alt-text-generator/Alt_Text_Generator.php');
-            new Alt_Text_Generator();
+            // AI SEO Tools (Alt Text Generator + Auto Tagging)
+            if ($this->isExtensionEnabled('ai-seo-tools', 'KING_ADDONS_EXT_AI_SEO_TOOLS')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/AI_SEO_Tools/AI_SEO_Tools.php');
+                if (class_exists('King_Addons\\AI_SEO_Tools\\AI_SEO_Tools')) {
+                    \King_Addons\AI_SEO_Tools\AI_SEO_Tools::instance();
+                }
+            }
 
             // Wishlist module - check extension toggle
             if ($this->isExtensionEnabled('wishlist', 'KING_ADDONS_EXT_WISHLIST')) {

@@ -89,7 +89,7 @@ body.toplevel_page_king-addons.ka-v3-dark #wpbody-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 60px;
+    margin-bottom: 32px;
 }
 
 .ka-v3-header-actions {
@@ -388,6 +388,10 @@ body.toplevel_page_king-addons.ka-v3-dark #wpbody-content {
     background: #34c759;
     color: #fff;
     pointer-events: none;
+}
+
+.ka-v3-promo-btn.success .ka-v3-promo-btn-text::before {
+    content: '\2713\0020';
 }
 
 .ka-v3-promo-btn.error {

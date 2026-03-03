@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.59
+Stable tag: 51.1.60
 Tested up to: 6.9
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -37,6 +37,7 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - **AI Text Change** – Rewrite or improve existing text with AI-powered editing.
 - **AI Image Generation** – Generate custom images for Elementor using OpenAI models - DALL·E 3 and GPT Image 1.
 - **AI Alt Text Generation** – Automatically and manually generate alternative text for images using AI. Great for SEO and accessibility.
+- **AI SEO Tools** – A dedicated AI SEO toolkit with powerful modules: Bulk Alt Text Generator (batch-generate alt text for all Media Library images), Auto Tagging (automatically generate and assign relevant tags to blog posts), and AI Post Generator (create complete, SEO-optimized blog posts with titles, content, excerpts, tags, categories, and featured images — all powered by OpenAI).
 
 ### **Elementor Templates & Sections**
 
@@ -59,6 +60,7 @@ https://youtu.be/9aYsLn9065k
 - **Site Preloader** - Display a loading screen/animation while the page content loads.
 - **Maintenance Mode** - Show a maintenance/coming soon page while you work on your site.
 - **Age Gate** - Require age confirmation before accessing selected content.
+- **AI SEO Tools** - Comprehensive AI-powered SEO toolkit: Bulk Alt Text Generator, Auto Tagging for blog posts, and AI Post Generator. Generate complete blog posts with titles, content, excerpts, tags, categories, and featured images via OpenAI — all from one dashboard.
 - **Custom Code Manager** - Add custom CSS, JavaScript, and HTML snippets anywhere on your site. Manage all snippets from a single dashboard with code editor, activation toggle, and placement controls.
 - **Unlimited Image Optimizer** - Optimize images in your Media Library to reduce file sizes, improve website performance, and boost SEO.
 - **WooCommerce Builder** - Build custom WooCommerce pages with Elementor. 10 widgets for products, cart, checkout, my account, and more with full styling controls.
@@ -129,6 +131,7 @@ Here you’ll find step-by-step guides, tips, and tutorials to help you build st
 19. [**Advanced Border Radius**](https://kingaddons.com/elementor/advanced-border-radius/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Custom rounded corners for modern shapes.
 20. [**Floating Animation**](https://kingaddons.com/elementor/floating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - CSS floating animations.
 21. [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - CSS rotating effects.
+22. [**Values Circle Infographic**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Circular infographic with 6 text blocks around a central image or Lottie animation, connected by animated dotted arc connectors. Includes per-block positioning, per-connector curvature and attachment controls, and full typography settings.
 
 ### **Elementor Content & Layout**
 
@@ -257,6 +260,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.60 - March 4, 2026 =
+* **New:** AI SEO Tools extension – A complete AI-powered SEO toolkit with three modules: **Bulk Alt Text Generator** (batch-generate descriptive alt text for all images in your Media Library), **Auto Tagging** (automatically generate and assign relevant tags to existing or new blog posts, with support for append and regenerate modes), and **AI Post Generator** (create full blog posts — title, HTML content, excerpt, tags, category, and optional DALL·E 3 / GPT Image 1 featured image — powered by OpenAI). Includes live progress tracking, background processing, infographic statistics, configurable post length, category auto-creation, and a per-job settings + prompt preview panel.
+* **New:** Values Circle Infographic widget – A circular infographic layout with 6 customizable text blocks positioned around a central image or Lottie animation. Blocks are connected by dotted arc connectors with per-connector curvature, attachment point offsets, and dot size controls. Supports full typography settings for titles and descriptions, divider styling, responsive block width, and per-block position controls.
 
 = King Addons for Elementor version 51.1.59 - February 18, 2026 =
 * **New:** Custom Code Manager extension – Add custom CSS, JavaScript, and HTML snippets anywhere on your site. Features a built-in code editor, activation toggle, snippet type and scope selection, placement controls (header, footer, before/after content), import/export, and dark mode support.

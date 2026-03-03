@@ -396,6 +396,38 @@
 }
 
 /* ============================================
+   Progress Bar (countdown)
+   ============================================ */
+
+.kng-fomo-notification__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 0 0 var(--kng-fomo-radius, 16px) var(--kng-fomo-radius, 16px);
+    overflow: hidden;
+}
+
+.kng-fomo-notification__progress-bar {
+    height: 100%;
+    width: 100%;
+    background: var(--kng-fomo-accent, #0071e3);
+    border-radius: inherit;
+    will-change: width;
+}
+
+/* ============================================
+   Body padding transition (for bars)
+   ============================================ */
+
+body.has-kng-fomo-bar-top,
+body.has-kng-fomo-bar-bottom {
+    transition: padding 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ============================================
    Print - Hide notifications
    ============================================ */
 

@@ -174,7 +174,7 @@ $animations = [
                 <div class="kng-fomo-wizard-section">
                     <h3 class="kng-fomo-wizard-section-title"><?php esc_html_e('Notification Name', 'king-addons'); ?></h3>
                     <div class="kng-fomo-field">
-                        <input type="text" class="kng-fomo-input" data-field="title" data-section="content" placeholder="<?php esc_attr_e('e.g., Recent Sales Popup', 'king-addons'); ?>">
+                        <input type="text" class="kng-fomo-input" id="kng-fomo-notif-name" data-field="name" placeholder="<?php esc_attr_e('e.g., Recent Sales Popup', 'king-addons'); ?>">
                     </div>
                 </div>
 
@@ -379,14 +379,19 @@ $animations = [
             <div class="kng-fomo-wizard-content">
                 <div class="kng-fomo-wizard-section">
                     <h3 class="kng-fomo-wizard-section-title"><?php esc_html_e('Notification Content', 'king-addons'); ?></h3>
-                    <div class="kng-fomo-field">
-                        <label class="kng-fomo-label"><?php esc_html_e('Title', 'king-addons'); ?></label>
-                        <input type="text" class="kng-fomo-input" data-field="title" data-section="content" placeholder="<?php esc_attr_e('{{name}} just purchased', 'king-addons'); ?>">
-                        <p class="kng-fomo-field-help"><?php esc_html_e('Available placeholders: {{name}}, {{product}}, {{location}}, {{time}}', 'king-addons'); ?></p>
+                    <div class="kng-fomo-content-auto-hint" style="background: #f0f7ff; border: 1px solid #c8dff7; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #1d4f8e; display: none;">
+                        <strong><?php esc_html_e('Tip:', 'king-addons'); ?></strong>
+                        <span class="kng-fomo-content-hint-text"><?php esc_html_e('Templates are auto-filled for your notification type. Customize below or leave as-is.', 'king-addons'); ?></span>
                     </div>
                     <div class="kng-fomo-field">
-                        <label class="kng-fomo-label"><?php esc_html_e('Message', 'king-addons'); ?></label>
-                        <textarea class="kng-fomo-textarea" data-field="message" data-section="content" placeholder="<?php esc_attr_e('{{product}} from {{location}}', 'king-addons'); ?>"></textarea>
+                        <label class="kng-fomo-label"><?php esc_html_e('Title Template', 'king-addons'); ?></label>
+                        <input type="text" class="kng-fomo-input" data-field="title" data-section="content" placeholder="<?php esc_attr_e('{{name}}', 'king-addons'); ?>">
+                        <p class="kng-fomo-field-help"><?php esc_html_e('Placeholders: {{name}}, {{product}}, {{location}}, {{time}}, {{content}}, {{email}}, {{downloads}}, {{active_installs}}', 'king-addons'); ?></p>
+                    </div>
+                    <div class="kng-fomo-field">
+                        <label class="kng-fomo-label"><?php esc_html_e('Message Template', 'king-addons'); ?></label>
+                        <textarea class="kng-fomo-textarea" data-field="message" data-section="content" placeholder="<?php esc_attr_e('just purchased {{product}}', 'king-addons'); ?>"></textarea>
+                        <p class="kng-fomo-field-help"><?php esc_html_e('Use {{placeholders}} to show dynamic data from each entry', 'king-addons'); ?></p>
                     </div>
                 </div>
 
@@ -462,6 +467,22 @@ $animations = [
                         <label class="kng-fomo-label"><?php esc_html_e('Max Per Session', 'king-addons'); ?></label>
                         <input type="number" class="kng-fomo-input" data-field="max_per_session" data-section="display" value="5" min="1" max="50">
                         <p class="kng-fomo-field-help"><?php esc_html_e('Maximum notifications to show per visitor session', 'king-addons'); ?></p>
+                    </div>
+                    <div class="kng-fomo-field-row">
+                        <div class="kng-fomo-field">
+                            <label style="display: flex; align-items: center; gap: 12px;">
+                                <input type="checkbox" data-field="loop" data-section="display" checked>
+                                <span class="kng-fomo-label" style="margin: 0;"><?php esc_html_e('Loop Notifications', 'king-addons'); ?></span>
+                            </label>
+                            <p class="kng-fomo-field-help"><?php esc_html_e('Restart from the beginning after showing all entries', 'king-addons'); ?></p>
+                        </div>
+                        <div class="kng-fomo-field">
+                            <label style="display: flex; align-items: center; gap: 12px;">
+                                <input type="checkbox" data-field="random" data-section="display">
+                                <span class="kng-fomo-label" style="margin: 0;"><?php esc_html_e('Random Order', 'king-addons'); ?></span>
+                            </label>
+                            <p class="kng-fomo-field-help"><?php esc_html_e('Show entries in random order instead of sequential', 'king-addons'); ?></p>
+                        </div>
                     </div>
                 </div>
 

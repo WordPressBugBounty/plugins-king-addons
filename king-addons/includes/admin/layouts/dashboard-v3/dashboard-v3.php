@@ -252,6 +252,42 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
         </div>
     </div>
 
+    <?php
+    // Trinity Backup Slim Banner - check if plugin is installed/active
+    $trinity_plugin_slug_slim = 'trinity-backup/trinity-backup.php';
+    $trinity_installed_slim = file_exists(WP_PLUGIN_DIR . '/' . $trinity_plugin_slug_slim);
+    $trinity_active_slim = is_plugin_active($trinity_plugin_slug_slim);
+
+    $trinity_active_slim_ENABLED = true;
+
+    // Only show banner if plugin is not active
+    if (!$trinity_active_slim && $trinity_active_slim_ENABLED):
+    ?>
+    <!-- Trinity Backup Slim Banner -->
+    <div class="ka-v3-trinity-slim" id="ka-trinity-slim">
+        <div class="ka-v3-trinity-slim-left">
+            <img src="https://ps.w.org/trinity-backup/assets/icon-256x256.png" alt="Trinity Backup" class="ka-v3-trinity-slim-icon">
+            <div class="ka-v3-trinity-slim-text">
+                <span class="ka-v3-trinity-slim-title">Trinity Backup</span>
+                <span class="ka-v3-trinity-slim-desc"><?php esc_html_e('Free one-click backups for WordPress. From the King Addons developer.', 'king-addons'); ?></span>
+            </div>
+        </div>
+        <?php if ($trinity_installed_slim): ?>
+            <button type="button" class="ka-v3-trinity-slim-btn" id="ka-trinity-slim-activate" data-action="activate">
+                <span class="ka-v3-trinity-slim-btn-text"><?php esc_html_e('Activate', 'king-addons'); ?></span>
+                <span class="ka-v3-trinity-slim-btn-loading"></span>
+                <svg class="ka-v3-trinity-slim-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        <?php else: ?>
+            <button type="button" class="ka-v3-trinity-slim-btn" id="ka-trinity-slim-install" data-action="install">
+                <span class="ka-v3-trinity-slim-btn-text"><?php esc_html_e('Install Free', 'king-addons'); ?></span>
+                <span class="ka-v3-trinity-slim-btn-loading"></span>
+                <svg class="ka-v3-trinity-slim-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
     <!-- Bento Grid Stats -->
     <div class="ka-v3-bento">
         <div class="ka-v3-bento-card large">
@@ -313,42 +349,6 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
         </div>
         <?php endif; ?>
     </div>
-
-    <?php
-    // Trinity Backup Slim Banner - check if plugin is installed/active
-    $trinity_plugin_slug_slim = 'trinity-backup/trinity-backup.php';
-    $trinity_installed_slim = file_exists(WP_PLUGIN_DIR . '/' . $trinity_plugin_slug_slim);
-    $trinity_active_slim = is_plugin_active($trinity_plugin_slug_slim);
-
-    $trinity_active_slim_ENABLED = false;
-
-    // Only show banner if plugin is not active
-    if (!$trinity_active_slim && $trinity_active_slim_ENABLED):
-    ?>
-    <!-- Trinity Backup Slim Banner -->
-    <div class="ka-v3-trinity-slim" id="ka-trinity-slim">
-        <div class="ka-v3-trinity-slim-left">
-            <img src="https://ps.w.org/trinity-backup/assets/icon-256x256.png" alt="Trinity Backup" class="ka-v3-trinity-slim-icon">
-            <div class="ka-v3-trinity-slim-text">
-                <span class="ka-v3-trinity-slim-title">Trinity Backup</span>
-                <span class="ka-v3-trinity-slim-desc"><?php esc_html_e('Free one-click backups for WordPress. From the King Addons developer.', 'king-addons'); ?></span>
-            </div>
-        </div>
-        <?php if ($trinity_installed_slim): ?>
-            <button type="button" class="ka-v3-trinity-slim-btn" id="ka-trinity-slim-activate" data-action="activate">
-                <span class="ka-v3-trinity-slim-btn-text"><?php esc_html_e('Activate', 'king-addons'); ?></span>
-                <span class="ka-v3-trinity-slim-btn-loading"></span>
-                <svg class="ka-v3-trinity-slim-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-        <?php else: ?>
-            <button type="button" class="ka-v3-trinity-slim-btn" id="ka-trinity-slim-install" data-action="install">
-                <span class="ka-v3-trinity-slim-btn-text"><?php esc_html_e('Install Free', 'king-addons'); ?></span>
-                <span class="ka-v3-trinity-slim-btn-loading"></span>
-                <svg class="ka-v3-trinity-slim-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
 
     <!-- Navigation -->
     <div class="ka-v3-nav">
@@ -1076,7 +1076,8 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
                     $btn.removeClass('loading');
                     if (response.success) {
                         $btn.addClass('success');
-                        $btn.find('.ka-v3-promo-btn-text').text('<?php echo esc_js(__('Installed!', 'king-addons')); ?>');
+                        var promoSuccessText = action === 'install' ? '<?php echo esc_js(__('Installed!', 'king-addons')); ?>' : '<?php echo esc_js(__('Activated!', 'king-addons')); ?>';
+                        $btn.find('.ka-v3-promo-btn-text').text(promoSuccessText);
                         // Redirect to Trinity Backup page after 1 second
                         setTimeout(function() {
                             window.location.href = '<?php echo esc_url(admin_url('admin.php?page=trinity-backup')); ?>';
@@ -1125,7 +1126,8 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
                     $btn.removeClass('loading');
                     if (response.success) {
                         $btn.addClass('success');
-                        $btn.find('.ka-v3-trinity-banner-btn-text').text('<?php echo esc_js(__('Installed!', 'king-addons')); ?>');
+                        var bannerSuccessText = action === 'install' ? '<?php echo esc_js(__('Installed!', 'king-addons')); ?>' : '<?php echo esc_js(__('Activated!', 'king-addons')); ?>';
+                        $btn.find('.ka-v3-trinity-banner-btn-text').text(bannerSuccessText);
                         // Redirect to Trinity Backup page after 1 second
                         setTimeout(function() {
                             window.location.href = '<?php echo esc_url(admin_url('admin.php?page=trinity-backup')); ?>';

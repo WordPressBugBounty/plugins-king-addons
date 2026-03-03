@@ -183,20 +183,14 @@ final class Fomo_Notifications
      */
     public function register_post_meta(): void
     {
-        $meta_fields = [
+        // Simple string fields
+        $string_fields = [
             '_kng_fomo_status',
             '_kng_fomo_type',
             '_kng_fomo_source',
-            '_kng_fomo_source_config',
-            '_kng_fomo_design',
-            '_kng_fomo_content',
-            '_kng_fomo_display',
-            '_kng_fomo_customize',
-            '_kng_fomo_views',
-            '_kng_fomo_clicks',
         ];
 
-        foreach ($meta_fields as $meta_key) {
+        foreach ($string_fields as $meta_key) {
             register_post_meta(self::POST_TYPE, $meta_key, [
                 'type' => 'string',
                 'single' => true,
@@ -204,6 +198,59 @@ final class Fomo_Notifications
                 'sanitize_callback' => 'sanitize_text_field',
             ]);
         }
+
+        // JSON fields — sanitize_text_field would break JSON, so use a custom callback
+        $json_fields = [
+            '_kng_fomo_source_config',
+            '_kng_fomo_design',
+            '_kng_fomo_content',
+            '_kng_fomo_display',
+            '_kng_fomo_customize',
+        ];
+
+        foreach ($json_fields as $meta_key) {
+            register_post_meta(self::POST_TYPE, $meta_key, [
+                'type' => 'string',
+                'single' => true,
+                'show_in_rest' => false,
+                'sanitize_callback' => [$this, 'sanitize_json_meta'],
+            ]);
+        }
+
+        // Numeric fields
+        $numeric_fields = [
+            '_kng_fomo_views',
+            '_kng_fomo_clicks',
+        ];
+
+        foreach ($numeric_fields as $meta_key) {
+            register_post_meta(self::POST_TYPE, $meta_key, [
+                'type' => 'string',
+                'single' => true,
+                'show_in_rest' => false,
+                'sanitize_callback' => 'absint',
+            ]);
+        }
+    }
+
+    /**
+     * Sanitize JSON meta value
+     *
+     * @param mixed $value The value to sanitize
+     * @return string
+     */
+    public function sanitize_json_meta($value): string
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return wp_json_encode($decoded);
+            }
+        }
+        if (is_array($value)) {
+            return wp_json_encode($value);
+        }
+        return '{}';
     }
 
     /**
@@ -316,6 +363,17 @@ final class Fomo_Notifications
             'hasPro' => self::hasPro(),
             'freeLimit' => self::FREE_LIMIT,
             'upgradeUrl' => 'https://kingaddons.com/pricing/?utm_source=kng-fomo-notifications&utm_medium=plugin',
+            'typeDefaults' => [
+                'notification_bar' => self::get_type_defaults('notification_bar'),
+                'woocommerce_sales' => self::get_type_defaults('woocommerce_sales'),
+                'wordpress_comments' => self::get_type_defaults('wordpress_comments'),
+                'wporg_downloads' => self::get_type_defaults('wporg_downloads'),
+                'reviews' => self::get_type_defaults('reviews'),
+                'email_subscription' => self::get_type_defaults('email_subscription'),
+                'donations' => self::get_type_defaults('donations'),
+                'flashing_tab' => self::get_type_defaults('flashing_tab'),
+                'custom_csv' => self::get_type_defaults('custom_csv'),
+            ],
             'i18n' => [
                 'confirmDelete' => __('Are you sure you want to delete this notification?', 'king-addons'),
                 'saved' => __('Notification saved successfully!', 'king-addons'),
@@ -341,7 +399,8 @@ final class Fomo_Notifications
     public function enqueue_frontend_assets(): void
     {
         // Check if there are active notifications for current page
-        if (!$this->has_active_notifications()) {
+        $notifications = $this->get_active_notifications_for_page();
+        if (empty($notifications)) {
             return;
         }
 
@@ -355,14 +414,31 @@ final class Fomo_Notifications
         wp_enqueue_script(
             'kng-fomo-frontend',
             $this->url . 'assets/frontend.js',
-            ['jquery'],
+            [],
             self::VERSION,
             true
         );
 
-        wp_localize_script('kng-fomo-frontend', 'kngFomoFrontend', [
+        // Prepare notifications data for JS
+        $notifications_data = [];
+        $settings = $this->get_settings();
+        foreach ($notifications as $notification) {
+            $notifications_data[] = $this->prepare_notification_for_frontend($notification);
+        }
+
+        wp_localize_script('kng-fomo-frontend', 'kngFomoData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('kng_fomo_frontend'),
+            'notifications' => $notifications_data,
+            'settings' => [
+                'position' => 'bottom-left',
+                'delayBefore' => 5,
+                'displayFor' => 5,
+                'delayBetween' => 5,
+                'sessionLimit' => 0,
+                'soundVolume' => (int)($settings['sound_volume'] ?? 50),
+                'loop' => true,
+            ],
         ]);
     }
 
@@ -395,10 +471,10 @@ final class Fomo_Notifications
             $at_limit = !$has_pro && $notification_count >= self::FREE_LIMIT;
             $settings = $this->get_settings();
             $notification = null;
-            $is_edit = $view === 'edit';
+            $is_edit = ($view === 'edit' || ($view === 'wizard' && isset($_GET['edit'])));
 
-            if ($is_edit && isset($_GET['id'])) {
-                $notification = $this->get_notification((int)$_GET['id']);
+            if ($is_edit && isset($_GET['edit'])) {
+                $notification = $this->get_notification((int)$_GET['edit']);
             }
 
             include $template_path;
@@ -474,7 +550,7 @@ final class Fomo_Notifications
             'id' => $post->ID,
             'title' => $post->post_title,
             'status' => get_post_meta($post->ID, '_kng_fomo_status', true) ?: 'disabled',
-            'type' => get_post_meta($post->ID, '_kng_fomo_type', true) ?: 'notification-bar',
+            'type' => get_post_meta($post->ID, '_kng_fomo_type', true) ?: 'notification_bar',
             'source' => get_post_meta($post->ID, '_kng_fomo_source', true) ?: 'manual',
             'source_config' => json_decode(get_post_meta($post->ID, '_kng_fomo_source_config', true) ?: '{}', true),
             'design' => json_decode(get_post_meta($post->ID, '_kng_fomo_design', true) ?: '{}', true),
@@ -501,21 +577,19 @@ final class Fomo_Notifications
             'tracking_enabled' => true,
             'track_for' => 'everyone',
             'exclude_bots' => true,
-            'cache_ttl' => 3600,
+            'cache_ttl' => 300,
+            'anonymize_names' => false,
+            'sound_volume' => 50,
             'modules' => [
-                'notification-bar' => true,
-                'woocommerce-sales' => true,
-                'wordpress-comments' => true,
-                'wporg-downloads' => true,
-                'wporg-reviews' => false,
-                'google-reviews' => false,
-                'email-subscription' => false,
-                'elearning' => false,
+                'notification_bar' => true,
+                'woocommerce_sales' => true,
+                'wordpress_comments' => true,
+                'wporg_downloads' => true,
+                'reviews' => false,
+                'email_subscription' => false,
                 'donations' => false,
-                'discount-alert' => false,
-                'flashing-tab' => false,
-                'custom-csv' => false,
-                'page-analytics' => false,
+                'flashing_tab' => false,
+                'custom_csv' => false,
             ],
         ];
 
@@ -532,22 +606,6 @@ final class Fomo_Notifications
     public function save_settings(array $settings): bool
     {
         return update_option('kng_fomo_settings', $settings);
-    }
-
-    /**
-     * Check if there are active notifications for current page
-     *
-     * @return bool
-     */
-    private function has_active_notifications(): bool
-    {
-        $settings = $this->get_settings();
-        if (empty($settings['enabled'])) {
-            return false;
-        }
-
-        $notifications = $this->get_active_notifications_for_page();
-        return !empty($notifications);
     }
 
     /**
@@ -589,7 +647,7 @@ final class Fomo_Notifications
             return false;
         }
 
-        // Check show_on rules
+        // Legacy show_on rules
         $show_on = $display['show_on'] ?? 'everywhere';
         if ($show_on === 'include' && !empty($display['include_pages'])) {
             if (!$this->is_current_page_in_list($display['include_pages'])) {
@@ -601,16 +659,97 @@ final class Fomo_Notifications
             }
         }
 
-        // Check display_for (audience)
-        $display_for = $display['display_for'] ?? 'everyone';
-        if ($display_for === 'guests' && is_user_logged_in()) {
+        // Wizard page rules: pages + page_rules
+        $pages_mode = $display['pages'] ?? 'all';
+        if ($pages_mode === 'specific') {
+            $page_rules = $display['page_rules'] ?? [];
+            if (is_array($page_rules) && !empty($page_rules)) {
+                $has_include = false;
+                $include_matched = false;
+
+                foreach ($page_rules as $rule) {
+                    if (!is_array($rule)) {
+                        continue;
+                    }
+
+                    $type = sanitize_text_field((string)($rule['type'] ?? 'include'));
+                    $matched = $this->match_page_rule($rule);
+
+                    if ($type === 'exclude' && $matched) {
+                        return false;
+                    }
+
+                    if ($type === 'include') {
+                        $has_include = true;
+                        if ($matched) {
+                            $include_matched = true;
+                        }
+                    }
+                }
+
+                if ($has_include && !$include_matched) {
+                    return false;
+                }
+            }
+        }
+
+        // Check display_for / audience (supports both legacy and wizard keys)
+        $display_for = $display['display_for'] ?? ($display['audience'] ?? 'everyone');
+
+        if (($display_for === 'guests' || $display_for === 'logged_out') && is_user_logged_in()) {
             return false;
         }
+
         if ($display_for === 'logged_in' && !is_user_logged_in()) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Match a single wizard page rule against current request
+     *
+     * @param array $rule Page rule
+     * @return bool
+     */
+    private function match_page_rule(array $rule): bool
+    {
+        $condition = sanitize_text_field((string)($rule['condition'] ?? 'url_contains'));
+        $value = trim((string)($rule['value'] ?? ''));
+
+        if ($value === '') {
+            return false;
+        }
+
+        if ($condition === 'page' || $condition === 'post') {
+            if (is_numeric($value)) {
+                return ((int)get_queried_object_id()) === (int)$value;
+            }
+            return false;
+        }
+
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string)$_SERVER['REQUEST_URI']) : '';
+        $current_url = strtolower(home_url($request_uri));
+        $needle = strtolower($value);
+
+        if ($condition === 'url_is') {
+            // Exact full URL
+            if ($current_url === $needle) {
+                return true;
+            }
+
+            // Exact path (with or without leading slash)
+            $current_path = strtolower((string)wp_parse_url($current_url, PHP_URL_PATH));
+            $needle_path = strtolower((string)wp_parse_url($needle, PHP_URL_PATH));
+            if ($needle_path === '' && strpos($needle, '/') === false) {
+                $needle_path = '/' . ltrim($needle, '/');
+            }
+            return $needle_path !== '' && $current_path === $needle_path;
+        }
+
+        // Default: url_contains
+        return strpos($current_url, $needle) !== false;
     }
 
     /**
@@ -644,18 +783,14 @@ final class Fomo_Notifications
      */
     public function render_notifications(): void
     {
+        // Notifications data is passed via wp_localize_script in enqueue_frontend_assets().
+        // This method only outputs the container div for popup notifications.
         $notifications = $this->get_active_notifications_for_page();
         if (empty($notifications)) {
             return;
         }
 
-        // Prepare notifications data for JS
-        $notifications_data = [];
-        foreach ($notifications as $notification) {
-            $notifications_data[] = $this->prepare_notification_for_frontend($notification);
-        }
-
-        echo '<div id="kng-fomo-container" data-notifications="' . esc_attr(wp_json_encode($notifications_data)) . '"></div>';
+        echo '<div id="kng-fomo-container"></div>';
     }
 
     /**
@@ -667,13 +802,238 @@ final class Fomo_Notifications
     private function prepare_notification_for_frontend(array $notification): array
     {
         $content = $this->get_notification_content($notification);
+        $design = $notification['design'];
+        $customize = $notification['customize'];
+        $display = $notification['display'];
+
+        // Ensure loop is always set (default true for cycling)
+        if (!isset($display['loop'])) {
+            $display['loop'] = true;
+        }
 
         return [
             'id' => $notification['id'],
             'type' => $notification['type'],
-            'design' => $notification['design'],
+            'design' => $design,
             'content' => $content,
-            'customize' => $notification['customize'],
+            'customize' => $customize,
+            'display' => $display,
+            // Flat fields for frontend.js convenience
+            'title' => $content['title'] ?? '',
+            'message' => $content['message'] ?? '',
+            'image' => $content['image'] ?? '',
+            'image_style' => $content['image_type'] ?? 'product',
+            'time_text' => $content['time_text'] ?? '',
+            'cta_text' => $content['cta_text'] ?? '',
+            'cta_url' => $content['cta_url'] ?? '',
+            'click_url' => ($customize['click_action'] ?? 'link') === 'link' ? ($content['cta_url'] ?? '') : '',
+            'click_target' => '_self',
+            'bg_color' => $design['bg_color'] ?? '#ffffff',
+            'text_color' => $design['text_color'] ?? '#1d1d1f',
+            'accent_color' => $design['accent_color'] ?? '#0071e3',
+            'animation' => $design['animation'] ?? 'slide',
+            'display_time' => (($display['duration'] ?? 5) * 1000),
+            'sound' => !empty($customize['sound']) ? 'pop' : false,
+            'device' => 'all',
+            'bar_position' => $design['position'] ?? 'top',
+            'page_rules' => $display['page_rules'] ?? null,
+            // Items for dynamic notifications (WooCommerce, comments, etc.)
+            'items' => $content['items'] ?? [],
+        ];
+    }
+
+    /**
+     * Get default content templates and source config for a notification type.
+     *
+     * These are used when the user hasn't provided custom templates, and as
+     * fallback data when real sources return empty.
+     *
+     * @param string $type Notification type
+     * @return array { content_defaults: array, source_config_defaults: array, fallback_items: array }
+     */
+    public static function get_type_defaults(string $type): array
+    {
+        $defaults = [
+            'notification_bar' => [
+                'content_defaults' => [
+                    'title' => '',
+                    'message' => '',
+                ],
+                'source_config_defaults' => [],
+                'fallback_items' => [],
+            ],
+            'woocommerce_sales' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => 'just purchased {{product}}',
+                ],
+                'source_config_defaults' => [
+                    'order_status' => 'any',
+                    'time_range' => '7d',
+                    'limit' => 10,
+                ],
+                'fallback_items' => [
+                    [
+                        'username' => 'Sarah',
+                        'product' => 'Premium Bundle',
+                        'product_url' => '#',
+                        'product_image' => '',
+                        'location' => 'New York, US',
+                        'time' => time() - 180,
+                        'time_ago' => '3 mins ago',
+                    ],
+                    [
+                        'username' => 'Michael',
+                        'product' => 'Starter Pack',
+                        'product_url' => '#',
+                        'product_image' => '',
+                        'location' => 'London, UK',
+                        'time' => time() - 720,
+                        'time_ago' => '12 mins ago',
+                    ],
+                    [
+                        'username' => 'Emma',
+                        'product' => 'Annual Plan',
+                        'product_url' => '#',
+                        'product_image' => '',
+                        'location' => 'Toronto, CA',
+                        'time' => time() - 1800,
+                        'time_ago' => '30 mins ago',
+                    ],
+                    [
+                        'username' => 'James',
+                        'product' => 'Pro License',
+                        'product_url' => '#',
+                        'product_image' => '',
+                        'location' => 'Sydney, AU',
+                        'time' => time() - 3600,
+                        'time_ago' => '1 hour ago',
+                    ],
+                    [
+                        'username' => 'Lisa',
+                        'product' => 'Business Suite',
+                        'product_url' => '#',
+                        'product_image' => '',
+                        'location' => 'Berlin, DE',
+                        'time' => time() - 7200,
+                        'time_ago' => '2 hours ago',
+                    ],
+                ],
+            ],
+            'wordpress_comments' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => 'commented on {{product}}',
+                ],
+                'source_config_defaults' => [
+                    'post_types' => ['post'],
+                    'comments_count' => 10,
+                ],
+                'fallback_items' => [
+                    [
+                        'username' => 'Alex',
+                        'content' => 'Great article! Very helpful.',
+                        'post_title' => 'Getting Started Guide',
+                        'post_url' => '#',
+                        'avatar' => '',
+                        'time' => time() - 300,
+                        'time_ago' => '5 mins ago',
+                    ],
+                    [
+                        'username' => 'Maria',
+                        'content' => 'Thanks for sharing this!',
+                        'post_title' => 'Tips & Tricks',
+                        'post_url' => '#',
+                        'avatar' => '',
+                        'time' => time() - 900,
+                        'time_ago' => '15 mins ago',
+                    ],
+                    [
+                        'username' => 'David',
+                        'content' => 'Exactly what I was looking for.',
+                        'post_title' => 'Complete Tutorial',
+                        'post_url' => '#',
+                        'avatar' => '',
+                        'time' => time() - 2700,
+                        'time_ago' => '45 mins ago',
+                    ],
+                ],
+            ],
+            'wporg_downloads' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => '{{active_installs}} active installs',
+                ],
+                'source_config_defaults' => [
+                    'wporg_slug' => '',
+                    'wporg_type' => 'plugin',
+                    'data_type' => 'downloads',
+                ],
+                'fallback_items' => [],
+            ],
+            'reviews' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => 'left a review on {{product}}',
+                ],
+                'source_config_defaults' => [],
+                'fallback_items' => [
+                    [
+                        'username' => 'John',
+                        'product' => 'Premium Plugin',
+                        'post_title' => 'Premium Plugin',
+                        'product_url' => '#',
+                        'avatar' => '',
+                        'time' => time() - 600,
+                        'time_ago' => '10 mins ago',
+                    ],
+                ],
+            ],
+            'email_subscription' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => 'just subscribed to the newsletter',
+                ],
+                'source_config_defaults' => [],
+                'fallback_items' => [
+                    [
+                        'username' => 'Subscriber',
+                        'email' => 'user@example.com',
+                        'avatar' => '',
+                        'time' => time() - 120,
+                        'time_ago' => '2 mins ago',
+                    ],
+                ],
+            ],
+            'donations' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => 'just donated',
+                ],
+                'source_config_defaults' => [],
+                'fallback_items' => [
+                    [
+                        'username' => 'Donor',
+                        'product' => '$25',
+                        'time' => time() - 240,
+                        'time_ago' => '4 mins ago',
+                    ],
+                ],
+            ],
+            'custom_csv' => [
+                'content_defaults' => [
+                    'title' => '{{name}}',
+                    'message' => '{{content}}',
+                ],
+                'source_config_defaults' => [],
+                'fallback_items' => [],
+            ],
+        ];
+
+        return $defaults[$type] ?? [
+            'content_defaults' => ['title' => '', 'message' => ''],
+            'source_config_defaults' => [],
+            'fallback_items' => [],
         ];
     }
 
@@ -687,16 +1047,43 @@ final class Fomo_Notifications
     {
         $content = $notification['content'];
         $source = $notification['source'];
+        $type = $notification['type'];
         $source_config = $notification['source_config'];
 
-        // For dynamic sources, fetch data
-        if ($source === 'woocommerce') {
-            $content['items'] = $this->get_woocommerce_data($source_config);
-        } elseif ($source === 'comments') {
-            $content['items'] = $this->get_comments_data($source_config);
-        } elseif ($source === 'wporg') {
-            $content['items'] = $this->get_wporg_data($source_config);
+        // Overlay type-specific content defaults when user hasn't provided templates.
+        $type_defaults = self::get_type_defaults($type);
+        $cd = $type_defaults['content_defaults'];
+
+        // If title doesn't contain a {{placeholder}}, overlay the type default
+        if (!empty($cd['title']) && (empty($content['title']) || strpos($content['title'], '{{') === false)) {
+            $content['title'] = $cd['title'];
         }
+        if (!empty($cd['message']) && (empty($content['message']) || strpos($content['message'], '{{') === false)) {
+            $content['message'] = $cd['message'];
+        }
+
+        // For dynamic sources, fetch real data.
+        // The wizard sets source = type, so we match both legacy and current values.
+        $items = [];
+        if ($source === 'woocommerce' || $source === 'woocommerce_sales' || $type === 'woocommerce_sales') {
+            $items = $this->get_woocommerce_data($source_config);
+        } elseif ($source === 'comments' || $source === 'wordpress_comments' || $type === 'wordpress_comments') {
+            $items = $this->get_comments_data($source_config);
+        } elseif ($source === 'wporg' || $source === 'wporg_downloads' || $type === 'wporg_downloads') {
+            $items = $this->get_wporg_data($source_config);
+        }
+
+        // Fallback: use demo/sample items when real source returned nothing
+        if (empty($items) && !empty($type_defaults['fallback_items'])) {
+            $items = $type_defaults['fallback_items'];
+            // Mark as demo data so frontend can optionally indicate it
+            foreach ($items as &$item) {
+                $item['_demo'] = true;
+            }
+            unset($item);
+        }
+
+        $content['items'] = $items;
 
         return $content;
     }
@@ -713,12 +1100,33 @@ final class Fomo_Notifications
             return [];
         }
 
-        $limit = $config['limit'] ?? 10;
-        $days = $config['days'] ?? 7;
+        $limit = (int)($config['limit'] ?? 10);
+
+        $days = isset($config['days']) ? (int)$config['days'] : 0;
+        if ($days <= 0 && !empty($config['time_range'])) {
+            $time_range = sanitize_text_field((string)$config['time_range']);
+            $days_map = [
+                '24h' => 1,
+                '7d' => 7,
+                '30d' => 30,
+            ];
+            $days = $days_map[$time_range] ?? 7;
+        }
+        if ($days <= 0) {
+            $days = 7;
+        }
+
+        $order_status = sanitize_text_field((string)($config['order_status'] ?? 'any'));
+        $status = ['wc-completed', 'wc-processing'];
+        if ($order_status === 'completed') {
+            $status = ['wc-completed'];
+        } elseif ($order_status === 'processing') {
+            $status = ['wc-processing'];
+        }
 
         $args = [
             'limit' => $limit,
-            'status' => ['wc-completed', 'wc-processing'],
+            'status' => $status,
             'date_created' => '>' . (time() - ($days * DAY_IN_SECONDS)),
             'orderby' => 'date',
             'order' => 'DESC',
@@ -760,8 +1168,16 @@ final class Fomo_Notifications
      */
     private function get_comments_data(array $config): array
     {
-        $limit = $config['limit'] ?? 10;
+        $limit = (int)($config['limit'] ?? ($config['comments_count'] ?? 10));
+        if ($limit <= 0) {
+            $limit = 10;
+        }
         $post_scope = $config['post_scope'] ?? 'all';
+        $post_types = $config['post_types'] ?? [];
+        if (!is_array($post_types)) {
+            $post_types = [$post_types];
+        }
+        $post_types = array_values(array_filter(array_map('sanitize_text_field', $post_types)));
 
         $args = [
             'number' => $limit,
@@ -769,6 +1185,10 @@ final class Fomo_Notifications
             'orderby' => 'comment_date',
             'order' => 'DESC',
         ];
+
+        if (!empty($post_types)) {
+            $args['post_type'] = $post_types;
+        }
 
         if ($post_scope !== 'all' && is_numeric($post_scope)) {
             $args['post_id'] = (int)$post_scope;
@@ -800,9 +1220,9 @@ final class Fomo_Notifications
      */
     private function get_wporg_data(array $config): array
     {
-        $slug = $config['slug'] ?? '';
-        $type = $config['product_type'] ?? 'plugin';
-        $data_type = $config['data_type'] ?? 'downloads';
+        $slug = sanitize_text_field((string)($config['slug'] ?? ($config['wporg_slug'] ?? '')));
+        $type = sanitize_text_field((string)($config['product_type'] ?? ($config['wporg_type'] ?? 'plugin')));
+        $data_type = sanitize_text_field((string)($config['data_type'] ?? 'downloads'));
 
         if (empty($slug)) {
             return [];
@@ -860,8 +1280,13 @@ final class Fomo_Notifications
 
         $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
         $title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
+        // Use separate 'name' field for post_title if provided, otherwise fall back to 'title'
+        $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+        if (!empty($name)) {
+            $title = $name;
+        }
         $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'disabled';
-        $type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'notification-bar';
+        $type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'notification_bar';
         $source = isset($_POST['source']) ? sanitize_text_field($_POST['source']) : 'manual';
         $source_config = isset($_POST['source_config']) ? $_POST['source_config'] : '{}';
         $design = isset($_POST['design']) ? $_POST['design'] : '{}';
@@ -944,10 +1369,8 @@ final class Fomo_Notifications
             'customize' => json_decode(get_post_meta($id, '_kng_fomo_customize', true) ?: '{}', true),
         ];
 
-        // Ensure content.title has the post title
-        if (empty($data['content']['title'])) {
-            $data['content']['title'] = $post->post_title;
-        }
+        // Provide the notification name separately from content.title
+        $data['name'] = $post->post_title;
 
         wp_send_json_success($data);
     }
@@ -1070,20 +1493,30 @@ final class Fomo_Notifications
             wp_send_json_error(['message' => __('Permission denied.', 'king-addons')]);
         }
 
-        $settings = isset($_POST['settings']) ? $_POST['settings'] : [];
+        $raw_settings = isset($_POST['settings']) ? $_POST['settings'] : [];
+
+        // If settings were sent as JSON string, decode them
+        if (is_string($raw_settings)) {
+            $raw_settings = json_decode(stripslashes($raw_settings), true);
+            if (!is_array($raw_settings)) {
+                $raw_settings = [];
+            }
+        }
 
         // Sanitize
         $sanitized = [
-            'enabled' => !empty($settings['enabled']),
-            'tracking_enabled' => !empty($settings['tracking_enabled']),
-            'track_for' => sanitize_text_field($settings['track_for'] ?? 'everyone'),
-            'exclude_bots' => !empty($settings['exclude_bots']),
-            'cache_ttl' => (int)($settings['cache_ttl'] ?? 3600),
+            'enabled' => !empty($raw_settings['enabled']),
+            'tracking_enabled' => !empty($raw_settings['tracking_enabled']),
+            'track_for' => sanitize_text_field($raw_settings['track_for'] ?? 'everyone'),
+            'exclude_bots' => !empty($raw_settings['exclude_bots']),
+            'cache_ttl' => (int)($raw_settings['cache_ttl'] ?? 300),
+            'anonymize_names' => !empty($raw_settings['anonymize_names']),
+            'sound_volume' => (int)($raw_settings['sound_volume'] ?? 50),
             'modules' => [],
         ];
 
-        if (!empty($settings['modules']) && is_array($settings['modules'])) {
-            foreach ($settings['modules'] as $module => $enabled) {
+        if (!empty($raw_settings['modules']) && is_array($raw_settings['modules'])) {
+            foreach ($raw_settings['modules'] as $module => $enabled) {
                 $sanitized['modules'][sanitize_key($module)] = !empty($enabled);
             }
         }
@@ -1100,6 +1533,9 @@ final class Fomo_Notifications
      */
     public function ajax_track_event(): void
     {
+        // Verify nonce
+        check_ajax_referer('kng_fomo_frontend', 'nonce');
+
         // Rate limiting
         $ip = $_SERVER['REMOTE_ADDR'] ?? '';
         $rate_key = 'kng_fomo_rate_' . md5($ip);
@@ -1204,20 +1640,26 @@ final class Fomo_Notifications
         $table = $wpdb->prefix . self::STATS_TABLE;
 
         $period = isset($_POST['period']) ? sanitize_text_field($_POST['period']) : '7days';
+        if (empty($period) && isset($_POST['range'])) {
+            $period = sanitize_text_field($_POST['range']);
+        }
         $notification_id = isset($_POST['notification_id']) ? (int)$_POST['notification_id'] : 0;
 
         // Calculate date range
         $end_date = current_time('Y-m-d');
         switch ($period) {
             case '30days':
-                $start_date = date('Y-m-d', strtotime('-30 days'));
+                $start_date = wp_date('Y-m-d', strtotime('-30 days'));
                 break;
             case '90days':
-                $start_date = date('Y-m-d', strtotime('-90 days'));
+                $start_date = wp_date('Y-m-d', strtotime('-90 days'));
+                break;
+            case 'year':
+                $start_date = wp_date('Y-01-01');
                 break;
             case '7days':
             default:
-                $start_date = date('Y-m-d', strtotime('-7 days'));
+                $start_date = wp_date('Y-m-d', strtotime('-7 days'));
                 break;
         }
 
@@ -1253,7 +1695,7 @@ final class Fomo_Notifications
         ];
 
         foreach ($daily as $row) {
-            $chart_data['labels'][] = date('M j', strtotime($row->stat_date));
+            $chart_data['labels'][] = wp_date('M j', strtotime($row->stat_date));
             $chart_data['views'][] = (int)$row->views;
             $chart_data['clicks'][] = (int)$row->clicks;
         }
@@ -1308,18 +1750,36 @@ final class Fomo_Notifications
         }
 
         $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-        $notification = $this->get_notification($id);
 
-        if (!$notification) {
-            wp_send_json_error(['message' => __('Notification not found.', 'king-addons')]);
+        // Export single notification
+        if ($id) {
+            $notification = $this->get_notification($id);
+
+            if (!$notification) {
+                wp_send_json_error(['message' => __('Notification not found.', 'king-addons')]);
+            }
+
+            // Remove stats and IDs for export
+            unset($notification['id'], $notification['views'], $notification['clicks'], $notification['ctr']);
+
+            wp_send_json_success([
+                'data' => $notification,
+                'filename' => 'fomo-notification-' . sanitize_title($notification['title']) . '.json',
+            ]);
+            return;
         }
 
-        // Remove stats and IDs for export
-        unset($notification['id'], $notification['views'], $notification['clicks'], $notification['ctr']);
+        // Export all notifications
+        $all = $this->get_all_notifications();
+        $export = [];
+        foreach ($all as $notification) {
+            unset($notification['id'], $notification['views'], $notification['clicks'], $notification['ctr']);
+            $export[] = $notification;
+        }
 
         wp_send_json_success([
-            'data' => $notification,
-            'filename' => 'fomo-notification-' . sanitize_title($notification['title']) . '.json',
+            'data' => $export,
+            'filename' => 'fomo-notifications-export.json',
         ]);
     }
 
@@ -1366,7 +1826,7 @@ final class Fomo_Notifications
 
         // Save meta
         update_post_meta($post_id, '_kng_fomo_status', 'disabled');
-        update_post_meta($post_id, '_kng_fomo_type', $notification['type'] ?? 'notification-bar');
+        update_post_meta($post_id, '_kng_fomo_type', $notification['type'] ?? 'notification_bar');
         update_post_meta($post_id, '_kng_fomo_source', $notification['source'] ?? 'manual');
         update_post_meta($post_id, '_kng_fomo_source_config', wp_json_encode($notification['source_config'] ?? []));
         update_post_meta($post_id, '_kng_fomo_design', wp_json_encode($notification['design'] ?? []));
@@ -1437,6 +1897,3 @@ final class Fomo_Notifications
         wp_send_json_success(['message' => __('Cache cleared successfully.', 'king-addons')]);
     }
 }
-
-// Initialize the extension
-Fomo_Notifications::instance();

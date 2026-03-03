@@ -23,6 +23,16 @@ final class ModulesMap
                     'category' => 'creative',
                     'has-pro' => true,
                 ],
+                'values-circle-infographic' => [
+                    'title' => esc_html__('Values Circle Infographic', 'king-addons'),
+                    'description' => esc_html__('Circular values infographic with central emblem, dotted SVG connectors, and six surrounding value blocks.', 'king-addons'),
+                    'php-class' => 'Values_Circle_Infographic',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                    'category' => 'content',
+                ],
                 'styled-text-builder' => [
                     'title' => esc_html__('Styled Text Builder', 'king-addons'),
                     'description' => esc_html__('Enables the creation of uniquely styled and animated text elements, offering extensive customization options for impactful and visually captivating web typography. Allows combining different styles in one text paragraph.', 'king-addons'),

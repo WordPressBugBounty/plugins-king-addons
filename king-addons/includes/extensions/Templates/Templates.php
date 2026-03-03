@@ -237,7 +237,7 @@ final class Templates
                             <div class="promo-wrapper">
                                 <div class="promo-txt"><?php
                                                         esc_html_e('Unlock Premium Templates', 'king-addons');
-                                                        echo '<ul><li>$4.99/month</li>';
+                                                        echo '<ul><li>$6.99/month</li>';
                                                         echo '<li>Unlimited Downloads</li>';
                                                         echo '<li>Keep all templates forever</li></ul>';
                                                         ?></div>
@@ -437,7 +437,7 @@ final class Templates
                                                                 echo '<span class="pr-popup-title">Want This Premium Template?</span>';
                                                                 echo '<br><span class="pr-popup-desc">';
                                                                 echo 'Get <span class="pr-popup-desc-b">unlimited downloads</span> for just';
-                                                                echo ' <span class="pr-popup-desc-b">$4.99/month';
+                                                                echo ' <span class="pr-popup-desc-b">$6.99/month';
                                                                 echo '</span> — keep them <span class="pr-popup-desc-b">even after</span> your subscription ends!';
                                                                 echo '</span><span class="pr-popup-desc" style="font-size: 16px;opacity: 0.6;">Trusted by 20,000+ users</span>';
                                                                 ?></div>

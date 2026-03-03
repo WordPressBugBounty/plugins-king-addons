@@ -757,8 +757,16 @@ final class Admin
 
         add_settings_field(
             'openai_model',
-            esc_html__('OpenAI Model', 'king-addons'),
+            esc_html__('OpenAI Model (for text generation)', 'king-addons'),
             [$this, 'renderAiModelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section'
+        );
+
+        add_settings_field(
+            'openai_vision_model',
+            esc_html__('OpenAI Model (for image recognition)', 'king-addons'),
+            [$this, 'renderAiVisionModelField'],
             'king-addons-ai-settings',
             'king_addons_ai_openai_section'
         );
@@ -766,8 +774,17 @@ final class Admin
         // Add image model selector field
         add_settings_field(
             'openai_image_model',
-            esc_html__('OpenAI Image Model', 'king-addons'),
+            esc_html__('OpenAI Image Model (for image generation)', 'king-addons'),
             [$this, 'renderAiImageModelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section'
+        );
+
+        // Global content language
+        add_settings_field(
+            'content_language_custom_enable',
+            esc_html__('Content Language', 'king-addons'),
+            [$this, 'renderAiContentLanguageField'],
             'king-addons-ai-settings',
             'king_addons_ai_openai_section'
         );
@@ -831,7 +848,6 @@ final class Admin
             'king-addons-ai-settings',
             'king_addons_ai_alt_text_section'
         );
-
         // Add Translation Settings section
         add_settings_section(
             'king_addons_ai_translation_section',
@@ -912,6 +928,9 @@ final class Admin
         $sanitized['openai_model'] = isset($input['openai_model'])
             ? sanitize_text_field($input['openai_model'])
             : '';
+        $sanitized['openai_vision_model'] = isset($input['openai_vision_model'])
+            ? sanitize_text_field($input['openai_vision_model'])
+            : ($sanitized['openai_model'] ?: 'gpt-4o-mini');
         $sanitized['openai_image_model'] = isset($input['openai_image_model'])
             ? sanitize_text_field($input['openai_image_model'])
             : 'gpt-image-1';
@@ -941,13 +960,24 @@ final class Admin
             $interval = absint($input['ai_alt_text_generation_interval']);
             $sanitized['ai_alt_text_generation_interval'] = max(10, min(3600, $interval)); // Between 10 seconds and 1 hour
         } else {
-            $sanitized['ai_alt_text_generation_interval'] = 60; // Default to 60 seconds
+            $sanitized['ai_alt_text_generation_interval'] = 20; // Default to 20 seconds
         }
         // Sanitize Image Detail Level
         $allowed_detail_levels = ['low', 'high'];
         $sanitized['ai_alt_text_image_detail_level'] = in_array(($input['ai_alt_text_image_detail_level'] ?? 'low'), $allowed_detail_levels, true)
             ? $input['ai_alt_text_image_detail_level']
             : 'low';
+
+        // Sanitize Auto Tagging settings.
+        $sanitized['auto_tagging_max_tags'] = isset($input['auto_tagging_max_tags'])
+            ? max(1, min(20, absint($input['auto_tagging_max_tags'])))
+            : 5;
+        $sanitized['auto_tagging_confidence_threshold'] = isset($input['auto_tagging_confidence_threshold'])
+            ? max(0.0, min(1.0, (float) $input['auto_tagging_confidence_threshold']))
+            : 0.75;
+        $sanitized['auto_tagging_stop_words'] = isset($input['auto_tagging_stop_words'])
+            ? sanitize_text_field($input['auto_tagging_stop_words'])
+            : '';
 
         // Sanitize Enable AI Page Translator option
         $sanitized['enable_ai_page_translator'] = !empty($input['enable_ai_page_translator']);
@@ -1123,6 +1153,39 @@ final class Admin
         echo '<span class="spinner" id="king-addons-ai-refresh-models-spinner" style="float:none; vertical-align:middle;"></span>';
         echo '<span id="king-addons-ai-refresh-models-status" style="margin-left:5px; vertical-align:middle;"></span>';
         echo '<p class="description">' . esc_html__('Select an available OpenAI model capable of processing text. We recommend GPT-4o-mini or GPT-4.1-nano for best results. The list of models is cached indefinitely until manually refreshed.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the vision model selection dropdown field.
+     *
+     * @return void
+     */
+    public function renderAiVisionModelField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $selected = $options['openai_vision_model'] ?? ($options['openai_model'] ?? 'gpt-4o-mini');
+        $models = $this->getAiAvailableModels();
+
+        printf(
+            '<select name="king_addons_ai_options[openai_vision_model]" %s>',
+            empty($models) ? 'disabled' : ''
+        );
+
+        if (!empty($models)) {
+            foreach ($models as $id => $label) {
+                printf(
+                    '<option value="%s" %s>%s</option>',
+                    esc_attr($id),
+                    selected($selected, $id, false),
+                    esc_html($label)
+                );
+            }
+        } else {
+            echo '<option value="">' . esc_html__('Could not fetch models. Check API key?', 'king-addons') . '</option>';
+        }
+
+        echo '</select>';
+        echo '<p class="description">' . esc_html__('Select the default model used for AI image analysis tasks (Alt Text Generator and related vision requests).', 'king-addons') . '</p>';
     }
 
     /**
@@ -1949,12 +2012,12 @@ final class Admin
     public function renderAiAltTextIntervalField(): void
     {
         $options = get_option('king_addons_ai_options', []);
-        $interval = isset($options['ai_alt_text_generation_interval']) ? (int) $options['ai_alt_text_generation_interval'] : 60;
+        $interval = isset($options['ai_alt_text_generation_interval']) ? (int) $options['ai_alt_text_generation_interval'] : 20;
         printf(
-            '<input type="number" name="king_addons_ai_options[ai_alt_text_generation_interval]" value="%d" min="10" max="3600" placeholder="60" />',
+            '<input type="number" name="king_addons_ai_options[ai_alt_text_generation_interval]" value="%d" min="10" max="3600" placeholder="20" />',
             $interval
         );
-        echo '<p class="description">' . esc_html__('How often (in seconds) the system should process alt text generation queue. Recommended: 60 seconds to avoid OpenAI API rate limits. Lower values may cause API errors during high usage periods. Range: 10-3600 seconds.', 'king-addons') . '</p>';
+        echo '<p class="description">' . esc_html__('How often (in seconds) the system should process alt text generation queue. Recommended: 20 seconds. Lower values process faster; higher values reduce API load. Range: 10-3600 seconds.', 'king-addons') . '</p>';
     }
 
     /**
@@ -2151,6 +2214,24 @@ final class Admin
                 'url' => $attachment_url,
             ]);
         }
+    }
+
+    /**
+     * Renders the global content language field.
+     *
+     * @return void
+     */
+    public function renderAiContentLanguageField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $enabled = !empty($options['content_language_custom_enable']);
+        $custom_lang = $options['content_language_custom'] ?? '';
+        echo '<label><input type="checkbox" name="king_addons_ai_options[content_language_custom_enable]" value="1" ' . checked($enabled, true, false) . ' id="ka-content-lang-enable-checkbox" /> ' . esc_html__('Generate content in a non-English language', 'king-addons') . '</label>';
+        echo '<div id="ka-content-lang-custom-wrap"' . ($enabled ? '' : ' hidden') . ' style="margin-top:8px;">';
+        echo '<input type="text" name="king_addons_ai_options[content_language_custom]" value="' . esc_attr($custom_lang) . '" placeholder="' . esc_attr__('language name', 'king-addons') . '" class="regular-text" id="ka-content-lang-custom-input" />';
+        echo '<p class="description">' . esc_html__('Applies to all AI-generated content: alt text, tags, blog posts. Type your language name, for example: Spanish, French, German, Polish, Italian, Russian, Hindi, Arabic, Portuguese, etc.', 'king-addons') . '</p>';
+        echo '</div>';
+        echo '<script>document.getElementById("ka-content-lang-enable-checkbox").addEventListener("change",function(){var w=document.getElementById("ka-content-lang-custom-wrap");if(this.checked){w.removeAttribute("hidden");}else{w.setAttribute("hidden","");}});</script>';
     }
 
     /**

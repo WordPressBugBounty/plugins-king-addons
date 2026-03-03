@@ -1,0 +1,218 @@
+.king-addons-values-circle-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    aspect-ratio: 1000 / 860;
+    overflow: visible;
+}
+
+.king-addons-values-circle-svg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.king-addons-values-circle-svg-layer svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.ka-values-circle-connectors {
+    stroke: none;
+    stroke-width: 0;
+    fill: none;
+}
+
+.ka-values-circle-dot {
+    fill: var(--ka-conn-dot-color, #f2e3b8);
+}
+
+.king-addons-values-circle-item {
+    position: absolute;
+    z-index: 3;
+    width: 200px;
+    text-align: center;
+    color: #161616;
+}
+
+.king-addons-values-circle-title {
+    margin: 0;
+    font-size: clamp(15px, 1.34vw, 36px);
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.king-addons-values-circle-divider {
+    display: block;
+    width: min(130px, 85%);
+    max-width: 100%;
+    margin: 8px auto 10px;
+    border-top: 1.5px solid #8f8f8f;
+}
+
+.king-addons-values-circle-description {
+    margin-top: 0;
+    font-size: clamp(12px, 0.92vw, 17px);
+    line-height: 1.16;
+    font-weight: 500;
+}
+
+.king-addons-values-circle-item--top-left {
+    left: 60px;
+    top: 10px;
+}
+
+.king-addons-values-circle-item--top-right {
+    right: 60px;
+    top: 10px;
+}
+
+.king-addons-values-circle-item--middle-left {
+    left: -24px;
+    top: 286px;
+}
+
+.king-addons-values-circle-item--middle-right {
+    right: -24px;
+    top: 286px;
+}
+
+.king-addons-values-circle-item--bottom-left {
+    left: 60px;
+    bottom: 10px;
+}
+
+.king-addons-values-circle-item--bottom-right {
+    right: 60px;
+    bottom: 10px;
+}
+
+.king-addons-values-circle-center-image-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 40%;
+    pointer-events: none;
+}
+
+.king-addons-values-circle-center-image-wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.king-addons-values-circle-lottie {
+    width: 100%;
+    height: 100%;
+}
+
+.king-addons-values-circle-lottie svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.king-addons-values-circle-image-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.king-addons-values-circle-image-placeholder::after {
+    content: '';
+    display: block;
+    width: 40%;
+    height: 40%;
+    border-radius: 50%;
+    background: #c8c8c8;
+}
+
+/* ── Mobile vertical layout (hidden on desktop) ─────────────────── */
+.king-addons-values-circle-mobile-view {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    /* ---- Hide circular / desktop-only elements ---- */
+    .king-addons-values-circle-svg-layer,
+    .king-addons-values-circle-center-image-wrap,
+    .king-addons-values-circle-item {
+        display: none !important;
+    }
+
+    /* ---- Drop the circle's fixed aspect-ratio ---- */
+    .king-addons-values-circle-wrap {
+        aspect-ratio: auto;
+        height: auto;
+        padding: 0;
+    }
+
+    /* ---- Show and style the mobile vertical strip ---- */
+    .king-addons-values-circle-mobile-view {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 24px 16px;
+        box-sizing: border-box;
+    }
+
+    /* ---- Centre image at top ---- */
+    .king-addons-values-circle-mobile-image {
+        max-width: 100%;
+    }
+
+    .king-addons-values-circle-mobile-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 50%;
+    }
+
+    .king-addons-values-circle-mobile-image .king-addons-values-circle-lottie {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+    }
+
+    /* ---- Dot connector SVGs between cards ---- */
+    .ka-vcm-connector {
+        display: block;
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+    }
+
+    .ka-vcm-connector--first {
+        height: 50px;
+    }
+
+    .ka-vcm-connector--between {
+        height: 50px;
+    }
+
+    /* ---- Individual mobile card ---- */
+    .king-addons-values-circle-mobile-card {
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+    }
+
+    .king-addons-values-circle-mobile-card .king-addons-values-circle-description {
+        margin-top: 6px;
+    }
+
+    .king-addons-values-circle-mobile-card .king-addons-values-circle-divider {
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+}

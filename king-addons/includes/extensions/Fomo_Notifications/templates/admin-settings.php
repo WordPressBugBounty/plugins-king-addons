@@ -13,6 +13,9 @@ $settings = get_option('kng_fomo_settings', []);
 // Default settings
 $defaults = [
     'enabled' => true,
+    'tracking_enabled' => true,
+    'track_for' => 'everyone',
+    'exclude_bots' => true,
     'cache_ttl' => 300,
     'anonymize_names' => false,
     'sound_volume' => 50,
@@ -21,11 +24,11 @@ $defaults = [
         'woocommerce_sales' => true,
         'wordpress_comments' => true,
         'wporg_downloads' => true,
-        'reviews' => true,
-        'email_subscription' => true,
-        'donations' => true,
-        'flashing_tab' => true,
-        'custom_csv' => true
+        'reviews' => false,
+        'email_subscription' => false,
+        'donations' => false,
+        'flashing_tab' => false,
+        'custom_csv' => false,
     ]
 ];
 
@@ -106,6 +109,43 @@ $settings = wp_parse_args($settings, $defaults);
                     </select>
                     <p class="kng-fomo-field-help"><?php esc_html_e('How long to cache notification data (improves performance)', 'king-addons'); ?></p>
                 </div>
+
+                <hr style="border: none; border-top: 1px solid var(--kng-fomo-border); margin: 24px 0;">
+
+                <div class="kng-fomo-field">
+                    <label style="display: flex; align-items: center; gap: 12px;">
+                        <label class="kng-fomo-toggle">
+                            <input type="checkbox" name="tracking_enabled" <?php checked($settings['tracking_enabled']); ?>>
+                            <span class="kng-fomo-toggle-slider"></span>
+                        </label>
+                        <div>
+                            <span class="kng-fomo-label" style="margin: 0;"><?php esc_html_e('Enable Analytics Tracking', 'king-addons'); ?></span>
+                            <p class="kng-fomo-field-help" style="margin: 4px 0 0;"><?php esc_html_e('Track notification views and clicks', 'king-addons'); ?></p>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="kng-fomo-field">
+                    <label class="kng-fomo-label"><?php esc_html_e('Track For', 'king-addons'); ?></label>
+                    <select class="kng-fomo-select" name="track_for">
+                        <option value="everyone" <?php selected($settings['track_for'], 'everyone'); ?>><?php esc_html_e('Everyone', 'king-addons'); ?></option>
+                        <option value="guests" <?php selected($settings['track_for'], 'guests'); ?>><?php esc_html_e('Guests Only', 'king-addons'); ?></option>
+                        <option value="logged_in" <?php selected($settings['track_for'], 'logged_in'); ?>><?php esc_html_e('Logged In Users Only', 'king-addons'); ?></option>
+                    </select>
+                    <p class="kng-fomo-field-help"><?php esc_html_e('Which visitors to track analytics for', 'king-addons'); ?></p>
+                </div>
+
+                <div class="kng-fomo-field">
+                    <label style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox" name="exclude_bots" <?php checked($settings['exclude_bots']); ?>>
+                        <div>
+                            <span class="kng-fomo-label" style="margin: 0;"><?php esc_html_e('Exclude Bots', 'king-addons'); ?></span>
+                            <p class="kng-fomo-field-help" style="margin: 4px 0 0;"><?php esc_html_e('Do not count bot traffic in analytics', 'king-addons'); ?></p>
+                        </div>
+                    </label>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--kng-fomo-border); margin: 24px 0;">
 
                 <div class="kng-fomo-field">
                     <label style="display: flex; align-items: center; gap: 12px;">

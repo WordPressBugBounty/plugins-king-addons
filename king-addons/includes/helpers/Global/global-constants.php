@@ -34,14 +34,14 @@ const KING_ADDONS_EXT_COOKIE_CONSENT = true; /** DONE */
 const KING_ADDONS_EXT_SMART_LINKS = false;
 const KING_ADDONS_EXT_ACTIVITY_LOG = true; /** DONE */
 const KING_ADDONS_EXT_CUSTOM_CODE_MANAGER = true; /** DONE */
-const KING_ADDONS_EXT_LIVE_CHAT = false;
-const KING_ADDONS_EXT_STICKY_CONTACT_BAR = false;
-const KING_ADDONS_EXT_DOCS_KB = false;
+const KING_ADDONS_EXT_LIVE_CHAT = false; // contact form getting messages needs fixes
+const KING_ADDONS_EXT_STICKY_CONTACT_BAR = false; // ok, but needs some fixes and QA
+const KING_ADDONS_EXT_DOCS_KB = false; // maybe needs some fixes and QA, but the core is good to go
 
 // Extensions - Upper segment
-const KING_ADDONS_EXT_TABLE_BUILDER = false;
-const KING_ADDONS_EXT_PRICING_TABLE_BUILDER = false;
-const KING_ADDONS_EXT_FOMO_NOTIFICATIONS = false;
+const KING_ADDONS_EXT_TABLE_BUILDER = false; // needs fixes
+const KING_ADDONS_EXT_PRICING_TABLE_BUILDER = false; // needs fixes
+const KING_ADDONS_EXT_FOMO_NOTIFICATIONS = false; // create the new extension for this
 
 // Extensions - Complex and the most important
 const KING_ADDONS_EXT_THEME_BUILDER = true; /** IN PROGRESS OF QA */
@@ -50,6 +50,7 @@ const KING_ADDONS_EXT_WOO_BUILDER = true; /** IN PROGRESS OF QA */
 // Extensions - Advanced segment
 const KING_ADDONS_EXT_WISHLIST = false;
 const KING_ADDONS_EXT_IMAGE_OPTIMIZER = true; /** DONE */
+const KING_ADDONS_EXT_AI_SEO_TOOLS = true;
 
 
 /** FEATURES - Enable/Disable (NEW: disabled by default for QA rollout) */
@@ -91,7 +92,7 @@ const KING_ADDONS_WGT_QUICK_CARD_GRID = true; /** DONE */ // 7 - QA passed
 const KING_ADDONS_WGT_QUICK_POST_GRID = true; /** DONE */ // 8 ====
 const KING_ADDONS_WGT_QUICK_POST_SLIDER = true; /** DONE */ // 9 ====
 const KING_ADDONS_WGT_SINGLE_PRODUCT = false; // 16 =====
-const KING_ADDONS_WGT_STEPS_PROCESS_TIMELINE = true; // Good
+const KING_ADDONS_WGT_STEPS_PROCESS_TIMELINE = true; /** DONE */ // Good
 const KING_ADDONS_WGT_LIQUID_GLASS_CARDS = false; // Need fixes
 const KING_ADDONS_WGT_SCROLL_STORY_SECTIONS = false; // Good but Need fixes
 const KING_ADDONS_WGT_UNFOLD = false; // Bad, maybe remove or redo
@@ -103,7 +104,7 @@ const KING_ADDONS_WGT_ADVANCED_CALLOUT_BOX = true; /** DONE */ // QA passed
 const KING_ADDONS_WGT_TESTIMONIALS_WALL = false; // Good but Need fixes and QA
 const KING_ADDONS_WGT_PARALLAX_DEPTH_CARDS = false; // Good but Need fixes
 const KING_ADDONS_WGT_KPI_TILES_MICROCHARTS = true;  /** DONE */ // Great, needs QA
-const KING_ADDONS_WGT_MAGNETIC_BUTTONS = true; // Great, needs QA
+const KING_ADDONS_WGT_MAGNETIC_BUTTONS = true; /** DONE */ // Great, needs QA
 const KING_ADDONS_WGT_KINETIC_TEXT_HOVER = false; // Need fixes
 const KING_ADDONS_WGT_PULL_QUOTES_CALLOUTS_BUILDER = false; // Good but Need fixes
 const KING_ADDONS_WGT_INTERACTIVE_GRADIENT_MESH = true; /** DONE */ // Good, needs small fixes

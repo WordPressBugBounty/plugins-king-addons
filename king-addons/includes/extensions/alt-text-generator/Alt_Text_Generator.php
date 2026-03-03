@@ -255,9 +255,9 @@ class Alt_Text_Generator {
      * @return array Modified schedules.
      */
     public function add_custom_cron_intervals(array $schedules): array {
-        // Get the interval from settings, default to 60 seconds
+        // Get the interval from settings, default to 20 seconds
         $options = get_option('king_addons_ai_options', []);
-        $interval = isset($options['ai_alt_text_generation_interval']) ? (int) $options['ai_alt_text_generation_interval'] : 60;
+        $interval = isset($options['ai_alt_text_generation_interval']) ? (int) $options['ai_alt_text_generation_interval'] : 20;
         
         // Ensure interval is within acceptable range
         $interval = max(10, min(3600, $interval));
@@ -402,8 +402,8 @@ class Alt_Text_Generator {
         // Retrieve OpenAI API key and settings from King Addons AI options.
         $options = get_option('king_addons_ai_options', []);
         $api_key = $options['openai_api_key'] ?? '';
-        // Use the text model for vision analysis, not the image generation model
-        $model = $options['openai_model'] ?? 'gpt-4o';
+        // Use dedicated vision model for image analysis (fallback to text model).
+        $model = $options['openai_vision_model'] ?? ($options['openai_model'] ?? 'gpt-4o-mini');
         // Get image detail level from settings (default to 'low')
         $image_detail_level = $options['ai_alt_text_image_detail_level'] ?? 'low';
 
@@ -443,7 +443,16 @@ class Alt_Text_Generator {
         // --- OpenAI API Call --- //
         $api_endpoint = 'https://api.openai.com/v1/chat/completions';
 
+        $options_for_lang = get_option('king_addons_ai_options', []);
+        $custom_lang_enabled = !empty($options_for_lang['content_language_custom_enable']);
+        $custom_lang = trim($options_for_lang['content_language_custom'] ?? '');
+
         $prompt_text = 'Generate a concise, descriptive alt text for this image, suitable for SEO and accessibility. Focus on the main subject and action. Maximum 125 characters.';
+        if ($custom_lang_enabled && $custom_lang !== '') {
+            $prompt_text .= ' Use language: ' . $custom_lang;
+        } else {
+            $prompt_text .= ' Respond in English only.';
+        }
 
         $payload = array(
             'model' => $model,
@@ -534,6 +543,56 @@ class Alt_Text_Generator {
     }
 
     /**
+     * Retrieves statistics about image alt text in the Media Library.
+     *
+     * @return array{total:int,with_alt:int,without_alt:int}
+     */
+    public static function get_alt_text_stats(): array
+    {
+        $cache_key = 'king_addons_alt_text_stats';
+        $cached = wp_cache_get($cache_key, 'king-addons');
+        if (false !== $cached && is_array($cached)) {
+            return $cached;
+        }
+
+        $all_images = get_posts([
+            'post_type' => 'attachment',
+            'post_mime_type' => 'image',
+            'post_status' => 'inherit',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+        ]);
+
+        $with_alt = get_posts([
+            'post_type' => 'attachment',
+            'post_mime_type' => 'image',
+            'post_status' => 'inherit',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'meta_query' => [
+                [
+                    'key' => '_wp_attachment_image_alt',
+                    'value' => '',
+                    'compare' => '!=',
+                ],
+            ],
+        ]);
+
+        $total = count($all_images);
+        $with_alt_count = count($with_alt);
+        $result = [
+            'total' => $total,
+            'with_alt' => $with_alt_count,
+            'without_alt' => max(0, $total - $with_alt_count),
+        ];
+
+        wp_cache_set($cache_key, $result, 'king-addons', 300);
+        return $result;
+    }
+
+    /**
      * Cleans up cron jobs and options on plugin deactivation.
      */
     public function cleanup_cron_jobs(): void {
@@ -566,8 +625,8 @@ class Alt_Text_Generator {
     public function update_cron_schedule($old_value, $new_value, string $option = 'king_addons_ai_options'): void {
 
         // Check if interval setting changed
-        $old_interval = isset($old_value['ai_alt_text_generation_interval']) ? (int) $old_value['ai_alt_text_generation_interval'] : 60;
-        $new_interval = isset($new_value['ai_alt_text_generation_interval']) ? (int) $new_value['ai_alt_text_generation_interval'] : 60;
+        $old_interval = isset($old_value['ai_alt_text_generation_interval']) ? (int) $old_value['ai_alt_text_generation_interval'] : 20;
+        $new_interval = isset($new_value['ai_alt_text_generation_interval']) ? (int) $new_value['ai_alt_text_generation_interval'] : 20;
         
         // Check if auto generation setting changed
         $old_auto = isset($old_value['enable_ai_alt_text_auto_generation']) ? (bool) $old_value['enable_ai_alt_text_auto_generation'] : false;

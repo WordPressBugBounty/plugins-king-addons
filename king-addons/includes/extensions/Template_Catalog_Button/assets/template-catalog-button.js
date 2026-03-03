@@ -688,7 +688,7 @@
                             <span class="king-addons-pr-popup-title">Want This Premium Template?</span>
                             <br><span class="king-addons-pr-popup-desc">
                                 Get <span class="king-addons-pr-popup-desc-b">unlimited downloads</span> for just
-                                <span class="king-addons-pr-popup-desc-b">$4.99/month</span> — keep them 
+                                <span class="king-addons-pr-popup-desc-b">$6.99/month</span> — keep them 
                                 <span class="king-addons-pr-popup-desc-b">even after</span> your subscription ends!
                             </span>
                             <span class="king-addons-pr-popup-desc" style="font-size: 16px;opacity: 0.6;">
