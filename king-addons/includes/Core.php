@@ -287,10 +287,11 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/Admin.php');
 
             // Rating Notice (admin only)
-            if (is_admin()) {
-                require_once(KING_ADDONS_PATH . 'includes/admin/notices/RatingNotice.php');
-                \King_Addons\Admin\Notices\RatingNotice::instance();
-            }
+            // Temporarily disabled
+            // if (is_admin()) {
+            //     require_once(KING_ADDONS_PATH . 'includes/admin/notices/RatingNotice.php');
+            //     \King_Addons\Admin\Notices\RatingNotice::instance();
+            // }
 
             // Additional - Controls
             require_once(KING_ADDONS_PATH . 'includes/controls/Ajax_Select2/Ajax_Select2.php');

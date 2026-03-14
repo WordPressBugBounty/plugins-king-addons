@@ -258,7 +258,7 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
     $trinity_installed_slim = file_exists(WP_PLUGIN_DIR . '/' . $trinity_plugin_slug_slim);
     $trinity_active_slim = is_plugin_active($trinity_plugin_slug_slim);
 
-    $trinity_active_slim_ENABLED = true;
+    $trinity_active_slim_ENABLED = false;
 
     // Only show banner if plugin is not active
     if (!$trinity_active_slim && $trinity_active_slim_ENABLED):

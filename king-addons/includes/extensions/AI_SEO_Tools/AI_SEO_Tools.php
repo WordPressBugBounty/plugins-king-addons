@@ -112,9 +112,10 @@ class AI_SEO_Tools
 
         $ka_ai_options_for_js = get_option('king_addons_ai_options', []);
         wp_localize_script('king-addons-ai-seo-tools', 'kingAddonsAiSeoTools', [
-            'ajaxUrl'     => admin_url('admin-ajax.php'),
-            'settingsUrl' => admin_url('admin.php?page=king-addons-ai-settings'),
-            'hasApiKey'   => !empty($ka_ai_options_for_js['openai_api_key']) ? '1' : '',
+            'ajaxUrl'          => admin_url('admin-ajax.php'),
+            'settingsUrl'      => admin_url('admin.php?page=king-addons-ai-settings'),
+            'hasApiKey'        => !empty($ka_ai_options_for_js['openai_api_key']) ? '1' : '',
+            'dashboardUiNonce' => wp_create_nonce('king_addons_dashboard_ui'),
             'nonces' => [
                 'altStart' => wp_create_nonce('king_addons_ai_seo_bulk_alt_start_nonce'),
                 'altStatus' => wp_create_nonce('king_addons_ai_seo_bulk_alt_status_nonce'),
@@ -184,11 +185,26 @@ class AI_SEO_Tools
                         <p class="ka-admin-subtitle"><?php esc_html_e('Alt Text Generator and Auto Tagging for SEO workflows.', 'king-addons'); ?></p>
                     </div>
                 </div>
-                <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
-                <div class="ka-admin-header-right">
+                <div class="ka-admin-header-actions">
+                    <div class="ka-v3-segmented" id="ka-v3-theme-segment" role="radiogroup" aria-label="<?php echo esc_attr(esc_html__('Theme', 'king-addons')); ?>" data-active="<?php echo esc_attr($theme_mode); ?>">
+                        <span class="ka-v3-segmented-indicator" aria-hidden="true"></span>
+                        <button type="button" class="ka-v3-segmented-btn" data-theme="light" aria-pressed="<?php echo $theme_mode === 'light' ? 'true' : 'false'; ?>">
+                            <span class="ka-v3-segmented-icon" aria-hidden="true">☀︎</span>
+                            <?php esc_html_e('Light', 'king-addons'); ?>
+                        </button>
+                        <button type="button" class="ka-v3-segmented-btn" data-theme="dark" aria-pressed="<?php echo $theme_mode === 'dark' ? 'true' : 'false'; ?>">
+                            <span class="ka-v3-segmented-icon" aria-hidden="true">☾</span>
+                            <?php esc_html_e('Dark', 'king-addons'); ?>
+                        </button>
+                        <button type="button" class="ka-v3-segmented-btn" data-theme="auto" aria-pressed="<?php echo $theme_mode === 'auto' ? 'true' : 'false'; ?>">
+                            <span class="ka-v3-segmented-icon" aria-hidden="true">◐</span>
+                            <?php esc_html_e('Auto', 'king-addons'); ?>
+                        </button>
+                    </div>
+                    <?php if (!king_addons_freemius()->can_use_premium_code()): ?>
                     <a href="https://kingaddons.com/pricing/?utm_source=kng-ai-seo-tools&utm_medium=wp-admin&utm_campaign=kng" target="_blank" rel="noopener" class="ka-btn ka-btn-primary"><?php esc_html_e('Upgrade to PRO', 'king-addons'); ?></a>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
             </div>
 
             <div id="ka-ai-seo-background-notice" class="notice notice-info ka-ai-seo-notice" hidden>

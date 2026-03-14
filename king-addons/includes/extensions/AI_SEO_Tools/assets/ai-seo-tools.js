@@ -387,6 +387,77 @@
 		const runningMap = {};
 		const $bgNotice = $('#ka-ai-seo-background-notice');
 
+		// ── Theme segmented control ──────────────────────────────────────────
+		(function () {
+			var $segment = $('#ka-v3-theme-segment');
+			if (!$segment.length) { return; }
+			var $buttons = $segment.find('.ka-v3-segmented-btn');
+			var themeMql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+			var themeMode = ($segment.attr('data-active') || 'dark').toString();
+			var themeMqlHandler = null;
+
+			function applyThemeClass(isDark) {
+				$('body').toggleClass('ka-v3-dark', isDark);
+				document.documentElement.classList.toggle('ka-v3-dark', isDark);
+			}
+
+			function updateSegment(mode) {
+				$segment.attr('data-active', mode);
+				$buttons.each(function () {
+					$(this).attr('aria-pressed', $(this).data('theme') === mode ? 'true' : 'false');
+				});
+			}
+
+			function setThemeMode(mode, save) {
+				themeMode = mode;
+				updateSegment(mode);
+
+				if (themeMqlHandler && themeMql) {
+					if (themeMql.removeEventListener) {
+						themeMql.removeEventListener('change', themeMqlHandler);
+					} else if (themeMql.removeListener) {
+						themeMql.removeListener(themeMqlHandler);
+					}
+					themeMqlHandler = null;
+				}
+
+				if (mode === 'auto') {
+					applyThemeClass(!!(themeMql && themeMql.matches));
+					themeMqlHandler = function (e) {
+						if (themeMode !== 'auto') { return; }
+						applyThemeClass(!!e.matches);
+					};
+					if (themeMql) {
+						if (themeMql.addEventListener) {
+							themeMql.addEventListener('change', themeMqlHandler);
+						} else if (themeMql.addListener) {
+							themeMql.addListener(themeMqlHandler);
+						}
+					}
+				} else {
+					applyThemeClass(mode === 'dark');
+				}
+
+				if (save && kingAddonsAiSeoTools && kingAddonsAiSeoTools.dashboardUiNonce) {
+					$.post(kingAddonsAiSeoTools.ajaxUrl, {
+						action: 'king_addons_save_dashboard_ui',
+						nonce: kingAddonsAiSeoTools.dashboardUiNonce,
+						key: 'theme_mode',
+						value: mode,
+					});
+				}
+			}
+
+			$segment.on('click', '.ka-v3-segmented-btn', function (e) {
+				e.preventDefault();
+				var mode = ($(this).data('theme') || 'dark').toString();
+				setThemeMode(mode, true);
+			});
+
+			setThemeMode(themeMode, false);
+		}());
+		// ─────────────────────────────────────────────────────────────────────
+
 		function updateBackgroundNotice() {
 			const activeCount = Object.keys(runningMap).filter(function (key) {
 				return runningMap[key] === true;

@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.60
+Stable tag: 51.1.61
 Tested up to: 6.9
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.61 - March 14, 2026 =
+* **Improved:** Various improvements and optimizations across multiple widgets and templates.
+* **Fix:** AI SEO Tools extension, dark theme compatibility issue.
 
 = King Addons for Elementor version 51.1.60 - March 4, 2026 =
 * **New:** AI SEO Tools extension – A complete AI-powered SEO toolkit with three modules: **Bulk Alt Text Generator** (batch-generate descriptive alt text for all images in your Media Library), **Auto Tagging** (automatically generate and assign relevant tags to existing or new blog posts, with support for append and regenerate modes), and **AI Post Generator** (create full blog posts — title, HTML content, excerpt, tags, category, and optional DALL·E 3 / GPT Image 1 featured image — powered by OpenAI). Includes live progress tracking, background processing, infographic statistics, configurable post length, category auto-creation, and a per-job settings + prompt preview panel.
