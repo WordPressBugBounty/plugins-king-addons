@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.61
+Stable tag: 51.1.62
 Tested up to: 6.9
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.62 - April 25, 2026 =
+* **Improved:** General stability, performance, and compatibility across widgets, extensions, and template workflows.
+* **Improved:** Admin dashboard and Elementor editor refinements for a smoother user experience.
 
 = King Addons for Elementor version 51.1.61 - March 14, 2026 =
 * **Improved:** Various improvements and optimizations across multiple widgets and templates.
