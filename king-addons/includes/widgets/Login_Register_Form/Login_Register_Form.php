@@ -1992,7 +1992,7 @@ class Login_Register_Form extends Widget_Base
                     'label' => esc_html__('Additional Fields', 'king-addons'),
                     'type' => Controls_Manager::REPEATER,
                     'fields' => $repeater->get_controls(),
-                    'title_field' => '{{{ field_label }}}',
+                    'title_field' => '{{ field_label }}',
                     'default' => [],
                 ]
             );
@@ -3108,7 +3108,7 @@ class Login_Register_Form extends Widget_Base
                                 required>
                      </div>
 
-                     <div class="king-addons-form-field <?php echo $settings['show_password_visibility_login'] === 'yes' ? 'king-addons-password-field' : ''; ?>">
+                     <div class="king-addons-form-field <?php echo esc_attr($settings['show_password_visibility_login'] === 'yes' ? 'king-addons-password-field' : ''); ?>">
                          <?php if ($show_labels && !empty($settings['login_password_label'])): ?>
                              <label for="king-addons-login-password-<?php echo esc_attr($widget_id); ?>">
                                  <?php echo esc_html($settings['login_password_label']); ?>
@@ -3263,7 +3263,7 @@ class Login_Register_Form extends Widget_Base
                          </div>
                          <?php endif; ?>
 
-                         <div class="king-addons-form-field <?php echo $settings['show_password_visibility_register'] === 'yes' ? 'king-addons-password-field' : ''; ?>">
+                         <div class="king-addons-form-field <?php echo esc_attr($settings['show_password_visibility_register'] === 'yes' ? 'king-addons-password-field' : ''); ?>">
                              <?php if ($show_labels && !empty($settings['register_password_label'])): ?>
                                  <label for="king-addons-register-password-<?php echo esc_attr($widget_id); ?>">
                                      <?php echo esc_html($settings['register_password_label']); ?>
@@ -3283,7 +3283,7 @@ class Login_Register_Form extends Widget_Base
                              </div>
                          </div>
 
-                         <div class="king-addons-form-field <?php echo $settings['show_password_visibility_register'] === 'yes' ? 'king-addons-password-field' : ''; ?>">
+                         <div class="king-addons-form-field <?php echo esc_attr($settings['show_password_visibility_register'] === 'yes' ? 'king-addons-password-field' : ''); ?>">
                              <?php if ($show_labels && !empty($settings['register_confirm_password_label'])): ?>
                                  <label for="king-addons-register-confirm-password-<?php echo esc_attr($widget_id); ?>">
                                      <?php echo esc_html($settings['register_confirm_password_label']); ?>
@@ -3334,7 +3334,7 @@ class Login_Register_Form extends Widget_Base
                          <div class="king-addons-form-field king-addons-checkbox-field">
                              <label>
                                  <input type="checkbox" name="terms_conditions" value="1" 
-                                        <?php echo $settings['terms_required'] === 'yes' ? 'required' : ''; ?>>
+                                        <?php echo esc_attr($settings['terms_required'] === 'yes' ? 'required' : ''); ?>>
                                  <?php 
                                  if (!empty($settings['terms_conditions_link']['url'])):
                                      $link_target = $settings['terms_conditions_link']['is_external'] ? '_blank' : '_self';

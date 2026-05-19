@@ -351,7 +351,7 @@ class Pricing_Slider extends Widget_Base
                         'price' => 99.99,
                     ],
                 ],
-                'title_field' => '{{{ value }}} - {{{ price }}}',
+                'title_field' => '{{ value }} - {{ price }}',
                 'condition' => [
                     'price_formula' => 'custom',
                 ],
@@ -447,7 +447,7 @@ class Pricing_Slider extends Widget_Base
                         'min_value_feature' => 60,
                     ],
                 ],
-                'title_field' => '{{{ feature_text }}}',
+                'title_field' => '{{ feature_text }}',
                 'condition' => [
                     'show_features' => 'yes',
                 ],

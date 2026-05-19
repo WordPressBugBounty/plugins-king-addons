@@ -626,7 +626,7 @@ class Image_Accordion extends Widget_Base
                         ],
                     ],
                 ],
-                'title_field' => '{{{ accordion_item_title }}}',
+                'title_field' => '{{ accordion_item_title }}',
             ]
         );
 
@@ -1023,7 +1023,7 @@ class Image_Accordion extends Widget_Base
                         'element_select' => 'button',
                     ],
                 ],
-                'title_field' => '{{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}}',
+                'title_field' => '{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}',
             ]
         );
 
@@ -2183,7 +2183,7 @@ $this->end_controls_section();
             $element_title_tag = Core::validateHTMLTags($settings['element_title_tag'], 'h2', $tags_whitelist);
             echo '<' . $element_title_tag . ' class="' . esc_attr($class) . '">';
             echo '<div class="inner-block"><a class="king-addons-pointer-item">';
-            echo $item['accordion_item_title'];
+            echo esc_html($item['accordion_item_title']);
             echo '</a></div></' . $element_title_tag . '>';
         }
     }
@@ -2191,7 +2191,7 @@ $this->end_controls_section();
     public function render_repeater_description($class, $item)
     {
         if ('' === $item['accordion_item_description']) return;
-        echo '<div class="' . esc_attr($class) . '"><div class="inner-block"><p>' . $item['accordion_item_description'] . '</p></div></div>';
+        echo '<div class="' . esc_attr($class) . '"><div class="inner-block"><p>' . wp_kses_post($item['accordion_item_description']) . '</p></div></div>';
     }
 
     public function render_repeater_button($settings, $class, $item)

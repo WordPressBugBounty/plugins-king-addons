@@ -520,7 +520,7 @@ class Data_Table extends Widget_Base
                         'table_th' => esc_html__('TABLE HEADER 4', 'king-addons'),
                     ],
                 ],
-                'title_field' => '{{{ table_th }}}',
+                'title_field' => '{{ table_th }}',
             ]
         );
 

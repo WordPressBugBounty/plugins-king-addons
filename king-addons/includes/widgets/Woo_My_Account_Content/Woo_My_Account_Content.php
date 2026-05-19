@@ -121,7 +121,7 @@ class Woo_My_Account_Content extends Abstract_My_Account_Widget
                         'type' => Controls_Manager::WYSIWYG,
                     ],
                 ],
-                'title_field' => '{{{ label }}} ({{{ slug }}})',
+                'title_field' => '{{ label }} ({{ slug }})',
             ]
         );
 

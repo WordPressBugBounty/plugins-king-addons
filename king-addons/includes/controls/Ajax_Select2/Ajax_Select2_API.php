@@ -12,6 +12,16 @@ if (!defined('ABSPATH')) {
 
 class Ajax_Select2_API
 {
+    private const ALLOWED_ACTIONS = [
+        'getElementorTemplates',
+        'getPostsByPostType',
+        'getPostTypeTaxonomies',
+        'getCustomMetaKeys',
+        'getUsers',
+        'getTaxonomies',
+        'getCustomMetaKeysProduct',
+    ];
+
     public function __construct()
     {
         $this->init();
@@ -26,15 +36,29 @@ class Ajax_Select2_API
                 [
                     'methods' => 'GET',
                     'callback' => [$this, 'callback'],
-                    'permission_callback' => '__return_true'
+                    'permission_callback' => [$this, 'canAccess'],
                 ]
             );
         });
     }
 
+    public function canAccess($request): bool
+    {
+        $action = sanitize_key((string)($request['action'] ?? ''));
+        $allowed_actions = array_map('sanitize_key', self::ALLOWED_ACTIONS);
+
+        return current_user_can('edit_posts') && in_array($action, $allowed_actions, true);
+    }
+
     public function callback($request)
     {
-        return $this->{$request['action']}($request);
+        $action = (string)($request['action'] ?? '');
+
+        if (!in_array($action, self::ALLOWED_ACTIONS, true) || !is_callable([$this, $action])) {
+            return new \WP_Error('king_addons_invalid_ajaxselect2_action', esc_html__('Invalid request.', 'king-addons'), ['status' => 400]);
+        }
+
+        return $this->{$action}($request);
     }
 
     public function getElementorTemplates($request): ?array
@@ -60,7 +84,7 @@ class Ajax_Select2_API
         }
 
         if (isset($request['s'])) {
-            $args['s'] = $request['s'];
+            $args['s'] = sanitize_text_field((string)$request['s']);
         }
 
         $options = [];
@@ -71,7 +95,7 @@ class Ajax_Select2_API
                 $the_query->the_post();
                 $options[] = [
                     'id' => get_the_ID(),
-                    'text' => html_entity_decode(get_the_title()),
+                    'text' => wp_strip_all_tags(html_entity_decode(get_the_title())),
                 ];
             }
         }
@@ -85,7 +109,7 @@ class Ajax_Select2_API
     {
         if (!current_user_can('edit_posts')) return null;
 
-        $post_type = $request['query_slug'] ?? '';
+        $post_type = sanitize_key((string)($request['query_slug'] ?? ''));
 
         $args = [
             'post_type' => $post_type,
@@ -94,11 +118,11 @@ class Ajax_Select2_API
         ];
 
         if (isset($request['ids'])) {
-            $args['post__in'] = explode(',', $request['ids']);
+            $args['post__in'] = array_filter(array_map('intval', explode(',', (string)$request['ids'])));
         }
 
         if (isset($request['s'])) {
-            $args['s'] = $request['s'];
+            $args['s'] = sanitize_text_field((string)$request['s']);
         }
 
         $query = new WP_Query($args);
@@ -109,7 +133,7 @@ class Ajax_Select2_API
                 $query->the_post();
                 $options[] = [
                     'id' => get_the_ID(),
-                    'text' => html_entity_decode(get_the_title()),
+                    'text' => wp_strip_all_tags(html_entity_decode(get_the_title())),
                 ];
             }
         }
@@ -122,7 +146,7 @@ class Ajax_Select2_API
     {
         if (!current_user_can('edit_posts')) return null;
 
-        $post_type = $request['query_slug'] ?? '';
+        $post_type = sanitize_key((string)($request['query_slug'] ?? ''));
 
         $taxonomies = get_object_taxonomies($post_type, 'objects');
         $options = [];
@@ -130,12 +154,12 @@ class Ajax_Select2_API
         if ($taxonomies) {
             foreach ($taxonomies as $taxonomy) {
 
-                if (isset($request['s']) && stripos($taxonomy->label, $request['s']) === false) {
+                if (isset($request['s']) && stripos($taxonomy->label, sanitize_text_field((string)$request['s'])) === false) {
                     continue;
                 }
 
                 if (isset($request['ids'])) {
-                    $ids = explode(',', $request['ids'] ?: '99999999');
+                    $ids = array_map('sanitize_key', explode(',', (string)($request['ids'] ?: '99999999')));
                     if (!in_array($taxonomy->name, $ids)) {
                         continue;
                     }
@@ -143,7 +167,7 @@ class Ajax_Select2_API
 
                 $options[] = [
                     'id' => $taxonomy->name,
-                    'text' => $taxonomy->label,
+                    'text' => wp_strip_all_tags($taxonomy->label),
                 ];
             }
         }
@@ -178,10 +202,10 @@ class Ajax_Select2_API
         );
 
         $filtered = array_filter($mergedKeys, function ($key) use ($request) {
-            return !isset($request['s']) || strpos($key, $request['s']) !== false;
+            return !isset($request['s']) || strpos($key, sanitize_text_field((string)$request['s'])) !== false;
         });
 
-        $options = array_map(fn($k) => ['id' => $k, 'text' => $k], $filtered);
+        $options = array_map(fn($k) => ['id' => $k, 'text' => wp_strip_all_tags($k)], $filtered);
 
         return ['results' => $options];
     }
@@ -200,13 +224,13 @@ class Ajax_Select2_API
         }
 
         if (!empty($request['s'])) {
-            $args['search'] = '*' . $request['s'] . '*';
+            $args['search'] = '*' . sanitize_text_field((string)$request['s']) . '*';
         }
 
         $results = (new WP_User_Query($args))->get_results();
 
         $options = array_map(
-            fn($user) => ['id' => $user->ID, 'text' => $user->display_name],
+            fn($user) => ['id' => $user->ID, 'text' => wp_strip_all_tags($user->display_name)],
             $results ?: []
         );
 
@@ -219,7 +243,7 @@ class Ajax_Select2_API
     {
         if (!current_user_can('edit_posts')) return null;
 
-        $tax = $request['query_slug'] ?? '';
+        $tax = sanitize_key((string)($request['query_slug'] ?? ''));
         $args = [
             'orderby' => 'name',
             'order' => 'DESC',
@@ -228,18 +252,22 @@ class Ajax_Select2_API
         ];
 
         if (isset($request['ids'])) {
-            $args['include'] = explode(',', $request['ids'] ?: '99999999');
+            $args['include'] = array_filter(array_map('intval', explode(',', (string)($request['ids'] ?: '99999999'))));
         }
 
         if (!empty($request['s'])) {
-            $args['name__like'] = $request['s'];
+            $args['name__like'] = sanitize_text_field((string)$request['s']);
         }
 
         $terms = get_terms($tax, $args);
+        if (is_wp_error($terms)) {
+            return ['results' => []];
+        }
+
         $options = array_map(function ($term) {
             return [
                 'id' => $term->term_id,
-                'text' => $term->name,
+                'text' => wp_strip_all_tags($term->name),
             ];
         }, $terms);
 
@@ -272,10 +300,10 @@ class Ajax_Select2_API
 
         $merged_meta_keys = array_values(array_unique($merged_meta_keys));
         foreach ($merged_meta_keys as $key) {
-            if (empty($request['s']) || false !== strpos($key, $request['s'])) {
+            if (empty($request['s']) || false !== strpos($key, sanitize_text_field((string)$request['s']))) {
                 $options[] = [
                     'id' => $key,
-                    'text' => $key,
+                    'text' => wp_strip_all_tags($key),
                 ];
             }
         }
@@ -310,7 +338,7 @@ class Ajax_Select2_API
         foreach (array_keys($product_attributes) as $attribute_name) {
             $options[] = [
                 'id' => $attribute_name,
-                'text' => $attribute_name,
+                'text' => wp_strip_all_tags($attribute_name),
             ];
         }
 

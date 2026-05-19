@@ -283,7 +283,7 @@ class Page_List extends Widget_Base
                         'page_list_item_sub_title' => esc_html__('Third Sub Title', 'king-addons'),
                     ],
                 ],
-                'title_field' => '{{{ page_list_item_title }}}',
+                'title_field' => '{{ page_list_item_title }}',
             ]
         );
 

@@ -322,7 +322,7 @@ class One_Page_Navigation extends Widget_Base
                         ],
                     ],
                 ],
-                'title_field' => '{{{ kng_one_page_nav_item_name }}}',
+                'title_field' => '{{ kng_one_page_nav_item_name }}',
             ]
         );
 

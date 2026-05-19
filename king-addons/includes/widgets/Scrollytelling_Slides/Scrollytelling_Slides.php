@@ -697,7 +697,7 @@ class Scrollytelling_Slides extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_slides(),
-                'title_field' => '{{{ kng_slide_title }}}',
+                'title_field' => '{{ kng_slide_title }}',
                 'description' => esc_html__('Free version is limited to 5 slides.', 'king-addons'),
             ]
         );

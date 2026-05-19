@@ -30,7 +30,7 @@ class Duplicator
 
     public static function addDuplicatorActionLink($action, $post)
     {
-        if (current_user_can('edit_posts') && post_type_supports($post->post_type, 'elementor')) {
+        if (current_user_can('edit_post', $post->ID) && post_type_supports($post->post_type, 'elementor')) {
 
             /** @noinspection HtmlUnknownTarget */
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped
@@ -58,26 +58,26 @@ class Duplicator
                 ),
                 admin_url('admin.php')
             ),
-            self::KNG_DUPLICATOR_ACTION
+            self::KNG_DUPLICATOR_ACTION . '_' . absint($post_id)
         );
     }
 
     public static function doDuplicateAction(): void
     {
-        if (!current_user_can('edit_posts')) {
-            return;
-        }
-
         /** @noinspection SpellCheckingInspection */
         $wp_nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
         $post_id = isset($_GET['post_id']) ? absint($_GET['post_id']) : 0;
 
-        if (!wp_verify_nonce($wp_nonce, self::KNG_DUPLICATOR_ACTION)) {
+        if (!$post_id || !wp_verify_nonce($wp_nonce, self::KNG_DUPLICATOR_ACTION . '_' . $post_id)) {
             return;
         }
 
         $post = get_post($post_id);
         if (is_null($post)) {
+            return;
+        }
+
+        if (!current_user_can('edit_post', $post_id) || !post_type_supports($post->post_type, 'elementor')) {
             return;
         }
 

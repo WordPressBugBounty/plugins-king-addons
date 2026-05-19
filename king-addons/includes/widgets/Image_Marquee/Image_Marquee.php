@@ -221,7 +221,7 @@ class Image_Marquee extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_items(),
-                'title_field' => '{{{ item_title }}}',
+                'title_field' => '{{ item_title }}',
             ]
         );
 

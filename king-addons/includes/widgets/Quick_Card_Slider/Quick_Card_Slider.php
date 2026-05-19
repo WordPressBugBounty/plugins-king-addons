@@ -302,7 +302,7 @@ class Quick_Card_Slider extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_cards(),
-                'title_field' => '{{{ kng_card_title }}}',
+                'title_field' => '{{ kng_card_title }}',
             ]
         );
 

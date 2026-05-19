@@ -82,6 +82,7 @@ class View_Submissions_Pro
 
 
             if (isset($post) && $post->post_type === $post_type) {
+                $form_page_id = absint(get_post_meta($post->ID, 'king_addons_form_page_id', true));
                 
                 // Check if Pro constants are defined before using them
                 if (defined('KING_ADDONS_PRO_URL') && defined('KING_ADDONS_PRO_VERSION')) {
@@ -96,17 +97,17 @@ class View_Submissions_Pro
                     'king-addons-form-builder-submissions-js',
                     'KingAddonsSubmissions',
                     [
-                        'ajaxurl' => admin_url('admin-ajax.php'),
-                        'resturl' => get_rest_url() . 'king-addons/v1',
+                        'ajaxurl' => esc_url_raw(admin_url('admin-ajax.php')),
+                        'resturl' => esc_url_raw(get_rest_url() . 'king-addons/v1'),
                         'nonce' => wp_create_nonce('king-addons-submissions-js'),
-                        'form_name' => get_post_meta($post->ID, 'king_addons_form_name', true),
-                        'form_id' => get_post_meta($post->ID, 'king_addons_form_id', true),
-                        'form_page' => get_post_meta($post->ID, 'king_addons_form_page', true),
-                        'form_page_id' => get_post_meta($post->ID, 'king_addons_form_page_id', true),
-                        'form_page_url' => get_permalink(get_post_meta($post->ID, 'king_addons_form_page_id', true)),
-                        'form_page_editor' => admin_url('post.php?post=' . get_post_meta($post->ID, 'king_addons_form_page_id', true) . '&action=elementor'),
-                        'form_agent' => get_post_meta($post->ID, 'king_addons_user_agent', true),
-                        'agent_ip' => get_post_meta($post->ID, 'king_addons_user_ip', true),
+                        'form_name' => sanitize_text_field(get_post_meta($post->ID, 'king_addons_form_name', true)),
+                        'form_id' => sanitize_key(get_post_meta($post->ID, 'king_addons_form_id', true)),
+                        'form_page' => sanitize_text_field(get_post_meta($post->ID, 'king_addons_form_page', true)),
+                        'form_page_id' => $form_page_id,
+                        'form_page_url' => $form_page_id ? esc_url_raw(get_permalink($form_page_id)) : '',
+                        'form_page_editor' => $form_page_id ? esc_url_raw(admin_url('post.php?post=' . $form_page_id . '&action=elementor')) : '',
+                        'form_agent' => sanitize_textarea_field(get_post_meta($post->ID, 'king_addons_user_agent', true)),
+                        'agent_ip' => sanitize_text_field(get_post_meta($post->ID, 'king_addons_user_ip', true)),
                         'post_created' => date('F j, Y g:i a', strtotime($post->post_date)),
                         'post_updated' => date('F j, Y g:i a', strtotime($post->post_modified)),
                     ]
@@ -272,6 +273,7 @@ class View_Submissions_Pro
         $submission = get_post($post_id);
         $submission_meta = get_post_meta($post_id);
         $action_status = 'success';
+        $main_key = '';
 
         foreach ($submission_meta as $key => $value) {
             if (str_contains($key, 'form_field-email')) {
@@ -287,44 +289,53 @@ class View_Submissions_Pro
 
         switch ($column) {
             case 'main':
+                $main_value = '';
+                if ($main_key !== '') {
+                    $main_meta = get_post_meta($post_id, $main_key, true);
+                    $main_value = is_array($main_meta) && isset($main_meta[1]) ? $main_meta[1] : $main_meta;
+                }
 
                 echo sprintf(
                     '<a href="%s" title="%s">%s</a>',
                     esc_url(admin_url('post.php?post=' . $post_id . '&action=edit')),
-                    __('View', 'king-addons'),
-                    __(get_post_meta($post_id, $main_key, true)[1], 'king-addons')
+                    esc_attr__('View', 'king-addons'),
+                    esc_html($main_value)
                 );
                 break;
 
             case 'action_status':
 
-                echo $action_status;
+                echo esc_html($action_status);
                 break;
 
             case 'form_id':
-                echo '<a href="' . admin_url('post.php?post=' . get_post_meta($post_id, 'king_addons_form_page_id', true) . '&action=elementor') . '" target="_blank">';
-                echo get_post_meta($post_id, 'king_addons_form_name', true);
+                $form_page_id = absint(get_post_meta($post_id, 'king_addons_form_page_id', true));
+                $form_name = sanitize_text_field(get_post_meta($post_id, 'king_addons_form_name', true));
+                echo '<a href="' . esc_url($form_page_id ? admin_url('post.php?post=' . $form_page_id . '&action=elementor') : '#') . '" target="_blank" rel="noopener noreferrer">';
+                echo esc_html($form_name);
                 echo '</a>';
                 break;
 
             case 'page':
-                echo '<a href="' . get_permalink(get_post_meta($post_id, 'king_addons_form_page_id', true)) . '" target="_blank">';
-                echo get_post_meta($post_id, 'king_addons_form_page', true);
+                $form_page_id = absint(get_post_meta($post_id, 'king_addons_form_page_id', true));
+                $form_page = sanitize_text_field(get_post_meta($post_id, 'king_addons_form_page', true));
+                echo '<a href="' . esc_url($form_page_id ? get_permalink($form_page_id) : '#') . '" target="_blank" rel="noopener noreferrer">';
+                echo esc_html($form_page);
                 echo '</a>';
                 break;
 
             case 'post_id':
 
-                echo $submission->ID;
+                echo esc_html(absint($submission->ID));
                 break;
 
             case 'read_status':
                 $read_status = get_post_meta($post_id, 'king_addons_submission_read_status', true);
 
                 if ($read_status == '1') {
-                    echo '<span class="king-addons-button king-addons-submission-read">' . __('Read') . '</span>';
+                    echo '<span class="king-addons-button king-addons-submission-read">' . esc_html__('Read', 'king-addons') . '</span>';
                 } else {
-                    echo '<span class="king-addons-button king-addons-submission-unread">' . __('Unread') . '</span>';
+                    echo '<span class="king-addons-button king-addons-submission-unread">' . esc_html__('Unread', 'king-addons') . '</span>';
                 }
                 break;
 
@@ -344,6 +355,10 @@ class View_Submissions_Pro
         $post_id = intval($_POST['post_id']);
         $read_status = $_POST['read_status'] === '1' ? '1' : '0';
 
+        if (!current_user_can('edit_post', $post_id)) {
+            wp_send_json_error('Insufficient permissions');
+        }
+
         update_post_meta($post_id, 'king_addons_submission_read_status', $read_status);
 
         wp_send_json_success();
@@ -360,6 +375,9 @@ class View_Submissions_Pro
                     $post_id = intval($_GET['post']);
                     $post = get_post($post_id);
 
+                    if (!$post || !current_user_can('edit_post', $post_id)) {
+                        return;
+                    }
 
                     update_post_meta($post_id, 'king_addons_submission_read_status', '1');
                 }

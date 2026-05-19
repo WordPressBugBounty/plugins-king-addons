@@ -327,7 +327,7 @@ class Tabs extends Widget_Base
                         'tab_content' => 'Tab three content. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima incidunt voluptates nemo, dolor optio quia architecto quis delectus perspiciatis. Nobis atque id hic neque possimus voluptatum voluptatibus tenetur, perspiciatis consequuntur.',
                     ]
                 ],
-                'title_field' => '{{{ tab_title }}}',
+                'title_field' => '{{ tab_title }}',
             ]
         );
 

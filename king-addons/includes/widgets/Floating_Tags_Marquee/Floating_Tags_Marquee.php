@@ -174,7 +174,7 @@ class Floating_Tags_Marquee extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_tags(),
-                'title_field' => '{{{ tag_text }}}',
+                'title_field' => '{{ tag_text }}',
             ]
         );
 

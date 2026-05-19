@@ -905,7 +905,7 @@ class Slider extends Widget_Base
                         'slider_item_overlay_bg' => '#D5040094',
                     ],
                 ],
-                'title_field' => '{{{ slider_item_title }}}',
+                'title_field' => '{{ slider_item_title }}',
             ]
         );
 

@@ -2990,7 +2990,7 @@ $this->end_controls_section();
                         'element_select' => 'read-more',
                     ],
                 ],
-                'title_field' => '{{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}}',
+                'title_field' => '{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}',
             ]
         );
 

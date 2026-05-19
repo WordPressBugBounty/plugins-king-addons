@@ -436,7 +436,7 @@ class Image_Comparison extends Widget_Base
     protected function render(): void
     {
         $settings = $this->get_settings_for_display();
-        $element_ID = $this->get_id();
+        $element_ID = sanitize_key($this->get_id());
 
         // Define allowed tags and attributes
         $allowed_tags = wp_kses_allowed_html('post');
@@ -471,10 +471,18 @@ class Image_Comparison extends Widget_Base
             </div>
         </div>
         <?php
-        $inline_js = "const container_" . esc_js($element_ID) . " = document.querySelector('.king-addons-image-comparison-" . esc_js($element_ID) . "');
-            document.querySelector('.king-addons-image-comparison-slider-" . esc_js($element_ID) . "').addEventListener('input', (e) => {
-                container_" . esc_js($element_ID) . ".style.setProperty('--position', " . '`${e.target.value}%`' . ");
-            });";
+        $container_selector = '.king-addons-image-comparison-' . $element_ID;
+        $slider_selector = '.king-addons-image-comparison-slider-' . $element_ID;
+        $inline_js = '(() => {
+            const container = document.querySelector(' . wp_json_encode($container_selector) . ');
+            const slider = document.querySelector(' . wp_json_encode($slider_selector) . ');
+            if (!container || !slider) {
+                return;
+            }
+            slider.addEventListener("input", (event) => {
+                container.style.setProperty("--position", `${event.target.value}%`);
+            });
+        })();';
         wp_print_inline_script_tag($inline_js);
     }
 }

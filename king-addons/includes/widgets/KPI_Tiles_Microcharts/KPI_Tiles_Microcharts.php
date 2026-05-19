@@ -485,7 +485,7 @@ class KPI_Tiles_Microcharts extends Widget_Base
                         'kng_tile_badge' => '',
                     ],
                 ],
-                'title_field' => '{{{ kng_tile_title }}}',
+                'title_field' => '{{ kng_tile_title }}',
             ]
         );
 

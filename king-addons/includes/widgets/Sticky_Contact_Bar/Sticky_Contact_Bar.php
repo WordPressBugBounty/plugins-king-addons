@@ -402,7 +402,7 @@ class Sticky_Contact_Bar extends Widget_Base
                         'kng_channel_availability' => 'online',
                     ],
                 ],
-                'title_field' => '{{{ kng_channel_label }}}',
+                'title_field' => '{{ kng_channel_label }}',
             ]
         );
 

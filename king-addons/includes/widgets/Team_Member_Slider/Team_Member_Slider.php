@@ -612,7 +612,7 @@ class Team_Member_Slider extends Widget_Base {
                 'default'     => [
                     ['name' => esc_html__('John Doe', 'king-addons'), 'role' => esc_html__('CEO', 'king-addons')],
                 ],
-                'title_field' => '{{{ name }}}',
+                'title_field' => '{{ name }}',
             ]
         );
         

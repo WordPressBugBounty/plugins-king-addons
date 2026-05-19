@@ -145,7 +145,7 @@ class Woo_My_Account_Navigation extends Abstract_My_Account_Widget
                         ],
                     ],
                 ],
-                'title_field' => '{{{ endpoint }}}',
+                'title_field' => '{{ endpoint }}',
             ]
         );
 

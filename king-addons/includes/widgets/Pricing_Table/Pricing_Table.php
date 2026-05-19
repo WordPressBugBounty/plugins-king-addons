@@ -676,13 +676,13 @@ class Pricing_Table extends Widget_Base
                         'type_select' => 'text',
                     ],
                 ],
-                'title_field' => '<# if( "feature" === type_select ) { #> Feature - {{{ feature_text }}} <# } 
-                else if( "heading" === type_select ) { #> Heading - {{{ heading_title }}} <# }
-                else if( "price" === type_select ) { #> Price - {{{ price }}} <# }
-                else if( "text" === type_select ) { #> Text - {{{ text }}} <# }
-                else if( "button" === type_select ) { #> Button - {{{ btn_text }}} <# }
-                else if( "divider" === type_select ) { #> Divider - {{{ divider_style }}} <# }
-                else {#> {{{ type_select }}} <# } #>',
+                'title_field' => '<# if( "feature" === type_select ) { #> Feature - {{ feature_text }} <# } 
+                else if( "heading" === type_select ) { #> Heading - {{ heading_title }} <# }
+                else if( "price" === type_select ) { #> Price - {{ price }} <# }
+                else if( "text" === type_select ) { #> Text - {{ text }} <# }
+                else if( "button" === type_select ) { #> Button - {{ btn_text }} <# }
+                else if( "divider" === type_select ) { #> Divider - {{ divider_style }} <# }
+                else {#> {{ type_select }} <# } #>',
             ]
         );
 

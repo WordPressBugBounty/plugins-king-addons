@@ -331,7 +331,7 @@ class Interactive_Steps_Progress extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_steps(),
-                'title_field' => '{{{ step_title }}}',
+                'title_field' => '{{ step_title }}',
             ]
         );
 

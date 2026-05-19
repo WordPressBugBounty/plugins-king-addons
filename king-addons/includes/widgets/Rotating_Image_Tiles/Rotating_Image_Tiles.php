@@ -367,7 +367,7 @@ class Rotating_Image_Tiles extends Widget_Base
                 'label' => esc_html__('Images', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ title || "' . esc_html__('Image', 'king-addons') . '" }}}',
+                'title_field' => '{{ title || "' . esc_html__('Image', 'king-addons') . '" }}',
                 'default' => [
                     [
                         'image' => ['url' => Utils::get_placeholder_image_src()],
@@ -670,7 +670,7 @@ class Rotating_Image_Tiles extends Widget_Base
                 'label' => esc_html__('Tiles', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ admin_label || "' . esc_html__('Tile', 'king-addons') . '" }}}',
+                'title_field' => '{{ admin_label || "' . esc_html__('Tile', 'king-addons') . '" }}',
                 'description' => esc_html__('Add one entry per tile. If fewer items are set than the count, defaults are used.', 'king-addons'),
             ]
         );

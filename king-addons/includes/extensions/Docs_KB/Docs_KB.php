@@ -556,9 +556,8 @@ final class Docs_KB
             $args['tax_query'] = [['taxonomy' => self::TAXONOMY, 'field' => 'term_id', 'terms' => $cat]];
         }
 
-        // Pro: hide internal docs from non-logged-in
-        if ($this->is_premium() && !empty($this->options['internal_docs_enabled']) && !is_user_logged_in()) {
-            $args['meta_query'] = [['key' => '_kng_doc_visibility', 'value' => 'public']];
+        if ($this->should_limit_to_public_docs()) {
+            $args['meta_query'] = $this->get_public_docs_meta_query();
         }
 
         $wp = new \WP_Query($args);
@@ -592,13 +591,35 @@ final class Docs_KB
 
     public function rest_get_categories(): \WP_REST_Response
     {
-        $cats = get_terms([
+        $args = [
             'taxonomy'   => self::TAXONOMY,
             'hide_empty' => true,
             'orderby'    => 'meta_value_num',
             'meta_key'   => 'kng_doc_cat_order',
             'order'      => 'ASC',
-        ]);
+        ];
+
+        if ($this->should_limit_to_public_docs()) {
+            $public_doc_ids = get_posts([
+                'post_type'      => self::POST_TYPE,
+                'post_status'    => 'publish',
+                'fields'         => 'ids',
+                'posts_per_page' => -1,
+                'meta_query'     => $this->get_public_docs_meta_query(),
+            ]);
+
+            if (empty($public_doc_ids)) {
+                return new \WP_REST_Response([], 200);
+            }
+
+            $args['object_ids'] = $public_doc_ids;
+        }
+
+        $cats = get_terms($args);
+
+        if (is_wp_error($cats)) {
+            return new \WP_REST_Response([], 200);
+        }
 
         $out = [];
         foreach ($cats as $c) {
@@ -619,16 +640,22 @@ final class Docs_KB
 
     public function rest_get_category_articles(\WP_REST_Request $request): \WP_REST_Response
     {
-        $cat_id = $request->get_param('id');
+        $cat_id = absint($request->get_param('id'));
 
-        $wp = new \WP_Query([
+        $args = [
             'post_type'      => self::POST_TYPE,
             'post_status'    => 'publish',
             'posts_per_page' => -1,
             'tax_query'      => [['taxonomy' => self::TAXONOMY, 'field' => 'term_id', 'terms' => $cat_id]],
             'orderby'        => 'menu_order title',
             'order'          => 'ASC',
-        ]);
+        ];
+
+        if ($this->should_limit_to_public_docs()) {
+            $args['meta_query'] = $this->get_public_docs_meta_query();
+        }
+
+        $wp = new \WP_Query($args);
 
         $out = [];
         foreach ($wp->posts as $p) {
@@ -641,6 +668,27 @@ final class Docs_KB
         }
 
         return new \WP_REST_Response($out, 200);
+    }
+
+    private function should_limit_to_public_docs(): bool
+    {
+        if (!$this->is_premium() || empty($this->options['internal_docs_enabled'])) {
+            return false;
+        }
+
+        if (!is_user_logged_in()) {
+            return true;
+        }
+
+        $user = wp_get_current_user();
+        $allowed_roles = array_map('sanitize_key', (array)($this->options['internal_docs_roles'] ?? ['administrator']));
+
+        return empty(array_intersect($allowed_roles, (array)$user->roles));
+    }
+
+    private function get_public_docs_meta_query(): array
+    {
+        return [['key' => '_kng_doc_visibility', 'value' => 'public']];
     }
 
     /* ═══════════════════════════════════════════

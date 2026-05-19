@@ -250,7 +250,7 @@ class Reveal_Swipe_Cards extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_cards(),
-                'title_field' => '{{{ title }}}',
+                'title_field' => '{{ title }}',
             ]
         );
 

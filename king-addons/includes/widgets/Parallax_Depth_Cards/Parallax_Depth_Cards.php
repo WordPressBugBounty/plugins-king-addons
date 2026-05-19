@@ -592,7 +592,7 @@ class Parallax_Depth_Cards extends Widget_Base
                         'kng_pdc_badge_text' => esc_html__('Pro', 'king-addons'),
                     ],
                 ],
-                'title_field' => '{{{ kng_pdc_title }}}',
+                'title_field' => '{{ kng_pdc_title }}',
             ]
         );
 

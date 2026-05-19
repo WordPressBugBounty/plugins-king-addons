@@ -269,7 +269,7 @@ class Liquid_Glass_Cards extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_cards(),
-                'title_field' => '{{{ kng_card_title }}}',
+                'title_field' => '{{ kng_card_title }}',
             ]
         );
 
@@ -1476,7 +1476,7 @@ class Liquid_Glass_Cards extends Widget_Base
                 'label' => esc_html__('Layers', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $layer_repeater->get_controls(),
-                'title_field' => '{{{ kng_layer_type }}}',
+                'title_field' => '{{ kng_layer_type }}',
                 'default' => [
                     [
                         'kng_layer_type' => 'gradient',

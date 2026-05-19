@@ -502,7 +502,7 @@ class Pros_Cons_Box extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => [],
-                'title_field' => '{{{ kng_item_text }}}',
+                'title_field' => '{{ kng_item_text }}',
             ]
         );
 
@@ -627,7 +627,7 @@ class Pros_Cons_Box extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => [],
-                'title_field' => '{{{ kng_item_text }}}',
+                'title_field' => '{{ kng_item_text }}',
             ]
         );
 
@@ -1707,7 +1707,7 @@ class Pros_Cons_Box extends Widget_Base
                     <?php Icons_Manager::render_icon($icon, ['aria-hidden' => 'true']); ?>
                 </span>
             <?php endif; ?>
-            <span class="king-addons-pros-cons__item-text"><?php echo $item['text']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+            <span class="king-addons-pros-cons__item-text"><?php echo wp_kses_post($item['text']); ?></span>
             <?php if ($tooltip_html !== '') : ?>
                 <?php echo $tooltip_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             <?php endif; ?>

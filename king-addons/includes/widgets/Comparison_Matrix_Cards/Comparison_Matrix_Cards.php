@@ -637,7 +637,7 @@ class Comparison_Matrix_Cards extends Widget_Base
                 'label' => $this->get_pro_label(esc_html__('Compare Attributes', 'king-addons')),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $attributes->get_controls(),
-                'title_field' => '{{{ kng_woo_attr_slug }}}',
+                'title_field' => '{{ kng_woo_attr_slug }}',
                 'classes' => $this->get_pro_control_class(),
             ]
         );
@@ -796,7 +796,7 @@ class Comparison_Matrix_Cards extends Widget_Base
                 'label' => esc_html__('Plans', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ kng_plan_name }}}',
+                'title_field' => '{{ kng_plan_name }}',
                 'default' => [
                     [
                         'kng_plan_name' => esc_html__('Starter', 'king-addons'),
@@ -903,7 +903,7 @@ class Comparison_Matrix_Cards extends Widget_Base
                 'label' => esc_html__('Feature Rows', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ kng_feature_label }}}',
+                'title_field' => '{{ kng_feature_label }}',
                 'default' => [
                     [
                         'kng_feature_label' => esc_html__('Unlimited projects', 'king-addons'),

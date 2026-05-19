@@ -158,7 +158,7 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
                     ['tab_key' => 'additional_information', 'enabled' => 'yes'],
                     ['tab_key' => 'reviews', 'enabled' => 'yes'],
                 ],
-                'title_field' => '{{{ tab_key }}}',
+                'title_field' => '{{ tab_key }}',
             ]
         );
 

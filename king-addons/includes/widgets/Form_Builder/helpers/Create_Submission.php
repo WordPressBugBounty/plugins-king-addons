@@ -19,10 +19,8 @@ class Create_Submission
     public function add_to_submissions()
     {
 
-        $nonce = $_POST['nonce'];
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
 
-        // Security fix: Generate nonce server-side instead of relying on client-provided nonce
-        $server_nonce = wp_create_nonce('king-addons-js');
         if (!wp_verify_nonce($nonce, 'king-addons-js')) {
             wp_send_json_error(array(
                 'message' => esc_html__('Security check failed.', 'king-addons'),
@@ -44,7 +42,7 @@ class Create_Submission
         $post_id = wp_insert_post($new);
         
         // Security fix: Validate and sanitize form_content before saving to database
-        $form_content = isset($_POST['form_content']) && is_array($_POST['form_content']) ? $_POST['form_content'] : [];
+        $form_content = isset($_POST['form_content']) && is_array($_POST['form_content']) ? wp_unslash($_POST['form_content']) : [];
         
         foreach ($form_content as $key => $value) {
             if (!is_array($value) || count($value) < 3) {
@@ -62,16 +60,17 @@ class Create_Submission
             update_post_meta($post_id, $sanitized_key, $sanitized_value);
         }
 
-        $sanitized_form_name = sanitize_text_field($_POST['form_name'] ?? '');
-        $sanitized_form_id = sanitize_text_field($_POST['form_id'] ?? '');
-        $sanitized_form_page = sanitize_text_field($_POST['form_page'] ?? '');
-        $sanitized_form_page_id = sanitize_text_field($_POST['form_page_id'] ?? '');
+        $sanitized_form_name = sanitize_text_field(wp_unslash($_POST['form_name'] ?? ''));
+        $sanitized_form_id = sanitize_key(wp_unslash($_POST['form_id'] ?? ''));
+        $sanitized_form_page = sanitize_text_field(wp_unslash($_POST['form_page'] ?? ''));
+        $sanitized_form_page_id = absint($_POST['form_page_id'] ?? 0);
 
         update_post_meta($post_id, 'king_addons_form_name', $sanitized_form_name);
         update_post_meta($post_id, 'king_addons_form_id', $sanitized_form_id);
         update_post_meta($post_id, 'king_addons_form_page', $sanitized_form_page);
         update_post_meta($post_id, 'king_addons_form_page_id', $sanitized_form_page_id);
-        update_post_meta($post_id, 'king_addons_user_agent', sanitize_textarea_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])));
+        $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_textarea_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
+        update_post_meta($post_id, 'king_addons_user_agent', $user_agent);
         update_post_meta($post_id, 'king_addons_user_ip', Core::getClientIP());
 
         if ($post_id) {

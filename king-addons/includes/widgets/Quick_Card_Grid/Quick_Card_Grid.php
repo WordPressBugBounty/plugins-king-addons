@@ -279,7 +279,7 @@ class Quick_Card_Grid extends Widget_Base
                         'kng_card_image' => ['url' => Utils::get_placeholder_image_src()],
                     ],
                 ],
-                'title_field' => '{{{ kng_card_title }}}',
+                'title_field' => '{{ kng_card_title }}',
             ]
         );
 

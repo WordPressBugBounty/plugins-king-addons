@@ -646,36 +646,43 @@ final class Live_Chat
         register_rest_route(self::API_NAMESPACE, '/support/conversation/init', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_init_conversation'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_rest'],
         ]);
 
         // Send message
         register_rest_route(self::API_NAMESPACE, '/support/message/send', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_send_message'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_rest'],
         ]);
 
         // Poll for new messages
         register_rest_route(self::API_NAMESPACE, '/support/messages/poll', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_poll_messages'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_rest'],
         ]);
 
         // Mark messages as read
         register_rest_route(self::API_NAMESPACE, '/support/messages/read', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_mark_read'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_rest'],
         ]);
 
         // Contact Form submission
         register_rest_route(self::API_NAMESPACE, '/support/contact', [
             'methods' => 'POST',
             'callback' => [$this, 'rest_submit_contact_form'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_access_public_rest'],
         ]);
+    }
+
+    public function can_access_public_rest(\WP_REST_Request $request): bool
+    {
+        $nonce = $request->get_header('X-WP-Nonce');
+
+        return is_string($nonce) && wp_verify_nonce($nonce, 'wp_rest');
     }
 
     /**
@@ -993,11 +1000,20 @@ final class Live_Chat
         $table = $wpdb->prefix . self::TABLE_CONVERSATIONS;
         $messages_table = $wpdb->prefix . self::TABLE_MESSAGES;
 
-        // Verify and update
+        $conv = $wpdb->get_row($wpdb->prepare(
+            "SELECT id FROM $table WHERE id = %d AND visitor_id = %s",
+            $conversation_id,
+            $visitor_id
+        ));
+
+        if (!$conv) {
+            return new \WP_REST_Response(['success' => false], 403);
+        }
+
         $updated = $wpdb->update(
             $table,
             ['unread_visitor' => 0],
-            ['id' => $conversation_id, 'visitor_id' => $visitor_id]
+            ['id' => $conversation_id]
         );
 
         // Mark admin messages as read

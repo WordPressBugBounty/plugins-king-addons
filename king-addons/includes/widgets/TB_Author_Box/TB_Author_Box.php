@@ -255,7 +255,7 @@ class TB_Author_Box extends Widget_Base
                     'label' => esc_html__('Social Links', 'king-addons'),
                     'type' => Controls_Manager::REPEATER,
                     'fields' => $repeater->get_controls(),
-                    'title_field' => '{{{ kng_social_label }}}',
+                    'title_field' => '{{ kng_social_label }}',
                 ]
             );
         }

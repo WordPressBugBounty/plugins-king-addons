@@ -380,7 +380,7 @@ class Image_Hotspots extends Widget_Base
                     ],
 
                 ],
-                'title_field' => '{{{ kng_img_hotspots_hotspot_tooltip_content }}}',
+                'title_field' => '{{ kng_img_hotspots_hotspot_tooltip_content }}',
             ]
         );
 

@@ -217,7 +217,7 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
                     ],
                 ],
                 'default' => [],
-                'title_field' => '{{{ field_key }}}',
+                'title_field' => '{{ field_key }}',
             ]
         );
 
@@ -282,7 +282,7 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
                     ],
                 ],
                 'default' => [],
-                'title_field' => '{{{ field_key }}}',
+                'title_field' => '{{ field_key }}',
             ]
         );
 

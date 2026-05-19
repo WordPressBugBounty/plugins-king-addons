@@ -596,7 +596,7 @@ class Woo_Builder
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $default_rules,
-                'title_field' => '{{{ rule_type }}}',
+                'title_field' => '{{ rule_type }}',
             ]
         );
 

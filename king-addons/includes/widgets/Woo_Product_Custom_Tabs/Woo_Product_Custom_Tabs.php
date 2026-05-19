@@ -187,7 +187,7 @@ class Woo_Product_Custom_Tabs extends Abstract_Single_Widget
                         'tab_text' => esc_html__('Your custom content here.', 'king-addons'),
                     ],
                 ],
-                'title_field' => '{{{ tab_title }}}',
+                'title_field' => '{{ tab_title }}',
             ]
         );
 

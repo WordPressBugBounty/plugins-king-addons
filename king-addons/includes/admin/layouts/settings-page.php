@@ -116,7 +116,7 @@ document.body.classList.add('ka-admin-v3');
                     <?php esc_html_e('Auto', 'king-addons'); ?>
                 </button>
             </div>
-            <a href="https://www.youtube.com/@kingaddons" target="_blank" class="ka-btn ka-btn-secondary">
+            <a href="https://www.youtube.com/@kingaddons/videos" target="_blank" class="ka-btn ka-btn-secondary">
                 <span class="dashicons dashicons-book"></span>
                 <?php esc_html_e('Guides', 'king-addons'); ?>
             </a>

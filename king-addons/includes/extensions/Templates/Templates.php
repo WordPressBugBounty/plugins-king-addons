@@ -148,7 +148,7 @@ final class Templates
                                 </div>
                             <?php endif; ?>
                             <div class="kng-nav-item kng-nav-item-current">
-                                    <a href="https://www.youtube.com/@kingaddons" target="_blank">
+                                    <a href="https://www.youtube.com/@kingaddons/videos" target="_blank">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('YouTube Guides', 'king-addons'); ?></div>
                                     </a>
                             </div>

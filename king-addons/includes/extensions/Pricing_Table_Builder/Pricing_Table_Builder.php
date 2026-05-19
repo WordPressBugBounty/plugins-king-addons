@@ -619,13 +619,17 @@ final class Pricing_Table_Builder
         register_rest_route(self::API_NAMESPACE, '/pricing-table/list', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_tables'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => function () {
+                return current_user_can('manage_options');
+            },
         ]);
 
         register_rest_route(self::API_NAMESPACE, '/pricing-table/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_table'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => function () {
+                return current_user_can('manage_options');
+            },
         ]);
     }
 
@@ -682,6 +686,10 @@ final class Pricing_Table_Builder
         $table = get_post($table_id);
 
         if (!$table || $table->post_type !== self::POST_TYPE) {
+            return new \WP_REST_Response(['error' => 'Not found'], 404);
+        }
+
+        if ($table->post_status !== 'publish' && !current_user_can('edit_post', $table_id)) {
             return new \WP_REST_Response(['error' => 'Not found'], 404);
         }
 

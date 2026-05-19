@@ -1055,7 +1055,7 @@ $this->end_controls_section();
                         'width' => '100',
                     ],
                 ],
-                'title_field' => '{{{ field_label }}}',
+                'title_field' => '{{ field_label }}',
             ]
         );
 
@@ -3311,7 +3311,7 @@ $this->end_controls_section();
 
         $value = empty($item['field_value']) ? '' : $item['field_value'];
 
-        return '<textarea ' . $this->get_render_attribute_string('textarea' . $item_index) . '>' . $value . '</textarea>';
+        return '<textarea ' . $this->get_render_attribute_string('textarea' . $item_index) . '>' . esc_textarea($value) . '</textarea>';
     }
 
     protected function make_select_field($item, $i)
@@ -3432,7 +3432,7 @@ $this->end_controls_section();
                     $this->add_required_attribute($element_id);
                 }
 
-                $html .= '<span class="king-addons-form-field-option" data-key="form-field-' . esc_attr($item['field_id']) . '"><input ' . $this->get_render_attribute_string($element_id) . '> <label for="' . esc_attr($html_id) . '">' . $option_label . '</label></span>';
+                $html .= '<span class="king-addons-form-field-option" data-key="form-field-' . esc_attr($item['field_id']) . '"><input ' . $this->get_render_attribute_string($element_id) . '> <label for="' . esc_attr($html_id) . '">' . esc_html($option_label) . '</label></span>';
             }
             $html .= '</div>';
         }
@@ -3655,7 +3655,7 @@ $this->end_controls_section();
             <?php if (is_singular()) {
 
                 ?>
-                <input type="hidden" name="queried_id" value="<?php echo get_the_ID(); ?>"/>
+                <input type="hidden" name="queried_id" value="<?php echo esc_attr(get_the_ID()); ?>"/>
             <?php }
 
             $step_count1 = 0;
@@ -3674,16 +3674,16 @@ $this->end_controls_section();
                     Icons_Manager::render_icon($value['step_icon'], ['aria-hidden' => 'true']);
                     $step_icon[] = ob_get_clean();
 
-                    $step_label[] = '<span class="king-addons-fb-step-main-label">' . $value['field_label'] . '</span>';
+                    $step_label[] = '<span class="king-addons-fb-step-main-label">' . esc_html($value['field_label']) . '</span>';
 
-                    $step_sub_label[] = '<span class="king-addons-fb-step-sub-label">' . $value['field_sub_label'] . '</span>';
+                    $step_sub_label[] = '<span class="king-addons-fb-step-sub-label">' . esc_html($value['field_sub_label']) . '</span>';
                 }
             }
 
 
             $step_wrap_class = 'yes' !== $instance['show_separator'] ? 'king-addons-fb-step-wrap king-addons-separator-off' : 'king-addons-fb-step-wrap';
 
-            echo '<div class="' . $step_wrap_class . '">';
+            echo '<div class="' . esc_attr($step_wrap_class) . '">';
             if ('progress_bar' == $instance['step_type']) {
                 echo '<div class="king-addons-fb-step-progress">';
                 echo '<div class="king-addons-fb-step-progress-fill"></div>';
@@ -3747,8 +3747,8 @@ $this->end_controls_section();
                             echo '<div class="king-addons-fb-step-tab king-addons-fb-step-tab-hidden">';
                         } else {
                             echo '<div class="king-addons-step-buttons-wrap">';
-                            echo '<button type="button" class="king-addons-fb-step-prev">' . $item['previous_button_text'] . '</button>';
-                            echo '<button type="button" class="king-addons-fb-step-next">' . $item['next_button_text'] . '</button>';
+                            echo '<button type="button" class="king-addons-fb-step-prev">' . esc_html($item['previous_button_text']) . '</button>';
+                            echo '<button type="button" class="king-addons-fb-step-next">' . esc_html($item['next_button_text']) . '</button>';
                             echo '</div>';
                             echo '</div>';
                             echo '<div class="king-addons-fb-step-tab king-addons-fb-step-tab-hidden">';
@@ -3763,14 +3763,14 @@ $this->end_controls_section();
                             ?>
                             <label <?php echo $this->get_render_attribute_string('label' . $item_index); ?>>
                                 <?php
-                                echo $item['field_label']; ?>
+                                echo esc_html($item['field_label']); ?>
                             </label>
                             <?php
                         }
 
                         switch ($item['field_type']) :
                             case 'html':
-                                echo do_shortcode($item['field_html']);
+                                echo wp_kses_post(do_shortcode($item['field_html']));
                                 break;
                             case 'textarea':
 
@@ -3788,7 +3788,7 @@ $this->end_controls_section();
                                 echo $this->make_radio_checkbox_field($item, $item_index, $item['field_type']);
                                 break;
                             case 'recaptcha-v3':
-                                echo '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" data-site-key="' . get_option('king_addons_recaptcha_v3_site_key') . '" />';
+                                echo '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" data-site-key="' . esc_attr(get_option('king_addons_recaptcha_v3_site_key')) . '" />';
                             case 'text':
                             case 'email':
                             case 'url':
@@ -3833,7 +3833,7 @@ $this->end_controls_section();
                                             echo esc_html__('Please remove unsupported file type(s):', 'king-addons');
                                             foreach ($non_whitelisted as $type) {
                                                 if (!empty($type)) {
-                                                    echo '<li>' . $type . ' <li/>';
+                                                    echo '<li>' . esc_html($type) . ' <li/>';
                                                 }
                                             }
                                             echo '</ul>';
@@ -3851,7 +3851,7 @@ $this->end_controls_section();
                                 echo '<input size="1 "' . $this->get_render_attribute_string('input' . $item_index) . '>';
                                 break;
                             case 'king-addons-fb-step':
-                                echo '<input type="hidden" class="king-addons-fb-step-input" id=form-field-' . esc_attr($item['field_id']) . ' value=' . $item['field_label'] . '>';
+                                echo '<input type="hidden" class="king-addons-fb-step-input" id="form-field-' . esc_attr($item['field_id']) . '" value="' . esc_attr($item['field_label']) . '">';
                                 break;
                             default:
                                 $field_type = $item['field_type'];

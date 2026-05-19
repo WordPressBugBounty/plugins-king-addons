@@ -255,7 +255,7 @@ class Hovering_Image_Stack extends Widget_Base
                 'label' => esc_html__('Items', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ name }}}',
+                'title_field' => '{{ name }}',
                 'default' => [
                     [
                         'king_addons_hovering_image_stack_image' => [

@@ -564,7 +564,7 @@ class Feature_List extends Widget_Base
                         ],
                     ],
                 ],
-                'title_field' => '{{{ king_addons_feature_list_list_title }}}',
+                'title_field' => '{{ king_addons_feature_list_list_title }}',
             ]
         );
 

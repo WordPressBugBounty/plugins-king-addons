@@ -2532,7 +2532,7 @@ class WooCommerce_Grid extends Widget_Base
                         'element_select' => 'add-to-cart',
                     ],
                 ],
-                'title_field' => '{{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}}',
+                'title_field' => '{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}',
             ]
         );
 

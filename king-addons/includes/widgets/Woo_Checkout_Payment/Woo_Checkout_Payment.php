@@ -128,7 +128,7 @@ class Woo_Checkout_Payment extends Abstract_Checkout_Widget
                         'placeholder' => 'https://…/visa.svg',
                     ],
                 ],
-                'title_field' => '{{{ gateway_id }}}',
+                'title_field' => '{{ gateway_id }}',
             ]
         );
 
@@ -151,7 +151,7 @@ class Woo_Checkout_Payment extends Abstract_Checkout_Widget
                         'rows' => 2,
                     ],
                 ],
-                'title_field' => '{{{ gateway_id }}}',
+                'title_field' => '{{ gateway_id }}',
             ]
         );
 
@@ -177,7 +177,7 @@ class Woo_Checkout_Payment extends Abstract_Checkout_Widget
                         'placeholder' => esc_html__('Pay now', 'king-addons'),
                     ],
                 ],
-                'title_field' => '{{{ gateway_id }}}',
+                'title_field' => '{{ gateway_id }}',
             ]
         );
 

@@ -219,7 +219,7 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
         </div>
         <div class="ka-v3-tip-content">
             <strong><?php esc_html_e('Smart Loading', 'king-addons'); ?></strong>
-            <span><?php esc_html_e('Assets load only when a widget, feature, or extension is used on a page. Disabling items here completely removes their backend code (PHP) from loading, making your site even faster.', 'king-addons'); ?></span>
+            <span><?php esc_html_e('Assets are already loaded only when a widget, feature, or extension is used on a page. Disabling items here completely hides them from Elementor and the dashboard, helping keep your workspace cleaner and your site faster.', 'king-addons'); ?></span>
         </div>
     </div>
         </div>
@@ -239,7 +239,7 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
                     <?php esc_html_e('Auto', 'king-addons'); ?>
                 </button>
             </div>
-            <a href="https://www.youtube.com/@kingaddons" target="_blank" class="ka-v3-btn ka-v3-btn-secondary">
+            <a href="https://www.youtube.com/@kingaddons/videos" target="_blank" class="ka-v3-btn ka-v3-btn-secondary">
                 <span class="dashicons dashicons-book"></span>
                 <?php esc_html_e('Guides', 'king-addons'); ?>
             </a>

@@ -291,7 +291,7 @@ class Breadcrumbs extends Widget_Base
                 'label' => esc_html__('Custom Items', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ kng_custom_label }}}',
+                'title_field' => '{{ kng_custom_label }}',
                 'condition' => [
                     'kng_use_custom_path' => 'yes',
                 ],

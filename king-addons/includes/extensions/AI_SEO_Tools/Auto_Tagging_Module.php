@@ -87,8 +87,9 @@ class Auto_Tagging_Module
         ]);
     }
 
-    public function add_tagging_column(array $columns): array
+    public function add_tagging_column($columns): array
     {
+        $columns = is_array($columns) ? $columns : [];
         $new_columns = [];
         foreach ($columns as $key => $title) {
             if ($key === 'date') {
@@ -107,6 +108,11 @@ class Auto_Tagging_Module
     public function display_tagging_column(string $column_name, int $post_id): void
     {
         if ($column_name !== 'king_addons_ai_seo_tags') {
+            return;
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            echo '&mdash;';
             return;
         }
 
@@ -148,13 +154,13 @@ class Auto_Tagging_Module
     {
         check_ajax_referer('king_addons_ai_seo_clear_single_tags_nonce', 'nonce');
 
-        if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
-        }
-
         $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
         if (!$post_id || !get_post($post_id)) {
             wp_send_json_error(['message' => esc_html__('Invalid post ID.', 'king-addons')], 400);
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
 
         wp_set_post_tags($post_id, [], false);
@@ -163,13 +169,13 @@ class Auto_Tagging_Module
 
     private function handle_single_tags_request(string $mode): void
     {
-        if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
-        }
-
         $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
         if (!$post_id || !get_post($post_id)) {
             wp_send_json_error(['message' => esc_html__('Invalid post ID.', 'king-addons')], 400);
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
 
         $replace = $mode === 'regenerate';

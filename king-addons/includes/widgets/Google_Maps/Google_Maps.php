@@ -399,7 +399,7 @@ class Google_Maps extends Widget_Base
                         'gm_longitude' => '-73.965355',
                     ],
                 ],
-                'title_field' => '{{{ gm_location_title }}}',
+                'title_field' => '{{ gm_location_title }}',
             ]
         );
 

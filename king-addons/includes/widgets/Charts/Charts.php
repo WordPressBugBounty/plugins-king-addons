@@ -539,7 +539,7 @@ class Charts extends Widget_Base
                 ],
 
                 'fields' => $chart_repeater_labels->get_controls(),
-                'title_field' => '{{{ chart_data_label }}}',
+                'title_field' => '{{ chart_data_label }}',
 
             ]
         );

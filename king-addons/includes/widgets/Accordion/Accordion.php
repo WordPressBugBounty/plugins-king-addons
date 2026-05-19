@@ -209,7 +209,7 @@ class Accordion extends Widget_Base
                         'accordion_content' => esc_html__('Item content. Click the edit button to change this text.', 'king-addons'),
                     ]
                 ],
-                'title_field' => '{{{ accordion_title }}}',
+                'title_field' => '{{ accordion_title }}',
             ]
         );
 

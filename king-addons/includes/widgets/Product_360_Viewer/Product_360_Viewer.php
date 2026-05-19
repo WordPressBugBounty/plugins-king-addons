@@ -202,7 +202,7 @@ class Product_360_Viewer extends Widget_Base
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => $this->get_default_frames(),
-                'title_field' => '{{{ kng_frame_label }}}',
+                'title_field' => '{{ kng_frame_label }}',
             ]
         );
 
@@ -646,7 +646,7 @@ class Product_360_Viewer extends Widget_Base
                 'label' => esc_html__('Hotspots', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $hotspot_repeater->get_controls(),
-                'title_field' => '{{{ kng_hotspot_label }}}',
+                'title_field' => '{{ kng_hotspot_label }}',
             ]
         );
 

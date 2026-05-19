@@ -826,7 +826,7 @@ class Animated_Gradient_Mesh_Background
                 'label' => esc_html__('Layer Presets', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ preset }}}',
+                'title_field' => '{{ preset }}',
             ]
         );
 

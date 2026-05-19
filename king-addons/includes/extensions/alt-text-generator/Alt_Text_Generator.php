@@ -127,7 +127,8 @@ class Alt_Text_Generator {
      * @param array $columns Existing columns.
      * @return array Modified columns.
      */
-    public function add_alt_text_column(array $columns): array {
+    public function add_alt_text_column($columns): array {
+        $columns = is_array($columns) ? $columns : array();
         // Add column before 'Date'.
         $new_columns = array();
         foreach ($columns as $key => $title) {

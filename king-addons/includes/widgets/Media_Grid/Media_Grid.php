@@ -1832,7 +1832,7 @@ class Media_Grid extends Widget_Base
                         'element_sharing_trigger_icon' => 'fas fa-share',
                     ],
                 ],
-                'title_field' => '{{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}}',
+                'title_field' => '{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}',
             ]
         );
 

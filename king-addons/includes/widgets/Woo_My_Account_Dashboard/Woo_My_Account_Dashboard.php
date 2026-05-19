@@ -115,7 +115,7 @@ class Woo_My_Account_Dashboard extends Widget_Base
                         'placeholder' => 'https://',
                     ],
                 ],
-                'title_field' => '{{{ title }}}',
+                'title_field' => '{{ title }}',
             ]
         );
 

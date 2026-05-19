@@ -426,7 +426,7 @@ class Pricing_Calculator extends Widget_Base
                         'field_price_type' => 'add',
                     ],
                 ],
-                'title_field' => '{{{ field_label }}}',
+                'title_field' => '{{ field_label }}',
             ]
         );
         

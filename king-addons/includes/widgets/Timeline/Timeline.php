@@ -1330,7 +1330,7 @@ class Timeline extends Widget_Base
                         'repeater_icon_border_color' => '#E8E8E8'
                     ],
                 ],
-                'title_field' => '{{{ repeater_story_title }}}',
+                'title_field' => '{{ repeater_story_title }}',
             ]
         );
 

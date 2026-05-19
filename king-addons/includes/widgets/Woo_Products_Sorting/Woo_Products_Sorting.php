@@ -115,7 +115,7 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
                     ['key' => 'price', 'label' => esc_html__('Sort by price: low to high', 'king-addons')],
                     ['key' => 'price-desc', 'label' => esc_html__('Sort by price: high to low', 'king-addons')],
                 ],
-                'title_field' => '{{{ label }}}',
+                'title_field' => '{{ label }}',
             ]
         );
 

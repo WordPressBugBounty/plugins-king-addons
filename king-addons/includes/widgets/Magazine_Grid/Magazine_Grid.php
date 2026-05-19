@@ -1656,7 +1656,7 @@ $this->end_controls_section();
                         'element_align_hr' => 'left',
                     ],
                 ],
-                'title_field' => '{{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}}',
+                'title_field' => '{{ element_select.charAt(0).toUpperCase() + element_select.slice(1) }}',
             ]
         );
 

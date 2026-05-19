@@ -233,7 +233,7 @@ class TB_Post_Meta extends Widget_Base
                 'label' => esc_html__('Meta Items', 'king-addons'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
-                'title_field' => '{{{ kng_meta_type }}}',
+                'title_field' => '{{ kng_meta_type }}',
                 'default' => [
                     ['kng_meta_type' => 'date'],
                     ['kng_meta_type' => 'author'],
