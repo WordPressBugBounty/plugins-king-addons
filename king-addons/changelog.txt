@@ -2,6 +2,11 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.64 - May 24, 2026 =
+* **QA:** Checked compatibility readiness for WordPress 7.0 and PHP 8.5+.
+* **Improved:** Updated WordPress compatibility metadata to Tested up to 7.0.
+* **Improved:** Verified bundled PHP files pass syntax checks on the local PHP 8.x runtime.
+
 = King Addons for Elementor version 51.1.63 - May 19, 2026 =
 * **Fix:** Image Comparison widget - sanitized Elementor element IDs and removed dynamic JavaScript variable names to prevent stored XSS.
 * **Fix:** King Addons Duplicator - added target post capability checks and post-specific nonce validation before duplicating content.
