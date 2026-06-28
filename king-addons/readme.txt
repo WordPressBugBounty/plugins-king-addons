@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.64
+Stable tag: 51.1.65
 Tested up to: 7.0
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.65 - June 28, 2026 =
+* **New:** Video Popup widget - added Autoplay on Open setting for self-hosted and external hosted videos.
+* **Improved:** Video Popup widget - playback now stops and resets when the popup is closed.
 
 = King Addons for Elementor version 51.1.64 - May 24, 2026 =
 * **QA:** Checked compatibility readiness for WordPress 7.0 and PHP 8.5+.

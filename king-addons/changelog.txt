@@ -2,6 +2,10 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.65 - June 28, 2026 =
+* **New:** Video Popup widget - added Autoplay on Open setting for self-hosted and external hosted videos.
+* **Improved:** Video Popup widget - playback now stops and resets when the popup is closed.
+
 = King Addons for Elementor version 51.1.64 - May 24, 2026 =
 * **QA:** Checked compatibility readiness for WordPress 7.0 and PHP 8.5+.
 * **Improved:** Updated WordPress compatibility metadata to Tested up to 7.0.

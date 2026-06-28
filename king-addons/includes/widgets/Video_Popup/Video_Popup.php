@@ -179,6 +179,22 @@ class Video_Popup extends Widget_Base
         );
 
         $this->add_control(
+            'kng_video_popup_hosted_autoplay',
+            [
+                'label' => esc_html__('Autoplay on Open', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => esc_html__('Yes', 'king-addons'),
+                'label_off' => esc_html__('No', 'king-addons'),
+                'return_value' => 'yes',
+                'default' => 'yes',
+                'description' => esc_html__('Start playback when the popup opens. Playback stops when the popup is closed.', 'king-addons'),
+                'condition' => [
+                    'kng_video_popup_video_type' => ['hosted', 'external-hosted'],
+                ],
+            ]
+        );
+
+        $this->add_control(
             'kng_video_popup_start_time',
             [
                 'label' => esc_html__('Start Time', 'king-addons'),
@@ -758,14 +774,11 @@ class Video_Popup extends Widget_Base
         $class_ID = 'king-addons-video-popup-' . $this_ID;
         $overlay_ID = 'king-addons-video-popup-overlay-' . $this_ID;
 
-        $class_selector_js = esc_attr(wp_json_encode('.' . $class_ID));
-        $overlay_selector_js = esc_attr(wp_json_encode('.' . $overlay_ID));
+        $is_hosted_video = in_array($settings['kng_video_popup_video_type'], ['hosted', 'external-hosted'], true);
+        $hosted_autoplay = $is_hosted_video && ('yes' === ($settings['kng_video_popup_hosted_autoplay'] ?? 'yes'));
 
         // Overlay
-        echo '<div class="king-addons-video-popup-overlay ' .
-            esc_attr($overlay_ID) . '" onclick="';
-        echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-video-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.opacity = '0'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.display = 'none'; document.body.style.pointerEvents = '';}, 500);";
-        echo '"></div>';
+        echo '<div class="king-addons-video-popup-overlay ' . esc_attr($overlay_ID) . '"></div>';
 
         // START: Popup box
         echo '<div class="king-addons-video-popup ' .
@@ -791,12 +804,12 @@ class Video_Popup extends Widget_Base
 
         // Hosted
         if ('hosted' === $settings['kng_video_popup_video_type']) {
-            echo '<video src="' . esc_url($settings['kng_video_popup_hosted_url']['url']) . '" controls></video>';
+            echo '<video class="king-addons-video-popup-video" src="' . esc_url($settings['kng_video_popup_hosted_url']['url']) . '" controls playsinline></video>';
         }
 
         // External Hosted
         if ('external-hosted' === $settings['kng_video_popup_video_type']) {
-            echo '<video src="' . esc_url($settings['kng_video_popup_external_url']['url']) . '" controls></video>';
+            echo '<video class="king-addons-video-popup-video" src="' . esc_url($settings['kng_video_popup_external_url']['url']) . '" controls playsinline></video>';
         }
 
         echo '</div>';
@@ -809,10 +822,8 @@ class Video_Popup extends Widget_Base
 
             echo '<div class="king-addons-video-popup-button-wrap">';
 
-            echo '<button class="king-addons-video-popup-button king-addons-video-popup-button-' .
-                esc_attr($this_ID) . ' king-addons-video-popup-button-effect-' . esc_attr($settings['kng_video_popup_btn_effect_type']) . '" onclick="';
-            echo "document.querySelector(" . $class_selector_js . ").classList.toggle('king-addons-video-popup-active'); document.querySelector(" . $overlay_selector_js . ").style.display = 'block'; document.body.style.pointerEvents = 'none'; setTimeout(function () {document.querySelector(" . $overlay_selector_js . ").style.opacity = '1';}, 1); setTimeout(function () {document.body.style.pointerEvents = '';}, 500);";
-            echo '">';
+            echo '<button type="button" class="king-addons-video-popup-button king-addons-video-popup-button-' .
+                esc_attr($this_ID) . ' king-addons-video-popup-button-effect-' . esc_attr($settings['kng_video_popup_btn_effect_type']) . '">';
 
             Icons_Manager::render_icon($settings['kng_video_popup_btn_icon']);
 
@@ -822,37 +833,91 @@ class Video_Popup extends Widget_Base
 
         }
 
+        $hosted_autoplay_js = $hosted_autoplay ? 'true' : 'false';
+
         $inline_js_1 = "
             document.addEventListener('DOMContentLoaded', function () {
 
                 const offCanvas = document.querySelector('." . esc_js($class_ID) . "');
                 const overlay = document.querySelector('." . esc_js($overlay_ID) . "');
+                const video = offCanvas ? offCanvas.querySelector('.king-addons-video-popup-video') : null;
+                const autoplayEnabled = " . $hosted_autoplay_js . ";
+                const popupButton = document.querySelector('.king-addons-video-popup-button-" . esc_js((string) $this_ID) . "');
+
+                /**
+                 * Opens the video popup and optionally starts self-hosted video playback.
+                 *
+                 * @return {void}
+                 */
+                function openPopup() {
+                    offCanvas.classList.add('king-addons-video-popup-active');
+                    overlay.style.display = 'block';
+                    document.body.style.pointerEvents = 'none';
+                    setTimeout(function () {
+                        overlay.style.opacity = '1';
+                    }, 1);
+                    setTimeout(function () {
+                        document.body.style.pointerEvents = '';
+                    }, 500);
+
+                    if (autoplayEnabled && video) {
+                        video.play().catch(function () {});
+                    }
+                }
+
+                /**
+                 * Closes the video popup and stops self-hosted video playback.
+                 *
+                 * @return {void}
+                 */
+                function closePopup() {
+                    offCanvas.classList.remove('king-addons-video-popup-active');
+                    overlay.style.opacity = '0';
+                    document.body.style.pointerEvents = 'none';
+
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+
+                    setTimeout(function () {
+                        overlay.style.display = 'none';
+                        document.body.style.pointerEvents = '';
+                    }, 500);
+                }
+
+                /**
+                 * Toggles popup visibility based on the current active state.
+                 *
+                 * @return {void}
+                 */
+                function togglePopup() {
+                    if (offCanvas.classList.contains('king-addons-video-popup-active')) {
+                        closePopup();
+                    } else {
+                        openPopup();
+                    }
+                }
 
                 // Moves all Popupes to right after the <body> opens
                 document.body.insertBefore(overlay, document.body.firstChild);
                 document.body.insertBefore(offCanvas, document.body.firstChild);
 
                 // Change display from none to block to prevent dancing of the Popup before the DOM content loaded
-                offCanvas.style.display = 'block';";
+                offCanvas.style.display = 'block';
+
+                overlay.addEventListener('click', closePopup);
+
+                if (popupButton) {
+                    popupButton.addEventListener('click', togglePopup);
+                }";
 
         $inline_js_2 = "";
         if ('' != $settings['kng_video_popup_class']) {
             $inline_js_2 = "
                 // Adds click listener for custom triggers that have the custom class
                 const customOffCanvasTrigger = document.querySelectorAll('." . esc_js($settings['kng_video_popup_class']) . "');
-                customOffCanvasTrigger.forEach(element => element.addEventListener('click', () => {
-                    offCanvas.classList.toggle('king-addons-video-popup-active');
-                    document.body.style.pointerEvents = 'none';
-                    if (offCanvas.classList.contains('king-addons-video-popup-active')) {
-                        overlay.style.display = 'block';
-                        setTimeout(function () {
-                            overlay.style.opacity = '1';
-                        }, 1);
-                    }
-                    setTimeout(function () {
-                        document.body.style.pointerEvents = '';
-                    }, 500);
-                }));
+                customOffCanvasTrigger.forEach(element => element.addEventListener('click', togglePopup));
                 customOffCanvasTrigger.forEach(element => element.style.cursor = 'pointer'); ";
         }
 
