@@ -2,7 +2,7 @@ King Addons - Full Changelog
 
 == Changelog ==
 
-= King Addons for Elementor version 51.1.74 - July 9, 2026 =
+= King Addons for Elementor version 51.1.75 - July 9, 2026 =
 * **New:** Advanced Image Gallery - manual Add Images & Videos repeater to mix images and self-hosted videos with a custom cover and play icon.
 * **New:** Advanced Image Gallery - Include Videos option for Auto selection from the Media Library.
 * **New:** Advanced Image Gallery - responsive Media Height, Image Fit, and Image Fit Position controls for FitRows - Equal Height layout (Desktop, Tablet, Mobile).

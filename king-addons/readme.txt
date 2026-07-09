@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.74
+Stable tag: 51.1.75
 Tested up to: 7.0
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -261,38 +261,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= King Addons for Elementor version 51.1.74 - June 28, 2026 =
-* **Fix:** Advanced Image Gallery - restored jQuery dependency for grid, Slick, and LightGallery scripts so the gallery works for logged-out visitors.
-
-= King Addons for Elementor version 51.1.73 - June 28, 2026 =
-* **Fix:** Advanced Image Gallery - Load More pagination no longer appears for manual media when the item count is below Items Per Page.
-
-= King Addons for Elementor version 51.1.72 - June 28, 2026 =
-* **Fix:** Advanced Image Gallery - lightbox slide navigation now shows images on image slides instead of reusing the previous video slide.
-
-= King Addons for Elementor version 51.1.71 - June 30, 2026 =
-* **Fix:** Advanced Image Gallery - centered HTML5 video slides in the lightbox and removed broken inline positioning from lightGallery.
-* **Improved:** Advanced Image Gallery - lightbox video now resizes responsively on window resize and orientation change.
-
-= King Addons for Elementor version 51.1.70 - June 30, 2026 =
-* **Fix:** Advanced Image Gallery - added a custom HTML5 video lightbox handler because the bundled lightGallery build does not include the lg-video module.
-* **Fix:** Advanced Image Gallery - removed broken lightGallery video-play.png dependency with CSS-based play styling.
-
-= King Addons for Elementor version 51.1.69 - June 30, 2026 =
-* **Fix:** Advanced Image Gallery - video items now open the HTML5 player in the lightbox instead of the cover image.
-* **Improved:** Advanced Image Gallery - lightbox video slides autoplay when opened.
-
-= King Addons for Elementor version 51.1.68 - June 30, 2026 =
+= King Addons for Elementor version 51.1.75 - July 9, 2026 =
 * **New:** Advanced Image Gallery - manual Add Images & Videos repeater to mix images and self-hosted videos with a custom cover and play icon.
 * **New:** Advanced Image Gallery - Include Videos option for Auto selection from the Media Library.
-* **Improved:** Advanced Image Gallery - lightbox popup now plays self-hosted HTML5 videos and pauses playback when slides change or the popup closes.
-
-= King Addons for Elementor version 51.1.67 - June 30, 2026 =
-* **Fix:** Advanced Image Gallery - FitRows layout now refreshes in the Elementor editor when Media Height and related layout controls change.
-
-= King Addons for Elementor version 51.1.66 - June 30, 2026 =
 * **New:** Advanced Image Gallery - responsive Media Height, Image Fit, and Image Fit Position controls for FitRows - Equal Height layout (Desktop, Tablet, Mobile).
+* **Improved:** Advanced Image Gallery - lightbox video slides autoplay when opened.
+* **Improved:** Advanced Image Gallery - lightbox popup now plays self-hosted HTML5 videos and pauses playback when slides change or the popup closes.
 * **Improved:** Advanced Image Gallery - FitRows images now fill grid cells with object-fit cover by default.
+* **Fix:** Advanced Image Gallery - FitRows layout now refreshes in the Elementor editor when Media Height and related layout controls change.
 * **Fix:** Advanced Image Gallery - FitRows equal height now calculates per row instead of across the entire grid.
 
 = King Addons for Elementor version 51.1.65 - June 28, 2026 =
