@@ -300,16 +300,35 @@
 
                         // Equalize grid item heights for "fitRows" layout.
                         function setEqualHeight(s) {
-                            if (s.layout === "fitRows") {
-                                const $items = $grid.children("article");
-                                const columns = Math.floor($grid.outerWidth() / $items.outerWidth());
-                                if (columns > 1) {
-                                    const maxH = Math.max(...$items.map((_, el) => $(el).outerHeight()).get());
-                                    $items.css("height", `${maxH}px`);
-                                    if (s.stick_last_element_to_bottom === "yes") {
-                                        $scope.addClass("king-addons-grid-last-element-yes");
-                                    }
-                                }
+                            if (s.layout !== "fitRows") {
+                                return;
+                            }
+
+                            const $items = $grid.children("article");
+                            if (!$items.length) {
+                                return;
+                            }
+
+                            $items.css("height", "");
+
+                            const itemWidth = $items.first().outerWidth(true);
+                            if (!itemWidth) {
+                                return;
+                            }
+
+                            const columns = Math.max(1, Math.round($grid.outerWidth() / itemWidth));
+                            const itemsArray = $items.toArray();
+
+                            for (let rowStart = 0; rowStart < itemsArray.length; rowStart += columns) {
+                                const rowItems = itemsArray.slice(rowStart, rowStart + columns);
+                                const maxH = Math.max(...rowItems.map((el) => $(el).outerHeight()));
+                                rowItems.forEach((el) => {
+                                    $(el).css("height", `${maxH}px`);
+                                });
+                            }
+
+                            if (s.stick_last_element_to_bottom === "yes") {
+                                $scope.addClass("king-addons-grid-last-element-yes");
                             }
                         }
 
@@ -1015,21 +1034,216 @@
                             const lightboxElements = $scope.find('.king-addons-grid-item-lightbox');
                             const firstOverlay = lightboxElements.find('.king-addons-grid-lightbox-overlay').first();
 
+                            /**
+                             * Returns the gallery lightbox item wrapper for a slide index.
+                             *
+                             * @param {number} slideIndex LightGallery slide index.
+                             * @return {jQuery} Matching image wrap element.
+                             */
+                            const getGalleryLightboxWrapByIndex = (slideIndex) => {
+                                return $grid.find('.king-addons-grid-image-wrap').eq(slideIndex);
+                            };
+
+                            /**
+                             * Returns the active LightGallery slide index.
+                             *
+                             * @return {number} Active slide index.
+                             */
+                            const getActiveLightboxSlideIndex = () => {
+                                const $current = jQuery('.lg-outer .lg-item.lg-current');
+                                if ($current.length && $current.attr('data-lg-index') !== undefined) {
+                                    return parseInt($current.attr('data-lg-index'), 10);
+                                }
+
+                                return $current.length ? $current.index() : 0;
+                            };
+
+                            /**
+                             * Returns a LightGallery slide element by index.
+                             *
+                             * @param {number} slideIndex LightGallery slide index.
+                             * @return {jQuery} Matching slide element.
+                             */
+                            const getLightboxSlideByIndex = (slideIndex) => {
+                                return jQuery('.lg-outer .lg-item').eq(slideIndex);
+                            };
+
+                            /**
+                             * Returns the currently visible LightGallery slide.
+                             *
+                             * @return {jQuery} Active slide element.
+                             */
+                            const getActiveLightboxSlide = () => {
+                                return jQuery('.lg-outer .lg-item.lg-current');
+                            };
+
+                            /**
+                             * Resolves the target slide index from a LightGallery event.
+                             *
+                             * onAfterSlide passes (previousIndex, currentIndex), not the active index as the first arg.
+                             *
+                             * @param {Event|undefined} event LightGallery jQuery event object.
+                             * @param {number|undefined} firstArg First event argument.
+                             * @param {number|undefined} secondArg Second event argument.
+                             * @return {number} Resolved slide index.
+                             */
+                            const resolveLightboxSlideIndex = (event, firstArg, secondArg) => {
+                                if (event && event.type === 'onAfterSlide' && typeof secondArg === 'number') {
+                                    return secondArg;
+                                }
+
+                                if (event && event.type === 'onAferAppendSlide' && typeof firstArg === 'number') {
+                                    return firstArg;
+                                }
+
+                                if (typeof firstArg === 'number') {
+                                    return firstArg;
+                                }
+
+                                return getActiveLightboxSlideIndex();
+                            };
+
+                            /**
+                             * Updates responsive max-height for the active lightbox video.
+                             *
+                             * @return {void}
+                             */
+                            const resizeActiveLightboxVideo = () => {
+                                const $slide = getActiveLightboxSlide();
+                                if (!$slide.hasClass('king-addons-lg-video-slide')) {
+                                    return;
+                                }
+
+                                const toolbarHeight = jQuery('.lg-toolbar').outerHeight() || 50;
+                                const thumbHeight = jQuery('.lg-outer.lg-thumb-open .lg-thumb-outer').outerHeight() || 0;
+                                const availableHeight = Math.max(240, window.innerHeight - toolbarHeight - thumbHeight - 40);
+                                const availableWidth = Math.max(320, window.innerWidth - 40);
+
+                                $slide.find('video').css({
+                                    maxHeight: `${availableHeight}px`,
+                                    maxWidth: `${availableWidth}px`,
+                                });
+                            };
+
+                            const debouncedResizeLightboxVideo = debounce(resizeActiveLightboxVideo, 150);
+
+                            /**
+                             * Toggles image-only toolbar controls for the active slide.
+                             *
+                             * @param {number} slideIndex LightGallery slide index.
+                             * @return {void}
+                             */
+                            const toggleImageLightboxControls = (slideIndex) => {
+                                const $wrap = getGalleryLightboxWrapByIndex(slideIndex);
+                                const controls = jQuery('#lg-actual-size, #lg-zoom-in, #lg-zoom-out, #lg-download');
+
+                                if ($wrap.hasClass('king-addons-grid-video-lightbox-item')) {
+                                    controls.addClass('king-addons-hidden-element');
+                                } else {
+                                    controls.removeClass('king-addons-hidden-element');
+                                }
+                            };
+
+                            /**
+                             * Injects an HTML5 video player into the active LightGallery slide.
+                             *
+                             * @param {number} slideIndex LightGallery slide index.
+                             * @return {void}
+                             */
+                            const renderHtml5VideoLightboxSlide = (slideIndex) => {
+                                const $wrap = getGalleryLightboxWrapByIndex(slideIndex);
+                                const $slide = getLightboxSlideByIndex(slideIndex);
+
+                                if (!$wrap.length || !$wrap.hasClass('king-addons-grid-video-lightbox-item')) {
+                                    jQuery('.lg-outer').removeClass('king-addons-lg-has-video-slide');
+                                    $slide.removeClass('king-addons-lg-video-slide lg-has-video lg-video-playing');
+                                    toggleImageLightboxControls(slideIndex);
+                                    return;
+                                }
+
+                                const videoUrl = $wrap.attr('data-kng-video-url');
+                                if (!videoUrl || !$slide.length) {
+                                    return;
+                                }
+
+                                const posterUrl = $wrap.attr('data-poster') || $wrap.attr('data-src') || '';
+
+                                jQuery('.lg-outer .lg-item video').each(function () {
+                                    if (typeof this.pause === 'function') {
+                                        this.pause();
+                                    }
+                                });
+
+                                jQuery('.lg-outer').addClass('king-addons-lg-has-video-slide');
+                                $slide.addClass('king-addons-lg-video-slide lg-has-video lg-video-playing lg-complete');
+                                $slide.find('.lg-img-wrap, .lg-image, .lg-video-cont, .lg-object').remove();
+
+                                if (!$slide.find('.king-addons-lg-html5-video').length) {
+                                    const videoType = /\.webm(\?|$)/i.test(videoUrl) ? 'video/webm' : 'video/mp4';
+                                    const $videoCont = jQuery(
+                                        '<div class="lg-video-cont lg-has-html5 king-addons-lg-html5-video">' +
+                                        '<div class="lg-video king-addons-lg-video-inner"></div></div>'
+                                    );
+                                    const $video = jQuery('<video>', {
+                                        class: 'lg-video-object lg-html5',
+                                        controls: true,
+                                        autoplay: true,
+                                        playsinline: true,
+                                        preload: 'metadata',
+                                    });
+
+                                    if (posterUrl) {
+                                        $video.attr('poster', posterUrl);
+                                    }
+
+                                    $video.append(jQuery('<source>', { src: videoUrl, type: videoType }));
+                                    $videoCont.find('.king-addons-lg-video-inner').append($video);
+                                    $slide.empty().append($videoCont);
+                                }
+
+                                toggleImageLightboxControls(slideIndex);
+                                resizeActiveLightboxVideo();
+
+                                const videoEl = $slide.find('video').get(0);
+                                if (videoEl && typeof videoEl.play === 'function') {
+                                    videoEl.play().catch(function () {});
+                                }
+                            };
+
+                            /**
+                             * Handles LightGallery slide changes for mixed image and video items.
+                             *
+                             * @param {Event|undefined} event LightGallery event object.
+                             * @param {number|undefined} index Target slide index.
+                             * @return {void}
+                             */
+                            const handleLightboxVideoSlide = (event, firstArg, secondArg) => {
+                                const slideIndex = resolveLightboxSlideIndex(event, firstArg, secondArg);
+                                renderHtml5VideoLightboxSlide(slideIndex);
+                            };
+
                             // Assign data-src and data-iframe for items not marked with .lg-initialized
                             lightboxElements.each(function () {
                                 const el = jQuery(this);
                                 const srcAttr = el.find('.inner-block > span').attr('data-src');
                                 const article = el.closest('article').not('.slick-cloned');
+                                const $wrap = article.find('.king-addons-grid-image-wrap');
+                                const isVideoItem = $wrap.hasClass('king-addons-grid-video-lightbox-item') || article.hasClass('king-addons-grid-item-video');
 
-                                // If not in Elementor editor mode, add data-src
-                                if (!isEditor) {
-                                    article.find('.king-addons-grid-image-wrap').attr('data-src', srcAttr);
+                                if (isVideoItem) {
+                                    $wrap.removeAttr('data-iframe');
+
+                                    if (!$wrap.attr('data-poster') && $wrap.attr('data-src')) {
+                                        $wrap.attr('data-poster', $wrap.attr('data-src'));
+                                    }
+                                } else if (!isEditor && srcAttr) {
+                                    $wrap.attr('data-src', srcAttr);
                                 }
 
                                 // Check if it should be an iframe (not hosted in wp-content)
-                                const finalSrc = article.find('.king-addons-grid-image-wrap').attr('data-src');
-                                if (finalSrc && finalSrc.indexOf('wp-content') === -1) {
-                                    article.find('.king-addons-grid-image-wrap').attr('data-iframe', 'true');
+                                const finalSrc = $wrap.attr('data-src');
+                                if (finalSrc && finalSrc.indexOf('wp-content') === -1 && !isVideoItem) {
+                                    $wrap.attr('data-iframe', 'true');
                                 }
 
                                 // Mark article as initialized
@@ -1071,20 +1285,39 @@
                                 });
                             });
 
-                            // Toggle certain controls on slide events
-                            $scope.find('.king-addons-grid').on('onAfterAppendSlide.lg onAfterSlide.lg', function () {
-                                const controls = jQuery('#lg-actual-size, #lg-zoom-in, #lg-zoom-out, #lg-download');
-                                const dl = jQuery('#lg-download');
-                                const dlHref = dl.attr('href');
+                            $grid.on('onAfterOpen.lg onAfterSlide.lg onAferAppendSlide.lg', function (event, firstArg, secondArg) {
+                                setTimeout(function () {
+                                    handleLightboxVideoSlide(event, firstArg, secondArg);
+                                }, 120);
+                            });
 
-                                // Hide or show controls based on file location
-                                if (dl.length) {
-                                    if (dlHref.indexOf('wp-content') === -1) {
-                                        controls.addClass('king-addons-hidden-element');
-                                    } else {
-                                        controls.removeClass('king-addons-hidden-element');
+                            $grid.on('onAfterOpen.lg', function () {
+                                jQuery(window).on('resize.kingAddonsGalleryVideo orientationchange.kingAddonsGalleryVideo', debouncedResizeLightboxVideo);
+                            });
+
+                            // Toggle certain controls on slide events
+                            $scope.find('.king-addons-grid').on('onBeforeSlide.lg', function () {
+                                jQuery('.lg-outer video, .lg-video-object').each(function () {
+                                    if (typeof this.pause === 'function') {
+                                        this.pause();
                                     }
-                                }
+                                });
+                            });
+
+                            $scope.find('.king-addons-grid').on('onBeforeClose.lg', function () {
+                                jQuery(window).off('resize.kingAddonsGalleryVideo orientationchange.kingAddonsGalleryVideo');
+                                jQuery('.lg-outer').removeClass('king-addons-lg-has-video-slide');
+
+                                jQuery('.lg-outer video, .lg-video-object').each(function () {
+                                    if (typeof this.pause === 'function') {
+                                        this.pause();
+                                    }
+                                });
+                            });
+
+                            $scope.find('.king-addons-grid').on('onAferAppendSlide.lg onAfterSlide.lg', function (event, firstArg, secondArg) {
+                                const slideIndex = resolveLightboxSlideIndex(event, firstArg, secondArg);
+                                toggleImageLightboxControls(slideIndex);
 
                                 // If autoplay is disabled, hide the autoplay button
                                 if (settings.lightbox.autoplay === '') {
@@ -1194,6 +1427,79 @@
                                 }
                             });
                         }
+
+                        /**
+                         * Re-layout fitRows grid after editor control changes.
+                         *
+                         * @return {void}
+                         */
+                        this.refreshFitRowsLayout = () => {
+                            if (!settings) {
+                                return;
+                            }
+
+                            const $gridEl = this.$element.find(".king-addons-grid");
+                            if (!$gridEl.length) {
+                                return;
+                            }
+
+                            $gridEl.children("article").css("height", "");
+                            isotopeLayout(settings);
+
+                            if (settings.layout === "fitRows") {
+                                setEqualHeight(settings);
+                            }
+                        };
+
+                        this.isEditor = isEditor;
+                        this.gridSettings = settings;
+                        this.scheduleEditorLayoutRefresh = debounce(() => {
+                            this.refreshFitRowsLayout();
+                        }, 500);
+
+                        if (isEditor && settings) {
+                            setTimeout(() => this.refreshFitRowsLayout(), 800);
+                        }
+                    },
+
+                    /**
+                     * Re-layout the grid in the editor after layout-related setting changes.
+                     *
+                     * @param {string} propertyName Changed Elementor control name.
+                     * @return {void}
+                     */
+                    onElementChange(propertyName) {
+                        if (!this.isEditor || !this.gridSettings || !this.scheduleEditorLayoutRefresh) {
+                            return;
+                        }
+
+                        if (!this.shouldRefreshGridLayout(propertyName)) {
+                            return;
+                        }
+
+                        this.scheduleEditorLayoutRefresh();
+                    },
+
+                    /**
+                     * Determines whether a setting change should trigger a grid relayout.
+                     *
+                     * @param {string} propertyName Changed Elementor control name.
+                     * @return {boolean}
+                     */
+                    shouldRefreshGridLayout(propertyName) {
+                        const prefixes = [
+                            "layout_select",
+                            "layout_fitrows_media_height",
+                            "layout_fitrows_image_fit",
+                            "layout_fitrows_image_fit_position",
+                            "layout_columns",
+                            "layout_gutter_hr",
+                            "layout_gutter_vr",
+                        ];
+
+                        return prefixes.some(
+                            (prefix) => propertyName === prefix || propertyName.startsWith(`${prefix}_`)
+                        );
                     },
                 }),
                 {$element: $scope}

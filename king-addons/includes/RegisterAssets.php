@@ -147,12 +147,39 @@ final class RegisterAssets
      */
     function registerLibrariesFiles(): void
     {
+        $jquery_libraries = [
+            'grid',
+            'isotope',
+            'slick',
+            'lightgallery',
+            'infinitescroll',
+            'imagesloaded',
+            'jqueryeventmove',
+            'jquerynumerator',
+            'jarallax',
+            'flipclock',
+            'fullpage',
+            'marquee',
+            'parallax',
+            'perfectscrollbar',
+            'wpcolorpicker',
+            'aos',
+        ];
+
         foreach (LibrariesMap::getLibrariesMapArray()['libraries'] as $library_id => $library_array) {
             foreach ($library_array['css'] as $css) {
                 wp_register_style(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $library_id . '-' . $css, KING_ADDONS_URL . 'includes/assets/libraries/' . $library_id . '/' . $css . '.css', null, KING_ADDONS_VERSION);
             }
             foreach ($library_array['js'] as $js) {
-                wp_register_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $library_id . '-' . $js, KING_ADDONS_URL . 'includes/assets/libraries/' . $library_id . '/' . $js . '.js', null, KING_ADDONS_VERSION);
+                $dependencies = in_array($library_id, $jquery_libraries, true) ? ['jquery'] : [];
+
+                wp_register_script(
+                    KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $library_id . '-' . $js,
+                    KING_ADDONS_URL . 'includes/assets/libraries/' . $library_id . '/' . $js . '.js',
+                    $dependencies,
+                    KING_ADDONS_VERSION,
+                    true
+                );
             }
         }
 

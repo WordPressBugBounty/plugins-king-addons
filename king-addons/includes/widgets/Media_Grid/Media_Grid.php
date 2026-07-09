@@ -50,6 +50,7 @@ class Media_Grid extends Widget_Base
     public function get_script_depends()
     {
         return [
+            'jquery',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-media',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-isotope-kng',
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-slick-slick',
@@ -800,8 +801,9 @@ class Media_Grid extends Widget_Base
         $this->add_control(
             'query_manual_attachment',
             [
-                'label' => esc_html__('Add Images', 'king-addons'),
+                'label' => esc_html__('Add Images (Legacy)', 'king-addons'),
                 'type' => Controls_Manager::GALLERY,
+                'description' => esc_html__('Used only when "Add Images & Videos" is empty. Prefer the repeater below for images and videos together.', 'king-addons'),
                 'separator' => 'before',
                 'dynamic' => [
                     'active' => true,
@@ -809,6 +811,76 @@ class Media_Grid extends Widget_Base
                 'condition' => [
                     'query_selection' => 'manual',
                 ],
+            ]
+        );
+
+        $media_repeater = new Repeater();
+
+        $media_repeater->add_control(
+            'item_type',
+            [
+                'label' => esc_html__('Media Type', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'image',
+                'options' => [
+                    'image' => esc_html__('Image', 'king-addons'),
+                    'video' => esc_html__('Video', 'king-addons'),
+                ],
+            ]
+        );
+
+        $media_repeater->add_control(
+            'item_image',
+            [
+                'label' => esc_html__('Image', 'king-addons'),
+                'type' => Controls_Manager::MEDIA,
+                'dynamic' => [
+                    'active' => true,
+                ],
+                'description' => esc_html__('For videos, this image is used as the cover/poster in the gallery.', 'king-addons'),
+            ]
+        );
+
+        $media_repeater->add_control(
+            'item_video',
+            [
+                'label' => esc_html__('Video File', 'king-addons'),
+                'type' => Controls_Manager::MEDIA,
+                'media_types' => [
+                    'video',
+                ],
+                'condition' => [
+                    'item_type' => 'video',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'query_manual_media',
+            [
+                'label' => esc_html__('Add Images & Videos', 'king-addons'),
+                'type' => Controls_Manager::REPEATER,
+                'fields' => $media_repeater->get_controls(),
+                'default' => [],
+                'title_field' => '{{{ item_type.charAt(0).toUpperCase() + item_type.slice(1) }}}',
+                'separator' => 'before',
+                'condition' => [
+                    'query_selection' => 'manual',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'query_include_videos',
+            [
+                'label' => esc_html__('Include Videos', 'king-addons'),
+                'type' => Controls_Manager::SWITCHER,
+                'default' => '',
+                'description' => esc_html__('Include video files from the Media Library in the Auto selection.', 'king-addons'),
+                'condition' => [
+                    'query_selection' => 'dynamic',
+                ],
+                'separator' => 'before',
             ]
         );
 
@@ -877,6 +949,77 @@ class Media_Grid extends Widget_Base
                 ],
                 'render_type' => 'template',
                 'label_block' => true
+            ]
+        );
+
+        $this->add_responsive_control(
+            'layout_fitrows_media_height',
+            [
+                'label' => esc_html__('Media Height', 'king-addons'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'vh'],
+                'range' => [
+                    'px' => [
+                        'min' => 50,
+                        'max' => 800,
+                    ],
+                    'vh' => [
+                        'min' => 10,
+                        'max' => 100,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 280,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid[data-settings*="fitRows"] .king-addons-grid-media-wrap' => 'height: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'layout_select' => 'fitRows',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'layout_fitrows_image_fit',
+            [
+                'label' => esc_html__('Image Fit', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'cover' => esc_html__('Cover', 'king-addons'),
+                    'contain' => esc_html__('Contain', 'king-addons'),
+                ],
+                'default' => 'cover',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid[data-settings*="fitRows"] .king-addons-grid-image-wrap img' => 'object-fit: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_select' => 'fitRows',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'layout_fitrows_image_fit_position',
+            [
+                'label' => esc_html__('Image Fit Position', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'center center' => esc_html__('Center', 'king-addons'),
+                    'top center' => esc_html__('Top', 'king-addons'),
+                    'bottom center' => esc_html__('Bottom', 'king-addons'),
+                    'center left' => esc_html__('Left', 'king-addons'),
+                    'center right' => esc_html__('Right', 'king-addons'),
+                ],
+                'default' => 'center center',
+                'selectors' => [
+                    '{{WRAPPER}} .king-addons-grid[data-settings*="fitRows"] .king-addons-grid-image-wrap img' => 'object-position: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_select' => 'fitRows',
+                ],
             ]
         );
 
@@ -2188,6 +2331,21 @@ class Media_Grid extends Widget_Base
                 'type' => Controls_Manager::SWITCHER,
                 'default' => 'true',
                 'return_value' => 'true',
+            ]
+        );
+
+        $this->add_control(
+            'video_play_icon',
+            [
+                'label' => esc_html__('Video Play Icon', 'king-addons'),
+                'type' => Controls_Manager::ICONS,
+                'skin' => 'inline',
+                'label_block' => false,
+                'default' => [
+                    'value' => 'fas fa-play',
+                    'library' => 'fa-solid',
+                ],
+                'separator' => 'before',
             ]
         );
 
@@ -6706,10 +6864,303 @@ $this->end_controls_section();
 
     public function get_max_num_pages()
     {
+        $settings = $this->get_settings_for_display();
+
+        if ('manual' === ($settings['query_selection'] ?? '')) {
+            return $this->get_manual_media_max_num_pages($settings);
+        }
+
         $query = new WP_Query($this->get_main_query_args());
-        $pages = (int)ceil($query->max_num_pages);
+        $pages = (int) ceil($query->max_num_pages);
         wp_reset_postdata();
+
         return $pages;
+    }
+
+    /**
+     * Returns the total page count for manual media items.
+     *
+     * @param array|null $settings Widget settings.
+     * @return int Total number of pages.
+     */
+    public function get_manual_media_max_num_pages($settings = null)
+    {
+        $settings = $settings ?? $this->get_settings_for_display();
+        $items = $this->get_manual_media_items($settings);
+        $total = count($items);
+        $per_page = (int) ($settings['query_posts_per_page'] ?? 10);
+
+        if ($per_page <= 0 || 0 === $total) {
+            return 1;
+        }
+
+        $offset = empty($settings['query_offset']) ? 0 : (int) $settings['query_offset'];
+        $remaining = max(0, $total - $offset);
+
+        return max(1, (int) ceil($remaining / $per_page));
+    }
+
+    /**
+     * Returns manual media items for the current pagination page.
+     *
+     * @param array $settings Widget settings.
+     * @return array<int, array<string, mixed>> Paginated manual media items.
+     */
+    public function get_paginated_manual_media_items($settings)
+    {
+        $items = $this->get_manual_media_items($settings);
+        $per_page = (int) ($settings['query_posts_per_page'] ?? 10);
+
+        if ($per_page <= 0) {
+            return $items;
+        }
+
+        $paged = get_query_var('paged') ? (int) get_query_var('paged') : ((int) get_query_var('page') ?: 1);
+        $offset = empty($settings['query_offset']) ? 0 : (int) $settings['query_offset'];
+        $slice_offset = $offset + ($paged - 1) * $per_page;
+
+        return array_slice($items, $slice_offset, $per_page);
+    }
+
+    /**
+     * Checks whether an attachment is a video file.
+     *
+     * @param int $attachment_id Attachment post ID.
+     * @return bool True when the attachment mime type is video.
+     */
+    public function is_video_attachment($attachment_id)
+    {
+        $mime_type = get_post_mime_type($attachment_id);
+
+        return is_string($mime_type) && 0 === strpos($mime_type, 'video/');
+    }
+
+    /**
+     * Returns a video mime type based on the file extension.
+     *
+     * @param string $url Video file URL.
+     * @return string Video mime type.
+     */
+    public function get_video_mime_from_url($url)
+    {
+        $extension = strtolower((string) pathinfo((string) wp_parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION));
+        $map = [
+            'mp4' => 'video/mp4',
+            'webm' => 'video/webm',
+            'ogg' => 'video/ogg',
+            'ogv' => 'video/ogg',
+        ];
+
+        return $map[$extension] ?? 'video/mp4';
+    }
+
+    /**
+     * Returns a poster image URL for a video attachment when available.
+     *
+     * @param int $attachment_id Video attachment ID.
+     * @return string Poster image URL or an empty string.
+     */
+    public function get_attachment_video_poster_url($attachment_id)
+    {
+        $image_src = wp_get_attachment_image_src($attachment_id, 'large');
+        if (!empty($image_src[0])) {
+            return $image_src[0];
+        }
+
+        $metadata = wp_get_attachment_metadata($attachment_id);
+        if (!empty($metadata['image']['file']) && !empty($metadata['file'])) {
+            $upload_dir = wp_upload_dir();
+
+            return trailingslashit($upload_dir['baseurl']) . trailingslashit(dirname($metadata['file'])) . $metadata['image']['file'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Builds manual media items from the repeater or legacy gallery control.
+     *
+     * @param array $settings Widget settings.
+     * @return array<int, array<string, mixed>> Manual media items.
+     */
+    public function get_manual_media_items($settings)
+    {
+        $items = [];
+
+        if (!empty($settings['query_manual_media'])) {
+            foreach ($settings['query_manual_media'] as $index => $row) {
+                $item_type = $row['item_type'] ?? 'image';
+                $item_image = $row['item_image'] ?? [];
+                $item_video = $row['item_video'] ?? [];
+
+                if ('video' === $item_type) {
+                    if (empty($item_video['url'])) {
+                        continue;
+                    }
+                    if (empty($item_image['id']) && empty($item_image['url'])) {
+                        continue;
+                    }
+                } elseif (empty($item_image['id']) && empty($item_image['url'])) {
+                    continue;
+                }
+
+                $items[] = [
+                    'key' => 'manual-' . $index,
+                    'type' => $item_type,
+                    'image' => $item_image,
+                    'video' => $item_video,
+                ];
+            }
+
+            return $items;
+        }
+
+        if (empty($settings['query_manual_attachment'])) {
+            return $items;
+        }
+
+        foreach ($settings['query_manual_attachment'] as $index => $attachment) {
+            if (empty($attachment['id'])) {
+                continue;
+            }
+
+            $items[] = [
+                'key' => 'legacy-' . $index,
+                'type' => 'image',
+                'image' => $attachment,
+                'video' => [],
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * Renders the play icon overlay for video gallery items.
+     *
+     * @param array $settings Widget settings.
+     * @return void
+     */
+    public function render_video_play_icon($settings)
+    {
+        echo '<span class="king-addons-grid-video-play-icon" aria-hidden="true">';
+        Icons_Manager::render_icon($settings['video_play_icon'], ['aria-hidden' => 'true']);
+        echo '</span>';
+    }
+
+    /**
+     * Renders a hidden HTML5 video element referenced by the lightbox.
+     *
+     * @param string $video_url Video file URL.
+     * @param string $element_id Hidden container element ID.
+     * @return void
+     */
+    public function render_video_html_element($video_url, $element_id)
+    {
+        if ('' === $video_url) {
+            return;
+        }
+
+        echo '<div class="king-addons-grid-video-html" id="' . esc_attr($element_id) . '" style="display:none;">';
+        echo '<video class="lg-video-object lg-html5" controls preload="none" playsinline>';
+        echo '<source src="' . esc_url($video_url) . '" type="' . esc_attr($this->get_video_mime_from_url($video_url)) . '">';
+        echo '</video>';
+        echo '</div>';
+    }
+
+    /**
+     * Renders a gallery media thumbnail for image or video items.
+     *
+     * @param array $settings Widget settings.
+     * @param string $item_key Unique item key for lightbox video references.
+     * @param string $media_type Media type: image or video.
+     * @param array $image_data Image or cover attachment data.
+     * @param string $video_url Video file URL for video items.
+     * @return void
+     */
+    public function render_media_thumbnail($settings, $item_key, $media_type, $image_data, $video_url = '')
+    {
+        $image_id = !empty($image_data['id']) ? (int) $image_data['id'] : 0;
+        $is_video = ('video' === $media_type && '' !== $video_url);
+        $video_html_id = 'king-addons-grid-video-' . $this->get_id() . '-' . $item_key;
+
+        if ($image_id) {
+            $src = Group_Control_Image_Size::get_attachment_image_src($image_id, 'layout_image_crop', $settings);
+            $alt = ('' === wp_get_attachment_caption($image_id)) ? get_the_title($image_id) : wp_get_attachment_caption($image_id);
+            $lightbox_src = $is_video ? $src : wp_get_attachment_url($image_id);
+        } else {
+            $src = $image_data['url'] ?? '';
+            $alt = '';
+            $lightbox_src = $src;
+        }
+
+        if ($is_video && '' === $src && $image_id) {
+            $src = $this->get_attachment_video_poster_url($image_id);
+        }
+
+        if ($is_video) {
+            $lightbox_src = '' !== $src ? $src : $video_url;
+        }
+
+        $wrap_classes = 'king-addons-grid-image-wrap';
+        if ($is_video) {
+            $wrap_classes .= ' king-addons-grid-video-lightbox-item';
+        }
+
+        echo '<div class="' . esc_attr($wrap_classes) . '" data-src="' . esc_url($lightbox_src) . '"';
+        if ($is_video) {
+            echo ' data-poster="' . esc_url($lightbox_src) . '"';
+            echo ' data-html="#' . esc_attr($video_html_id) . '"';
+            echo ' data-kng-video-url="' . esc_url($video_url) . '"';
+        }
+        echo '>';
+
+        if ('' !== $src) {
+            echo '<img src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '" class="king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+        } elseif ($is_video) {
+            echo '<span class="king-addons-grid-video-cover-placeholder" aria-hidden="true"></span>';
+        }
+
+        if ($is_video) {
+            $this->render_video_play_icon($settings);
+        }
+
+        echo '</div>';
+
+        if ($is_video) {
+            $this->render_video_html_element($video_url, $video_html_id);
+        }
+    }
+
+    /**
+     * Renders one gallery article for manual media items.
+     *
+     * @param array $settings Widget settings.
+     * @param array $item Manual media item data.
+     * @return void
+     */
+    public function render_manual_grid_item($settings, $item)
+    {
+        $item_type = $item['type'] ?? 'image';
+        $video_url = ('video' === $item_type && !empty($item['video']['url'])) ? $item['video']['url'] : '';
+        $post_id = !empty($item['image']['id']) ? (int) $item['image']['id'] : 0;
+        $item_classes = ['king-addons-grid-item', 'elementor-clearfix'];
+
+        if ('video' === $item_type) {
+            $item_classes[] = 'king-addons-grid-item-video';
+        }
+
+        echo '<article class="' . esc_attr(implode(' ', $item_classes)) . '">';
+        echo '<div class="king-addons-grid-item-inner">';
+        $this->get_elements_by_location('above', $settings, $post_id);
+        echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '">';
+        $this->render_media_thumbnail($settings, $item['key'], $item_type, $item['image'] ?? [], $video_url);
+        echo '<div class="king-addons-grid-media-hover king-addons-animation-wrap">';
+        $this->render_media_overlay($settings, $post_id);
+        $this->get_elements_by_location('over', $settings, $post_id);
+        echo '</div></div>';
+        $this->get_elements_by_location('below', $settings, $post_id);
+        echo '</div></article>';
     }
 
     public function get_main_query_args()
@@ -6725,11 +7176,16 @@ $this->end_controls_section();
             $s['order_posts'] = 'date';
         }
         $order_by = $s['query_randomize'] !== '' ? $s['query_randomize'] : $s['order_posts'];
-        if ('manual' === $s['query_selection']) $order_by = 'post__in';
+        if ('manual' === $s['query_selection']) {
+            $order_by = 'post__in';
+        }
+
+        $include_videos = !empty($s['query_include_videos']);
+        $post_mime_type = $include_videos ? ['image', 'video'] : 'image';
 
         $args = [
             'post_type' => 'attachment',
-            'post_mime_type' => 'image',  // <-- Only images
+            'post_mime_type' => $post_mime_type,
             'post_status' => 'inherit',
             'tax_query' => $this->get_tax_query_args(),
             'post__not_in' => $s['query_exclude_attachment'],
@@ -6742,15 +7198,27 @@ $this->end_controls_section();
 
         if ('manual' === $s['query_selection']) {
             $post_ids = [];
-            if (!empty($s['query_manual_attachment'])) {
+
+            if (!empty($s['query_manual_media'])) {
+                foreach ($this->get_manual_media_items($s) as $item) {
+                    if (!empty($item['image']['id'])) {
+                        $post_ids[] = (int) $item['image']['id'];
+                    }
+                }
+            } elseif (!empty($s['query_manual_attachment'])) {
                 foreach ($s['query_manual_attachment'] as $attachment) {
                     $post_ids[] = $attachment['id'];
                 }
             }
+
+            if (empty($post_ids)) {
+                $post_ids = [0];
+            }
+
             $orderby = ('' === $s['query_randomize']) ? 'post__in' : 'rand';
             $args = [
                 'post_type' => 'attachment',
-                'post_mime_type' => 'image',  // <-- Only images
+                'post_mime_type' => $post_mime_type,
                 'post_status' => 'inherit',
                 'post__in' => $post_ids,
                 'orderby' => $orderby,
@@ -6814,16 +7282,26 @@ $this->end_controls_section();
     public function render_post_thumbnail($settings)
     {
         $id = get_the_ID();
-        $src = Group_Control_Image_Size::get_attachment_image_src($id, 'layout_image_crop', $settings);
-        $alt = ('' === wp_get_attachment_caption($id)) ? get_the_title() : wp_get_attachment_caption($id);
-        echo '<div class="king-addons-grid-image-wrap" data-src="' . esc_url(wp_get_attachment_url($id)) . '">';
-        echo '<img src="' . esc_url($src) . '" alt="' . wp_kses_post($alt) . '" class="king-addons-animation-timing-' . esc_html($settings['image_effects_animation_timing']) . '">';
-        echo '</div>';
+        $is_video = $this->is_video_attachment($id);
+        $video_url = $is_video ? (string) wp_get_attachment_url($id) : '';
+
+        $this->render_media_thumbnail(
+            $settings,
+            'attachment-' . $id,
+            $is_video ? 'video' : 'image',
+            ['id' => $id],
+            $video_url
+        );
     }
 
-    public function render_media_overlay($s)
+    public function render_media_overlay($s, $post_id = 0)
     {
-        echo '<div class="king-addons-grid-media-hover-bg ' . $this->get_animation_class($s, 'overlay') . '" data-url="' . esc_url(get_the_permalink(get_the_ID())) . '">';
+        if (!$post_id) {
+            $post_id = get_the_ID();
+        }
+
+        $overlay_url = $post_id ? get_the_permalink($post_id) : '#';
+        echo '<div class="king-addons-grid-media-hover-bg ' . $this->get_animation_class($s, 'overlay') . '" data-url="' . esc_url($overlay_url) . '">';
         if (king_addons_freemius()->can_use_premium_code__premium_only()) {
             if ('' !== $s['overlay_image']['url']) {
                 echo '<img src="' . esc_url($s['overlay_image']['url']) . '">';
@@ -6960,7 +7438,10 @@ $this->end_controls_section();
     {
         echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
         $lightbox_source = get_the_post_thumbnail_url($post_id);
-        if ('audio' === get_post_format()) {
+
+        if ($this->is_video_attachment($post_id)) {
+            $lightbox_source = $this->get_attachment_video_poster_url($post_id);
+        } elseif ('audio' === get_post_format()) {
             if ('meta' === $s['element_lightbox_pfa_select']) {
                 $meta_value = get_post_meta($post_id, $s['element_lightbox_pfa_meta'], true);
                 if (false === strpos($meta_value, '<iframe ')) {
@@ -6991,7 +7472,9 @@ $this->end_controls_section();
                 if (isset($video_url)) $lightbox_source = $video_url;
             }
         }
-        if (!$lightbox_source) $lightbox_source = wp_get_attachment_url($post_id);
+        if (!$lightbox_source && !$this->is_video_attachment($post_id)) {
+            $lightbox_source = wp_get_attachment_url($post_id);
+        }
         echo '<span data-src="' . esc_url($lightbox_source) . '">';
         if ('before' === $s['element_extra_text_pos']) {
             echo '<span class="king-addons-grid-extra-text-left">' . esc_html($s['element_extra_text']) . '</span>';
@@ -7478,6 +7961,41 @@ $this->end_controls_section();
     protected function render()
     {
         $s = $this->get_settings();
+
+        if ('manual' === $s['query_selection']) {
+            $manual_items = $this->get_paginated_manual_media_items($s);
+
+            if (empty($manual_items)) {
+                echo '<h2>' . esc_html($s['query_not_found_text']) . '</h2>';
+                return;
+            }
+
+            if ('slider' !== $s['layout_select']) {
+                $this->render_grid_filters($s);
+                $this->add_grid_settings($s);
+                $render_attribute = $this->get_render_attribute_string('grid-settings');
+            } else {
+                $this->add_slider_settings($s);
+                $render_attribute = $this->get_render_attribute_string('slider-settings');
+            }
+
+            echo '<section class="king-addons-grid king-addons-media-grid elementor-clearfix" ' . $render_attribute . '>';
+            foreach ($manual_items as $item) {
+                $this->render_manual_grid_item($s, $item);
+            }
+            echo '</section>';
+
+            if ('slider' === $s['layout_select']) {
+                echo '<div class="king-addons-grid-slider-arrow-container">';
+                echo '<div class="king-addons-grid-slider-prev-arrow king-addons-grid-slider-arrow" id="king-addons-grid-slider-prev-' . esc_attr($this->get_id()) . '">' . Core::getIcon($s['layout_slider_nav_icon'], '') . '</div>';
+                echo '<div class="king-addons-grid-slider-next-arrow king-addons-grid-slider-arrow" id="king-addons-grid-slider-next-' . esc_attr($this->get_id()) . '">' . Core::getIcon($s['layout_slider_nav_icon'], '') . '</div>';
+                echo '</div><div class="king-addons-grid-slider-dots"></div>';
+            }
+
+            $this->render_grid_pagination($s);
+            return;
+        }
+
         $posts = new WP_Query($this->get_main_query_args());
         if ($posts->have_posts()) {
             if ('slider' !== $s['layout_select']) {
@@ -7491,10 +8009,17 @@ $this->end_controls_section();
             echo '<section class="king-addons-grid king-addons-media-grid elementor-clearfix" ' . $render_attribute . '>';
             while ($posts->have_posts()) {
                 $posts->the_post();
-                // Skip non-image attachments (in case)
-                if (!wp_attachment_is_image(get_the_ID())) continue;
+                $attachment_id = get_the_ID();
 
-                $post_class = implode(' ', get_post_class('king-addons-grid-item elementor-clearfix', get_the_ID()));
+                if (!wp_attachment_is_image($attachment_id) && !$this->is_video_attachment($attachment_id)) {
+                    continue;
+                }
+
+                $post_class = implode(' ', get_post_class('king-addons-grid-item elementor-clearfix', $attachment_id));
+                if ($this->is_video_attachment($attachment_id)) {
+                    $post_class .= ' king-addons-grid-item-video';
+                }
+
                 echo '<article class="' . esc_attr($post_class) . '">';
                 echo '<div class="king-addons-grid-item-inner">';
                 $this->get_elements_by_location('above', $s, get_the_ID());
