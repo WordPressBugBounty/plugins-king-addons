@@ -304,6 +304,7 @@ final class Core
             require_once(KING_ADDONS_PATH . 'includes/widgets/MailChimp/MailChimp_Ajax.php');
 
             // Additional - Grids, Magazine Grid
+            require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Grid_Ajax_Security.php');
             require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Filter_Posts_Ajax.php');
             require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Filter_WooCommerce_Products_Ajax.php');
             require_once(KING_ADDONS_PATH . 'includes/helpers/Grid/Post_Likes_Ajax.php');

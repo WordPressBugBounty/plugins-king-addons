@@ -2,6 +2,11 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.76 - July 14, 2026 =
+* **Security:** Fixed authenticated stored XSS in Form Builder submissions via form_page_id by validating post IDs with absint() and escaping admin list links with esc_url().
+* **Security:** Fixed unauthenticated reflected XSS in Posts Grid AJAX filter responses by allowlisting animation/effect values and escaping generated CSS classes with esc_attr(). Credit: V1T (WPScan).
+* **Security:** Applied the same AJAX grid sanitization hardening to WooCommerce Grid filter responses.
+
 = King Addons for Elementor version 51.1.75 - July 9, 2026 =
 * **New:** Advanced Image Gallery - manual Add Images & Videos repeater to mix images and self-hosted videos with a custom cover and play icon.
 * **New:** Advanced Image Gallery - Include Videos option for Auto selection from the Media Library.

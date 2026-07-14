@@ -262,21 +262,22 @@ class Filter_Posts_Ajax
         // Disable animation on mobile if set
         if ($object !== 'overlay' &&
             isset($data[$object . '_animation_disable_mobile']) &&
-            $data[$object . '_animation_disable_mobile'] === 'yes' &&
+            Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_disable_mobile']) === 'yes' &&
             wp_is_mobile()
         ) {
             return '';
         }
 
-        if (!isset($data[$object . '_animation']) || $data[$object . '_animation'] === 'none') {
+        $animation = Grid_Ajax_Security::sanitize_animation($data[$object . '_animation'] ?? 'none');
+        if ('none' === $animation) {
             return '';
         }
 
-        $class = ' king-addons-' . $object . '-' . $data[$object . '_animation'];
-        $class .= ' king-addons-anim-size-' . $data[$object . '_animation_size'];
-        $class .= ' king-addons-animation-timing-' . $data[$object . '_animation_timing'];
+        $class = ' king-addons-' . sanitize_key($object) . '-' . $animation;
+        $class .= ' king-addons-anim-size-' . Grid_Ajax_Security::sanitize_animation_size($data[$object . '_animation_size'] ?? 'large');
+        $class .= ' king-addons-animation-timing-' . Grid_Ajax_Security::sanitize_animation_timing($data[$object . '_animation_timing'] ?? 'ease-default');
 
-        if (isset($data[$object . '_animation_tr']) && $data[$object . '_animation_tr'] === 'yes') {
+        if (Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_tr'] ?? '') === 'yes') {
             $class .= ' king-addons-anim-transparency';
         }
 
@@ -288,19 +289,14 @@ class Filter_Posts_Ajax
      */
     public function get_image_effect_class($settings)
     {
+        $effect = Grid_Ajax_Security::sanitize_image_effect($settings['image_effects'] ?? 'none');
         $class = '';
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-            // Fallback if no premium
-            if (in_array($settings['image_effects'], ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo'])) {
-                $settings['image_effects'] = 'none';
-            }
-        }
 
-        if (isset($settings['image_effects']) && $settings['image_effects'] !== 'none') {
-            $class .= ' king-addons-' . $settings['image_effects'];
-            $class .= $settings['image_effects'] !== 'slide'
-                ? ' king-addons-effect-size-' . $settings['image_effects_size']
-                : ' king-addons-effect-dir-' . $settings['image_effects_direction'];
+        if ('none' !== $effect) {
+            $class .= ' king-addons-' . $effect;
+            $class .= 'slide' !== $effect
+                ? ' king-addons-effect-size-' . Grid_Ajax_Security::sanitize_image_effect_size($settings['image_effects_size'] ?? 'medium')
+                : ' king-addons-effect-dir-' . Grid_Ajax_Security::sanitize_image_effect_direction($settings['image_effects_direction'] ?? 'bottom');
         }
 
         return $class;
@@ -349,27 +345,29 @@ HTML;
 
         if (!has_post_thumbnail()) return;
 
-        $sec_hover = $settings['secondary_img_on_hover'] ?? '';
+        $sec_hover = Grid_Ajax_Security::sanitize_yes_no_switcher($settings['secondary_img_on_hover'] ?? '');
         echo '<div class="king-addons-grid-image-wrap" data-src="' . esc_url($src) . '"'
             . ' data-img-on-hover="' . esc_attr($sec_hover) . '" data-src-secondary="' . esc_url($src2) . '">';
 
         /** @noinspection PhpIfWithCommonPartsInspection */
-        if (!empty($settings['grid_lazy_loading']) && $settings['grid_lazy_loading'] === 'yes') {
+        if (!empty($settings['grid_lazy_loading']) && Grid_Ajax_Security::sanitize_yes_no_switcher($settings['grid_lazy_loading']) === 'yes') {
+            $animation_timing = Grid_Ajax_Security::sanitize_animation_timing($settings['image_effects_animation_timing'] ?? 'ease-default');
             echo '<img loading="lazy" src="' . esc_url($src) . '" '
                 . 'alt="' . esc_attr($alt) . '" class="king-addons-hidden-image king-addons-animation-timing-'
-                . esc_attr($settings['image_effects_animation_timing']) . '">';
-            if ($sec_hover === 'yes') {
+                . esc_attr($animation_timing) . '">';
+            if ('yes' === $sec_hover) {
                 echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" '
                     . 'class="king-addons-hidden-img king-addons-animation-timing-'
-                    . esc_attr($settings['image_effects_animation_timing']) . '">';
+                    . esc_attr($animation_timing) . '">';
             }
         } else {
+            $animation_timing = Grid_Ajax_Security::sanitize_animation_timing($settings['image_effects_animation_timing'] ?? 'ease-default');
             echo '<img src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '" '
-                . 'class="king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
-            if ($sec_hover === 'yes') {
+                . 'class="king-addons-animation-timing-' . esc_attr($animation_timing) . '">';
+            if ('yes' === $sec_hover) {
                 echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" '
                     . 'class="king-addons-hidden-img king-addons-animation-timing-'
-                    . esc_attr($settings['image_effects_animation_timing']) . '">';
+                    . esc_attr($animation_timing) . '">';
             }
         }
         echo '</div>';
@@ -382,7 +380,7 @@ HTML;
     {
         $overlay_class = $this->get_animation_class($settings, 'overlay');
         $permalink = esc_url(get_the_permalink(get_the_ID()));
-        echo '<div class="king-addons-grid-media-hover-bg ' . $overlay_class . '" data-url="' . $permalink . '">';
+        echo '<div class="king-addons-grid-media-hover-bg' . esc_attr($overlay_class) . '" data-url="' . $permalink . '">';
         if (king_addons_freemius()->can_use_premium_code__premium_only() && !empty($settings['overlay_image']['url'])) {
             echo '<img src="' . esc_url($settings['overlay_image']['url']) . '" alt="' . esc_attr($settings['overlay_image']['alt']) . '">';
         }
@@ -867,10 +865,10 @@ HTML;
                 }
                 echo '<div class="king-addons-grid-media-hover-' . esc_attr($align) . ' elementor-clearfix">';
                 foreach ($elements as $data) {
-                    $class = 'king-addons-grid-item-' . $data['element_select']
-                        . ' elementor-repeater-item-' . $data['_id']
-                        . ' king-addons-grid-item-display-' . $data['element_display']
-                        . ' king-addons-grid-item-align-' . $data['element_align_hr']
+                    $class = 'king-addons-grid-item-' . sanitize_key($data['element_select'] ?? '')
+                        . ' elementor-repeater-item-' . sanitize_key($data['_id'] ?? '')
+                        . ' king-addons-grid-item-display-' . sanitize_key($data['element_display'] ?? '')
+                        . ' king-addons-grid-item-align-' . sanitize_key($data['element_align_hr'] ?? '')
                         . $this->get_animation_class($data, 'element');
                     $this->get_elements($data['element_select'], $data, $class, $post_id);
                 }
@@ -883,10 +881,10 @@ HTML;
             // above / below
             echo '<div class="king-addons-grid-item-' . esc_attr($location) . '-content elementor-clearfix">';
             foreach ($locations[$location] as $data) {
-                $class = 'king-addons-grid-item-' . $data['element_select']
-                    . ' elementor-repeater-item-' . $data['_id']
-                    . ' king-addons-grid-item-display-' . $data['element_display']
-                    . ' king-addons-grid-item-align-' . $data['element_align_hr'];
+                $class = 'king-addons-grid-item-' . sanitize_key($data['element_select'] ?? '')
+                    . ' elementor-repeater-item-' . sanitize_key($data['_id'] ?? '')
+                    . ' king-addons-grid-item-display-' . sanitize_key($data['element_display'] ?? '')
+                    . ' king-addons-grid-item-align-' . sanitize_key($data['element_align_hr'] ?? '');
                 $this->get_elements($data['element_select'], $data, $class, $post_id);
             }
             echo '</div>';

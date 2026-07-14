@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.75
+Stable tag: 51.1.76
 Tested up to: 7.0
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.76 - July 14, 2026 =
+* **Security:** Fixed authenticated stored XSS in Form Builder submissions via form_page_id by validating post IDs with absint() and escaping admin list links with esc_url().
+* **Security:** Fixed unauthenticated reflected XSS in Posts Grid AJAX filter responses by allowlisting animation/effect values and escaping generated CSS classes with esc_attr(). Credit: V1T (WPScan).
+* **Security:** Applied the same AJAX grid sanitization hardening to WooCommerce Grid filter responses.
 
 = King Addons for Elementor version 51.1.75 - July 9, 2026 =
 * **New:** Advanced Image Gallery - manual Add Images & Videos repeater to mix images and self-hosted videos with a custom cover and play icon.

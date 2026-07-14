@@ -84,6 +84,22 @@ class Animations extends Base_Data_Control
         return self::$_animations;
     }
 
+    /**
+     * Returns all valid animation slug values used by grid widgets.
+     *
+     * @return array<int, string> Animation slug list.
+     */
+    public static function get_animation_slugs(): array
+    {
+        $slugs = ['none'];
+
+        foreach (array_merge(self::$free_animations, self::$pro_animations) as $group) {
+            $slugs = array_merge($slugs, array_keys($group));
+        }
+
+        return array_values(array_unique($slugs));
+    }
+
     public function content_template(): void
     {
         $control_uid = $this->get_control_uid(); ?>

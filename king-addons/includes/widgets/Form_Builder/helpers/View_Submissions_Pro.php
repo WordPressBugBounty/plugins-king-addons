@@ -340,8 +340,7 @@ class View_Submissions_Pro
                 break;
 
             case 'custom_date':
-
-                echo get_post_meta($post_id, 'custom_date_key', true);
+                echo esc_html((string) get_post_meta($post_id, 'custom_date_key', true));
                 break;
         }
     }

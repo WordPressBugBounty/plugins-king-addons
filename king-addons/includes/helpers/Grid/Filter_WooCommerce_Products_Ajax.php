@@ -450,39 +450,43 @@ class Filter_WooCommerce_Products_Ajax
     {
         $class = '';
         // If animation is disabled on mobile, skip it
-        if ('overlay' !== $object && 'yes' === ($data[$object . '_animation_disable_mobile'] ?? '') && wp_is_mobile()) {
+        if ('overlay' !== $object && Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_disable_mobile'] ?? '') === 'yes' && wp_is_mobile()) {
             return $class;
         }
-        if (($data[$object . '_animation'] ?? 'none') !== 'none') {
-            $class .= ' king-addons-' . $object . '-' . $data[$object . '_animation'];
-            $class .= ' king-addons-anim-size-' . $data[$object . '_animation_size'];
-            $class .= ' king-addons-animation-timing-' . $data[$object . '_animation_timing'];
 
-            if ('yes' === ($data[$object . '_animation_tr'] ?? '')) {
-                $class .= ' king-addons-anim-transparency';
-            }
+        $animation = Grid_Ajax_Security::sanitize_animation($data[$object . '_animation'] ?? 'none');
+        if ('none' === $animation) {
+            return $class;
         }
+
+        $class .= ' king-addons-' . sanitize_key($object) . '-' . $animation;
+        $class .= ' king-addons-anim-size-' . Grid_Ajax_Security::sanitize_animation_size($data[$object . '_animation_size'] ?? 'large');
+        $class .= ' king-addons-animation-timing-' . Grid_Ajax_Security::sanitize_animation_timing($data[$object . '_animation_timing'] ?? 'ease-default');
+
+        if (Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_tr'] ?? '') === 'yes') {
+            $class .= ' king-addons-anim-transparency';
+        }
+
         return $class;
     }
 
     public function get_image_effect_class($settings)
     {
-        // Restrict pro effects if not premium
-        if (!king_addons_can_use_pro()) {
-            if (in_array($settings['image_effects'], ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo'], true)) {
-                $settings['image_effects'] = 'none';
+        $effect = Grid_Ajax_Security::sanitize_image_effect($settings['image_effects'] ?? 'none');
+        $class = '';
+
+        if ('none' !== $effect) {
+            $class .= ' king-addons-' . $effect;
+        }
+
+        if ('none' !== $effect) {
+            if ('slide' !== $effect) {
+                $class .= ' king-addons-effect-size-' . Grid_Ajax_Security::sanitize_image_effect_size($settings['image_effects_size'] ?? 'medium');
+            } else {
+                $class .= ' king-addons-effect-dir-' . Grid_Ajax_Security::sanitize_image_effect_direction($settings['image_effects_direction'] ?? 'bottom');
             }
         }
-        $class = '';
-        if ($settings['image_effects'] !== 'none') {
-            $class .= ' king-addons-' . $settings['image_effects'];
-        }
-        // Slide effect has a different prefix than the “size” style.
-        if ($settings['image_effects'] !== 'slide') {
-            $class .= ' king-addons-effect-size-' . $settings['image_effects_size'];
-        } else {
-            $class .= ' king-addons-effect-dir-' . $settings['image_effects_direction'];
-        }
+
         return $class;
     }
 
