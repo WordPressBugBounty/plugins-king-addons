@@ -1126,7 +1126,7 @@
             }
 
         } catch (error) {
-            console.error('Error optimizing image:', error);
+            // console.error('Error optimizing image:', error);
 
             if (error && error.code === 'quota_exceeded') {
                 state.stopReason = 'quota';

@@ -255,20 +255,57 @@ class Upload_Email_File
     }
 
     /**
-     * AJAX handler for generating fresh nonce
-     * Security fix: Provides dynamic nonce generation instead of public exposure
+     * AJAX handler for generating a fresh form nonce.
+     *
+     * Requires a published page that actually contains the Form Builder widget.
+     * A bare form_public flag is not accepted.
+     *
+     * @return void
      */
     public function get_fresh_nonce()
     {
-        // Only allow if user has upload permissions or if it's a public form
-        if (!current_user_can('upload_files') && !isset($_POST['form_public'])) {
-            wp_send_json_error(['message' => 'Insufficient permissions']);
+        $page_id = absint($_POST['page_id'] ?? 0);
+
+        if (!$this->page_has_form_builder($page_id)) {
+            wp_send_json_error([
+                'message' => esc_html__('Insufficient permissions.', 'king-addons'),
+            ]);
         }
 
         wp_send_json_success([
             'nonce' => wp_create_nonce('king-addons-js'),
-            'timestamp' => time()
+            'timestamp' => time(),
         ]);
+    }
+
+    /**
+     * Checks whether a published page contains the Form Builder widget.
+     *
+     * @param int $page_id Page or post ID.
+     * @return bool True when the page is published and includes Form Builder.
+     */
+    public function page_has_form_builder($page_id)
+    {
+        $page_id = absint($page_id);
+        if ($page_id <= 0) {
+            return false;
+        }
+
+        $post = get_post($page_id);
+        if (!$post || 'publish' !== $post->post_status) {
+            return false;
+        }
+
+        $elementor_data = get_post_meta($page_id, '_elementor_data', true);
+        if (empty($elementor_data)) {
+            return false;
+        }
+
+        if (!is_string($elementor_data)) {
+            $elementor_data = wp_json_encode($elementor_data);
+        }
+
+        return false !== strpos($elementor_data, 'king-addons-form-builder');
     }
 }
 

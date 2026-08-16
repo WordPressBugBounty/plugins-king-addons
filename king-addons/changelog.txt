@@ -2,6 +2,11 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.77 - August 16, 2026 =
+* **Security:** Form Builder nonce refresh now requires a published page that contains the Form Builder widget instead of a public flag.
+* **Security:** Posts Grid and WooCommerce Grid AJAX filters now sanitize the full grid_settings payload, including query args, HTML tags, and CSS classes.
+* **Security:** Magazine Grid now escapes HTML tags, CSS classes, and taxonomy color styles in rendered markup.
+
 = King Addons for Elementor version 51.1.76 - July 14, 2026 =
 * **Security:** Fixed authenticated stored XSS in Form Builder submissions via form_page_id by validating post IDs with absint() and escaping admin list links with esc_url().
 * **Security:** Fixed unauthenticated reflected XSS in Posts Grid AJAX filter responses by allowlisting animation/effect values and escaping generated CSS classes with esc_attr(). Credit: V1T (WPScan).

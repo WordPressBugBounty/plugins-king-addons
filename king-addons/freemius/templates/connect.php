@@ -521,7 +521,7 @@
                 $primaryCta.prop('disabled', false);
                 $( '.fs-loading' ).removeClass( 'fs-loading' );
 
-                console.log('resetLoadingMode - Primary button was enabled');
+                // console.log('resetLoadingMode - Primary button was enabled');
             },
 			setLoadingMode = function () {
 				$( document.body ).addClass( 'fs-loading' );
@@ -872,7 +872,7 @@
         });
 
 		$primaryCta.on('click', function () {
-			console.log('Primary button was clicked');
+			// console.log('Primary button was clicked');
 
 			$(this).addClass('fs-loading');
 			$(this).html('<?php echo esc_js( $is_pending_activation ?

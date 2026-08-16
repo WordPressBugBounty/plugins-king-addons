@@ -128,7 +128,7 @@
         
         // Check if variables are defined
         if (typeof king_addons_login_register_vars === 'undefined') {
-            console.error('King Addons Login Register: AJAX variables not loaded');
+            // console.error('King Addons Login Register: AJAX variables not loaded');
             showMessage($messageContainer, 'Configuration error. Please refresh the page.', 'error');
             return;
         }
@@ -152,7 +152,7 @@
             formData['g-recaptcha-response'] = recaptchaResponse;
         }
 
-        console.log('Submitting login form with data:', formData);
+        // console.log('Submitting login form with data:', formData);
 
         // Validate required fields
         if (!formData.username || !formData.password) {
@@ -189,9 +189,9 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Login AJAX Error:', error);
-                console.error('Login XHR response:', xhr.responseText);
-                console.error('Login XHR status code:', xhr.status);
+                // console.error('Login AJAX Error:', error);
+                // console.error('Login XHR response:', xhr.responseText);
+                // console.error('Login XHR status code:', xhr.status);
                 
                 let errorMessage = 'Network error. Please check your connection and try again.';
                 
@@ -224,7 +224,7 @@
         
         // Check if variables are defined
         if (typeof king_addons_login_register_vars === 'undefined') {
-            console.error('King Addons Login Register: AJAX variables not loaded');
+            // console.error('King Addons Login Register: AJAX variables not loaded');
             showMessage($messageContainer, 'Configuration error. Please refresh the page.', 'error');
             return;
         }
@@ -318,10 +318,10 @@
         if (Object.keys(customFields).length > 0) {
             formData.custom_fields = customFields;
             formData.custom_field_labels = customFieldLabels;
-            console.log('Found custom fields:', customFields);
-            console.log('Field labels:', customFieldLabels);
+            // console.log('Found custom fields:', customFields);
+            // console.log('Field labels:', customFieldLabels);
         } else {
-            console.log('No custom fields found');
+            // console.log('No custom fields found');
         }
         
         // Add reCAPTCHA response if present
@@ -330,7 +330,7 @@
             formData['g-recaptcha-response'] = recaptchaResponse;
         }
 
-        console.log('Submitting registration form with data:', formData);
+        // console.log('Submitting registration form with data:', formData);
 
         // Client-side validation
         const validationResult = validateRegistrationForm(formData);
@@ -404,9 +404,9 @@
                 showMessage($messageContainer, response.data.message || 'Registration failed. Please try again.', 'error');
             }
         }).fail(function(xhr, status, error) {
-            console.error('Registration AJAX Error:', error);
-            console.error('Registration XHR response:', xhr.responseText);
-            console.error('Registration XHR status code:', xhr.status);
+            // console.error('Registration AJAX Error:', error);
+            // console.error('Registration XHR response:', xhr.responseText);
+            // console.error('Registration XHR status code:', xhr.status);
             
             let errorMessage = 'Network error. Please check your connection and try again.';
             
@@ -436,7 +436,7 @@
         
         // Check if variables are defined
         if (typeof king_addons_login_register_vars === 'undefined') {
-            console.error('King Addons Login Register: AJAX variables not loaded');
+            // console.error('King Addons Login Register: AJAX variables not loaded');
             showMessage($messageContainer, 'Configuration error. Please refresh the page.', 'error');
             return;
         }
@@ -474,9 +474,9 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Lost Password AJAX Error:', error);
-                console.error('Lost Password XHR response:', xhr.responseText);
-                console.error('Lost Password XHR status code:', xhr.status);
+                // console.error('Lost Password AJAX Error:', error);
+                // console.error('Lost Password XHR response:', xhr.responseText);
+                // console.error('Lost Password XHR status code:', xhr.status);
                 
                 let errorMessage = 'Network error. Please check your connection and try again.';
                 

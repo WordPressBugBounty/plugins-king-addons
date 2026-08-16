@@ -96,7 +96,7 @@
                 const data = await r.json();
                 this._render(data.results || [], q);
             } catch (err) {
-                console.error('[KNG Docs] search error', err);
+                // console.error('[KNG Docs] search error', err);
             } finally {
                 this._showLoader(false);
             }
@@ -271,7 +271,7 @@
                     }),
                 });
             } catch (err) {
-                console.error('[KNG Docs] reaction error', err);
+                // console.error('[KNG Docs] reaction error', err);
             }
 
             setCookie(`kng_docs_reaction_${this.postId}`, type, 30);

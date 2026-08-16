@@ -37,7 +37,7 @@
             var $calculateButton = $calculator.find('.king-pricing-calculator__calculate-button');
             
             // Debug info - log initial calculator settings
-            console.log('Calculator initialized with base price:', basePrice);
+            // console.log('Calculator initialized with base price:', basePrice);
             
             // Get ajaxurl from localized script if it exists, fallback to global
             var ajaxUrl = (typeof king_addons_calculator_vars !== 'undefined') ? king_addons_calculator_vars.ajaxurl : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
@@ -124,13 +124,13 @@
                     var fieldType = $field.data('field-type');
                     
                     // Debug info - log field attributes
-                    console.log('Field:', fieldType, 'Price Type:', $field.data('price-type'), 'Price:', $field.data('price'));
+                    // console.log('Field:', fieldType, 'Price Type:', $field.data('price-type'), 'Price:', $field.data('price'));
                     
                     // Check if custom formula is used (Pro feature)
                     if ($field.data('price-type') === 'custom') {
                         // Show a one-time console message
                         if (!window.customFormulaMessageShown) {
-                            console.info('Custom formula calculation requires Pro version.');
+                            // console.info('Custom formula calculation requires Pro version.');
                             window.customFormulaMessageShown = true;
                         }
                     }
@@ -249,7 +249,7 @@
                     var summaryHtml = '';
                     
                     // Debug info
-                    console.log('Starting calculation with base price:', total);
+                    // console.log('Starting calculation with base price:', total);
                     
                     // Advanced Formula will be applied after default calculation
                     
@@ -331,7 +331,7 @@
                                         '</div>';
                                 }
                                 
-                                console.log('Field (add):', fieldLabel, 'Value:', fieldValue, 'Price:', fieldPrice, 'Subtotal:', subTotal, 'Total:', total);
+                                // console.log('Field (add):', fieldLabel, 'Value:', fieldValue, 'Price:', fieldPrice, 'Subtotal:', subTotal, 'Total:', total);
                                 
                             } else if (priceType === 'multiply') {
                                 // For number/range: multiply total by the field value
@@ -358,7 +358,7 @@
                                     }
                                 }
                                 
-                                console.log('Field (multiply):', fieldLabel, 'Value:', fieldValue, 'BeforeOp:', beforeOp, 'Total:', total);
+                                // console.log('Field (multiply):', fieldLabel, 'Value:', fieldValue, 'BeforeOp:', beforeOp, 'Total:', total);
                                 
                             } else if (priceType === 'custom') {
                                 // In the free version, treat custom formula as add (fallback)
@@ -388,11 +388,11 @@
                                         '</div>';
                                 }
                                 
-                                console.log('Field (custom/fallback):', fieldLabel, 'Added:', subTotal, 'Total:', total);
+                                // console.log('Field (custom/fallback):', fieldLabel, 'Added:', subTotal, 'Total:', total);
                             }
                         
                         } catch (fieldError) {
-                            console.error('Error processing field:', fieldLabel, fieldError);
+                            // console.error('Error processing field:', fieldLabel, fieldError);
                         }
                     });
                     
@@ -426,8 +426,8 @@
                         });
                         
                         // For debugging custom formulas
-                        console.log('Available field IDs:', fieldsMap);
-                        console.log('User-friendly field aliases:', aliasMap);
+                        // console.log('Available field IDs:', fieldsMap);
+                        // console.log('User-friendly field aliases:', aliasMap);
                         
                         // Apply chosen formula on the aggregated total
                         var newTotal = total;
@@ -443,14 +443,14 @@
                             try {
                                 // Security fix: Only allow safe mathematical operations
                                 if (!isCustomFormulaSafe(customCode)) {
-                                    console.error('Custom formula contains unsafe code');
+                                    // console.error('Custom formula contains unsafe code');
                                     return;
                                 }
                                 // Pass both the full field map and user-friendly aliases
                                 var fn = new Function('fields', 'basePrice', 'aliases', customCode);
                                 newTotal = fn(fieldsMap, basePrice, aliasMap);
                             } catch (e) {
-                                console.error('Custom formula error:', e);
+                                // console.error('Custom formula error:', e);
                             }
 
                             function isCustomFormulaSafe(formula) {
@@ -488,12 +488,12 @@
                     
                     // Final check to prevent NaN
                     if (isNaN(total)) {
-                        console.error('Total calculation resulted in NaN');
+                        // console.error('Total calculation resulted in NaN');
                         total = basePrice;
                     }
                     
                     // Debug info
-                    console.log('Final total:', total);
+                    // console.log('Final total:', total);
                     
                     // Update the total price
                     $totalPrice.text(formatPrice(total));
@@ -501,7 +501,7 @@
                     // Update the summary items
                     $summaryItems.html(summaryHtml);
                 } catch(e) {
-                    console.error('Calculation error:', e);
+                    // console.error('Calculation error:', e);
                     $totalPrice.text(formatPrice(basePrice));
                 }
             }
@@ -511,7 +511,7 @@
              */
             function formatPrice(number) {
                 if (isNaN(number)) {
-                    console.error('Attempting to format NaN as price');
+                    // console.error('Attempting to format NaN as price');
                     number = 0;
                 }
                 var parts = number.toFixed(decimalPlaces).toString().split('.');
@@ -557,13 +557,13 @@
             
             // If that doesn't work, try to get the raw attribute and parse it
             if (!conditionalRules && $calculator.attr('data-conditional-rules')) {
-                console.log('Found data-conditional-rules attribute, trying to parse:', $calculator.attr('data-conditional-rules'));
+                // console.log('Found data-conditional-rules attribute, trying to parse:', $calculator.attr('data-conditional-rules'));
                 conditionalRules = JSON.parse($calculator.attr('data-conditional-rules'));
             }
             
-            console.log('Conditional rules loaded:', conditionalRules);
+            // console.log('Conditional rules loaded:', conditionalRules);
         } catch (e) {
-            console.error('Error parsing conditional rules:', e);
+            // console.error('Error parsing conditional rules:', e);
         }
 
         // Add to Cart Integration
@@ -747,7 +747,7 @@
                 localStorage.setItem(storageKey, JSON.stringify(fieldsData));
                 alert('Calculation saved successfully.');
             } catch (error) {
-                console.error('Error saving calculation:', error);
+                // console.error('Error saving calculation:', error);
                 alert('There was an error saving your calculation. Please try again.');
             }
         });
@@ -807,14 +807,14 @@
                     alert('Calculation loaded successfully.');
                 }
             } catch (error) {
-                console.error('Error loading calculation:', error);
+                // console.error('Error loading calculation:', error);
                 alert('There was an error loading your calculation. The saved data may be corrupted.');
             }
         });
 
         // Conditional Logic
         if (conditionalRules) {
-            console.log('Conditional rules found:', conditionalRules);
+            // console.log('Conditional rules found:', conditionalRules);
             function evaluateCondition(val, operator, expected) {
                 try {
                     // Convert values for proper comparison
@@ -828,7 +828,7 @@
                         
                         // Check if we have valid numbers
                         if (isNaN(compVal) || isNaN(compExpected)) {
-                            console.warn('Invalid numeric comparison with NaN:', val, operator, expected);
+                            // console.warn('Invalid numeric comparison with NaN:', val, operator, expected);
                             return false;
                         }
                     }
@@ -840,7 +840,7 @@
                     }
                     
                     // Log the comparison
-                    console.log('Comparing:', compVal, operator, compExpected);
+                    // console.log('Comparing:', compVal, operator, compExpected);
                     
                     // Perform the comparison
                     switch (operator) {
@@ -852,12 +852,12 @@
                         default: return false;
                     }
                 } catch (e) {
-                    console.error('Error evaluating condition:', e);
+                    // console.error('Error evaluating condition:', e);
                     return false;
                 }
             }
             $.each(conditionalRules, function(_, rule) {
-                console.log('Processing rule:', rule);
+                // console.log('Processing rule:', rule);
                 
                 // Improve field selection to handle both custom IDs and auto-generated IDs
                 var $ifField, $targetField;
@@ -876,19 +876,19 @@
                     $targetField = $calculator.find('[data-field-id="king-calc-' + rule.target_field + '"]');
                 }
                 
-                console.log('Condition field found:', $ifField.length > 0, 'Target field found:', $targetField.length > 0);
+                // console.log('Condition field found:', $ifField.length > 0, 'Target field found:', $targetField.length > 0);
                 
                 // Log actual field IDs to help debug
                 if ($ifField.length > 0) {
-                    console.log('If field ID:', $ifField.data('field-id'));
+                    // console.log('If field ID:', $ifField.data('field-id'));
                 }
                 if ($targetField.length > 0) {
-                    console.log('Target field ID:', $targetField.data('field-id'));
+                    // console.log('Target field ID:', $targetField.data('field-id'));
                 }
                 
                 // If either field is not found, skip this rule
                 if (!$ifField.length || !$targetField.length) {
-                    console.warn('Could not find one or both fields for this rule, skipping');
+                    // console.warn('Could not find one or both fields for this rule, skipping');
                     return true; // Continue to next rule
                 }
                 
@@ -897,7 +897,7 @@
                     var type = $ifField.data('field-type');
                     
                     // Log the field type to debug
-                    console.log('Evaluating field type:', type);
+                    // console.log('Evaluating field type:', type);
                     
                     if (type === 'checkbox' || type === 'switch') {
                         val = $ifField.find('input[type="checkbox"]').prop('checked');
@@ -908,10 +908,10 @@
                     }
                     
                     // Log the actual field value
-                    console.log('Field value:', val, 'comparing with:', rule.value, 'using operator:', rule.operator);
+                    // console.log('Field value:', val, 'comparing with:', rule.value, 'using operator:', rule.operator);
                     
                     var result = evaluateCondition(val, rule.operator, rule.value);
-                    console.log('Condition evaluation result:', result);
+                    // console.log('Condition evaluation result:', result);
                     
                     // Apply the action based on the result
                     try {
@@ -952,16 +952,16 @@
                                 if (result) {
                                     var $input = $targetField.find('input, select');
                                     $input.val(rule.set_value).trigger('change');
-                                    console.log('Set value to:', rule.set_value);
+                                    // console.log('Set value to:', rule.set_value);
                                 }
                                 break;
                         }
                     } catch (e) {
-                        console.error('Error applying action:', e);
+                        // console.error('Error applying action:', e);
                     }
                     
                     // Log the action taken
-                    console.log('Applied action:', rule.action, 'with result:', result);
+                    // console.log('Applied action:', rule.action, 'with result:', result);
                 }
                 $ifField.on('change input', applyRule);
                 

@@ -193,7 +193,7 @@
                         const title = $button.data('title') || '';
                         
                         if (!url) {
-                            console.warn('No URL provided for action button');
+                            // console.warn('No URL provided for action button');
                             return;
                         }
                         
@@ -265,7 +265,7 @@
                             }, 100);
                         });
                     } else {
-                        console.error('LightGallery not available');
+                        // console.error('LightGallery not available');
                         window.open(safeUrl, '_blank');
                     }
                 },
@@ -273,7 +273,7 @@
                 openVideoLightbox(url, title) {
                     // Check if LightGallery is available
                     if (typeof $.fn.lightGallery === 'undefined') {
-                        console.warn('LightGallery not loaded, opening video in new tab');
+                        // console.warn('LightGallery not loaded, opening video in new tab');
                         const safeUrl = this.normalizeSafeUrl(url);
                         if (safeUrl) {
                             window.open(safeUrl, '_blank');
@@ -294,7 +294,7 @@
                     // Process YouTube URL to get video ID
                     const videoId = this.getYouTubeVideoId(safeUrl);
                     if (!videoId) {
-                        console.warn('Invalid YouTube URL');
+                        // console.warn('Invalid YouTube URL');
                         window.open(safeUrl, '_blank');
                         return;
                     }
@@ -459,7 +459,7 @@
                             this.handleFilterResponse(response);
                         },
                         error: (xhr, status, error) => {
-                            console.error('Dynamic Posts Grid AJAX Error:', error);
+                            // console.error('Dynamic Posts Grid AJAX Error:', error);
                             this.hideLoading();
                             this.isLoading = false;
                         }
@@ -502,7 +502,7 @@
                             this.handleLoadMoreResponse(response);
                         },
                         error: (xhr, status, error) => {
-                            console.error('Dynamic Posts Grid Load More Error:', error);
+                            // console.error('Dynamic Posts Grid Load More Error:', error);
                             this.hideLoading();
                             this.isLoading = false;
                             this.currentPage--; // Revert page increment on error

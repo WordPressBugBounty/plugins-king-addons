@@ -5178,15 +5178,16 @@ $this->end_controls_section();
 
     private function get_animation_class($data, $object)
     {
-        if ('none' === $data[$object . '_animation']) {
+        $animation = Grid_Ajax_Security::sanitize_animation($data[$object . '_animation'] ?? 'none');
+        if ('none' === $animation) {
             return '';
         }
 
-        $class = ' king-addons-' . $object . '-' . $data[$object . '_animation'];
-        $class .= ' king-addons-anim-size-' . $data[$object . '_animation_size'];
-        $class .= ' king-addons-animation-timing-' . $data[$object . '_animation_timing'];
+        $class = ' king-addons-' . sanitize_html_class($object) . '-' . $animation;
+        $class .= ' king-addons-anim-size-' . Grid_Ajax_Security::sanitize_animation_size($data[$object . '_animation_size'] ?? 'large');
+        $class .= ' king-addons-animation-timing-' . Grid_Ajax_Security::sanitize_animation_timing($data[$object . '_animation_timing'] ?? 'ease-default');
 
-        if ('yes' === $data[$object . '_animation_tr']) {
+        if ('yes' === Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_tr'] ?? '')) {
             $class .= ' king-addons-anim-transparency';
         }
         return $class;
@@ -5238,27 +5239,30 @@ $this->end_controls_section();
         $open_links_in_new_tab = ('yes' === $settings['open_links_in_new_tab']) ? '_blank' : '_self';
 
         // If premium unavailable, fallback pointer settings
-        $title_pointer = king_addons_freemius()->can_use_premium_code__premium_only() ? $settings['title_pointer'] : 'none';
-        $title_pointer_animation = king_addons_freemius()->can_use_premium_code__premium_only() ? $settings['title_pointer_animation'] : 'fade';
+        $title_pointer = king_addons_freemius()->can_use_premium_code__premium_only()
+            ? Grid_Ajax_Security::sanitize_class_token($settings['title_pointer'] ?? 'none')
+            : 'none';
+        $title_pointer_animation = king_addons_freemius()->can_use_premium_code__premium_only()
+            ? Grid_Ajax_Security::sanitize_class_token($settings['title_pointer_animation'] ?? 'fade')
+            : 'fade';
 
         $pointer_item_class = ('none' !== $title_pointer) ? 'class="king-addons-pointer-item"' : '';
         $class .= ' king-addons-pointer-' . $title_pointer;
         $class .= ' king-addons-pointer-line-fx king-addons-pointer-fx-' . $title_pointer_animation;
 
-        $tags_whitelist = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p'];
-        $element_title_tag = Core::validateHTMLTags($settings['element_title_tag'], 'h2', $tags_whitelist);
+        $element_title_tag = Grid_Ajax_Security::sanitize_html_tag($settings['element_title_tag'] ?? 'h2');
         $trim_type = $settings['element_trim_text_by'];
         $limit = $trim_type === 'word_count' ? $settings['element_word_count'] : $settings['element_letter_count'];
         $title_text = ($trim_type === 'word_count')
             ? wp_trim_words(get_the_title(), $limit)
             : mb_substr(html_entity_decode(get_the_title()), 0, $limit) . '...';
 
-        echo "<$element_title_tag class=\"$class\">";
+        echo '<' . esc_attr($element_title_tag) . ' class="' . esc_attr($class) . '">';
         echo '<div class="inner-block">';
-        echo "<a target=\"$open_links_in_new_tab\" $pointer_item_class href=\"" . esc_url(get_the_permalink()) . "\">";
+        echo '<a target="' . esc_attr($open_links_in_new_tab) . '" ' . $pointer_item_class . ' href="' . esc_url(get_the_permalink()) . '">';
         echo esc_html($title_text);
         echo '</a></div>';
-        echo "</$element_title_tag>";
+        echo '</' . esc_attr($element_title_tag) . '>';
     }
 
     public function render_post_content($settings, $class)
@@ -5268,7 +5272,7 @@ $this->end_controls_section();
         }
         $class .= ('yes' === $settings['element_dropcap']) ? ' king-addons-enable-dropcap' : '';
 
-        echo "<div class=\"$class\">";
+        echo '<div class="' . esc_attr($class) . '">';
         echo '<div class="inner-block">';
         echo wp_kses_post(apply_filters('the_content', get_the_content()));
         echo '</div></div>';
@@ -5281,7 +5285,7 @@ $this->end_controls_section();
         }
         $class .= ('yes' === $settings['element_dropcap']) ? ' king-addons-enable-dropcap' : '';
 
-        echo "<div class=\"$class\">";
+        echo '<div class="' . esc_attr($class) . '">';
         echo '<div class="inner-block">';
         if ('word_count' === $settings['element_trim_text_by']) {
             echo '<p>' . esc_html(wp_trim_words(get_the_excerpt(), $settings['element_word_count'])) . '</p>';
@@ -5294,7 +5298,7 @@ $this->end_controls_section();
 
     public function render_post_date($settings, $class)
     {
-        echo "<div class=\"$class\"><div class=\"inner-block\"><span>";
+        echo '<div class="' . esc_attr($class) . '"><div class="inner-block"><span>';
         $this->render_extra_text_and_icon($settings, 'before');
 
         // Show modified time or published time
@@ -5308,7 +5312,7 @@ $this->end_controls_section();
 
     public function render_post_time($settings, $class)
     {
-        echo "<div class=\"$class\"><div class=\"inner-block\"><span>";
+        echo '<div class="' . esc_attr($class) . '"><div class="inner-block"><span>';
         $this->render_extra_text_and_icon($settings, 'before');
 
         echo esc_html(get_the_time());
@@ -5321,7 +5325,7 @@ $this->end_controls_section();
     {
         $author_id = get_post_field('post_author');
 
-        echo "<div class=\"$class\"><div class=\"inner-block\">";
+        echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
         $this->render_extra_text_and_icon($settings, 'before');
 
         echo '<a href="' . esc_url(get_author_posts_url($author_id)) . '">';
@@ -5352,7 +5356,7 @@ $this->end_controls_section();
             $text = $settings['element_comments_text_1'];
         }
 
-        echo "<div class=\"$class\"><div class=\"inner-block\">";
+        echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
         $this->render_extra_text_and_icon($settings, 'before');
 
         echo '<a href="' . esc_url(get_comments_link()) . '">';
@@ -5372,8 +5376,8 @@ $this->end_controls_section();
             ? $settings['read_more_animation']
             : 'king-addons-button-none';
 
-        echo "<div class=\"$class\"><div class=\"inner-block\">";
-        echo "<a target=\"$open_links_in_new_tab\" href=\"" . esc_url(get_the_permalink()) . "\" class=\"king-addons-button-effect " . esc_attr($read_more_animation) . "\">";
+        echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
+        echo '<a target="' . esc_attr($open_links_in_new_tab) . '" href="' . esc_url(get_the_permalink()) . '" class="king-addons-button-effect ' . esc_attr($read_more_animation) . '">';
         $this->render_extra_text_and_icon($settings, 'before', true);
         echo '<span>' . esc_html($settings['element_read_more_text']) . '</span>';
         $this->render_extra_text_and_icon($settings, 'after', true);
@@ -5398,7 +5402,7 @@ $this->end_controls_section();
 
     public function render_post_element_separator($settings, $class)
     {
-        echo "<div class=\"$class {$settings['element_separator_style']}\">";
+        echo '<div class="' . esc_attr($class . ' ' . ($settings['element_separator_style'] ?? '')) . '">';
         echo '<div class="inner-block"><span></span></div>';
         echo '</div>';
     }
@@ -5410,10 +5414,10 @@ $this->end_controls_section();
         $pointer = king_addons_freemius()->can_use_premium_code__premium_only();
 
         // Pointer settings
-        $tax1_pointer = $pointer ? $this->get_settings()['tax1_pointer'] : 'none';
-        $tax1_pointer_animation = $pointer ? $this->get_settings()['tax1_pointer_animation'] : 'fade';
-        $tax2_pointer = $pointer ? $this->get_settings()['tax2_pointer'] : 'none';
-        $tax2_pointer_animation = $pointer ? $this->get_settings()['tax2_pointer_animation'] : 'fade';
+        $tax1_pointer = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax1_pointer'] ?? 'none') : 'none';
+        $tax1_pointer_animation = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax1_pointer_animation'] ?? 'fade') : 'fade';
+        $tax2_pointer = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax2_pointer'] ?? 'none') : 'none';
+        $tax2_pointer_animation = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax2_pointer_animation'] ?? 'fade') : 'fade';
 
         if ($settings['element_tax_style'] === 'king-addons-grid-tax-style-1') {
             $class .= " king-addons-pointer-$tax1_pointer king-addons-pointer-fx-$tax1_pointer_animation";
@@ -5427,7 +5431,7 @@ $this->end_controls_section();
             (isset($this->get_settings()['tax2_pointer']) && $this->get_settings()['tax2_pointer'] !== 'none')
         ) ? 'king-addons-pointer-item' : '';
 
-        echo "<div class=\"$class {$settings['element_tax_style']}\">";
+        echo '<div class="' . esc_attr($class . ' ' . ($settings['element_tax_style'] ?? '')) . '">';
         echo '<div class="inner-block">';
 
         $this->render_extra_text_and_icon($settings, 'before');
@@ -5436,17 +5440,21 @@ $this->end_controls_section();
             // Check if premium color styling
             $enable_custom_colors = $pointer ? $this->get_settings()['tax1_custom_color_switcher'] : '';
             if ('yes' === $enable_custom_colors) {
-                $cfc_text = get_term_meta($term->term_id, $this->get_settings()['tax1_custom_color_field_text'], true);
-                $cfc_bg = get_term_meta($term->term_id, $this->get_settings()['tax1_custom_color_field_bg'], true);
+                $cfc_text = Grid_Ajax_Security::sanitize_css_color(
+                    get_term_meta($term->term_id, sanitize_key($this->get_settings()['tax1_custom_color_field_text'] ?? ''), true)
+                );
+                $cfc_bg = Grid_Ajax_Security::sanitize_css_color(
+                    get_term_meta($term->term_id, sanitize_key($this->get_settings()['tax1_custom_color_field_bg'] ?? ''), true)
+                );
 
                 if ($cfc_text || $cfc_bg) {
-                    $style_block = "color:$cfc_text; background-color:$cfc_bg; border-color:$cfc_bg;";
-                    $css_selector = '.elementor-element' . $this->get_unique_selector() . " .king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-$term->term_id";
-                    echo "<style>$css_selector{{$style_block}}</style>";
+                    $style_block = 'color:' . esc_html($cfc_text) . '; background-color:' . esc_html($cfc_bg) . '; border-color:' . esc_html($cfc_bg) . ';';
+                    $css_selector = '.elementor-element' . $this->get_unique_selector() . ' .king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . absint($term->term_id);
+                    echo '<style>' . esc_html($css_selector) . '{' . $style_block . '}</style>';
                 }
             }
 
-            echo "<a class=\"$pointer_item_class king-addons-tax-id-$term->term_id\" href=\"" . esc_url(get_term_link($term->term_id)) . "\">";
+            echo '<a class="' . esc_attr($pointer_item_class . ' king-addons-tax-id-' . $term->term_id) . '" href="' . esc_url(get_term_link($term->term_id)) . '">';
             echo esc_html($term->name);
             if (++$count !== count($terms)) {
                 echo '<span class="tax-sep">' . esc_html($settings['element_tax_sep']) . '</span>';
@@ -5577,10 +5585,10 @@ $this->end_controls_section();
                 }
                 echo '<div class="king-addons-grid-media-hover-' . esc_attr($align) . ' elementor-clearfix">';
                 foreach ($elements as $data) {
-                    $class = 'king-addons-grid-item-' . $data['element_select'] .
-                        ' elementor-repeater-item-' . $data['_id'] .
-                        ' king-addons-grid-item-display-' . $data['element_display'] .
-                        ' king-addons-grid-item-align-' . $data['element_align_hr'] .
+                    $class = 'king-addons-grid-item-' . sanitize_html_class($data['element_select'] ?? '') .
+                        ' elementor-repeater-item-' . sanitize_html_class($data['_id'] ?? '') .
+                        ' king-addons-grid-item-display-' . sanitize_html_class($data['element_display'] ?? '') .
+                        ' king-addons-grid-item-align-' . sanitize_html_class($data['element_align_hr'] ?? '') .
                         $this->get_animation_class($data, 'element');
                     $this->get_elements($data['element_select'], $data, $class, $post_id);
                 }
@@ -5592,10 +5600,10 @@ $this->end_controls_section();
         } else {
             echo '<div class="king-addons-grid-item-' . esc_attr($location) . '-content elementor-clearfix">';
             foreach ($locations[$location] as $data) {
-                $class = 'king-addons-grid-item-' . $data['element_select'] .
-                    ' elementor-repeater-item-' . $data['_id'] .
-                    ' king-addons-grid-item-display-' . $data['element_display'] .
-                    ' king-addons-grid-item-align-' . $data['element_align_hr'];
+                $class = 'king-addons-grid-item-' . sanitize_html_class($data['element_select'] ?? '') .
+                    ' elementor-repeater-item-' . sanitize_html_class($data['_id'] ?? '') .
+                    ' king-addons-grid-item-display-' . sanitize_html_class($data['element_display'] ?? '') .
+                    ' king-addons-grid-item-align-' . sanitize_html_class($data['element_align_hr'] ?? '');
                 $this->get_elements($data['element_select'], $data, $class, $post_id);
             }
             echo '</div>';
@@ -5651,7 +5659,7 @@ $this->end_controls_section();
                 $posts->the_post();
                 $post_class = implode(' ', get_post_class('king-addons-magazine-grid-item elementor-clearfix', get_the_ID()));
 
-                echo "<article class=\"$post_class\">";
+                echo '<article class="' . esc_attr($post_class) . '">';
                 $this->render_password_protected_input();
 
                 echo '<div class="king-addons-grid-item-inner">';

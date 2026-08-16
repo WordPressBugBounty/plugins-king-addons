@@ -186,7 +186,7 @@
       }
 
       if (!config) {
-        console.warn('[KingAddons CustomCursor] No configuration found.');
+        // console.warn('[KingAddons CustomCursor] No configuration found.');
         return;
       }
 

@@ -89,7 +89,7 @@ class Dynamic_Posts_Grid_Ajax
         $post_types_raw = $_POST['post_types'] ?? '["post"]';
 
         // Debug: log the type and value of post_types_raw
-        error_log('DEBUG: post_types_raw type: ' . gettype($post_types_raw) . ', value: ' . print_r($post_types_raw, true));
+        // error_log('DEBUG: post_types_raw type: ' . gettype($post_types_raw) . ', value: ' . print_r($post_types_raw, true));
 
         // Check if it's already an array (PRO version) or needs decoding (Free version)
         if (is_array($post_types_raw)) {
@@ -97,7 +97,7 @@ class Dynamic_Posts_Grid_Ajax
         } else {
             // Ensure it's a string before decoding
             if (!is_string($post_types_raw)) {
-                error_log('DEBUG: post_types_raw is not a string, converting to: ' . json_encode($post_types_raw));
+                // error_log('DEBUG: post_types_raw is not a string, converting to: ' . json_encode($post_types_raw));
                 $post_types_raw = json_encode($post_types_raw);
             }
             $post_types_decoded = json_decode($post_types_raw, true);
@@ -143,8 +143,8 @@ class Dynamic_Posts_Grid_Ajax
 
         wp_send_json_success($response_data);
         } catch (Exception $e) {
-            error_log('Dynamic Posts Grid Filter AJAX Error: ' . $e->getMessage());
-            error_log('Stack trace: ' . $e->getTraceAsString());
+            // error_log('Dynamic Posts Grid Filter AJAX Error: ' . $e->getMessage());
+            // error_log('Stack trace: ' . $e->getTraceAsString());
             wp_send_json_error(['message' => esc_html__('An error occurred while filtering posts.', 'king-addons')]);
         }
     }
@@ -167,7 +167,7 @@ class Dynamic_Posts_Grid_Ajax
         $post_types_raw = $_POST['post_types'] ?? '["post"]';
 
         // Debug: log the type and value of post_types_raw
-        error_log('DEBUG: post_types_raw type: ' . gettype($post_types_raw) . ', value: ' . print_r($post_types_raw, true));
+        // error_log('DEBUG: post_types_raw type: ' . gettype($post_types_raw) . ', value: ' . print_r($post_types_raw, true));
 
         // Check if it's already an array (PRO version) or needs decoding (Free version)
         if (is_array($post_types_raw)) {
@@ -175,7 +175,7 @@ class Dynamic_Posts_Grid_Ajax
         } else {
             // Ensure it's a string before decoding
             if (!is_string($post_types_raw)) {
-                error_log('DEBUG: post_types_raw is not a string, converting to: ' . json_encode($post_types_raw));
+                // error_log('DEBUG: post_types_raw is not a string, converting to: ' . json_encode($post_types_raw));
                 $post_types_raw = json_encode($post_types_raw);
             }
             $post_types_decoded = json_decode($post_types_raw, true);
@@ -224,8 +224,8 @@ class Dynamic_Posts_Grid_Ajax
 
         wp_send_json_success($response_data);
         } catch (Exception $e) {
-            error_log('Dynamic Posts Grid AJAX Error: ' . $e->getMessage());
-            error_log('Stack trace: ' . $e->getTraceAsString());
+            // error_log('Dynamic Posts Grid AJAX Error: ' . $e->getMessage());
+            // error_log('Stack trace: ' . $e->getTraceAsString());
             wp_send_json_error(['message' => esc_html__('An error occurred while loading posts.', 'king-addons')]);
         }
     }

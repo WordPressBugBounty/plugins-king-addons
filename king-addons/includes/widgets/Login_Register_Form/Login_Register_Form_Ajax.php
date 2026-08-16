@@ -398,7 +398,7 @@ class Login_Register_Form_Ajax
             }
             
             // Log for debugging
-            error_log('King Addons: Saved custom fields for user ' . $user_id . ': ' . print_r($custom_fields, true));
+            // error_log('King Addons: Saved custom fields for user ' . $user_id . ': ' . print_r($custom_fields, true));
         }
 
         // Try to send email notifications if widget_id is provided
@@ -544,7 +544,7 @@ class Login_Register_Form_Ajax
             \King_Addons\Widgets\Login_Register_Form\Email_Handler::send_registration_emails($user_id, $default_settings);
         } catch (\Exception $e) {
             // Silently fail - don't break registration process
-            error_log('King Addons Registration Email Error: ' . $e->getMessage());
+            // error_log('King Addons Registration Email Error: ' . $e->getMessage());
         }
     }
 
@@ -569,7 +569,7 @@ class Login_Register_Form_Ajax
         $list_id = isset($widget_settings['mailchimp_list_id']) ? sanitize_text_field($widget_settings['mailchimp_list_id']) : '';
 
         if (empty($api_key) || empty($list_id)) {
-            error_log('King Addons Mailchimp: API Key or List ID not configured');
+            // error_log('King Addons Mailchimp: API Key or List ID not configured');
             return false;
         }
 
@@ -600,7 +600,7 @@ class Login_Register_Form_Ajax
         ]);
 
         if (is_wp_error($response)) {
-            error_log('King Addons Mailchimp: API request failed - ' . $response->get_error_message());
+            // error_log('King Addons Mailchimp: API request failed - ' . $response->get_error_message());
             return false;
         }
 
@@ -608,12 +608,12 @@ class Login_Register_Form_Ajax
         $response_body = wp_remote_retrieve_body($response);
         
         if ($response_code === 200) {
-            error_log('King Addons Mailchimp: Successfully subscribed user ' . $user_id . ' to list ' . $list_id);
+            // error_log('King Addons Mailchimp: Successfully subscribed user ' . $user_id . ' to list ' . $list_id);
             return true;
         } else {
             $error_data = json_decode($response_body, true);
             $error_message = isset($error_data['detail']) ? $error_data['detail'] : 'Unknown error';
-            error_log('King Addons Mailchimp: Subscription failed - ' . $error_message);
+            // error_log('King Addons Mailchimp: Subscription failed - ' . $error_message);
             return false;
         }
     }
@@ -683,7 +683,7 @@ class Login_Register_Form_Ajax
         ]);
         
         if (is_wp_error($response)) {
-            error_log('reCAPTCHA verification error: ' . $response->get_error_message());
+            // error_log('reCAPTCHA verification error: ' . $response->get_error_message());
             return false;
         }
         

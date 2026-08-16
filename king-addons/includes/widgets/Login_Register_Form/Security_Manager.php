@@ -59,7 +59,7 @@ class Security_Manager
         set_transient($transient_key, $attempts, self::LOCKOUT_DURATION);
 
         // Log security event
-        error_log("King Addons Security: Failed {$action} attempt #{$attempts} from IP {$ip_address}");
+        // error_log("King Addons Security: Failed {$action} attempt #{$attempts} from IP {$ip_address}");
         
         return $attempts;
     }
@@ -193,7 +193,7 @@ class Security_Manager
 
         // Validate email domain for additional security
         if (!empty($sanitized['email']) && !self::is_safe_email_domain($sanitized['email'])) {
-            error_log("King Addons Security: Suspicious email domain from {$provider}: {$sanitized['email']}");
+            // error_log("King Addons Security: Suspicious email domain from {$provider}: {$sanitized['email']}");
         }
 
         return $sanitized;
@@ -222,7 +222,7 @@ class Security_Manager
 
         foreach ($suspicious_patterns as $pattern) {
             if (preg_match($pattern, $text_to_check)) {
-                error_log("King Addons Security: Suspicious registration pattern detected: {$pattern}");
+                // error_log("King Addons Security: Suspicious registration pattern detected: {$pattern}");
                 return true;
             }
         }

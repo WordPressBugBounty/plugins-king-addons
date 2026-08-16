@@ -149,7 +149,7 @@ class Social_Login_Handler
         ]);
         
         if (is_wp_error($response)) {
-            error_log('King Addons Social Login: Google token verification failed: ' . $response->get_error_message());
+            // error_log('King Addons Social Login: Google token verification failed: ' . $response->get_error_message());
             return false;
         }
 
@@ -194,7 +194,7 @@ class Social_Login_Handler
         ]);
         
         if (is_wp_error($response)) {
-            error_log('King Addons Social Login: Facebook token verification failed: ' . $response->get_error_message());
+            // error_log('King Addons Social Login: Facebook token verification failed: ' . $response->get_error_message());
             return false;
         }
 
@@ -215,7 +215,7 @@ class Social_Login_Handler
         ]);
         
         if (is_wp_error($user_response)) {
-            error_log('King Addons Social Login: Facebook user data request failed: ' . $user_response->get_error_message());
+            // error_log('King Addons Social Login: Facebook user data request failed: ' . $user_response->get_error_message());
             return false;
         }
 
@@ -249,7 +249,7 @@ class Social_Login_Handler
 
         // Additional security checks for social login
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            error_log("King Addons Security: Invalid email from {$provider}: {$email}");
+            // error_log("King Addons Security: Invalid email from {$provider}: {$email}");
             return [
                 'success' => false,
                 'message' => esc_html__('Invalid email address from social provider.', 'king-addons')

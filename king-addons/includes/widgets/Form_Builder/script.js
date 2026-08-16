@@ -6,7 +6,7 @@
                 onInit: function onInit() {
                     let $scope = this.$element;
 
-                    console.log("FORM BUILDER");
+                    // console.log("FORM BUILDER");
 
                     var formContent = {};
 
@@ -20,7 +20,7 @@
 
                     var currentTab = 0; 
                     if (0 < $scope.find('.king-addons-fb-step-tab').length) {
-                        console.log(currentTab);
+                        // console.log(currentTab);
                         showTab(currentTab); 
 
                         $scope.find('.king-addons-fb-step-prev').each(function () {
@@ -109,7 +109,7 @@
                                 })
                                 .catch((error) => {
                                     
-                                    console.error(error);
+                                    // console.error(error);
                                 });
                         } else {
                             createFormContent();
@@ -156,7 +156,7 @@
                                             },
                                             success: function (response) {
                                                 if (!response.success) {
-                                                    console.log(response);
+                                                    // console.log(response);
                                                     setTimeout(function () {
                                                         $scope.find('.king-addons-button').find('.king-addons-double-bounce').addClass('king-addons-loader-hidden');
                                                         $scope.find('.king-addons-button>span').removeClass('king-addons-loader-hidden');
@@ -164,12 +164,12 @@
                                                     }, 500);
                                                     callback(false); 
                                                 } else {
-                                                    console.log(response);
+                                                    // console.log(response);
                                                     callback(true); 
                                                 }
                                             },
                                             error: function (error) {
-                                                console.log(error);
+                                                // console.log(error);
                                                 setTimeout(function () {
                                                     $scope.find('.king-addons-button').find('.king-addons-double-bounce').addClass('king-addons-loader-hidden');
                                                     $scope.find('.king-addons-button>span').removeClass('king-addons-loader-hidden');
@@ -205,13 +205,13 @@
                                                 return actionsObject[action + 'Promise']();
                                             }
                                         } catch (error) {
-                                            console.error(error);
+                                            // console.error(error);
                                             return Promise.reject(error);
                                         }
                                     })
                                 )
                                     .then((responses) => {
-                                        console.log(responses);
+                                        // console.log(responses);
 
                                         
                                         const createPostResponse = responses.find((response) => response && response.data.action === 'king_addons_form_builder_submissions');
@@ -262,7 +262,7 @@
                                     })
                                     .catch((error) => {
                                         
-                                        console.error(error);
+                                        // console.error(error);
                                     })
                                     .then(() => {
                                         
@@ -280,7 +280,7 @@
                                     })
                                     .catch((error) => {
                                         
-                                        console.error(error);
+                                        // console.error(error);
                                     });
                             } else {
                                 
@@ -330,7 +330,7 @@
                                     king_addons_form_id: $scope.find('input[name="form_id"]').val(),
                                 },
                                 success: function (response) {
-                                    console.log(response);
+                                    // console.log(response);
                                     if (!response.success) {
                                         
                                         
@@ -373,7 +373,7 @@
                                     form_name: $scope.find('form').attr('name')
                                 },
                                 success: function (response) {
-                                    console.log(response);
+                                    // console.log(response);
                                     if (!response.success) {
                                         
                                         
@@ -385,7 +385,7 @@
                                     }
                                 },
                                 error: function (error) {
-                                    console.log(error);
+                                    // console.log(error);
                                     
                                     
                                     
@@ -411,13 +411,13 @@
                                 url: KingAddonsFormBuilderData.ajaxurl,
                                 data: data,
                                 success: function (response) {
-                                    console.log(response);
+                                    // console.log(response);
                                     
                                     
                                     
                                 },
                                 error: function (error) {
-                                    console.log(error)
+                                    // console.log(error)
                                     
                                     
                                     
@@ -462,7 +462,7 @@
                                     submitButton.prop('disabled', true);
                                 },
                                 success: function (response) {
-                                    console.log(response);
+                                    // console.log(response);
                                     if (!response.success) {
                                         
                                         
@@ -475,7 +475,7 @@
                                     
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
-                                    console.log(errorThrown);
+                                    // console.log(errorThrown);
                                     
                                     
                                     
@@ -585,13 +585,13 @@
                                         success: function (response) {
                                             if (response.success) {
                                                 
-                                                console.log(response);
+                                                // console.log(response);
                                                 if (eventType == 'click') {
                                                     fileUrl[thisId][i] = response.data.url;
                                                 }
                                                 resolve(response);
                                             } else {
-                                                console.error('Error:', response);
+                                                // console.error('Error:', response);
                                                 if (response.data) {
                                                     if ('filesize' === response.data.cause) {
                                                         let maxFileNotice = thisInput.data('maxfs-notice') ? thisInput.data('maxfs-notice') : response.data.message;
@@ -615,7 +615,7 @@
                                             if ('filetype' == error.cause) {
                                                 thisInput.closest('.king-addons-field-group').append('<p class="king-addons-submit-error">' + error.message + '</p>');
                                             }
-                                            console.log(error);
+                                            // console.log(error);
                                             reject(error);
                                         },
                                     });

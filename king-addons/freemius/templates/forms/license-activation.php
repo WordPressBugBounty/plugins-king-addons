@@ -294,7 +294,7 @@ HTML;
                 $( document.body ).css( { 'cursor': 'auto' } );
                 $( '.fs-loading' ).removeClass( 'fs-loading' );
 
-                console.log( 'resetLoadingMode - Primary button was enabled' );
+                // console.log( 'resetLoadingMode - Primary button was enabled' );
             },
             /**
              * @author Leo Fajardo (@leorw)

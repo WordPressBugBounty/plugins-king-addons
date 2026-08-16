@@ -498,7 +498,7 @@
                             try {
                                 $($iframe[0].contentDocument.body).addClass('king-addons-field-shine');
                             } catch(e) {
-                                console.error('Could not access iframe body', e);
+                                // console.error('Could not access iframe body', e);
                             }
                         }
                     } else {
@@ -537,7 +537,7 @@
                                 try {
                                     $($iframe[0].contentDocument.body).removeClass('king-addons-field-shine');
                                 } catch(e) {
-                                    console.error('Could not access iframe body', e);
+                                    // console.error('Could not access iframe body', e);
                                 }
                             }
                         } else {
@@ -694,7 +694,7 @@
                             try {
                                 $($iframe[0].contentDocument.body).addClass('king-addons-field-shine');
                             } catch(e) {
-                                console.error('Could not access iframe body', e);
+                                // console.error('Could not access iframe body', e);
                             }
                         }
                     } else {
@@ -734,7 +734,7 @@
                                 try {
                                     $($iframe[0].contentDocument.body).removeClass('king-addons-field-shine');
                                 } catch(e) {
-                                    console.error('Could not access iframe body', e);
+                                    // console.error('Could not access iframe body', e);
                                 }
                             }
                         } else {
@@ -770,7 +770,7 @@
 
             // Check if we have a valid editor ID
             if (!editorId) {
-                console.error('King Addons: No editor ID found for WYSIWYG field');
+                // console.error('King Addons: No editor ID found for WYSIWYG field');
                 if (appendMode) {
                     // Append the new content to the original
                     $field.val(originalContent + '\n\n' + value);
@@ -872,7 +872,7 @@
                     }
                 }
             } catch (e) {
-                console.error('King Addons: Error updating WYSIWYG content', e);
+                // console.error('King Addons: Error updating WYSIWYG content', e);
                 // Fallback - set the textarea value directly
                 if (appendMode) {
                     // Maintain HTML structure in fallback case
@@ -911,7 +911,7 @@
             try {
                 tinymce.get($field.attr('id')).fire('change');
             } catch (e) {
-                console.error('King Addons: Error triggering TinyMCE change event', e);
+                // console.error('King Addons: Error triggering TinyMCE change event', e);
             }
         }
     }

@@ -21,7 +21,7 @@
             }
 
             if (!attachmentId) {
-                console.error('King Addons: Missing attachment ID (List View).');
+                // console.error('King Addons: Missing attachment ID (List View).');
                 $resultSpan.text(kingAddonsMediaAltText.error_text + ': Missing ID').css('color', 'red').show();
                 return;
             }
@@ -49,7 +49,7 @@
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('King Addons AJAX Error (List View):', textStatus, errorThrown, jqXHR.responseText);
+                    // console.error('King Addons AJAX Error (List View):', textStatus, errorThrown, jqXHR.responseText);
                     var specificMessage = kingAddonsMediaAltText.error_text + ': ' + textStatus;
                     if (jqXHR.responseText) {
                         try {
@@ -131,14 +131,14 @@
                     var attachmentId = this.model.id;
 
                     if (!attachmentId || !this.$altInput || this.$el.is('.disabled')) {
-                        console.error('King Addons: Missing data for modal generation.', { id: attachmentId, input: this.$altInput });
+                        // console.error('King Addons: Missing data for modal generation.', { id: attachmentId, input: this.$altInput });
                         return;
                     }
 
                     // Find the status span, which is now external
                     this.$statusSpan = this.$el.next('.king-addons-modal-status');
                     if (!this.$statusSpan.length) {
-                        console.error("King Addons: Could not find external status span next to button.");
+                        // console.error("King Addons: Could not find external status span next to button.");
                         return;
                     }
 
@@ -179,7 +179,7 @@
                             }
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
-                            console.error('King Addons Modal Generate AJAX Error:', textStatus, errorThrown, jqXHR.responseText);
+                            // console.error('King Addons Modal Generate AJAX Error:', textStatus, errorThrown, jqXHR.responseText);
                             var specificMessage = kingAddonsMediaAltText.error_text;
                             if (jqXHR.responseText) {
                                 try {
@@ -351,7 +351,7 @@
             }
 
         } else {
-            console.error("King Addons: wp.media object not found.");
+            // console.error("King Addons: wp.media object not found.");
         }
         // --- End Media Modal Button Injection --- //
 

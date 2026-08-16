@@ -319,13 +319,13 @@ class Template_Catalog_Button
                 $install_id = 0;
             }
             
-            error_log('King Addons Premium Template: Using install_id: ' . $install_id . ' for premium template: ' . $template_key);
+            // error_log('King Addons Premium Template: Using install_id: ' . $install_id . ' for premium template: ' . $template_key);
         } elseif ($template_plan === 'free') {
             $api_url = 'https://api.kingaddons.com/get-template-free.php';
             $install_id = 0;
-            error_log('King Addons Free Template: Fetching free template: ' . $template_key);
+            // error_log('King Addons Free Template: Fetching free template: ' . $template_key);
         } else {
-            error_log('King Addons Template Error: Premium template requires premium license. Template: ' . $template_key . ', Plan: ' . $template_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
+            // error_log('King Addons Template Error: Premium template requires premium license. Template: ' . $template_key . ', Plan: ' . $template_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
             wp_send_json_error('Premium template requires premium license');
             return;
         }
@@ -348,17 +348,17 @@ class Template_Catalog_Button
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
 
-        error_log('King Addons API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
+        // error_log('King Addons API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
         
         if (!$data) {
-            error_log('King Addons Template Error: Failed to decode JSON response');
+            // error_log('King Addons Template Error: Failed to decode JSON response');
             wp_send_json_error('Invalid JSON response from template API');
             return;
         }
 
         if (!isset($data['success']) || !$data['success']) {
             $error_message = isset($data['message']) ? $data['message'] : 'Unknown API error';
-            error_log('King Addons Template Error: API returned error: ' . $error_message);
+            // error_log('King Addons Template Error: API returned error: ' . $error_message);
             wp_send_json_error('Template API error: ' . $error_message);
             return;
         }
@@ -390,11 +390,11 @@ class Template_Catalog_Button
         $template_data = json_decode($raw_template_data, true);
         $page_id = intval($_POST['page_id'] ?? 0);
 
-        error_log('King Addons Template Import: Starting import for page ID: ' . $page_id);
-        error_log('King Addons Template Import: Template data keys: ' . json_encode(array_keys($template_data ?: [])));
+        // error_log('King Addons Template Import: Starting import for page ID: ' . $page_id);
+        // error_log('King Addons Template Import: Template data keys: ' . json_encode(array_keys($template_data ?: [])));
 
         if (!$template_data || !$page_id) {
-            error_log('King Addons Template Import: Invalid data - template_data: ' . (!empty($template_data) ? 'valid' : 'invalid') . ', page_id: ' . $page_id);
+            // error_log('King Addons Template Import: Invalid data - template_data: ' . (!empty($template_data) ? 'valid' : 'invalid') . ', page_id: ' . $page_id);
             wp_send_json_error('Invalid template data or page ID');
             return;
         }
@@ -430,7 +430,7 @@ class Template_Catalog_Button
         $images_failed = 0;
         
         if (isset($template_data['images']) && is_array($template_data['images'])) {
-            error_log('King Addons Template Import: Processing ' . count($template_data['images']) . ' images');
+            // error_log('King Addons Template Import: Processing ' . count($template_data['images']) . ' images');
             
             foreach ($template_data['images'] as $image) {
                 // Download and import image
@@ -438,16 +438,16 @@ class Template_Catalog_Button
                 if ($new_image_id) {
                     $image_map[$image['id']] = $new_image_id;
                     $images_processed++;
-                    error_log('King Addons Template Import: Successfully imported image ' . $image['url'] . ' as ID ' . $new_image_id);
+                    // error_log('King Addons Template Import: Successfully imported image ' . $image['url'] . ' as ID ' . $new_image_id);
                 } else {
                     $images_failed++;
-                    error_log('King Addons Template Import: Failed to import image ' . $image['url']);
+                    // error_log('King Addons Template Import: Failed to import image ' . $image['url']);
                 }
             }
             
-            error_log('King Addons Template Import: Images summary - processed: ' . $images_processed . ', failed: ' . $images_failed);
+            // error_log('King Addons Template Import: Images summary - processed: ' . $images_processed . ', failed: ' . $images_failed);
         } else {
-            error_log('King Addons Template Import: No images to process');
+            // error_log('King Addons Template Import: No images to process');
         }
 
         // Replace image IDs in template content
@@ -459,23 +459,23 @@ class Template_Catalog_Button
         $merged_elements = array_merge($current_elements, $template_content);
         $total_count = count($merged_elements);
 
-        error_log('King Addons Template Import: Merging content - current: ' . $current_count . ', new: ' . $new_count . ', total: ' . $total_count);
+        // error_log('King Addons Template Import: Merging content - current: ' . $current_count . ', new: ' . $new_count . ', total: ' . $total_count);
 
         // Update page meta
         $update_result = update_post_meta($page_id, '_elementor_data', wp_slash(json_encode($merged_elements)));
         update_post_meta($page_id, '_elementor_edit_mode', 'builder');
         
-        error_log('King Addons Template Import: Page meta updated - result: ' . ($update_result ? 'success' : 'failed'));
+        // error_log('King Addons Template Import: Page meta updated - result: ' . ($update_result ? 'success' : 'failed'));
         
         // Clear Elementor cache
         if (class_exists('\Elementor\Plugin')) {
             \Elementor\Plugin::$instance->files_manager->clear_cache();
-            error_log('King Addons Template Import: Elementor cache cleared');
+            // error_log('King Addons Template Import: Elementor cache cleared');
         } else {
-            error_log('King Addons Template Import: Elementor Plugin class not found, cache not cleared');
+            // error_log('King Addons Template Import: Elementor Plugin class not found, cache not cleared');
         }
 
-        error_log('King Addons Template Import: Import completed successfully');
+        // error_log('King Addons Template Import: Import completed successfully');
 
         wp_send_json_success([
             'message' => 'Template imported successfully',
@@ -496,7 +496,7 @@ class Template_Catalog_Button
         try {
             // Security fix: Validate URL to prevent SSRF attacks
             if (!$this->is_safe_image_url($image_url)) {
-                error_log('King Addons Security: Blocked unsafe image URL: ' . $image_url);
+                // error_log('King Addons Security: Blocked unsafe image URL: ' . $image_url);
                 return null;
             }
             
@@ -527,7 +527,7 @@ class Template_Catalog_Button
             // Validate file extension
             $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
             if (!in_array(strtolower($image_extension), $allowed_extensions, true)) {
-                error_log('King Addons Security: Invalid image extension: ' . $image_extension);
+                // error_log('King Addons Security: Invalid image extension: ' . $image_extension);
                 return null;
             }
             
@@ -676,7 +676,7 @@ class Template_Catalog_Button
             return;
         }
 
-        error_log('King Addons Import: Merging processed content with existing page ' . $page_id);
+        // error_log('King Addons Import: Merging processed content with existing page ' . $page_id);
 
         // Get current page Elementor data
         $current_data = get_post_meta($page_id, '_elementor_data', true);
@@ -703,7 +703,7 @@ class Template_Catalog_Button
         $merged_elements = array_merge($current_elements, $template_content);
         $total_count = count($merged_elements);
 
-        error_log('King Addons Import: Merging content - current: ' . $current_count . ', new: ' . $new_count . ', total: ' . $total_count);
+        // error_log('King Addons Import: Merging content - current: ' . $current_count . ', new: ' . $new_count . ', total: ' . $total_count);
 
         // Update page meta with merged content
         $update_result = update_post_meta($page_id, '_elementor_data', wp_slash(json_encode($merged_elements)));
@@ -717,12 +717,12 @@ class Template_Catalog_Button
         // Update page modification time to force Elementor refresh
         wp_update_post(['ID' => $page_id, 'post_modified' => current_time('mysql'), 'post_modified_gmt' => current_time('mysql', 1)]);
         
-        error_log('King Addons Import: Page meta updated - result: ' . ($update_result ? 'success' : 'failed'));
+        // error_log('King Addons Import: Page meta updated - result: ' . ($update_result ? 'success' : 'failed'));
         
         // Clear all Elementor caches
         if (class_exists('\Elementor\Plugin')) {
             \Elementor\Plugin::$instance->files_manager->clear_cache();
-            error_log('King Addons Import: Elementor cache cleared');
+            // error_log('King Addons Import: Elementor cache cleared');
         }
 
         // Clean up transients
@@ -736,7 +736,7 @@ class Template_Catalog_Button
         delete_transient('elementor_import_existing_page_id');
         delete_transient('elementor_import_create_new_page');
 
-        error_log('King Addons Import: Merge completed successfully');
+        // error_log('King Addons Import: Merge completed successfully');
 
         wp_send_json_success([
             'message' => 'Template merged successfully',
@@ -893,13 +893,13 @@ class Template_Catalog_Button
                 $install_id = 0;
             }
             
-            error_log('King Addons Premium Section: Using install_id: ' . $install_id . ' for premium section: ' . $section_key);
+            // error_log('King Addons Premium Section: Using install_id: ' . $install_id . ' for premium section: ' . $section_key);
         } elseif ($section_plan === 'free') {
             $api_url = 'https://api.kingaddons.com/get-section-free.php';
             $install_id = 0;
-            error_log('King Addons Free Section: Fetching free section: ' . $section_key);
+            // error_log('King Addons Free Section: Fetching free section: ' . $section_key);
         } else {
-            error_log('King Addons Section Error: Premium section requires premium license. Section: ' . $section_key . ', Plan: ' . $section_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
+            // error_log('King Addons Section Error: Premium section requires premium license. Section: ' . $section_key . ', Plan: ' . $section_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
             wp_send_json_error('Premium section requires premium license');
             return;
         }
@@ -922,17 +922,17 @@ class Template_Catalog_Button
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
 
-        error_log('King Addons Section API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
+        // error_log('King Addons Section API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
         
         if (!$data) {
-            error_log('King Addons Section Error: Failed to decode JSON response');
+            // error_log('King Addons Section Error: Failed to decode JSON response');
             wp_send_json_error('Invalid JSON response from section API');
             return;
         }
 
         if (!isset($data['success']) || !$data['success']) {
             $error_message = isset($data['message']) ? $data['message'] : 'Unknown API error';
-            error_log('King Addons Section Error: API returned error: ' . $error_message);
+            // error_log('King Addons Section Error: API returned error: ' . $error_message);
             wp_send_json_error('Section API error: ' . $error_message);
             return;
         }

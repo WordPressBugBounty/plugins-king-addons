@@ -1598,14 +1598,14 @@ final class Custom_Code_Manager
             return;
         }
 
-        echo "\n<!-- King Addons Custom Code Debug Log -->\n";
-        echo "<script>\n";
-        echo "console.group('King Addons Custom Code Manager');\n";
-        foreach ($this->debug_log as $entry) {
-            $status = $entry['result'] ? '🟢' : '🔴';
-            echo "console.log('" . $status . " " . esc_js($entry['snippet']) . " (ID: " . $entry['id'] . ")');\n";
-        }
-        echo "console.groupEnd();\n";
-        echo "</script>\n";
+        // echo "\n<!-- King Addons Custom Code Debug Log -->\n";
+        // echo "<script>\n";
+        // echo "console.group('King Addons Custom Code Manager');\n";
+        // foreach ($this->debug_log as $entry) {
+        //     $status = $entry['result'] ? '🟢' : '🔴';
+        //     echo "console.log('" . $status . " " . esc_js($entry['snippet']) . " (ID: " . $entry['id'] . ")');\n";
+        // }
+        // echo "console.groupEnd();\n";
+        // echo "</script>\n";
     }
 }

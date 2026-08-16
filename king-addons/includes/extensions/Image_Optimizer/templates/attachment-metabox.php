@@ -415,7 +415,7 @@ jQuery(document).ready(function($) {
                 }
                 
             } catch (e) {
-                console.error('Error optimizing size ' + sizeName, e);
+                // console.error('Error optimizing size ' + sizeName, e);
             }
         }
         

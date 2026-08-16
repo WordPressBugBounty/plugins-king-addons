@@ -568,7 +568,7 @@
             // Show saving state
             $saveBtn.text('Saving...').prop('disabled', true);
 
-            console.log('Saving rule:', ruleData);
+            // console.log('Saving rule:', ruleData);
 
             // Send AJAX request
             $.ajax({
@@ -576,7 +576,7 @@
                 type: 'POST',
                 data: ruleData,
                 success: function (response) {
-                    console.log('Save response:', response);
+                    // console.log('Save response:', response);
                     if (response.success) {
                         // Update rule ID if it was a new rule
                         if (response.data.rule && response.data.rule.id) {
@@ -711,7 +711,7 @@
             }
             
             if (!$rulesList.length) {
-                console.error('Rules list container not found');
+                // console.error('Rules list container not found');
                 return;
             }
             

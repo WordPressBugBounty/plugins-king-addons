@@ -126,7 +126,7 @@ jQuery(document).ready(function ($) {
                 if (!response.ok) {
                     // The server returned a 4xx or 5xx, read the text and throw an error
                     return response.text().then(html => {
-                        console.error('Server error:\n' + html);
+                        // console.error('Server error:\n' + html);
                         throw new Error('Server error (not JSON).');
                     });
                 }
@@ -135,7 +135,7 @@ jQuery(document).ready(function ($) {
             })
             .then(data => {
                 if (!data.success) {
-                    console.error('API error:', data);
+                    // console.error('API error:', data);
                 }
                 if (data.success) {
                     $('#template-installing-popup').fadeIn();
@@ -145,7 +145,7 @@ jQuery(document).ready(function ($) {
                 }
             })
             .catch(error => {
-                console.error('Fetch error:', error);
+                // console.error('Fetch error:', error);
                 alert('Connection error: ' + error);
             });
     });
@@ -185,7 +185,7 @@ jQuery(document).ready(function ($) {
                 if (!response.ok) {
                     // The server returned a 4xx or 5xx, read the text and throw an error
                     return response.text().then(html => {
-                        console.error('Server error:\n' + html);
+                        // console.error('Server error:\n' + html);
                         throw new Error('Server error:\n' + html);
                     });
                 }
@@ -221,7 +221,7 @@ jQuery(document).ready(function ($) {
                     if (!response.ok) {
                         // The server returned a 4xx or 5xx, read the text and throw an error
                         return response.text().then(html => {
-                            console.error('Server error:\n' + html);
+                            // console.error('Server error:\n' + html);
                             throw new Error('Server error:\n' + html);
                         });
                     }
@@ -258,7 +258,7 @@ jQuery(document).ready(function ($) {
                             $('#close-installing-popup').fadeIn();
                         }
                     } else {
-                        console.error('Process image issue:', data);
+                        // console.error('Process image issue:', data);
                         // Skip image
                         if (data.data && data.data.retry) {
                             processNextImage();
@@ -266,7 +266,7 @@ jQuery(document).ready(function ($) {
                     }
                 })
                 .catch(error => {
-                    console.error('Catch Error:', error);
+                    // console.error('Catch Error:', error);
                     if (currentRetry < maxRetries) {
                         currentRetry++;
                         retryTimeout *= 2;
@@ -276,7 +276,7 @@ jQuery(document).ready(function ($) {
                         if (imageUrlElement) {
                             imageUrlElement.innerHTML += ' - SKIPPED';
                         }
-                        console.error('Error:', error);
+                        // console.error('Error:', error);
                         document.getElementById('final_response').innerText = 'Error: ' + error.message;
                         currentRetry = 0;
                         retryTimeout = 1000;
@@ -333,7 +333,7 @@ jQuery(document).ready(function ($) {
                 }
             },
             error: function (xhr, status, error) {
-                console.error('AJAX Error: ', status, error);
+                // console.error('AJAX Error: ', status, error);
             }
         });
     }
@@ -497,7 +497,7 @@ jQuery(document).ready(function ($) {
 
     function loadSections(page = 1) {
         if (!window.kingAddonsData || !window.kingAddonsData.ajaxUrl) {
-            console.error('King Addons data not available');
+            // console.error('King Addons data not available');
             return;
         }
 
@@ -544,7 +544,7 @@ jQuery(document).ready(function ($) {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error loading sections:', status, error);
+                // console.error('AJAX Error loading sections:', status, error);
                 $('.sections-grid').html(`
                     <div class="sections-loading">
                         Failed to load sections. Please try again.
@@ -986,7 +986,7 @@ jQuery(document).ready(function ($) {
                 }
             },
             error: function(xhr, status, error) {
-                console.log('Failed to load sections count:', error);
+                // console.log('Failed to load sections count:', error);
             }
         });
     }

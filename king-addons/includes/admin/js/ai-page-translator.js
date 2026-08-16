@@ -1423,7 +1423,7 @@
             // Fallback for older API
             elementorElements = documentContainer.children;
         } else {
-            console.warn('🚨 Unable to find container children using any known API');
+            // console.warn('🚨 Unable to find container children using any known API');
             elementorElements = [];
         }
         
@@ -1592,7 +1592,7 @@
             return null;
             
         } catch (error) {
-            console.warn('⚠️ Error getting widget controls:', error);
+            // console.warn('⚠️ Error getting widget controls:', error);
             return null;
         }
     }
@@ -1669,7 +1669,7 @@
             }
             
         } catch (error) {
-            console.warn('⚠️ Error processing repeater by type:', error);
+            // console.warn('⚠️ Error processing repeater by type:', error);
             // Fallback to old method
             var repeaterConfig = {};
             repeaterConfig[repeaterName] = ['content', 'text', 'title', 'description'];
@@ -1959,7 +1959,7 @@
                     errorMessage = typeof response.data === 'string' ? response.data : 'API Error';
                 }
                 
-                console.error('Translation API Error:', errorMessage);
+                // console.error('Translation API Error:', errorMessage);
                 
                 // Check for token limit errors first
                 if (errorMessage.toLowerCase().includes('token limit') || 
@@ -2043,14 +2043,14 @@
                 shouldShowError = true;
             }
             
-            console.error('Translation Network Error:', {
-                status: xhr.status,
-                statusText: textStatus,
-                error: errorThrown,
-                message: errorMessage,
-                responseText: xhr.responseText,
-                responseJSON: xhr.responseJSON
-            });
+            // console.error('Translation Network Error:', {
+                // status: xhr.status,
+                // statusText: textStatus,
+                // error: errorThrown,
+                // message: errorMessage,
+                // responseText: xhr.responseText,
+                // responseJSON: xhr.responseJSON
+            // });
             
             // Show error popup for critical network issues
             if (shouldShowError) {
@@ -2170,7 +2170,7 @@
                             settings: repeaterSettings
                         });
                     } catch (e) {
-                        console.warn('⚠️ Error updating via Elementor API, trying alternative method:', e);
+                        // console.warn('⚠️ Error updating via Elementor API, trying alternative method:', e);
                         
                         // Fallback: Try to manually trigger save without change events
                         try {
@@ -2178,7 +2178,7 @@
                                 container.saveSettings();
                             }
                         } catch (e2) {
-                            console.warn('⚠️ Fallback method also failed:', e2);
+                            // console.warn('⚠️ Fallback method also failed:', e2);
                         }
                     }
                 }
@@ -2235,13 +2235,13 @@
             });
             
         } catch (error) {
-            console.error('❌ Error updating element settings:', error);
-            console.error('Error details:', {
-                message: error.message,
-                stack: error.stack,
-                translatedFields: translatedFields,
-                widgetType: container.model.get('widgetType')
-            });
+            // console.error('❌ Error updating element settings:', error);
+            // console.error('Error details:', {
+                // message: error.message,
+                // stack: error.stack,
+                // translatedFields: translatedFields,
+                // widgetType: container.model.get('widgetType')
+            // });
         }
     }
 
@@ -2458,7 +2458,7 @@
      */
     function showTranslationComplete($popup) {
         if (!$popup || $popup.length === 0) {
-            console.error('❌ Cannot show translation results: popup not found');
+            // console.error('❌ Cannot show translation results: popup not found');
             return;
         }
         

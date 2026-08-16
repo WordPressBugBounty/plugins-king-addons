@@ -52,7 +52,7 @@
         init: function() {
             // Get config from global
             if (typeof kingLiveChat === 'undefined') {
-                console.error('KingLiveChat: Config not found');
+                // console.error('KingLiveChat: Config not found');
                 return;
             }
 
@@ -64,7 +64,7 @@
             this.cacheElements();
             
             if (!this.elements.container) {
-                console.error('KingLiveChat: Widget container not found');
+                // console.error('KingLiveChat: Widget container not found');
                 return;
             }
 
@@ -372,7 +372,7 @@
 
             // Check honeypot
             if (this.elements.honeypot && this.elements.honeypot.value) {
-                console.warn('KingLiveChat: Spam detected');
+                // console.warn('KingLiveChat: Spam detected');
                 return;
             }
 
@@ -648,7 +648,7 @@
                     return response.json();
                 })
                 .catch(function(error) {
-                    console.error('KingLiveChat API Error:', error);
+                    // console.error('KingLiveChat API Error:', error);
                     throw error;
                 });
         },
@@ -660,7 +660,7 @@
          */
         showError: function(message) {
             // Simple alert for now, could be improved
-            console.error('KingLiveChat:', message);
+            // console.error('KingLiveChat:', message);
         },
 
         /**

@@ -11,7 +11,7 @@
 
     // Check if kingImageOptimizer is defined
     if (typeof kingImageOptimizer === 'undefined') {
-        console.error('King Image Optimizer: Configuration not found');
+        // console.error('King Image Optimizer: Configuration not found');
         return;
     }
 

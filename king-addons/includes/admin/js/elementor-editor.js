@@ -92,7 +92,7 @@
                             observer.disconnect();
                         });
                     } catch (error) {
-                        console.error('Error when setting up observer:', error);
+                        // console.error('Error when setting up observer:', error);
                     }
                 }
             });
@@ -338,12 +338,12 @@
             `;
             document.head.appendChild(style);
         } catch (styleError) {
-            console.error('Error when adding styles:', styleError);
+            // console.error('Error when adding styles:', styleError);
         }
     }
 
     $(window).on('elementor:init', function() {
-        console.log('elementor:init event fired for mega menu editor');
+        // console.log('elementor:init event fired for mega menu editor');
         const panelEl = document.getElementById('elementor-panel');
 
         // Watch for newly-added .king-addons-pro-control elements
@@ -436,7 +436,7 @@
                             copyBtn.classList.remove('copied');
                         }, 2000);
                     }).catch(err => {
-                        console.error('Error copying email:', err);
+                        // console.error('Error copying email:', err);
                         alert('Failed to copy email address.');
                     });
                 });

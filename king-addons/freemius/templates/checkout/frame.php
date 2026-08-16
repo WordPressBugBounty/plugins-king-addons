@@ -136,7 +136,7 @@
 					});
 
 					FS.PostMessage.receiveOnce('get_context', function () {
-						console.debug('receiveOnce', 'get_context');
+						// console.debug('receiveOnce', 'get_context');
 
 						// If the user didn't connect his account with Freemius,
 						// once he accepts the Terms of Service and Privacy Policy,
@@ -157,11 +157,11 @@
 					});
 
 					FS.PostMessage.receiveOnce('purchaseCompleted', <?php echo $fs->apply_filters('checkout/purchaseCompleted', 'function (data) {
-						console.log("checkout", "purchaseCompleted");
+						// console.log("checkout", "purchaseCompleted");
 					}') ?>);
 
 					FS.PostMessage.receiveOnce('get_dimensions', function (data) {
-						console.debug('receiveOnce', 'get_dimensions');
+						// console.debug('receiveOnce', 'get_dimensions');
 
 						FS.PostMessage.post('dimensions', {
 							height   : $(document.body).height(),

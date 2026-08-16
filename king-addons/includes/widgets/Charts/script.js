@@ -327,7 +327,7 @@
                                         renderCSVChart(res);
                                     },
                                     error(err) {
-                                        console.error(err);
+                                        // console.error(err);
                                     },
                                 });
                             } else {

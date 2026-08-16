@@ -195,7 +195,7 @@
         setupMaxTimeout: function () {
             this.state.maxTimer = setTimeout(() => {
                 if (this.state.isShowing) {
-                    console.warn('[KngPreloader] Max display time reached, forcing hide');
+                    // console.warn('[KngPreloader] Max display time reached, forcing hide');
                     this.hide();
                 }
             }, this.config.maxDisplayTime);

@@ -214,15 +214,15 @@
         var currentValDisplay = singleSliderWrapper.find('.king-addons-pricing-slider__current-value');
 
         if (!rangeInput.length) {
-             console.error('[KA Slider] Range input not found within:', singleSliderWrapper[0]);
+             // console.error('[KA Slider] Range input not found within:', singleSliderWrapper[0]);
             return;
         }
         if (!progressBar.length) {
-             console.warn('[KA Slider] Progress bar not found within:', singleSliderWrapper[0]);
+             // console.warn('[KA Slider] Progress bar not found within:', singleSliderWrapper[0]);
              // Continue without progress bar update
         }
          if (!customThumb.length) {
-            console.warn('[KA Slider] Custom thumb not found within:', singleSliderWrapper[0]); // Log raw DOM element
+            // console.warn('[KA Slider] Custom thumb not found within:', singleSliderWrapper[0]); // Log raw DOM element
             // Continue without thumb update
         }
         
@@ -236,7 +236,7 @@
             // If max <= min, slider is effectively fixed. Percentage is 0 if value <= min, 100 if value >= max.
             // Or just treat as 0 to be safe.
              percentage = (value >= max) ? 100 : 0; 
-            console.warn('[KA Slider] Max <= Min for slider:', rangeInput[0]);
+            // console.warn('[KA Slider] Max <= Min for slider:', rangeInput[0]);
         }
         
         percentage = Math.max(0, Math.min(100, percentage)); // Clamp percentage
@@ -287,7 +287,7 @@
         var features = sliderWrapper.find('.king-addons-pricing-slider__feature-item');
         
         if (!rangeInput.length) {
-            console.error("[KA Slider] Single slider init failed: Range input not found in", sliderWrapper[0]);
+            // console.error("[KA Slider] Single slider init failed: Range input not found in", sliderWrapper[0]);
             return;
         }
 
@@ -328,7 +328,7 @@
                         params.set('price', parseFloat(price).toFixed(priceData.decimals || 2)); // Use decimals from data
                         button.attr('href', baseUrl + '?' + params.toString());
                     } catch (e) {
-                        console.error("[KA Slider] Error updating button URL:", e);
+                        // console.error("[KA Slider] Error updating button URL:", e);
                          // Potentially invalid URL, leave it as is
                     }
                 }
@@ -385,11 +385,11 @@
         var allSlidersData = slidersContainer.data('sliders') || []; // Array of settings for each slider (from repeater)
 
         if (!individualSliders.length) {
-             console.error("[KA Slider] Multi-slider init failed: No individual sliders found in", slidersContainer[0]);
+             // console.error("[KA Slider] Multi-slider init failed: No individual sliders found in", slidersContainer[0]);
              return;
         }
         if (allSlidersData.length !== individualSliders.length) {
-            console.warn("[KA Slider] Mismatch between slider data count and slider element count.");
+            // console.warn("[KA Slider] Mismatch between slider data count and slider element count.");
              // Attempt to continue, but calculations might be off
         }
 
@@ -468,7 +468,7 @@
                         params.set('price', parseFloat(finalPrice).toFixed(priceData.decimals || 2));
                         button.attr('href', baseUrl + '?' + params.toString());
                     } catch(e) {
-                         console.error("[KA Slider] Error updating multi-slider button URL:", e);
+                         // console.error("[KA Slider] Error updating multi-slider button URL:", e);
                     }
                 }
             }
@@ -519,7 +519,7 @@
             // });
 
             if (!singleSliderWrapper.length) { 
-                console.error('[KA Slider] Could not find .king-addons-single-slider parent for', rangeInput[0]);
+                // console.error('[KA Slider] Could not find .king-addons-single-slider parent for', rangeInput[0]);
                 return;
             } 
             
@@ -534,7 +534,7 @@
                  var $button = $(this);
                  
                  // --- DEBUGGING START ---
-                 console.log('[KA Slider] Add to Cart clicked. Localized vars:', typeof king_addons_slider_vars !== 'undefined' ? king_addons_slider_vars : 'Not Defined');
+                 // console.log('[KA Slider] Add to Cart clicked. Localized vars:', typeof king_addons_slider_vars !== 'undefined' ? king_addons_slider_vars : 'Not Defined');
                  // --- DEBUGGING END ---
                  
                  var price = $button.data('price') || calculateCombinedPriceForMulti(); // Get price
@@ -555,7 +555,7 @@
                      if ($sliderInput.length) {
                          quantity = parseInt($sliderInput.val()) || 1;
                      } else {
-                         console.warn('[KA Slider] Could not find slider input for auto quantity.');
+                         // console.warn('[KA Slider] Could not find slider input for auto quantity.');
                      }
                      quantity = Math.max(1, quantity); // Ensure quantity is at least 1
                  }
@@ -604,7 +604,7 @@
                                   notificationsContainer = $button.parent();
                                   // Insert before button
                                   if (response.success) {
-                                      console.log('[KA Slider] Product added to cart:', response.data);
+                                      // console.log('[KA Slider] Product added to cart:', response.data);
                                       // Trigger WooCommerce added_to_cart event for themes/plugins to hook into
                                       $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
                                       
@@ -645,7 +645,7 @@
                                                     .find('.king-addons-pricing-slider__price');
                                   if (priceElement.length) {
                                       if (response.success) {
-                                          console.log('[KA Slider] Product added to cart:', response.data);
+                                          // console.log('[KA Slider] Product added to cart:', response.data);
                                           // Trigger WooCommerce added_to_cart event for themes/plugins to hook into
                                           $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
                                           
@@ -692,7 +692,7 @@
                                       customContainer.empty(); // Clear previous notifications
                                       
                                       if (response.success) {
-                                          console.log('[KA Slider] Product added to cart:', response.data);
+                                          // console.log('[KA Slider] Product added to cart:', response.data);
                                           // Trigger WooCommerce added_to_cart event for themes/plugins to hook into
                                           $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
                                           
@@ -736,7 +736,7 @@
                               default:
                                   // This is the original behavior - place notifications after the button
                           if (response.success) {
-                             console.log('[KA Slider] Product added to cart:', response.data);
+                             // console.log('[KA Slider] Product added to cart:', response.data);
                              // Trigger WooCommerce added_to_cart event for themes/plugins to hook into
                              $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
                                       
@@ -758,7 +758,7 @@
                                       }
                          } else {
                                       var errorMessage = 'Could not add product to cart. Please try again.';
-                             console.error('[KA Slider] Error adding to cart:', response.data);
+                             // console.error('[KA Slider] Error adding to cart:', response.data);
                                       
                                       if (response.data && response.data.error_code === 'budget_too_low') {
                                           var templateMessage = priceData.budget_too_low_message || 'Your selected budget is too low. Please increase the budget to at least {product_price}.';
@@ -777,7 +777,7 @@
                      },
                      error: function(jqXHR, textStatus, errorThrown) {
                           $button.removeClass('loading');
-                         console.error('[KA Slider] AJAX Error:', textStatus, errorThrown);
+                         // console.error('[KA Slider] AJAX Error:', textStatus, errorThrown);
                           // Show generic user-friendly error for AJAX failures
                           var errorMsg = $('<span class="king-addons-slider-notice error">An error occurred. Please try again later.</span>').insertAfter($button);
                            setTimeout(function(){ errorMsg.fadeOut(function(){ $(this).remove(); }); }, 5000);

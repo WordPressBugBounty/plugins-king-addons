@@ -353,7 +353,7 @@
                 attempts++;
                 setTimeout(checkLottie, 100);
             } else {
-                console.log('Lottie library not loaded after 5 seconds');
+                // console.log('Lottie library not loaded after 5 seconds');
                 // Try one more time with alternative approach
                 tryAlternativeLottieInit($mainMenu);
             }
@@ -371,7 +371,7 @@
             setTimeout(function() {
                 const lottieLib = getLottieLibrary();
                 if (lottieLib) {
-                    console.log('Lottie library found on window load, initializing');
+                    // console.log('Lottie library found on window load, initializing');
                     kingAddonsInitializeLottieLogos($mainMenu);
                 }
             }, 500);
@@ -380,7 +380,7 @@
                 setTimeout(function() {
                     const lottieLib = getLottieLibrary();
                     if (lottieLib) {
-                        console.log('Lottie library found after window load, initializing');
+                        // console.log('Lottie library found after window load, initializing');
                         kingAddonsInitializeLottieLogos($mainMenu);
                     }
                 }, 500);
@@ -475,12 +475,12 @@
                         }
                     }
                     
-                    console.log('Lottie animation initialized for:', jsonUrl);
+                    // console.log('Lottie animation initialized for:', jsonUrl);
                 } else {
-                    console.log('Lottie library not available');
+                    // console.log('Lottie library not available');
                 }
             } catch (error) {
-                console.log('Lottie initialization failed:', error);
+                // console.log('Lottie initialization failed:', error);
             }
         });
     }

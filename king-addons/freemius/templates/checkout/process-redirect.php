@@ -55,7 +55,7 @@
         // You can return a promise to make the successive redirection wait until your own processing is completed.
         // However for most cases, we recommend sending a beacon request {https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon}
         var processPurchaseEvent = (<?php echo $fs->apply_filters('checkout/purchaseCompleted', 'function (data) {
-            console.log("checkout", "purchaseCompleted");
+            // console.log("checkout", "purchaseCompleted");
         }'); ?>)(data.purchaseData);
 
         if (typeof Promise !== 'undefined' && processPurchaseEvent instanceof Promise) {

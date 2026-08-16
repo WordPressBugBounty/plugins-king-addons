@@ -32,6 +32,23 @@ class Filter_Posts_Ajax
     }
 
     /**
+     * Returns sanitized grid settings for the current AJAX request.
+     *
+     * @return array<string, mixed> Sanitized widget settings.
+     */
+    public function get_request_grid_settings()
+    {
+        static $settings = null;
+
+        if (null === $settings) {
+            $settings = Grid_Ajax_Security::get_posted_grid_settings();
+            $_POST['grid_settings'] = $settings;
+        }
+
+        return $settings;
+    }
+
+    /**
      * Return the maximum number of pages based on the current query.
      */
     public function get_max_num_pages($settings)
@@ -40,6 +57,8 @@ class Filter_Posts_Ajax
         if (!wp_verify_nonce($nonce, 'king_addons_grid_nonce')) {
             wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
         }
+
+        $this->get_request_grid_settings();
 
         $query = new \WP_Query($this->get_main_query_args());
         $max_num_pages = (int)ceil($query->max_num_pages);
@@ -63,9 +82,9 @@ class Filter_Posts_Ajax
      */
     public function get_main_query_args()
     {
-        $settings = $_POST['grid_settings'];
-        $taxonomy = $_POST['king_addons_taxonomy'] ?? '';
-        $term = $_POST['king_addons_filter'] ?? '';
+        $settings = $this->get_request_grid_settings();
+        $taxonomy = isset($_POST['king_addons_taxonomy']) ? sanitize_key(wp_unslash($_POST['king_addons_taxonomy'])) : '';
+        $term = isset($_POST['king_addons_filter']) ? sanitize_text_field(wp_unslash($_POST['king_addons_filter'])) : '';
         $author = !empty($settings['query_author']) ? implode(',', $settings['query_author']) : '';
         $paged = get_query_var('paged') ?: (get_query_var('page') ?: 1);
         $layout = $settings['layout_select'] ?? 'grid';
@@ -209,10 +228,10 @@ class Filter_Posts_Ajax
      */
     public function get_tax_query_args()
     {
-        $settings = $_POST['grid_settings'];
+        $settings = $this->get_request_grid_settings();
         $tax_query = [];
-        $taxonomy = $_POST['king_addons_taxonomy'] ?? '';
-        $term = $_POST['king_addons_filter'] ?? '';
+        $taxonomy = isset($_POST['king_addons_taxonomy']) ? sanitize_key(wp_unslash($_POST['king_addons_taxonomy'])) : '';
+        $term = isset($_POST['king_addons_filter']) ? sanitize_text_field(wp_unslash($_POST['king_addons_filter'])) : '';
 
         // If user filtered via front-end
         if (!empty($term) && $term !== '*') {
@@ -410,9 +429,9 @@ HTML;
             : '_self';
 
         $class .= " king-addons-pointer-{$title_pointer} king-addons-pointer-line-fx king-addons-pointer-fx-{$title_pointer_animation}";
-        echo '<' . esc_attr($settings['element_title_tag']) . ' class="' . esc_attr($class) . '">'
+        echo '<' . esc_attr(Grid_Ajax_Security::sanitize_html_tag($settings['element_title_tag'] ?? 'h2')) . ' class="' . esc_attr($class) . '">'
             . '<div class="inner-block">'
-            . '<a target="' . $new_tab . '" ' . $pointer_item_class . ' href="' . esc_url(get_the_permalink()) . '">';
+            . '<a target="' . esc_attr($new_tab) . '" ' . $pointer_item_class . ' href="' . esc_url(get_the_permalink()) . '">';
 
         if (!empty($settings['element_trim_text_by']) && $settings['element_trim_text_by'] === 'word_count') {
             echo esc_html(wp_trim_words(get_the_title(), $settings['element_word_count'] ?? 10));
@@ -420,7 +439,7 @@ HTML;
             $limit = (int)($settings['element_letter_count'] ?? 50);
             echo esc_html(mb_strimwidth(html_entity_decode(get_the_title()), 0, $limit, '...'));
         }
-        echo '</a></div></' . esc_attr($settings['element_title_tag']) . '>';
+        echo '</a></div></' . esc_attr(Grid_Ajax_Security::sanitize_html_tag($settings['element_title_tag'] ?? 'h2')) . '>';
     }
 
     /**
@@ -691,7 +710,7 @@ HTML;
      */
     public function render_post_element_separator($settings, $class)
     {
-        echo '<div class="' . esc_attr($class . ' ' . $settings['element_separator_style']) . '">'
+        echo '<div class="' . esc_attr($class . ' ' . ($settings['element_separator_style'] ?? '')) . '">'
             . '<div class="inner-block"><span></span></div></div>';
     }
 
@@ -746,12 +765,16 @@ HTML;
                 && !empty($_POST['grid_settings']['tax1_custom_color_switcher'])
                 && $_POST['grid_settings']['tax1_custom_color_switcher'] === 'yes'
             ) {
-                $text_color = get_term_meta($term->term_id, $_POST['grid_settings']['tax1_custom_color_field_text'] ?? '', true);
-                $bg_color = get_term_meta($term->term_id, $_POST['grid_settings']['tax1_custom_color_field_bg'] ?? '', true);
+                $text_color = Grid_Ajax_Security::sanitize_css_color(
+                    get_term_meta($term->term_id, sanitize_key($_POST['grid_settings']['tax1_custom_color_field_text'] ?? ''), true)
+                );
+                $bg_color = Grid_Ajax_Security::sanitize_css_color(
+                    get_term_meta($term->term_id, sanitize_key($_POST['grid_settings']['tax1_custom_color_field_bg'] ?? ''), true)
+                );
                 if ($text_color || $bg_color) {
-                    $custom_style = "color:{$text_color}; background-color:{$bg_color}; border-color:{$bg_color};";
+                    $custom_style = 'color:' . esc_html($text_color) . '; background-color:' . esc_html($bg_color) . '; border-color:' . esc_html($bg_color) . ';';
                     $selector = '.king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . esc_attr($term->term_id);
-                    echo '<style>' . $selector . '{' . $custom_style . '}</style>';
+                    echo '<style>' . esc_html($selector) . '{' . $custom_style . '}</style>';
                 }
             }
 
@@ -760,7 +783,7 @@ HTML;
                 ? 'king-addons-pointer-item'
                 : '';
 
-            echo '<a class="' . $pointer_item_class . ' king-addons-tax-id-' . esc_attr($term->term_id) . '" '
+            echo '<a class="' . esc_attr($pointer_item_class . ' king-addons-tax-id-' . $term->term_id) . '" '
                 . 'href="' . esc_url(get_term_link($term->term_id)) . '">' . esc_html($term->name);
             if (++$count < count($terms)) {
                 echo '<span class="tax-sep">' . esc_html($sep) . '</span>';
@@ -842,6 +865,10 @@ HTML;
      */
     public function get_elements_by_location($location, $settings, $post_id)
     {
+        if (empty($settings['grid_elements']) || !is_array($settings['grid_elements'])) {
+            return;
+        }
+
         // Group elements by location
         $locations = [];
         foreach ($settings['grid_elements'] as $data) {
@@ -1093,7 +1120,7 @@ HTML;
      */
     public function king_addons_get_filtered_count()
     {
-        $settings = $_POST['grid_settings'];
+        $settings = $this->get_request_grid_settings();
         $page_count = $this->get_max_num_pages($settings);
         wp_send_json_success(['page_count' => $page_count]);
         wp_die();
@@ -1109,7 +1136,7 @@ HTML;
             wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
         }
 
-        $settings = $_POST['grid_settings'];
+        $settings = $this->get_request_grid_settings();
         $posts = new \WP_Query($this->get_main_query_args());
 
         if ($posts->have_posts()) {

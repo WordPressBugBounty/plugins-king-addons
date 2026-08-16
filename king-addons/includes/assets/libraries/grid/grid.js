@@ -316,7 +316,7 @@
                             // Update filter counts and set up filtering behavior.
                             function isotopeFilters(s, ev = "load") {
 
-                                console.log("isotopeFilters");
+                                // console.log("isotopeFilters");
 
                                 if (s.filters_count === "yes") {
                                     $scope.find(".king-addons-grid-filters a, .king-addons-grid-filters span").each(function () {
@@ -326,7 +326,7 @@
                                                 $el.attr("data-filter") !== "*" ? $el.data("ajax-filter")[0] : "*";
                                             const thisFilter =
                                                 $el.attr("data-filter") !== "*" ? $el.data("ajax-filter")[1] : "*";
-                                            console.log('CURRENT OFFSET = ' + (+s.grid_settings.query_offset + $grid.find(".king-addons-grid-item").length))
+                                            // console.log('CURRENT OFFSET = ' + (+s.grid_settings.query_offset + $grid.find(".king-addons-grid-item").length))
                                             $.ajax({
                                                 type: "POST",
                                                 url: KingAddonsGridData.ajaxUrl,
@@ -341,7 +341,7 @@
                                                     grid_settings: s.grid_settings,
                                                 },
                                                 success: (response) => {
-                                                    console.log('ISOTOPE GRID');
+                                                    // console.log('ISOTOPE GRID');
                                                     $el.find("sup").text(response.data.query_found);
                                                 },
                                             });
@@ -488,7 +488,7 @@
 
                                     $grid.html(loader);
 
-                                    console.log('FILTER');
+                                    // console.log('FILTER');
 
                                     $.ajax({
                                         type: "POST",
@@ -503,7 +503,7 @@
                                             grid_settings: settings.grid_settings,
                                         },
                                         success: function (res) {
-                                            console.log("settings.grid_settings.query_offset = " + settings.grid_settings.query_offset);
+                                            // console.log("settings.grid_settings.query_offset = " + settings.grid_settings.query_offset);
                                             $.ajax({
                                                 type: "POST",
                                                 url: KingAddonsGridData.ajaxUrl,
@@ -520,7 +520,7 @@
                                                     // setTimeout(() => {
                                                         $grid.addClass("king-addons-zero-opacity");
 
-                                                    console.log("FILTER pagesLoaded = " + pagesLoaded);
+                                                    // console.log("FILTER pagesLoaded = " + pagesLoaded);
                                                         // $grid.infiniteScroll("destroy");
                                                         $grid.isotopekng("destroy");
 
@@ -694,14 +694,14 @@
                                 });
 
                                 $grid.on("load.infiniteScroll", (event, response) => {
-                                    console.log("pagesLoaded = " + pagesLoaded);
+                                    // console.log("pagesLoaded = " + pagesLoaded);
 
                                     pagesLoaded++;
 
                                     const $items = $(response).find(scopeClass).find(".king-addons-grid-item");
 
-                                    console.log("$items = " + $items);
-                                    console.log("$items.length = " + $items.length);
+                                    // console.log("$items = " + $items);
+                                    // console.log("$items.length = " + $items.length);
 
                                     if ($scope.find(".woocommerce-result-count").length) {
                                         let updatedCount = $scope.find(".woocommerce-result-count").text();

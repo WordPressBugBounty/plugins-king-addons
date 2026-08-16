@@ -2269,7 +2269,7 @@ final class Header_Footer_Builder
                     })
                     .catch(function(err) {
                         alert('<?php echo esc_js(__('Error renaming template', 'king-addons')); ?>');
-                        console.error(err);
+                        // console.error(err);
                     });
                 });
             }
@@ -2327,7 +2327,7 @@ final class Header_Footer_Builder
                     })
                     .catch(function(err) {
                         alert('<?php echo esc_js(__('Error updating template status', 'king-addons')); ?>');
-                        console.error(err);
+                        // console.error(err);
                     });
                 });
             });
@@ -2623,7 +2623,7 @@ final class Header_Footer_Builder
                     .catch(function(err) {
                         savingOverlay.style.display = 'none';
                         alert('Error saving conditions');
-                        console.error(err);
+                        // console.error(err);
                     });
                 });
             }

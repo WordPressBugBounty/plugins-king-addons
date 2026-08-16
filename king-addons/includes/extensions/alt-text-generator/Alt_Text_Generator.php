@@ -525,16 +525,16 @@ class Alt_Text_Generator {
         if (!empty($sanitized_alt_text)) {
             if (update_post_meta($attachment_id, '_wp_attachment_image_alt', $sanitized_alt_text)) {
                 // Log success for debugging
-                error_log("King Addons Alt Text: Successfully generated alt text for attachment {$attachment_id}: {$sanitized_alt_text}");
+                // error_log("King Addons Alt Text: Successfully generated alt text for attachment {$attachment_id}: {$sanitized_alt_text}");
                 return $is_ajax ? $sanitized_alt_text : true;
             } else {
                 $error_msg = esc_html__('Failed to save the generated alt text.', 'king-addons');
-                error_log("King Addons Alt Text: Failed to save alt text for attachment {$attachment_id}");
+                // error_log("King Addons Alt Text: Failed to save alt text for attachment {$attachment_id}");
                 return $is_ajax ? new \WP_Error('update_failed', $error_msg) : $error_msg;
             }
         } else {
             $error_msg = esc_html__('AI returned empty or invalid text.', 'king-addons');
-            error_log("King Addons Alt Text: AI returned empty text for attachment {$attachment_id}");
+            // error_log("King Addons Alt Text: AI returned empty text for attachment {$attachment_id}");
             return $is_ajax ? new \WP_Error('empty_alt_text', $error_msg) : $error_msg;
         }
 

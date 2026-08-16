@@ -60,12 +60,26 @@ class Filter_WooCommerce_Products_Ajax
         return $max_num_pages > 0 ? $max_num_pages : 1;
     }
 
+    /**
+     * Returns sanitized grid settings for the current AJAX request.
+     *
+     * @return array<string, mixed> Sanitized widget settings.
+     */
+    public function get_request_grid_settings()
+    {
+        static $settings = null;
+
+        if (null === $settings) {
+            $settings = Grid_Ajax_Security::get_posted_grid_settings();
+            $_POST['grid_settings'] = $settings;
+        }
+
+        return $settings;
+    }
+
     public function get_main_query_args()
     {
-        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
-        if (!is_array($settings)) {
-            $settings = [];
-        }
+        $settings = $this->get_request_grid_settings();
 
         $taxonomy = isset($_POST['king_addons_taxonomy']) ? sanitize_key(wp_unslash($_POST['king_addons_taxonomy'])) : '';
         $term     = isset($_POST['king_addons_filter']) ? sanitize_text_field(wp_unslash($_POST['king_addons_filter'])) : '*';
@@ -375,10 +389,7 @@ class Filter_WooCommerce_Products_Ajax
             }
         } else {
             // Normal grid-based filter
-            $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
-            if (!is_array($settings)) {
-                $settings = [];
-            }
+            $settings = $this->get_request_grid_settings();
             $taxonomy = isset($_POST['king_addons_taxonomy']) ? sanitize_key(wp_unslash($_POST['king_addons_taxonomy'])) : '';
             $term     = isset($_POST['king_addons_filter']) ? sanitize_text_field(wp_unslash($_POST['king_addons_filter'])) : '*';
 
@@ -1437,10 +1448,10 @@ class Filter_WooCommerce_Products_Ajax
                 }
                 echo '<div class="king-addons-grid-media-hover-' . esc_attr($align) . ' elementor-clearfix">';
                 foreach ($elements as $data) {
-                    $class  = 'king-addons-grid-item-' . $data['element_select'];
-                    $class .= ' elementor-repeater-item-' . $data['_id'];
-                    $class .= ' king-addons-grid-item-display-' . $data['element_display'];
-                    $class .= ' king-addons-grid-item-align-' . $data['element_align_hr'];
+                    $class  = 'king-addons-grid-item-' . sanitize_html_class($data['element_select'] ?? '');
+                    $class .= ' elementor-repeater-item-' . sanitize_html_class($data['_id'] ?? '');
+                    $class .= ' king-addons-grid-item-display-' . sanitize_html_class($data['element_display'] ?? '');
+                    $class .= ' king-addons-grid-item-align-' . sanitize_html_class($data['element_align_hr'] ?? '');
                     $class .= $this->get_animation_class($data, 'element');
                     $this->get_elements($data['element_select'], $data, $class, $post_id);
                 }
@@ -1453,10 +1464,10 @@ class Filter_WooCommerce_Products_Ajax
             // 'above' or 'below'
             echo '<div class="king-addons-grid-item-' . esc_attr($location) . '-content elementor-clearfix">';
             foreach ($locations[$location] as $data) {
-                $class  = 'king-addons-grid-item-' . $data['element_select'];
-                $class .= ' elementor-repeater-item-' . $data['_id'];
-                $class .= ' king-addons-grid-item-display-' . $data['element_display'];
-                $class .= ' king-addons-grid-item-align-' . $data['element_align_hr'];
+                $class  = 'king-addons-grid-item-' . sanitize_html_class($data['element_select'] ?? '');
+                $class .= ' elementor-repeater-item-' . sanitize_html_class($data['_id'] ?? '');
+                $class .= ' king-addons-grid-item-display-' . sanitize_html_class($data['element_display'] ?? '');
+                $class .= ' king-addons-grid-item-align-' . sanitize_html_class($data['element_align_hr'] ?? '');
                 $this->get_elements($data['element_select'], $data, $class, $post_id);
             }
             echo '</div>';
@@ -1674,10 +1685,7 @@ class Filter_WooCommerce_Products_Ajax
             wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
         }
 
-        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
-        if (!is_array($settings)) {
-            $settings = [];
-        }
+        $settings = $this->get_request_grid_settings();
 
         $query = new WP_Query($this->get_main_query_args());
         $max_num_pages = (int) $query->max_num_pages;
@@ -1711,10 +1719,7 @@ class Filter_WooCommerce_Products_Ajax
             wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
         }
 
-        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
-        if (!is_array($settings)) {
-            $settings = [];
-        }
+        $settings = $this->get_request_grid_settings();
 
         $posts    = new WP_Query($this->get_main_query_args());
 

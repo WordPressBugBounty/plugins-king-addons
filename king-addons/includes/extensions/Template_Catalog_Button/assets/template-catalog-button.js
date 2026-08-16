@@ -794,7 +794,7 @@
             })
             .catch(error => {
                 this.isLoading = false;
-                console.error('Error loading templates:', error);
+                // console.error('Error loading templates:', error);
                 bodyElement.innerHTML = `
                     <div class="king-addons-template-popup-error">
                         Failed to load templates. Please try again.
@@ -1019,11 +1019,11 @@
                     
                     this.updateImportProgress(25, `Template validated! Found ${imageCount} images to process...`);
                     
-                    console.log('Template data received:', {
-                        title: templateData.title,
-                        images: imageCount,
-                        hasContent: !!templateData.content
-                    });
+                    // console.log('Template data received:', {
+                        // title: templateData.title,
+                        // images: imageCount,
+                        // hasContent: !!templateData.content
+                    // });
                     
                     this.processTemplateImport(templateData);
                 } else {
@@ -1031,7 +1031,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error fetching template:', error);
+                // console.error('Error fetching template:', error);
                 this.showImportError('Network error: ' + error.message);
             });
         }
@@ -1090,16 +1090,16 @@
 
             if (!pageId) {
                 // Debug information
-                console.log('Debug: Could not determine page ID. Available data:', {
-                    elementor: typeof elementor !== 'undefined' ? {
-                        config: elementor.config,
-                        configKeys: elementor.config ? Object.keys(elementor.config) : null
-                    } : 'undefined',
-                    windowLocation: window.location.href,
-                    urlParams: new URLSearchParams(window.location.search).toString(),
-                    elementorAdminConfig: typeof elementorAdminConfig !== 'undefined' ? elementorAdminConfig : 'undefined',
-                    kingAddonsConfig: window.kingAddonsTemplateCatalog || 'undefined'
-                });
+                // console.log('Debug: Could not determine page ID. Available data:', {
+                    // elementor: typeof elementor !== 'undefined' ? {
+                        // config: elementor.config,
+                        // configKeys: elementor.config ? Object.keys(elementor.config) : null
+                    // } : 'undefined',
+                    // windowLocation: window.location.href,
+                    // urlParams: new URLSearchParams(window.location.search).toString(),
+                    // elementorAdminConfig: typeof elementorAdminConfig !== 'undefined' ? elementorAdminConfig : 'undefined',
+                    // kingAddonsConfig: window.kingAddonsTemplateCatalog || 'undefined'
+                // });
 
                 // Last resort: ask user to save the page first
                 const userWantsToCreateNew = confirm(
@@ -1228,7 +1228,7 @@
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(html => {
-                        console.error('Server error:\n' + html);
+                        // console.error('Server error:\n' + html);
                         throw new Error('Server error (not JSON).');
                     });
                 }
@@ -1249,7 +1249,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error starting import:', error);
+                // console.error('Error starting import:', error);
                 this.showImportError('Failed to start import: ' + error.message);
             });
         }
@@ -1269,7 +1269,7 @@
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(html => {
-                        console.error('Server error:\n' + html);
+                        // console.error('Server error:\n' + html);
                         throw new Error('Server error:\n' + html);
                     });
                 }
@@ -1285,7 +1285,7 @@
                         // Track image progress
                         if (data.data.image_url) {
                             this.currentImageProgress++;
-                            console.log(`📷 Processed image ${this.currentImageProgress}/${this.totalImages}: ${data.data.image_url}`);
+                            // console.log(`📷 Processed image ${this.currentImageProgress}/${this.totalImages}: ${data.data.image_url}`);
                         }
                         
                         // Update progress (70% to 85% for image processing)
@@ -1300,18 +1300,18 @@
                     } else {
                         // Images completed, check if it's for existing page
                         if (data.data.processing_complete) {
-                            console.log(`📷 Image processing complete: ${this.currentImageProgress}/${this.totalImages} for existing page`);
+                            // console.log(`📷 Image processing complete: ${this.currentImageProgress}/${this.totalImages} for existing page`);
                             this.finalizeOriginalStyleImport();
                         } else {
                             // Original behavior - page created
-                            console.log(`📷 Image processing complete: ${this.currentImageProgress}/${this.totalImages} - new page created`);
+                            // console.log(`📷 Image processing complete: ${this.currentImageProgress}/${this.totalImages} - new page created`);
                             this.handleNewPageCreated(data.data);
                         }
                     }
                 } else {
                     // Handle retry logic
                     if (data.data && data.data.retry) {
-                        console.log('⚠️ Retrying image processing...');
+                        // console.log('⚠️ Retrying image processing...');
                         setTimeout(() => this.processOriginalStyleImages(), 1000);
                     } else {
                         this.showImportError(data.data || 'Image processing failed');
@@ -1319,7 +1319,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error processing images:', error);
+                // console.error('Error processing images:', error);
                 this.showImportError('Image processing error: ' + error.message);
             });
         }
@@ -1349,11 +1349,11 @@
                     
                     this.updateImportProgress(90, 'Content merged! Refreshing editor preview...');
                     
-                    console.log('📊 Final Import Statistics:', {
-                        'Elements imported': importedCount,
-                        'Images processed': imagesProcessed,
-                        'Page ID': this.pageId
-                    });
+                    // console.log('📊 Final Import Statistics:', {
+                        // 'Elements imported': importedCount,
+                        // 'Images processed': imagesProcessed,
+                        // 'Page ID': this.pageId
+                    // });
                     
                         let successMessage = `🎉 Template imported successfully! Added ${importedCount} elements`;
                         if (imagesProcessed > 0) {
@@ -1367,7 +1367,7 @@
                             this.closeImportProgress();
                         
                         // Full page reload to properly show imported content
-                        console.log('Template imported successfully! Reloading page to show content...');
+                        // console.log('Template imported successfully! Reloading page to show content...');
                         window.location.reload();
                     }, 3000);
                 } else {
@@ -1375,7 +1375,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error finalizing import:', error);
+                // console.error('Error finalizing import:', error);
                 this.showImportError('Finalization error: ' + error.message);
             });
         }
@@ -1416,7 +1416,7 @@
                         const iframe = previewView.$el[0];
                         
                         if (iframe && iframe.contentWindow && iframe.contentWindow.location) {
-                            console.log('Reloading preview via iframe.contentWindow.location.reload()');
+                            // console.log('Reloading preview via iframe.contentWindow.location.reload()');
                             iframe.contentWindow.location.reload();
                             
                             // Wait for reload and execute callback
@@ -1431,7 +1431,7 @@
                 // Method 2: Try to find preview iframe by selector
                 const previewFrame = document.querySelector('#elementor-preview-iframe');
                 if (previewFrame && previewFrame.contentWindow && previewFrame.contentWindow.location) {
-                    console.log('Reloading preview via querySelector iframe');
+                    // console.log('Reloading preview via querySelector iframe');
                     previewFrame.contentWindow.location.reload();
                     
                     if (callback) {
@@ -1442,7 +1442,7 @@
 
                 // Method 3: Try to use Elementor's saver to refresh content
                 if (elementor && elementor.saver && typeof elementor.saver.reload === 'function') {
-                    console.log('Reloading preview via elementor.saver.reload()');
+                    // console.log('Reloading preview via elementor.saver.reload()');
                     elementor.saver.reload();
                     
                     if (callback) {
@@ -1453,7 +1453,7 @@
 
                 // Method 4: Try to trigger Elementor's preview refresh event
                 if (elementor && elementor.channels && elementor.channels.editor) {
-                    console.log('Triggering preview refresh via Elementor channels');
+                    // console.log('Triggering preview refresh via Elementor channels');
                     elementor.channels.editor.trigger('preview:reload');
                     
                     if (callback) {
@@ -1463,13 +1463,13 @@
                 }
 
                 // Method 5: Fallback - just execute callback without reload
-                console.log('No preview reload method available, proceeding without reload');
+                // console.log('No preview reload method available, proceeding without reload');
                 if (callback) {
                     callback();
                 }
 
             } catch (error) {
-                console.error('Error reloading preview:', error);
+                // console.error('Error reloading preview:', error);
                 if (callback) {
                     callback();
                 }
@@ -1502,7 +1502,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error creating new page:', error);
+                // console.error('Error creating new page:', error);
                 this.showImportError('Network error occurred while creating new page');
             });
         }
@@ -1550,7 +1550,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error processing images:', error);
+                // console.error('Error processing images:', error);
                 this.showImportError('Network error occurred during image processing');
             });
         }
@@ -1753,7 +1753,7 @@
             })
             .catch(error => {
                 this.isSectionsLoading = false;
-                console.error('Error loading sections:', error);
+                // console.error('Error loading sections:', error);
                 bodyElement.innerHTML = `
                     <div class="king-addons-sections-popup-empty">
                         Failed to load sections. Please try again.
@@ -2052,11 +2052,11 @@
                     
                     this.updateImportProgress(25, `Section validated! Found ${imageCount} images to process...`);
                     
-                    console.log('Section data received:', {
-                        title: sectionData.title,
-                        images: imageCount,
-                        hasContent: !!sectionData.content
-                    });
+                    // console.log('Section data received:', {
+                        // title: sectionData.title,
+                        // images: imageCount,
+                        // hasContent: !!sectionData.content
+                    // });
                     
                     this.processSectionImport(sectionData);
                 } else {
@@ -2064,7 +2064,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error fetching section:', error);
+                // console.error('Error fetching section:', error);
                 this.showImportError('Network error: ' + error.message);
             });
         }
@@ -2141,7 +2141,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error initializing section import:', error);
+                // console.error('Error initializing section import:', error);
                 this.showImportError('Failed to initialize section import: ' + error.message);
             });
         }
@@ -2190,10 +2190,10 @@
                     
                     this.updateImportProgress(90, 'Section merged! Refreshing editor preview...');
                     
-                    console.log('📊 Section Import Statistics:', {
-                        'Elements imported': importedCount,
-                        'Page ID': pageId
-                    });
+                    // console.log('📊 Section Import Statistics:', {
+                        // 'Elements imported': importedCount,
+                        // 'Page ID': pageId
+                    // });
                     
                     let successMessage = `🎉 Section imported successfully! Added ${importedCount} elements to your page.`;
                     this.updateImportProgress(100, successMessage, true);
@@ -2203,7 +2203,7 @@
                         
                         // Full page reload to properly show imported content
                         // elementor.reloadPreview() doesn't refresh editor data from database
-                        console.log('Section imported successfully! Reloading page to show content...');
+                        // console.log('Section imported successfully! Reloading page to show content...');
                         window.location.reload();
                     }, 2000);
                 } else {
@@ -2211,7 +2211,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error finalizing section import:', error);
+                // console.error('Error finalizing section import:', error);
                 this.showImportError('Finalization error: ' + error.message);
             });
         }
@@ -2253,7 +2253,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error processing images:', error);
+                    // console.error('Error processing images:', error);
                     // Continue processing other images
                     setTimeout(processNextImage, 1000);
                 });

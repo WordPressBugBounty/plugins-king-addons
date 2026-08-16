@@ -49,10 +49,10 @@
                                                         window.location.href = safeUrl;
                                                     }
                                                 } else {
-                                                    console.error("Invalid URL scheme:", url.protocol);
+                                                    // console.error("Invalid URL scheme:", url.protocol);
                                                 }
                                             } catch (e) {
-                                                console.error("Invalid URL:", itemUrl);
+                                                // console.error("Invalid URL:", itemUrl);
                                             }
                                         }
                                     }

@@ -112,7 +112,7 @@ final class RegisterAssets
         if(KING_ADDONS_WGT_FORM_BUILDER) {
             wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-form-builder-script', 'KingAddonsFormBuilderData', [
                 'ajaxurl' => admin_url('admin-ajax.php'),
-                // Security fix: Remove public nonce exposure - generate dynamically in AJAX handlers
+                'nonce' => wp_create_nonce('king-addons-js'),
                 'input_empty' => esc_html__('Please fill out this field', 'king-addons'),
                 'select_empty' => esc_html__('Nothing selected', 'king-addons'),
                 'file_empty' => esc_html__('Please upload a file', 'king-addons'),

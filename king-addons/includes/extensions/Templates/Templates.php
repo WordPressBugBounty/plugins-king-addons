@@ -789,7 +789,7 @@ final class Templates
             set_transient('elementor_import_existing_page_id', $existing_page_id, 60 * 60);
             set_transient('elementor_import_create_new_page', $create_new_page, 60 * 60);
 
-            error_log('King Addons Import: Initialized ' . ($create_new_page ? 'new page' : 'existing page') . ' import. Existing page ID: ' . $existing_page_id);
+            // error_log('King Addons Import: Initialized ' . ($create_new_page ? 'new page' : 'existing page') . ' import. Existing page ID: ' . $existing_page_id);
 
             wp_send_json_success([
                 'message' => 'Import initialized.',
@@ -992,7 +992,7 @@ final class Templates
                 // Content and images are processed and stored in transients
                 // Will be merged by king_addons_merge_with_existing_page endpoint
                 
-                error_log('King Addons Import: Image processing completed for existing page. Content ready for merge.');
+                // error_log('King Addons Import: Image processing completed for existing page. Content ready for merge.');
                 
                 wp_send_json_success([
                     'message' => "Image processing completed! Content ready for merge.",
@@ -1100,7 +1100,7 @@ final class Templates
 
             return $attach_id;
         } catch (Exception $e) {
-            error_log('[KING_ADDONS_ERROR] ' . $e->getMessage());
+            // error_log('[KING_ADDONS_ERROR] ' . $e->getMessage());
             return false;
         }
     }
@@ -1288,13 +1288,13 @@ final class Templates
                 $install_id = 0;
             }
             
-            error_log('King Addons Premium Section: Using install_id: ' . $install_id . ' for premium section: ' . $section_key);
+            // error_log('King Addons Premium Section: Using install_id: ' . $install_id . ' for premium section: ' . $section_key);
         } elseif ($section_plan === 'free') {
             $api_url = 'https://api.kingaddons.com/get-section-free.php';
             $install_id = 0;
-            error_log('King Addons Free Section: Fetching free section: ' . $section_key);
+            // error_log('King Addons Free Section: Fetching free section: ' . $section_key);
         } else {
-            error_log('King Addons Section Error: Premium section requires premium license. Section: ' . $section_key . ', Plan: ' . $section_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
+            // error_log('King Addons Section Error: Premium section requires premium license. Section: ' . $section_key . ', Plan: ' . $section_plan . ', Premium Active: ' . ($is_premium_active ? 'Yes' : 'No'));
             wp_send_json_error('Premium section requires premium license');
             return;
         }
@@ -1317,17 +1317,17 @@ final class Templates
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
 
-        error_log('King Addons Section API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
+        // error_log('King Addons Section API Response: ' . substr($body, 0, 500) . (strlen($body) > 500 ? '...' : ''));
         
         if (!$data) {
-            error_log('King Addons Section Error: Failed to decode JSON response');
+            // error_log('King Addons Section Error: Failed to decode JSON response');
             wp_send_json_error('Invalid JSON response from section API');
             return;
         }
 
         if (!isset($data['success']) || !$data['success']) {
             $error_message = isset($data['message']) ? $data['message'] : 'Unknown API error';
-            error_log('King Addons Section Error: API returned error: ' . $error_message);
+            // error_log('King Addons Section Error: API returned error: ' . $error_message);
             wp_send_json_error('Section API error: ' . $error_message);
             return;
         }
