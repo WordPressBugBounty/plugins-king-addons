@@ -6,9 +6,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Stores Form Builder submissions from the public AJAX endpoint.
+ */
 class Create_Submission
 {
 
+    /**
+     * Registers submission AJAX hooks and admin meta updates.
+     */
     public function __construct()
     {
         add_action('wp_ajax_king_addons_form_builder_submissions', [$this, 'add_to_submissions']);
@@ -16,6 +22,14 @@ class Create_Submission
         add_action('save_post', [$this, 'update_submissions_post_meta']);
     }
 
+    /**
+     * Creates a submission post from a public form request.
+     *
+     * Guests are allowed when the nonce is valid and the submitted page ID
+     * belongs to a published Form Builder source page.
+     *
+     * @return void
+     */
     public function add_to_submissions()
     {
 
@@ -27,8 +41,8 @@ class Create_Submission
             ));
         }
 
-        // Add capability check
-        if (!current_user_can('read')) {
+        $sanitized_form_page_id = absint($_POST['form_page_id'] ?? 0);
+        if (!Form_Builder_Security::is_valid_submission_page($sanitized_form_page_id)) {
             wp_send_json_error(array(
                 'message' => esc_html__('Insufficient permissions.', 'king-addons'),
             ));
@@ -63,7 +77,6 @@ class Create_Submission
         $sanitized_form_name = sanitize_text_field(wp_unslash($_POST['form_name'] ?? ''));
         $sanitized_form_id = sanitize_key(wp_unslash($_POST['form_id'] ?? ''));
         $sanitized_form_page = sanitize_text_field(wp_unslash($_POST['form_page'] ?? ''));
-        $sanitized_form_page_id = absint($_POST['form_page_id'] ?? 0);
 
         update_post_meta($post_id, 'king_addons_form_name', $sanitized_form_name);
         update_post_meta($post_id, 'king_addons_form_id', $sanitized_form_id);
@@ -91,6 +104,12 @@ class Create_Submission
         }
     }
 
+    /**
+     * Saves admin edits to an existing submission.
+     *
+     * @param int $post_id Submission post ID.
+     * @return void
+     */
     public function update_submissions_post_meta($post_id)
     {
         // Security fix: Validate nonce and capabilities

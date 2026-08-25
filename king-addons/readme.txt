@@ -1,8 +1,8 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.77
-Tested up to: 7.0
+Stable tag: 51.1.78
+Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
@@ -260,6 +260,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.78 - August 25, 2026 =
+* **Security:** Accordion now escapes item titles, allowlists title HTML tags, and sanitizes WYSIWYG content to prevent stored XSS.
+* **Fix:** Form Builder now saves submissions from logged-out visitors when the request has a valid nonce and a published page ID.
+* **QA:** Checked compatibility readiness for WordPress 7.1.
+* **Improved:** Updated WordPress compatibility metadata to Tested up to 7.1.
 
 = King Addons for Elementor version 51.1.77 - August 16, 2026 =
 * **Security:** Form Builder nonce refresh now requires a published page that contains the Form Builder widget instead of a public flag.

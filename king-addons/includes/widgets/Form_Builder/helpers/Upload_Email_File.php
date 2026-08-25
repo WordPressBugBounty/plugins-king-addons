@@ -266,7 +266,7 @@ class Upload_Email_File
     {
         $page_id = absint($_POST['page_id'] ?? 0);
 
-        if (!$this->page_has_form_builder($page_id)) {
+        if (!Form_Builder_Security::page_has_form_builder($page_id)) {
             wp_send_json_error([
                 'message' => esc_html__('Insufficient permissions.', 'king-addons'),
             ]);
@@ -278,35 +278,6 @@ class Upload_Email_File
         ]);
     }
 
-    /**
-     * Checks whether a published page contains the Form Builder widget.
-     *
-     * @param int $page_id Page or post ID.
-     * @return bool True when the page is published and includes Form Builder.
-     */
-    public function page_has_form_builder($page_id)
-    {
-        $page_id = absint($page_id);
-        if ($page_id <= 0) {
-            return false;
-        }
-
-        $post = get_post($page_id);
-        if (!$post || 'publish' !== $post->post_status) {
-            return false;
-        }
-
-        $elementor_data = get_post_meta($page_id, '_elementor_data', true);
-        if (empty($elementor_data)) {
-            return false;
-        }
-
-        if (!is_string($elementor_data)) {
-            $elementor_data = wp_json_encode($elementor_data);
-        }
-
-        return false !== strpos($elementor_data, 'king-addons-form-builder');
-    }
 }
 
 new Upload_Email_File();

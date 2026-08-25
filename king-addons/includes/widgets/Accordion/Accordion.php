@@ -13,6 +13,11 @@ use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH')) exit;
 
+/**
+ * Accordion widget for Elementor.
+ *
+ * Renders expandable items from a repeater of titles and WYSIWYG content.
+ */
 class Accordion extends Widget_Base
 {
     
@@ -1274,11 +1279,24 @@ $this->end_controls_section();
         }
     }
 
+    /**
+     * Returns an allowlisted HTML tag for accordion titles.
+     *
+     * @param mixed $tag Raw tag name from widget settings.
+     * @return string Safe HTML tag name.
+     */
+    public function sanitize_accordion_title_tag($tag): string
+    {
+        $tags_whitelist = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p'];
+        $tag = strtolower(sanitize_key((string) $tag));
+
+        return in_array($tag, $tags_whitelist, true) ? $tag : 'span';
+    }
+
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        $tags_whitelist = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p'];
-        $accordion_title_tag = in_array($settings['accordion_title_tag'], $tags_whitelist) ? $settings['accordion_title_tag'] : 'span';
+        $accordion_title_tag = $this->sanitize_accordion_title_tag($settings['accordion_title_tag'] ?? 'span');
         $this->add_render_attribute('accordion_attributes', [
             'class' => ['king-addons-advanced-accordion'],
             'data-accordion-type' => esc_attr($settings['accordion_type']),
@@ -1313,11 +1331,11 @@ $this->end_controls_section();
             } else {
                 $this->render_first_icon($settings, $acc);
             }
-            echo '<' . $accordion_title_tag . ' class="king-addons-acc-title-text">' . $acc['accordion_title'] . '</' . $accordion_title_tag . '></span>';
+            echo '<' . tag_escape($accordion_title_tag) . ' class="king-addons-acc-title-text">' . esc_html($acc['accordion_title'] ?? '') . '</' . tag_escape($accordion_title_tag) . '></span>';
             $this->render_second_icon($settings, $acc);
             echo '</button><div class="king-addons-acc-panel">';
             if ('editor' === $acc_content_type) {
-                echo '<div class="king-addons-acc-panel-content">' . $acc['accordion_content'] . '</div>';
+                echo '<div class="king-addons-acc-panel-content">' . wp_kses_post($acc['accordion_content'] ?? '') . '</div>';
             } else {
                 echo $this->king_addons_accordion_template($acc['accordion_content_template']);
             }

@@ -311,6 +311,7 @@ final class Core
 
             // Additional - Form Builder
             if (KING_ADDONS_WGT_FORM_BUILDER) {
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Form_Builder_Security.php');
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Create_Submission.php');
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Send_Email.php');
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Send_Webhook.php');

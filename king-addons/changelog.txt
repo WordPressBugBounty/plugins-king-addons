@@ -2,6 +2,12 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.78 - August 25, 2026 =
+* **Security:** Accordion now escapes item titles, allowlists title HTML tags, and sanitizes WYSIWYG content to prevent stored XSS.
+* **Fix:** Form Builder now saves submissions from logged-out visitors when the request has a valid nonce and a published page ID.
+* **QA:** Checked compatibility readiness for WordPress 7.1.
+* **Improved:** Updated WordPress compatibility metadata to Tested up to 7.1.
+
 = King Addons for Elementor version 51.1.77 - August 16, 2026 =
 * **Security:** Form Builder nonce refresh now requires a published page that contains the Form Builder widget instead of a public flag.
 * **Security:** Posts Grid and WooCommerce Grid AJAX filters now sanitize the full grid_settings payload, including query args, HTML tags, and CSS classes.
