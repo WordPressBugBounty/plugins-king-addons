@@ -68,6 +68,20 @@ class Wrapper_Link
         $element->end_controls_section();
     }
 
+    /**
+     * Loads the click handler, and only for pages that actually use the feature.
+     *
+     * @return void
+     */
+    private static function enqueueScript(): void
+    {
+        $handle = KING_ADDONS_ASSETS_UNIQUE_KEY . '-wrapper-link-wrapper-link';
+
+        if (!wp_script_is($handle, 'enqueued')) {
+            wp_enqueue_script($handle);
+        }
+    }
+
     public static function renderLink(Element_Base $element): void
     {
         if (!empty($element->get_settings_for_display('kng_wrapper_link_switch'))) {
@@ -81,15 +95,24 @@ class Wrapper_Link
                     return;
                 }
 
-                $link_target = ($wrapper_link_settings['is_external']) ? '_blank' : '_self';
+                $link_target = (!empty($wrapper_link_settings['is_external'])) ? '_blank' : '_self';
 
+                /**
+                 * The URL travels in a data attribute and the click is handled by
+                 * wrapper-link.js. An inline onclick fired on every click that
+                 * bubbled up, so a link inside the container navigated twice —
+                 * once itself and once through the wrapper.
+                 */
                 $element->add_render_attribute(
                     '_wrapper',
                     [
                         'style' => 'cursor: pointer;',
-                        'onclick' => 'window.open(' . wp_json_encode($url) . ', ' . wp_json_encode($link_target) . ');'
+                        'data-kng-wrapper-link' => $url,
+                        'data-kng-wrapper-link-target' => $link_target,
                     ]
                 );
+
+                self::enqueueScript();
             }
         }
     }

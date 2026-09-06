@@ -29,43 +29,137 @@
             }
         });
         
-        // Initialize existing functionality
+        // ---- Provider switching -------------------------------------------
+        var $provider = $('#king-addons-ai-provider');
+
+        function activeProvider() {
+            return $provider.length ? $provider.val() : 'openai';
+        }
+
+        // Show only the rows belonging to the selected provider. The rows are
+        // hidden by a class rather than an inline style so this stays in step
+        // with the server-rendered initial state.
+        function applyProviderVisibility() {
+            var provider = activeProvider();
+            $('.ka-ai-provider-row').each(function() {
+                var $row = $(this);
+                $row.toggleClass('ka-ai-row-hidden', !$row.hasClass('ka-ai-provider-' + provider));
+            });
+        }
+
+        function apiKeyField() {
+            return activeProvider() === 'openrouter'
+                ? $('#king-addons-openrouter-api-key')
+                : $('input[name="king_addons_ai_options[openai_api_key]"]');
+        }
+
+        // ---- Shared helpers -----------------------------------------------
         var $refreshButton = $('#king-addons-ai-refresh-models-button');
         var $spinner = $('#king-addons-ai-refresh-models-spinner');
         var $statusSpan = $('#king-addons-ai-refresh-models-status');
-        var $modelSelect = $('select[name="king_addons_ai_options[openai_model]"]');
+        var $testButton = $('#king-addons-ai-test-connection-button');
+        var $testSpinner = $('#king-addons-ai-test-connection-spinner');
+        var $testStatus = $('#king-addons-ai-test-connection-status');
 
+        function showSpinner($el, visible) {
+            if (visible) {
+                $el.css({ visibility: 'visible', display: 'inline-block' }).addClass('is-active');
+            } else {
+                $el.css({ visibility: 'hidden', display: 'none' }).removeClass('is-active');
+            }
+        }
+
+        function errorMessage(jqXHR, fallback) {
+            try {
+                var parsed = JSON.parse(jqXHR.responseText);
+                if (parsed.data && parsed.data.message) {
+                    return parsed.data.message;
+                }
+            } catch (e) {
+                // ignore JSON parse errors
+            }
+            return fallback;
+        }
+
+        // Rebuilds one model <select>, keeping the current selection when the
+        // model is still offered, and grouping free models above paid ones.
+        function fillModelSelect($select, models) {
+            if (!$select.length || !Array.isArray(models)) {
+                return;
+            }
+
+            var currentValue = $select.val();
+            var free = [];
+            var paid = [];
+
+            models.forEach(function(model) {
+                (model.free ? free : paid).push(model);
+            });
+
+            function optionsFor(list, $target) {
+                list.forEach(function(model) {
+                    var $option = $('<option></option>').val(model.id).text(model.label);
+                    if (model.id === currentValue) {
+                        $option.prop('selected', true);
+                    }
+                    $target.append($option);
+                });
+            }
+
+            $select.empty().prop('disabled', false);
+
+            // Keep a saved-but-no-longer-offered model selectable.
+            var stillOffered = models.some(function(model) {
+                return model.id === currentValue;
+            });
+            if (currentValue && !stillOffered) {
+                $select.append($('<option></option>').val(currentValue).text(currentValue).prop('selected', true));
+            }
+
+            if (free.length && paid.length) {
+                var $freeGroup = $('<optgroup></optgroup>').attr('label', KingAddonsAiSettings.free_models_label);
+                var $paidGroup = $('<optgroup></optgroup>').attr('label', KingAddonsAiSettings.paid_models_label);
+                optionsFor(free, $freeGroup);
+                optionsFor(paid, $paidGroup);
+                $select.append($freeGroup, $paidGroup);
+            } else {
+                optionsFor(models, $select);
+            }
+        }
+
+        // ---- Refresh model list -------------------------------------------
         $refreshButton.on('click', function() {
             if ($refreshButton.prop('disabled')) {
                 return;
             }
 
-            // Disable button and show spinner
-            $refreshButton.prop('disabled', true);
-            $spinner.css({ visibility: 'visible', display: 'inline-block' }).addClass('is-active');
-            $statusSpan.text(KingAddonsAiSettings.refreshing_text).css('color', '');
-            $modelSelect.prop('disabled', true);
+            var provider = activeProvider();
+            var $selects = $('.ka-ai-provider-' + provider + ' .ka-ai-model-select');
+            if (!$selects.length) {
+                $selects = $('.ka-ai-model-select');
+            }
 
-            // AJAX request to refresh models
+            $refreshButton.prop('disabled', true);
+            showSpinner($spinner, true);
+            $statusSpan.text(KingAddonsAiSettings.refreshing_text).css('color', '');
+            $selects.prop('disabled', true);
+
             $.ajax({
                 url: KingAddonsAiSettings.ajax_url,
                 type: 'POST',
                 data: {
                     action: 'king_addons_ai_refresh_models',
-                    nonce: KingAddonsAiSettings.nonce
+                    nonce: KingAddonsAiSettings.nonce,
+                    provider: provider,
+                    api_key: apiKeyField().val() || ''
                 },
                 dataType: 'json'
             }).done(function(response) {
-                if (response.success && response.data.models) {
-                    var currentValue = $modelSelect.val();
-                    $modelSelect.empty();
-
-                    $.each(response.data.models, function(modelId, modelLabel) {
-                        var $option = $('<option></option>').val(modelId).text(modelLabel);
-                        if (modelId === currentValue) {
-                            $option.prop('selected', true);
-                        }
-                        $modelSelect.append($option);
+                if (response.success && response.data && response.data.models) {
+                    $selects.each(function() {
+                        var $select = $(this);
+                        var type = $select.data('ka-model-type') || 'text';
+                        fillModelSelect($select, response.data.models[type]);
                     });
 
                     $statusSpan.text(KingAddonsAiSettings.refreshed_text).css('color', 'green');
@@ -73,28 +167,61 @@
                         $statusSpan.text('');
                     }, 3000);
                 } else {
-                    var message = response.data && response.data.message ? response.data.message : KingAddonsAiSettings.error_text;
+                    var message = (response.data && response.data.message) ? response.data.message : KingAddonsAiSettings.error_text;
                     $statusSpan.text(message).css('color', 'red');
                 }
             }).fail(function(jqXHR) {
-                var message = KingAddonsAiSettings.error_text;
-                try {
-                    var errorResponse = JSON.parse(jqXHR.responseText);
-                    if (errorResponse.data && errorResponse.data.message) {
-                        message = errorResponse.data.message;
-                    }
-                } catch (e) {
-                    // ignore JSON parse errors
-                }
-                $statusSpan.text(message).css('color', 'red');
+                $statusSpan.text(errorMessage(jqXHR, KingAddonsAiSettings.error_text)).css('color', 'red');
             }).always(function() {
-                // Re-enable button and hide spinner
-                $spinner.css({ visibility: 'hidden', display: 'none' }).removeClass('is-active');
+                showSpinner($spinner, false);
                 $refreshButton.prop('disabled', false);
-                $modelSelect.prop('disabled', false);
+                $selects.prop('disabled', false);
             });
         });
-        
+
+        // ---- Test connection ----------------------------------------------
+        $testButton.on('click', function() {
+            if ($testButton.prop('disabled')) {
+                return;
+            }
+
+            $testButton.prop('disabled', true);
+            showSpinner($testSpinner, true);
+            $testStatus.text(KingAddonsAiSettings.testing_text).css('color', '');
+
+            $.ajax({
+                url: KingAddonsAiSettings.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'king_addons_ai_test_connection',
+                    nonce: KingAddonsAiSettings.nonce,
+                    provider: activeProvider(),
+                    api_key: apiKeyField().val() || ''
+                },
+                dataType: 'json'
+            }).done(function(response) {
+                if (response.success && response.data && response.data.message) {
+                    $testStatus.text(response.data.message).css('color', 'green');
+                } else {
+                    var message = (response.data && response.data.message) ? response.data.message : KingAddonsAiSettings.test_failed_text;
+                    $testStatus.text(message).css('color', 'red');
+                }
+            }).fail(function(jqXHR) {
+                $testStatus.text(errorMessage(jqXHR, KingAddonsAiSettings.test_failed_text)).css('color', 'red');
+            }).always(function() {
+                showSpinner($testSpinner, false);
+                $testButton.prop('disabled', false);
+            });
+        });
+
+        $provider.on('change', function() {
+            applyProviderVisibility();
+            $statusSpan.text('');
+            $testStatus.text('');
+        });
+
+        applyProviderVisibility();
+
         // Modern animation functions
         function initModernAnimations() {
             // Stagger animation for form sections

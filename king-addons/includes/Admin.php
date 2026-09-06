@@ -742,15 +742,53 @@ final class Admin
 
         add_settings_section(
             'king_addons_ai_openai_section',
-            esc_html__('OpenAI API Settings', 'king-addons'),
+            esc_html__('AI Provider Settings', 'king-addons'),
             [$this, 'renderAiOpenaiSection'],
             'king-addons-ai-settings'
         );
 
         add_settings_field(
+            'ai_provider',
+            esc_html__('AI Provider', 'king-addons'),
+            [$this, 'renderAiProviderField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section'
+        );
+
+        // Provider specific rows. The row classes let the settings page show only
+        // the fields belonging to the provider that is currently selected; the
+        // inactive ones start hidden so they never flash before the script runs.
+        $active_provider = AI_Provider::getProvider();
+        $row_class = static function (string $provider) use ($active_provider): array {
+            $classes = 'ka-ai-provider-row ka-ai-provider-' . $provider;
+            if ($provider !== $active_provider) {
+                $classes .= ' ka-ai-row-hidden';
+            }
+            return ['class' => $classes];
+        };
+
+        add_settings_field(
             'openai_api_key',
             esc_html__('OpenAI API Key', 'king-addons'),
             [$this, 'renderAiApiKeyField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENAI)
+        );
+
+        add_settings_field(
+            'openrouter_api_key',
+            esc_html__('OpenRouter API Key', 'king-addons'),
+            [$this, 'renderAiOpenRouterApiKeyField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENROUTER)
+        );
+
+        add_settings_field(
+            'ai_connection_test',
+            esc_html__('Connection', 'king-addons'),
+            [$this, 'renderAiConnectionTestField'],
             'king-addons-ai-settings',
             'king_addons_ai_openai_section'
         );
@@ -760,7 +798,8 @@ final class Admin
             esc_html__('OpenAI Model (for text generation)', 'king-addons'),
             [$this, 'renderAiModelField'],
             'king-addons-ai-settings',
-            'king_addons_ai_openai_section'
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENAI)
         );
 
         add_settings_field(
@@ -768,7 +807,8 @@ final class Admin
             esc_html__('OpenAI Model (for image recognition)', 'king-addons'),
             [$this, 'renderAiVisionModelField'],
             'king-addons-ai-settings',
-            'king_addons_ai_openai_section'
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENAI)
         );
 
         // Add image model selector field
@@ -777,7 +817,35 @@ final class Admin
             esc_html__('OpenAI Image Model (for image generation)', 'king-addons'),
             [$this, 'renderAiImageModelField'],
             'king-addons-ai-settings',
-            'king_addons_ai_openai_section'
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENAI)
+        );
+
+        add_settings_field(
+            'openrouter_model',
+            esc_html__('OpenRouter Model (for text generation)', 'king-addons'),
+            [$this, 'renderAiOpenRouterModelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENROUTER)
+        );
+
+        add_settings_field(
+            'openrouter_vision_model',
+            esc_html__('OpenRouter Model (for image recognition)', 'king-addons'),
+            [$this, 'renderAiOpenRouterVisionModelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENROUTER)
+        );
+
+        add_settings_field(
+            'openrouter_image_model',
+            esc_html__('OpenRouter Image Model (for image generation)', 'king-addons'),
+            [$this, 'renderAiOpenRouterImageModelField'],
+            'king-addons-ai-settings',
+            'king_addons_ai_openai_section',
+            $row_class(AI_Provider::OPENROUTER)
         );
 
         // Global content language
@@ -894,6 +962,9 @@ final class Admin
         // AJAX handler for refreshing models.
         add_action('wp_ajax_king_addons_ai_refresh_models', [$this, 'handleAiRefreshModels']);
 
+        // AJAX handler for testing the provider connection.
+        add_action('wp_ajax_king_addons_ai_test_connection', [$this, 'handleAiTestConnection']);
+
         // AJAX handler for generating text via AI
         add_action('wp_ajax_king_addons_ai_generate_text', [$this, 'handleAiGenerateText']);
 
@@ -922,6 +993,9 @@ final class Admin
     public function sanitizeAiSettings(array $input): array
     {
         $sanitized = [];
+
+        $sanitized['ai_provider'] = AI_Provider::normalizeProvider($input['ai_provider'] ?? AI_Provider::OPENAI);
+
         $sanitized['openai_api_key'] = isset($input['openai_api_key'])
             ? sanitize_text_field($input['openai_api_key'])
             : '';
@@ -934,6 +1008,27 @@ final class Admin
         $sanitized['openai_image_model'] = isset($input['openai_image_model'])
             ? sanitize_text_field($input['openai_image_model'])
             : 'gpt-image-1';
+
+        // OpenRouter is configured independently, so switching providers back
+        // and forth keeps both sets of credentials and models intact.
+        $sanitized['openrouter_api_key'] = isset($input['openrouter_api_key'])
+            ? sanitize_text_field($input['openrouter_api_key'])
+            : '';
+        $sanitized['openrouter_model'] = isset($input['openrouter_model'])
+            ? sanitize_text_field($input['openrouter_model'])
+            : '';
+        $sanitized['openrouter_vision_model'] = isset($input['openrouter_vision_model'])
+            ? sanitize_text_field($input['openrouter_vision_model'])
+            : ($sanitized['openrouter_model'] ?: '');
+        $sanitized['openrouter_image_model'] = isset($input['openrouter_image_model'])
+            ? sanitize_text_field($input['openrouter_image_model'])
+            : '';
+
+        // Content language is rendered by this section, so it has to survive the save.
+        $sanitized['content_language_custom_enable'] = !empty($input['content_language_custom_enable']);
+        $sanitized['content_language_custom'] = isset($input['content_language_custom'])
+            ? sanitize_text_field($input['content_language_custom'])
+            : '';
 
         // Sanitize Daily Token Limit.
         if (isset($input['daily_token_limit'])) {
@@ -965,7 +1060,7 @@ final class Admin
         // Sanitize Image Detail Level
         $allowed_detail_levels = ['low', 'high'];
         $sanitized['ai_alt_text_image_detail_level'] = in_array(($input['ai_alt_text_image_detail_level'] ?? 'low'), $allowed_detail_levels, true)
-            ? $input['ai_alt_text_image_detail_level']
+            ? ($input['ai_alt_text_image_detail_level'] ?? 'low')
             : 'low';
 
         // Sanitize Auto Tagging settings.
@@ -990,11 +1085,19 @@ final class Admin
             || !empty($sanitized['enable_ai_page_translator'])
         );
 
-        if ($ai_requires_key && empty($sanitized['openai_api_key'])) {
+        $active_key = ($sanitized['ai_provider'] === AI_Provider::OPENROUTER)
+            ? $sanitized['openrouter_api_key']
+            : $sanitized['openai_api_key'];
+
+        if ($ai_requires_key && empty($active_key)) {
             add_settings_error(
                 'king_addons_ai',
                 'king_addons_ai_missing_api_key',
-                esc_html__('OpenAI API Key is required to enable AI features.', 'king-addons'),
+                sprintf(
+                    /* translators: %s: provider name */
+                    esc_html__('%s API Key is required to enable AI features.', 'king-addons'),
+                    AI_Provider::getLabel($sanitized['ai_provider'])
+                ),
                 'error'
             );
         }
@@ -1009,7 +1112,7 @@ final class Admin
      */
     public function clearAiModelsCache(): void
     {
-        delete_transient('king_addons_ai_models_cache');
+        AI_Provider::clearModelsCache();
     }
 
     /**
@@ -1060,18 +1163,157 @@ final class Admin
                 'refreshing_text' => esc_html__('Refreshing...', 'king-addons'),
                 'refreshed_text' => esc_html__('List updated.', 'king-addons'),
                 'error_text' => esc_html__('Error updating list.', 'king-addons'),
+                'testing_text' => esc_html__('Testing connection...', 'king-addons'),
+                'test_failed_text' => esc_html__('Connection failed.', 'king-addons'),
+                'free_models_label' => esc_html__('Free models', 'king-addons'),
+                'paid_models_label' => esc_html__('Paid models', 'king-addons'),
             ]
         );
     }
 
     /**
-     * Renders description for OpenAI API Settings section.
+     * Renders description for the AI Provider Settings section.
      *
      * @return void
      */
     public function renderAiOpenaiSection(): void
     {
-        echo '<p>' . esc_html__('Enter your OpenAI API key and select the model for AI features.', 'king-addons') . '</p>';
+        echo '<p>' . esc_html__('Choose an AI provider, enter its API key and select the models used by the AI features.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the AI provider selector.
+     *
+     * @return void
+     */
+    public function renderAiProviderField(): void
+    {
+        $selected = AI_Provider::getProvider();
+
+        echo '<select name="king_addons_ai_options[ai_provider]" id="king-addons-ai-provider">';
+        foreach (AI_Provider::getProviders() as $provider => $label) {
+            printf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr($provider),
+                selected($selected, $provider, false),
+                esc_html($label)
+            );
+        }
+        echo '</select>';
+
+        echo '<p class="description">' . esc_html__('OpenAI talks to the OpenAI API directly. OpenRouter is a gateway to models from many vendors, including a number of free ones, through a single API key.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the OpenRouter API Key input field.
+     *
+     * @return void
+     */
+    public function renderAiOpenRouterApiKeyField(): void
+    {
+        $options = get_option('king_addons_ai_options', []);
+        $api_key = $options['openrouter_api_key'] ?? '';
+        printf(
+            '<input type="password" name="king_addons_ai_options[openrouter_api_key]" id="king-addons-openrouter-api-key" value="%s" class="regular-text" autocomplete="off" />',
+            esc_attr($api_key)
+        );
+        echo '<p class="description">';
+        printf(
+            /* translators: %1$s: opening link tag, %2$s: closing link tag */
+            esc_html__('Get your API key from %1$sOpenRouter Keys%2$s. Saving the key will attempt to fetch the available models.', 'king-addons'),
+            '<a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">',
+            '</a>'
+        );
+        echo '</p>';
+        echo '<div class="ka-ai-notice ka-ai-notice-info">';
+        echo '<strong>' . esc_html__('Info:', 'king-addons') . '</strong> ';
+        echo esc_html__('Free models can be used without adding credit. Paid models, including every image generation model, require credit on your OpenRouter account.', 'king-addons');
+        echo '</div>';
+        echo '<div class="ka-ai-notice ka-ai-notice-info">';
+        echo '<strong class="ka-ai-notice-title">' . esc_html__('Useful OpenRouter Links:', 'king-addons') . '</strong>';
+        echo '<ul class="ka-ai-links-list">';
+        $links = [
+            'Models & Pricing' => 'https://openrouter.ai/models',
+            'API Keys' => 'https://openrouter.ai/keys',
+            'Activity Dashboard' => 'https://openrouter.ai/activity',
+            'Credits' => 'https://openrouter.ai/settings/credits',
+            'Limits' => 'https://openrouter.ai/docs/api-reference/limits',
+        ];
+        foreach ($links as $label => $url) {
+            printf(
+                '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>',
+                esc_url($url),
+                esc_html($label)
+            );
+        }
+        echo '</ul></div>';
+    }
+
+    /**
+     * Renders the "Test Connection" control.
+     *
+     * @return void
+     */
+    public function renderAiConnectionTestField(): void
+    {
+        echo '<button type="button" id="king-addons-ai-test-connection-button" class="button button-secondary">' . esc_html__('Test Connection', 'king-addons') . '</button>';
+        echo '<button type="button" id="king-addons-ai-refresh-models-button" class="button button-secondary" style="margin-left:10px; vertical-align:middle;">' . esc_html__('Refresh List', 'king-addons') . '</button>';
+        echo '<span class="spinner" id="king-addons-ai-test-connection-spinner" style="float:none; vertical-align:middle;"></span>';
+        echo '<span class="spinner" id="king-addons-ai-refresh-models-spinner" style="float:none; vertical-align:middle;"></span>';
+        echo '<span id="king-addons-ai-test-connection-status" style="margin-left:5px; vertical-align:middle;"></span>';
+        echo '<span id="king-addons-ai-refresh-models-status" style="margin-left:5px; vertical-align:middle;"></span>';
+        echo '<p class="description">' . esc_html__('Test Connection checks the API key currently typed above against the selected provider — it does not have to be saved first. Refresh List re-fetches that provider\'s model catalogue.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the OpenRouter text model dropdown.
+     *
+     * @return void
+     */
+    public function renderAiOpenRouterModelField(): void
+    {
+        $selected = AI_Provider::getModel('text', AI_Provider::OPENROUTER);
+        AI_Provider::renderModelSelect(
+            'king_addons_ai_options[openrouter_model]',
+            $selected,
+            AI_Provider::getModelsFor('text', AI_Provider::OPENROUTER),
+            ['class' => 'ka-ai-model-select', 'data-ka-model-type' => 'text']
+        );
+        echo '<p class="description">' . esc_html__('Free models are listed first, then paid ones, each block in alphabetical order. Use the Refresh List button to pull the latest catalogue.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the OpenRouter vision model dropdown.
+     *
+     * @return void
+     */
+    public function renderAiOpenRouterVisionModelField(): void
+    {
+        $selected = AI_Provider::getModel('vision', AI_Provider::OPENROUTER);
+        AI_Provider::renderModelSelect(
+            'king_addons_ai_options[openrouter_vision_model]',
+            $selected,
+            AI_Provider::getModelsFor('vision', AI_Provider::OPENROUTER),
+            ['class' => 'ka-ai-model-select', 'data-ka-model-type' => 'vision']
+        );
+        echo '<p class="description">' . esc_html__('Only models that accept image input are listed. Used for the Alt Text Generator and other vision requests.', 'king-addons') . '</p>';
+    }
+
+    /**
+     * Renders the OpenRouter image generation model dropdown.
+     *
+     * @return void
+     */
+    public function renderAiOpenRouterImageModelField(): void
+    {
+        $selected = AI_Provider::getModel('image', AI_Provider::OPENROUTER);
+        AI_Provider::renderModelSelect(
+            'king_addons_ai_options[openrouter_image_model]',
+            $selected,
+            AI_Provider::getModelsFor('image', AI_Provider::OPENROUTER),
+            ['class' => 'ka-ai-model-select', 'data-ka-model-type' => 'image']
+        );
+        echo '<p class="description">' . esc_html__('Only models that return images are listed. Image generation is never free — your OpenRouter account needs credit.', 'king-addons') . '</p>';
     }
 
     /**
@@ -1129,29 +1371,13 @@ final class Admin
      */
     public function renderAiModelField(): void
     {
-        $options = get_option('king_addons_ai_options', []);
-        $selected = $options['openai_model'] ?? '';
-        $models = $this->getAiAvailableModels();
-        printf(
-            '<select name="king_addons_ai_options[openai_model]" %s>',
-            empty($models) ? 'disabled' : ''
+        $selected = AI_Provider::getModel('text', AI_Provider::OPENAI);
+        AI_Provider::renderModelSelect(
+            'king_addons_ai_options[openai_model]',
+            $selected,
+            AI_Provider::getModelsFor('text', AI_Provider::OPENAI),
+            ['class' => 'ka-ai-model-select', 'data-ka-model-type' => 'text']
         );
-        if (!empty($models)) {
-            foreach ($models as $id => $label) {
-                printf(
-                    '<option value="%s" %s>%s</option>',
-                    esc_attr($id),
-                    selected($selected, $id, false),
-                    esc_html($label)
-                );
-            }
-        } else {
-            echo '<option value="">' . esc_html__('Could not fetch models. Check API key?', 'king-addons') . '</option>';
-        }
-        echo '</select>';
-        echo '<button type="button" id="king-addons-ai-refresh-models-button" class="button button-secondary" style="margin-left:10px; vertical-align:middle;">' . esc_html__('Refresh List', 'king-addons') . '</button>';
-        echo '<span class="spinner" id="king-addons-ai-refresh-models-spinner" style="float:none; vertical-align:middle;"></span>';
-        echo '<span id="king-addons-ai-refresh-models-status" style="margin-left:5px; vertical-align:middle;"></span>';
         echo '<p class="description">' . esc_html__('Select an available OpenAI model capable of processing text. We recommend GPT-4o-mini or GPT-4.1-nano for best results. The list of models is cached indefinitely until manually refreshed.', 'king-addons') . '</p>';
     }
 
@@ -1164,92 +1390,32 @@ final class Admin
     {
         $options = get_option('king_addons_ai_options', []);
         $selected = $options['openai_vision_model'] ?? ($options['openai_model'] ?? 'gpt-4o-mini');
-        $models = $this->getAiAvailableModels();
-
-        printf(
-            '<select name="king_addons_ai_options[openai_vision_model]" %s>',
-            empty($models) ? 'disabled' : ''
+        AI_Provider::renderModelSelect(
+            'king_addons_ai_options[openai_vision_model]',
+            (string) $selected,
+            AI_Provider::getModelsFor('vision', AI_Provider::OPENAI),
+            ['class' => 'ka-ai-model-select', 'data-ka-model-type' => 'vision']
         );
-
-        if (!empty($models)) {
-            foreach ($models as $id => $label) {
-                printf(
-                    '<option value="%s" %s>%s</option>',
-                    esc_attr($id),
-                    selected($selected, $id, false),
-                    esc_html($label)
-                );
-            }
-        } else {
-            echo '<option value="">' . esc_html__('Could not fetch models. Check API key?', 'king-addons') . '</option>';
-        }
-
-        echo '</select>';
         echo '<p class="description">' . esc_html__('Select the default model used for AI image analysis tasks (Alt Text Generator and related vision requests).', 'king-addons') . '</p>';
     }
 
     /**
-     * Fetches the list of OpenAI models via API.
+     * Builds the model lists the settings page needs, keyed by purpose.
      *
-     * @param string|null $api_key API key to use.
-     * @return array|\WP_Error Model list or error.
+     * @param string $provider Provider slug.
+     * @return array<string, array<int, array<string, mixed>>>
      */
-    private function fetchAiOpenaiModels(?string $api_key)
+    private function getAiModelPayload(string $provider): array
     {
-        if (empty($api_key)) {
-            return new \WP_Error('missing_key', esc_html__('API key is required to fetch models.', 'king-addons'));
-        }
-        $endpoint = 'https://api.openai.com/v1/models';
-        $response = wp_remote_get($endpoint, [
-            'headers' => ['Authorization' => 'Bearer ' . $api_key],
-            'timeout' => 20,
-        ]);
-        if (is_wp_error($response)) {
-            return $response;
-        }
-        $code = wp_remote_retrieve_response_code($response);
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-        if ($code !== 200 || empty($data['data']) || !is_array($data['data'])) {
-            $message = $data['error']['message'] ?? esc_html__('Invalid response from API.', 'king-addons');
-            return new \WP_Error('api_error', $message, ['status' => $code]);
-        }
-        $list = [];
-        foreach ($data['data'] as $model) {
-            if (isset($model['id'])) {
-                $list[$model['id']] = $model['id'];
-            }
-        }
-        ksort($list);
-        if (empty($list)) {
-            return new \WP_Error('no_models', esc_html__('No models found via API.', 'king-addons'));
-        }
-        return $list;
+        return [
+            'text' => AI_Provider::getModelsFor('text', $provider),
+            'vision' => AI_Provider::getModelsFor('vision', $provider),
+            'image' => AI_Provider::getModelsFor('image', $provider),
+        ];
     }
 
     /**
-     * Retrieves available models, using cache if possible.
-     *
-     * @return array Model list.
-     */
-    private function getAiAvailableModels(): array
-    {
-        $cached = get_transient('king_addons_ai_models_cache');
-        if (false !== $cached && is_array($cached)) {
-            return $cached;
-        }
-        $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? null;
-        $fetched = $this->fetchAiOpenaiModels($api_key);
-        if (!is_wp_error($fetched)) {
-            set_transient('king_addons_ai_models_cache', $fetched, 0);
-            return $fetched;
-        }
-        return ['gpt-4o-mini' => 'GPT-4o-mini', 'gpt-4.1-nano' => 'GPT-4.1-nano'];
-    }
-
-    /**
-     * Handles AJAX request to refresh model list.
+     * Handles AJAX request to refresh the model list of the selected provider.
      *
      * @return void
      */
@@ -1259,25 +1425,74 @@ final class Admin
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
         }
-        $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? null;
-        if (empty($api_key)) {
+
+        $provider = AI_Provider::normalizeProvider(
+            isset($_POST['provider']) ? sanitize_text_field(wp_unslash($_POST['provider'])) : AI_Provider::getProvider()
+        );
+
+        // Allow refreshing against a key that has been typed but not saved yet.
+        $posted_key = isset($_POST['api_key']) ? trim(sanitize_text_field(wp_unslash($_POST['api_key']))) : '';
+        $api_key = ($posted_key !== '') ? $posted_key : AI_Provider::getApiKey($provider);
+
+        // OpenRouter publishes its catalogue without authentication.
+        if ($api_key === '' && $provider !== AI_Provider::OPENROUTER) {
             wp_send_json_error(['message' => esc_html__('API key is not set.', 'king-addons')], 400);
         }
-        $this->clearAiModelsCache();
-        $models = $this->fetchAiOpenaiModels($api_key);
+
+        $models = AI_Provider::fetchModels($provider, $api_key);
         if (is_wp_error($models)) {
             wp_send_json_error(['message' => $models->get_error_message()], 500);
         }
-        if (empty($models)) {
-            wp_send_json_error(['message' => esc_html__('No models returned by API.', 'king-addons')], 500);
-        }
-        set_transient('king_addons_ai_models_cache', $models, 0);
-        wp_send_json_success(['models' => $models]);
+
+        set_transient(
+            AI_Provider::getCacheKey($provider),
+            $models,
+            ($provider === AI_Provider::OPENROUTER) ? DAY_IN_SECONDS : 0
+        );
+
+        wp_send_json_success([
+            'provider' => $provider,
+            'models' => $this->getAiModelPayload($provider),
+        ]);
     }
 
     /**
-     * AJAX handler to generate text using OpenAI.
+     * Handles AJAX request to verify the provider connection.
+     *
+     * @return void
+     */
+    public function handleAiTestConnection(): void
+    {
+        check_ajax_referer('king_addons_ai_refresh_models_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => esc_html__('Permission denied.', 'king-addons')], 403);
+        }
+
+        $provider = AI_Provider::normalizeProvider(
+            isset($_POST['provider']) ? sanitize_text_field(wp_unslash($_POST['provider'])) : AI_Provider::getProvider()
+        );
+
+        // Test what is in the field right now, so a key can be verified before
+        // it is saved. An empty field falls back to the stored key.
+        $posted_key = isset($_POST['api_key']) ? trim(sanitize_text_field(wp_unslash($_POST['api_key']))) : '';
+        $stored_key = AI_Provider::getApiKey($provider);
+        $api_key = ($posted_key !== '') ? $posted_key : $stored_key;
+        $unsaved = ($posted_key !== '' && $posted_key !== $stored_key);
+
+        $result = AI_Provider::testConnection($provider, $api_key);
+        if (is_wp_error($result)) {
+            wp_send_json_error(['message' => $result->get_error_message()], 400);
+        }
+
+        if ($unsaved) {
+            $result .= ' ' . esc_html__('Save the settings to start using it.', 'king-addons');
+        }
+
+        wp_send_json_success(['message' => $result, 'unsaved' => $unsaved]);
+    }
+
+    /**
+     * AJAX handler to generate text using the configured AI provider.
      *
      * @return void
      */
@@ -1297,8 +1512,8 @@ final class Admin
         $editor_type = sanitize_text_field($_POST['editor_type'] ?? 'text');
 
         $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
-        $model = $options['openai_model'] ?? '';
+        $api_key = AI_Provider::getApiKey();
+        $model = AI_Provider::getTextModel();
 
         if (empty($api_key) || empty($model)) {
             wp_send_json_error(['message' => esc_html__('API key or model not set.', 'king-addons')], 400);
@@ -1314,7 +1529,11 @@ final class Admin
 
         if ($daily_limit > 0 && $current_usage >= $daily_limit) {
             wp_send_json_error([
-                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons')
+                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons'),
+                // This is the plugin's own cap, not the provider's, so the
+                // client must not retry it or blame the AI provider.
+                'code' => 'local_limit',
+                'retryable' => false,
             ], 429);
         }
 
@@ -1326,7 +1545,7 @@ final class Admin
             $system_instruction = 'You are a helpful content assistant for a rich text editor. Provide content with proper HTML formatting. Use <p> tags for paragraphs with appropriate spacing between them. If relevant, use other HTML formatting like <strong>, <em>, <ul>, <ol>, etc. for better readability and structure. IMPORTANT: Do NOT wrap your HTML in code fences (``` or ```html). Respond ONLY with the actual HTML content.';
         }
 
-        // Prepare request to OpenAI Chat Completions
+        // Prepare request to the provider's Chat Completions endpoint
         $messages = [
             ['role' => 'system', 'content' => $system_instruction],
             ['role' => 'user', 'content' => $prompt]
@@ -1338,18 +1557,15 @@ final class Admin
         }
 
         $response = wp_remote_post(
-            'https://api.openai.com/v1/chat/completions',
+            AI_Provider::getChatEndpoint(),
             [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => wp_json_encode([
+                'headers' => AI_Provider::getHeaders(),
+                'body' => wp_json_encode(AI_Provider::prepareChatPayload([
                     'model' => $model,
                     'messages' => $messages,
                     'max_tokens' => 500,
                     'temperature' => 0.7, // Slight creativity for better content
-                ]),
+                ])),
                 'timeout' => 30,
             ]
         );
@@ -1362,7 +1578,7 @@ final class Admin
         $data = json_decode(wp_remote_retrieve_body($response), true);
 
         if ($code !== 200 || empty($data['choices'][0]['message']['content'])) {
-            $error_msg = $data['error']['message'] ?? esc_html__('AI API error.', 'king-addons');
+            $error_msg = AI_Provider::extractErrorMessage($data, esc_html__('AI API error.', 'king-addons'));
             wp_send_json_error(['message' => $error_msg], 500);
         }
 
@@ -1407,8 +1623,8 @@ final class Admin
         $instruction_context = isset($_POST['instruction_context']) ? sanitize_textarea_field(wp_unslash($_POST['instruction_context'])) : '';
 
         $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
-        $model = $options['openai_model'] ?? '';
+        $api_key = AI_Provider::getApiKey();
+        $model = AI_Provider::getTextModel();
 
         if (empty($api_key) || empty($model) || empty($prompt) || empty($original)) {
             wp_send_json_error(['message' => esc_html__('Missing data for AI change.', 'king-addons')], 400);
@@ -1420,7 +1636,11 @@ final class Admin
 
         if ($daily_limit > 0 && $current_usage >= $daily_limit) {
             wp_send_json_error([
-                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons')
+                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons'),
+                // This is the plugin's own cap, not the provider's, so the
+                // client must not retry it or blame the AI provider.
+                'code' => 'local_limit',
+                'retryable' => false,
             ], 429);
         }
 
@@ -1673,13 +1893,10 @@ final class Admin
         }
 
         $response = wp_remote_post(
-            'https://api.openai.com/v1/chat/completions',
+            AI_Provider::getChatEndpoint(),
             [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => wp_json_encode($body),
+                'headers' => AI_Provider::getHeaders(),
+                'body' => wp_json_encode(AI_Provider::prepareChatPayload($body)),
                 'timeout' => 30,
             ]
         );
@@ -1692,7 +1909,7 @@ final class Admin
         $data = json_decode(wp_remote_retrieve_body($response), true);
 
         if ($code !== 200 || empty($data['choices'][0]['message']['content'])) {
-            $error_msg = $data['error']['message'] ?? esc_html__('AI change error.', 'king-addons');
+            $error_msg = AI_Provider::extractErrorMessage($data, esc_html__('AI change error.', 'king-addons'));
             wp_send_json_error(['message' => $error_msg], 500);
         }
 
@@ -1870,8 +2087,8 @@ final class Admin
         $daily_limit = isset($options['daily_token_limit']) ? intval($options['daily_token_limit']) : self::DEFAULT_DAILY_TOKEN_LIMIT;
         $daily_used = $this->getAiDailyUsage();
         // Check if API key and model are set
-        $api_key = $options['openai_api_key'] ?? '';
-        $model = $options['openai_model'] ?? '';
+        $api_key = AI_Provider::getApiKey();
+        $model = AI_Provider::getTextModel();
         $api_key_valid = !empty($api_key) && !empty($model);
 
         wp_send_json_success([
@@ -1898,8 +2115,8 @@ final class Admin
         $daily_limit = isset($options['daily_token_limit']) ? intval($options['daily_token_limit']) : self::DEFAULT_DAILY_TOKEN_LIMIT;
         $daily_used = $this->getAiDailyUsage();
         // Check if API key and model are set
-        $api_key = $options['openai_api_key'] ?? '';
-        $model = $options['openai_model'] ?? '';
+        $api_key = AI_Provider::getApiKey();
+        $model = AI_Provider::getTextModel();
         $api_key_valid = !empty($api_key) && !empty($model);
 
         wp_send_json_success([
@@ -2059,7 +2276,7 @@ final class Admin
     }
 
     /**
-     * AJAX handler to generate images using OpenAI.
+     * AJAX handler to generate images using the configured AI provider.
      *
      * @return void
      */
@@ -2069,8 +2286,8 @@ final class Admin
             return;
         }
 
-        // Apply these cURL options only to OpenAI requests to avoid affecting other outbound HTTP calls.
-        if (strpos($url, 'openai.com') === false) {
+        // Apply these cURL options only to AI provider requests to avoid affecting other outbound HTTP calls.
+        if (!AI_Provider::isProviderUrl($url)) {
             return;
         }
 
@@ -2093,127 +2310,156 @@ final class Admin
         $quality = isset($_POST['quality']) ? sanitize_text_field(wp_unslash($_POST['quality'])) : '';
         $size = isset($_POST['size']) ? sanitize_text_field(wp_unslash($_POST['size'])) : '';
         // Model from frontend selector
-        $model = isset($_POST['model']) ? sanitize_text_field(wp_unslash($_POST['model'])) : 'dall-e-3';
+        $model = isset($_POST['model']) ? sanitize_text_field(wp_unslash($_POST['model'])) : '';
+        if ($model === '') {
+            $model = AI_Provider::getImageModel();
+        }
 
-        $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
+        $api_key = AI_Provider::getApiKey();
         if (empty($api_key)) {
-            wp_send_json_error(['message' => esc_html__('OpenAI API key is not set.', 'king-addons')], 400);
+            wp_send_json_error([
+                'message' => sprintf(
+                    /* translators: %s: provider name */
+                    esc_html__('%s API key is not set.', 'king-addons'),
+                    AI_Provider::getLabel()
+                )
+            ], 400);
         }
         if (empty($prompt)) {
             wp_send_json_error(['message' => esc_html__('Please provide an image prompt.', 'king-addons')], 400);
         }
 
-        // Build request body based on selected model
+        // Build the request body. OpenAI's image models take vendor specific
+        // quality/size/background options; OpenRouter fans out to many vendors
+        // that do not share that vocabulary, so only portable fields are sent.
         $body = [
             'model' => $model,
             'prompt' => $prompt,
-            'size' => $size,
         ];
-        if ($model === 'dall-e-3') {
-            // DALL·E 3 parameters
+
+        if (AI_Provider::isOpenRouter()) {
             $body['n'] = 1;
-            $body['quality'] = ($quality === 'hd') ? 'hd' : 'standard';
-        } elseif ($model === 'gpt-image-1') {
-            // GPT Image 1 parameters
-            // Only include background when transparent is requested
-            if (!empty($_POST['background']) && 'transparent' === sanitize_text_field(wp_unslash($_POST['background']))) {
-                $body['background'] = 'transparent';
+        } else {
+            $body['size'] = $size;
+
+            if ($model === 'dall-e-3') {
+                // DALL·E 3 parameters
+                $body['n'] = 1;
+                $body['quality'] = ($quality === 'hd') ? 'hd' : 'standard';
+            } elseif ($model === 'gpt-image-1') {
+                // GPT Image 1 parameters
+                // Only include background when transparent is requested
+                if (!empty($_POST['background']) && 'transparent' === sanitize_text_field(wp_unslash($_POST['background']))) {
+                    $body['background'] = 'transparent';
+                }
+                $body['quality'] = in_array($quality, ['low', 'medium', 'high', 'auto'], true)
+                    ? $quality
+                    : 'auto';
             }
-            $body['quality'] = in_array($quality, ['low', 'medium', 'high', 'auto'], true)
-                ? $quality
-                : 'auto';
         }
 
         add_action('http_api_curl', [$this, 'set_openai_curl_options'], 10, 3);
 
-        // Call OpenAI Image Generations API
+        // Call the provider's image generation API.
         $response = wp_remote_post(
-            'https://api.openai.com/v1/images/generations',
+            AI_Provider::getImagesEndpoint(),
             [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ],
+                'headers' => AI_Provider::getHeaders(),
                 'body' => wp_json_encode($body),
                 'timeout' => 300,
             ]
         );
-        if (is_wp_error($response)) {
-            wp_send_json_error(['message' => $response->get_error_message()], 500);
+
+        $data = AI_Provider::decodeResponse($response, esc_html__('AI image generation error.', 'king-addons'));
+        if (is_wp_error($data)) {
+            wp_send_json_error(['message' => $data->get_error_message()], 500);
         }
 
-        $image_url = '';
+        // Depending on the model, an image comes back either as a hosted URL or
+        // as inline base64, so both shapes are accepted from either provider.
+        $item = (isset($data['data'][0]) && is_array($data['data'][0])) ? $data['data'][0] : [];
+        $base64 = '';
+        $remote_url = '';
+        $mime = 'image/png';
 
-        if ($model === 'gpt-image-1') {
-            // Grab and decode the base64
+        if (!empty($item['b64_json']) && is_string($item['b64_json'])) {
+            $base64 = $item['b64_json'];
+            if (!empty($item['media_type']) && is_string($item['media_type'])) {
+                $mime = $item['media_type'];
+            }
+        } elseif (!empty($item['url']) && is_string($item['url'])) {
+            $remote_url = $item['url'];
+        } elseif (!empty($item['image_url']['url']) && is_string($item['image_url']['url'])) {
+            $remote_url = $item['image_url']['url'];
+        }
 
-            $data = json_decode(wp_remote_retrieve_body($response), true);
+        // Some providers hand back a data: URI in the url field.
+        if ($remote_url !== '' && strpos($remote_url, 'data:') === 0 && preg_match('#^data:([^;,]+);base64,(.+)$#s', $remote_url, $matches)) {
+            $mime = $matches[1];
+            $base64 = $matches[2];
+            $remote_url = '';
+        }
 
-            $image_base64 = $data['data'][0]['b64_json'];
+        if ($base64 === '' && $remote_url === '') {
+            wp_send_json_error([
+                'message' => sprintf(
+                    /* translators: %s: model id */
+                    esc_html__('The model %s did not return an image. Pick an image-capable model in AI Settings.', 'king-addons'),
+                    $model
+                )
+            ], 500);
+        }
 
-            $bytes = base64_decode($image_base64);
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+
+        $filename = substr(sanitize_file_name($prompt), 0, 100);
+        if ($filename === '') {
+            $filename = 'ai-image';
+        }
+
+        if ($base64 !== '') {
+            $bytes = base64_decode($base64, true);
             if (!$bytes) {
-                wp_send_json_error(['message' => 'Invalid image data from API.'], 500);
+                wp_send_json_error(['message' => esc_html__('Invalid image data from API.', 'king-addons')], 500);
+            }
+
+            $extension = 'png';
+            $type_map = ['image/jpeg' => 'jpg', 'image/jpg' => 'jpg', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+            if (isset($type_map[$mime])) {
+                $extension = $type_map[$mime];
             }
 
             // Create a temp file and write it
-            $tmp = wp_tempnam('gpt-image-1.png');
+            $tmp = wp_tempnam($filename . '.' . $extension);
             if (!$tmp || !file_put_contents($tmp, $bytes)) {
-                wp_send_json_error(['message' => 'Failed to write temp image file.'], 500);
+                wp_send_json_error(['message' => esc_html__('Failed to write temp image file.', 'king-addons')], 500);
             }
-
-            // Prepare for sideload
-            $file = [
-                'name' => substr(sanitize_file_name($prompt), 0, 100) . '.png',
-                'tmp_name' => $tmp,
-            ];
-
-            // Make sure these are loaded
-            require_once ABSPATH . 'wp-admin/includes/image.php';
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-            require_once ABSPATH . 'wp-admin/includes/media.php';
 
             // Sideload into the Media Library
-            $attach_id = media_handle_sideload($file, 0, $prompt);
-            if (is_wp_error($attach_id)) {
-                wp_send_json_error(['message' => $attach_id->get_error_message()], 500);
-            }
+            $attachment_id = media_handle_sideload(
+                ['name' => $filename . '.' . $extension, 'tmp_name' => $tmp],
+                0,
+                $prompt
+            );
 
-            $url = wp_get_attachment_url($attach_id);
-            wp_send_json_success(['attachment_id' => $attach_id, 'url' => $url]);
+            if (is_wp_error($attachment_id)) {
+                @unlink($tmp);
+                wp_send_json_error(['message' => $attachment_id->get_error_message()], 500);
+            }
         } else {
-
-
-            $code = wp_remote_retrieve_response_code($response);
-            $data = json_decode(wp_remote_retrieve_body($response), true);
-            if ($code !== 200 || empty($data['data'][0]['url'])) {
-                $error_msg = $data['error']['message'] ?? esc_html__('AI image generation error.', 'king-addons');
-                wp_send_json_error(['message' => $error_msg], 500);
-            }
-
-            // Sideload image into media library
-            require_once ABSPATH . 'wp-admin/includes/image.php';
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-            require_once ABSPATH . 'wp-admin/includes/media.php';
-
-            if ($model === 'dall-e-3') {
-                $image_url = esc_url_raw($data['data'][0]['url']);
-            }
-
-            $attachment_id = media_sideload_image($image_url, 0, $prompt, 'id');
-
+            $attachment_id = media_sideload_image(esc_url_raw($remote_url), 0, $prompt, 'id');
             if (is_wp_error($attachment_id)) {
                 wp_send_json_error(['message' => $attachment_id->get_error_message()], 500);
             }
-            $attachment_url = wp_get_attachment_url($attachment_id);
-
-            // Respond with attachment details
-            wp_send_json_success([
-                'attachment_id' => $attachment_id,
-                'url' => $attachment_url,
-            ]);
         }
+
+        // Respond with attachment details
+        wp_send_json_success([
+            'attachment_id' => $attachment_id,
+            'url' => wp_get_attachment_url($attachment_id),
+        ]);
     }
 
     /**
@@ -2279,7 +2525,7 @@ final class Admin
     }
 
     /**
-     * AJAX handler to translate text using OpenAI.
+     * AJAX handler to translate text using the configured AI provider.
      *
      * @return void
      */
@@ -2295,8 +2541,8 @@ final class Admin
         $to_lang = isset($_POST['to_lang']) ? sanitize_text_field(wp_unslash($_POST['to_lang'])) : 'en';
 
         $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
-        $model = $options['openai_model'] ?? '';
+        $api_key = AI_Provider::getApiKey();
+        $model = AI_Provider::getTextModel();
 
         if (empty($api_key) || empty($model)) {
             wp_send_json_error(['message' => esc_html__('API key or model not set.', 'king-addons')], 400);
@@ -2312,7 +2558,11 @@ final class Admin
 
         if ($daily_limit > 0 && $current_usage >= $daily_limit) {
             wp_send_json_error([
-                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons')
+                'message' => esc_html__('Daily token limit reached. Please try again tomorrow or increase the limit in AI Settings.', 'king-addons'),
+                // This is the plugin's own cap, not the provider's, so the
+                // client must not retry it or blame the AI provider.
+                'code' => 'local_limit',
+                'retryable' => false,
             ], 429);
         }
 
@@ -2357,36 +2607,33 @@ final class Admin
             ['role' => 'user', 'content' => $user_message]
         ];
 
-        $response = wp_remote_post(
-            'https://api.openai.com/v1/chat/completions',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => wp_json_encode([
-                    'model' => $model,
-                    'messages' => $messages,
-                    'max_tokens' => 1000,
-                    'temperature' => 0.3, // Lower temperature for more consistent translations
-                ]),
-                'timeout' => 30,
-            ]
+        $data = AI_Provider::decodeResponse(
+            wp_remote_post(
+                AI_Provider::getChatEndpoint(),
+                [
+                    'headers' => AI_Provider::getHeaders(),
+                    'body' => wp_json_encode(AI_Provider::prepareChatPayload([
+                        'model' => $model,
+                        'messages' => $messages,
+                        'max_tokens' => 1000,
+                        'temperature' => 0.3, // Lower temperature for more consistent translations
+                    ])),
+                    'timeout' => 60, // Free and reasoning models are routinely slower than 30s.
+                ]
+            ),
+            esc_html__('AI translation error.', 'king-addons')
         );
 
-        if (is_wp_error($response)) {
-            wp_send_json_error(['message' => $response->get_error_message()], 500);
+        // The translator runs hundreds of these back to back, so it needs to
+        // know whether a failure is worth retrying or is a dead end.
+        if (is_wp_error($data)) {
+            $this->sendAiProviderError($data);
         }
 
-        $code = wp_remote_retrieve_response_code($response);
-        $data = json_decode(wp_remote_retrieve_body($response), true);
-
-        if ($code !== 200 || empty($data['choices'][0]['message']['content'])) {
-            $error_msg = $data['error']['message'] ?? esc_html__('AI translation error.', 'king-addons');
-            wp_send_json_error(['message' => $error_msg], 500);
+        $translated_text = AI_Provider::extractMessageContent($data);
+        if (is_wp_error($translated_text)) {
+            $this->sendAiProviderError($translated_text);
         }
-
-        $translated_text = trim($data['choices'][0]['message']['content']);
 
         // Update token usage statistics if present in the response
         if (isset($data['usage']['total_tokens'])) {
@@ -2401,6 +2648,32 @@ final class Admin
                 'daily_limit' => $daily_limit,
             ]
         ]);
+    }
+
+    /**
+     * Ends an AJAX request with a classified provider error.
+     *
+     * Sends the closest meaningful HTTP status instead of a blanket 500, plus a
+     * machine readable code and a retryable flag so the caller can back off and
+     * retry transient failures rather than aborting a long run.
+     *
+     * @param \WP_Error $error Error from the provider layer.
+     * @return void
+     */
+    private function sendAiProviderError(\WP_Error $error): void
+    {
+        $classified = AI_Provider::classifyError($error);
+
+        wp_send_json_error(
+            [
+                'message' => $classified['message'],
+                'code' => $classified['code'],
+                'retryable' => $classified['retryable'],
+                'provider' => AI_Provider::getProvider(),
+                'provider_label' => AI_Provider::getLabel(),
+            ],
+            AI_Provider::getResponseStatus($classified)
+        );
     }
 
     /**

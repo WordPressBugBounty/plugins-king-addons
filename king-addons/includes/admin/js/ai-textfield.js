@@ -92,6 +92,62 @@
         }
     }
     
+    /**
+     * Flag the editor body when Elementor's panel is dark.
+     *
+     * Elementor has no stable "dark panel" class here, and its ui_theme
+     * preference can be light, dark, or auto (following the OS), so the panel's
+     * own background is measured instead. That keeps the AI controls readable
+     * whichever way the theme was arrived at.
+     */
+    function syncPanelTheme() {
+        var isDark = null;
+
+        try {
+            // Walk up from the control area to the first element that actually
+            // paints a background. The panel's inner wrappers are transparent,
+            // so asking any single one of them tells us nothing.
+            var node = document.querySelector('#elementor-controls')
+                || document.querySelector('#elementor-panel-content-wrapper')
+                || document.querySelector('#elementor-panel');
+
+            while (node) {
+                var parts = getComputedStyle(node).backgroundColor.match(/[\d.]+/g);
+                if (parts && parts.length >= 3 && (parts.length < 4 || parseFloat(parts[3]) > 0)) {
+                    var luminance = (0.2126 * parts[0] + 0.7152 * parts[1] + 0.0722 * parts[2]) / 255;
+                    isDark = luminance < 0.5;
+                    break;
+                }
+                node = node.parentElement;
+            }
+        } catch (e) {
+            // Fall through to the media query below.
+        }
+
+        if (isDark === null) {
+            try {
+                isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            } catch (e) {
+                isDark = false;
+            }
+        }
+
+        $('body').toggleClass('king-addons-ai-dark', !!isDark);
+    }
+
+    // Keep up with the OS switching themes while the editor is open.
+    try {
+        var colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        var onSchemeChange = function() { syncPanelTheme(); };
+        if (colorSchemeQuery.addEventListener) {
+            colorSchemeQuery.addEventListener('change', onSchemeChange);
+        } else if (colorSchemeQuery.addListener) {
+            colorSchemeQuery.addListener(onSchemeChange);
+        }
+    } catch (e) {
+        // No media query support: the measured panel background still applies.
+    }
+
     // Add CSS for animations directly to the document
     function injectAnimationStyles() {
         if ($('#king-addons-ai-animations').length === 0) {
@@ -121,11 +177,9 @@
                         border-color: #5B03FF !important;
                     }
                     .king-addons-field-shine {
-                        background-image: linear-gradient(90deg, 
-                            rgba(91,3,255,0) 0%, 
-                            rgba(91,3,255,0.2) 25%, 
-                            rgba(225,203,255,0.3) 50%, 
-                            rgba(91,3,255,0.2) 75%, 
+                        background-image: linear-gradient(90deg,
+                            rgba(91,3,255,0) 0%,
+                            rgba(91,3,255,0.14) 50%,
                             rgba(91,3,255,0) 100%);
                         background-position: -100px;
                         background-size: 140px 100%;
@@ -147,16 +201,20 @@
                         margin-top: 8px;
                         width: 100%;
                     }
+                    /* These two are unavailable while the prompt is open. Keeping
+                       the violet, only dimmed, reads as "not right now" instead of
+                       a grey block that looks like a styling failure. */
                     .king-addons-ai-buttons-wrapper.is-processing .ai-generate-btn,
                     .king-addons-ai-buttons-wrapper.is-processing .ai-change-btn {
-                        background: linear-gradient(135deg, #d6d6d6, #a0a0a0) !important;
-                        opacity: 0.7;
+                        background: rgba(91, 3, 255, .05) !important;
+                        color: rgba(74, 2, 214, .42) !important;
                         cursor: default;
                         box-shadow: none !important;
+                        transform: none !important;
                         pointer-events: none;
                     }
                     .king-addons-ai-buttons-wrapper.is-processing img {
-                        filter: grayscale(100%);
+                        opacity: .4 !important;
                     }
                     .ai-prompt-container {
                         display: flex;
@@ -186,13 +244,75 @@
                     }
                     .ai-prompt-examples {
                         font-size: 11px;
-                        color: #6d7882;
+                        color: #5c666f;
                         margin-top: 4px;
                         line-height: 1.4;
                     }
                     .ai-prompt-examples strong {
-                        color: #556068;
-                        font-weight: 500;
+                        color: #3f4750;
+                        font-weight: 600;
+                    }
+
+                    /*
+                     * Elementor's panel can be light or dark, and the setting
+                     * follows the OS when it is set to Auto, so the theme is
+                     * detected at runtime and flagged on <body>. Without this
+                     * the hint text is near-invisible on the dark panel.
+                     */
+                    body.king-addons-ai-dark .ai-prompt-examples {
+                        color: #a7aeb6;
+                    }
+                    body.king-addons-ai-dark .ai-prompt-examples strong {
+                        color: #e6e9ed;
+                    }
+                    body.king-addons-ai-dark .ai-prompt-input {
+                        background: #2a2d32;
+                        border-color: #45494f;
+                        color: #e6e9ed;
+                    }
+                    body.king-addons-ai-dark .ai-prompt-input::placeholder {
+                        color: #8d949c;
+                    }
+                    body.king-addons-ai-dark .ai-prompt-cancel {
+                        background: #2a2d32;
+                        border-color: #45494f;
+                        color: #d5d9de;
+                    }
+                    body.king-addons-ai-dark .ai-prompt-cancel:hover {
+                        background: #35393f;
+                    }
+                    body.king-addons-ai-dark .king-addons-ai-buttons-wrapper.is-processing .ai-generate-btn,
+                    body.king-addons-ai-dark .king-addons-ai-buttons-wrapper.is-processing .ai-change-btn {
+                        background: rgba(124, 77, 255, .09) !important;
+                        color: rgba(201, 182, 255, .45) !important;
+                    }
+
+                    /* The tint needs a lighter hue and a brighter label on the
+                       dark panel; the light-panel values are in ai-textfield.css. */
+                    body.king-addons-ai-dark .ai-generate-btn,
+                    body.king-addons-ai-dark .ai-change-btn {
+                        --ka-ai-btn-bg: rgba(124, 77, 255, .22);
+                        --ka-ai-btn-bg-hover: rgba(124, 77, 255, .32);
+                        --ka-ai-btn-bg-active: rgba(124, 77, 255, .40);
+                        --ka-ai-btn-fg: #C9B6FF;
+                        --ka-ai-btn-ring: #8C7DFF;
+                    }
+
+                    body.king-addons-ai-dark .ai-generate-btn img,
+                    body.king-addons-ai-dark .ai-change-btn img {
+                        /* The icon files are white already - let them through. */
+                        filter: none;
+                        opacity: .92;
+                    }
+
+                    body.king-addons-ai-dark .ai-prompt-submit {
+                        background: #7C4DFF;
+                        color: #ffffff;
+                        border-color: transparent;
+                    }
+
+                    body.king-addons-ai-dark .ai-prompt-submit:hover {
+                        background: #6B3DEE;
                     }
                     .ai-prompt-cancel {
                         width: 24px;
@@ -222,7 +342,7 @@
                         transition: all 0.3s ease;
                     }
                     .ai-prompt-submit.is-processing {
-                        background: linear-gradient(135deg, #E1CBFF, #5B03FF) !important;
+                        background: #5B03FF !important;
                         border-color: transparent !important;
                     }
                     .ai-prompt-submit.is-processing img {
@@ -251,6 +371,9 @@
         
         // Inject animation styles first
         injectAnimationStyles();
+
+        // The panel is rebuilt on every open, so re-check the theme here.
+        syncPanelTheme();
         
         // Handle standard text/textarea controls
         $container.find('.elementor-control-type-text label.elementor-control-title, .elementor-control-type-textarea label.elementor-control-title').each(function(){
@@ -306,28 +429,12 @@
         }
 
         // Create "Generate" button
-        var $btnLabel = $('<button type="button" class="ai-generate-btn ai-generate-btn--futuristic" title="AI Generate"></button>').css({
-            verticalAlign: 'middle',
-            padding: '4px 8px',
-            fontSize: '12px',
-            cursor: 'pointer',
-            background: 'linear-gradient(135deg, #E1CBFF, #5B03FF)',
-            border: 'none',
-            borderRadius: '4px',
-            color: '#ffffff',
-            display: 'inline-flex',
-            alignItems: 'center',
-            // boxShadow: '0 0 6px rgba(225,203,255,0.7), 0 0 12px rgba(91,3,255,0.5)',
-            boxShadow: 'none',
-            transition: 'box-shadow 0.3s ease'
-        });
+        // Appearance lives in ai-textfield.css so the buttons get real hover,
+        // active, focus and disabled states instead of inline overrides.
+        var $btnLabel = $('<button type="button" class="ai-generate-btn" title="AI Generate"></button>');
         $btnLabel.append(
-            $('<img>').attr('src', KingAddonsAiField.icon_url).css({ marginRight: '6px', width: '16px', height: '16px', verticalAlign: 'middle' }),
+            $('<img>').attr({ src: KingAddonsAiField.icon_url, alt: '' }),
             $('<span>').addClass('ai-generate-btn__label').text('AI Generate')
-        );
-        $btnLabel.hover(
-            function() { $(this).css('boxShadow', '0 0 8px rgba(225,203,255,0.9), 0 0 16px rgba(91,3,255,0.7)'); },
-            function() { $(this).css('boxShadow', 'none'); }
         );
 
         // Create "Change" button
@@ -336,12 +443,6 @@
         $changeBtn.find('span.ai-generate-btn__label').text('AI Change');
         $changeBtn.attr('title', 'AI Change');
         $changeBtn.find('img').attr('src', KingAddonsAiField.rewrite_icon_url || KingAddonsAiField.plugin_url + '/includes/admin/img/ai-rewrite.svg');
-        
-        // Add hover effect to the change button - cloning doesn't preserve hover handlers
-        $changeBtn.hover(
-            function() { $(this).css('boxShadow', '0 0 8px rgba(225,203,255,0.9), 0 0 16px rgba(91,3,255,0.7)'); },
-            function() { $(this).css('boxShadow', 'none'); }
-        );
 
         // Add buttons to wrapper
         $buttonsWrapper.append($btnLabel).append($changeBtn);
@@ -391,7 +492,7 @@
                         ? window.KingAddonsAiField.settings_url
                         : '/wp-admin/admin.php?page=king-addons-ai-settings';
                     $errorMessage.html(
-                        '<span>OpenAI API key is missing or invalid. Please configure your API key in AI Settings.</span>' +
+                        '<span>' + ((window.KingAddonsAiField && KingAddonsAiField.missing_key_message) || 'The AI API key is missing or invalid. Please configure your API key in AI Settings.') + '</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
                     );
                     $errorMessage.insertAfter($buttonsWrapper).hide().fadeIn(200);
@@ -589,7 +690,7 @@
                         ? window.KingAddonsAiField.settings_url
                         : '/wp-admin/admin.php?page=king-addons-ai-settings';
                     $errorMessage.html(
-                        '<span>OpenAI API key is missing or invalid. Please configure your API key in AI Settings.</span>' +
+                        '<span>' + ((window.KingAddonsAiField && KingAddonsAiField.missing_key_message) || 'The AI API key is missing or invalid. Please configure your API key in AI Settings.') + '</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
                     );
                     $errorMessage.insertAfter($buttonsWrapper).hide().fadeIn(200);

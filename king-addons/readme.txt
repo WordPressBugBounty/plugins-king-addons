@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.78
+Stable tag: 51.1.79
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.79 - September 6, 2026 =
+* **New:** OpenRouter as an alternative AI provider - one API key reaches models from many vendors, including free ones. Pick the provider in AI Settings; OpenAI and OpenRouter keep separate keys and models, so switching between them loses nothing.
+* **Improved:** AI Page Translate & Transform extension.
+* **Fix:** Wrapper Link feature - a link or button inside the container triggered both itself and the wrapper link, sending visitors to two places at once. The wrapper now stands aside when the click belongs to something inside it, leaves text selections alone, and no longer fires while you are editing the page.
+* **Fix:** The AI controls in the Elementor panel were styled for the light theme only and were barely readable on the dark one; they now follow the panel theme.
+* **Fix:** AI Settings - the Content Language options were discarded on every save.
+* **Fix:** AI Settings - dropdown arrows were missing in dark mode, and long model names could run underneath them.
 
 = King Addons for Elementor version 51.1.78 - August 25, 2026 =
 * **Security:** Accordion now escapes item titles, allowlists title HTML tags, and sanitizes WYSIWYG content to prevent stored XSS.

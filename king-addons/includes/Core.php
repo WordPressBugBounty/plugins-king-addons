@@ -402,7 +402,21 @@ final class Core
             // Notice - Upgrade Suggestion
             if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
                 add_action('wp_ajax_king_addons_premium_notice_dismiss', [$this, 'king_addons_premium_notice_dismiss_callback']);
-                add_action('admin_notices', [$this, 'showNoticeUpgrade']);
+
+                /**
+                 * The previous notice is kept untouched in showNoticeUpgrade() as a fallback.
+                 * To go back to it, either define KING_ADDONS_UPGRADE_NOTICE_LEGACY as true
+                 * in wp-config.php, or return true from this filter.
+                 */
+                $use_legacy_notice = defined('KING_ADDONS_UPGRADE_NOTICE_LEGACY')
+                    ? (bool) KING_ADDONS_UPGRADE_NOTICE_LEGACY
+                    : false;
+                $use_legacy_notice = (bool) apply_filters('king_addons/upgrade_notice/use_legacy', $use_legacy_notice);
+
+                add_action(
+                    'admin_notices',
+                    [$this, $use_legacy_notice ? 'showNoticeUpgrade' : 'showNoticeUpgradeV2']
+                );
             }
 
             // Dashboard UI settings AJAX handler
@@ -565,6 +579,239 @@ final class Core
                 const kingAddonsPremiumNoticeNonce = '<?php echo esc_js(wp_create_nonce('king_addons_premium_notice_dismiss')); ?>';
                 $(document).ready(function () {
                     // Attach click handler to the dismiss button of the premium notice
+                    $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function () {
+                        $.post(ajaxurl, {
+                            action: 'king_addons_premium_notice_dismiss',
+                            nonce: kingAddonsPremiumNoticeNonce
+                        });
+                    });
+                });
+            })(jQuery);
+        </script>
+        <?php
+    }
+
+    /**
+     * Upgrade notice, current design.
+     *
+     * Replaces showNoticeUpgrade(), which is kept above unchanged as a fallback —
+     * see the KING_ADDONS_UPGRADE_NOTICE_LEGACY constant and the
+     * king_addons/upgrade_notice/use_legacy filter.
+     *
+     * @return void
+     */
+    function showNoticeUpgradeV2()
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $now = time();
+        $last_dismissed = get_user_meta($user_id, 'king_addons_premium_notice_dismissed_time', true);
+
+        // Stay hidden for a week after the notice is dismissed.
+        if ($last_dismissed && ($now - $last_dismissed) < WEEK_IN_SECONDS) {
+            return;
+        }
+
+        $pricing_url = 'https://kingaddons.com/pricing/?utm_source=kng-notice-offer&utm_medium=plugin&utm_campaign=kng';
+        // Same page, different utm_source: the two links stay separately
+        // measurable, which the previous notice could not do because both
+        // carried kng-notice-offer.
+        $explore_url = 'https://kingaddons.com/pricing/?utm_source=kng-notice-explore&utm_medium=plugin&utm_campaign=kng';
+        ?>
+        <style>
+            .king-addons-upgrade-notice-v2 {
+                border-left: 4px solid #5B03FF;
+                padding: 18px 20px 18px 22px;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-main {
+                /* Admin notices run the full width of the screen, so a second
+                   column always ends up marooned in empty space. Everything
+                   stays in one left-aligned stack instead, with the price sitting
+                   in the action row where the decision is made. */
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-brand {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: .09em;
+                text-transform: uppercase;
+                color: #5B03FF;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-brand svg {
+                width: 14px;
+                height: 14px;
+                display: block;
+                fill: currentColor;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-headline {
+                margin: 0;
+                font-size: 17px;
+                font-weight: 700;
+                line-height: 1.35;
+                color: #1d2327;
+                max-width: 46ch;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-sub {
+                margin: 0;
+                font-size: 14px;
+                line-height: 1.5;
+                color: #50575e;
+                max-width: 58ch;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-actions {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-top: 2px;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-cta {
+                background: #5B03FF;
+                color: #fff;
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                padding: 9px 18px;
+                font-size: 14px;
+                font-weight: 600;
+                text-decoration: none;
+                border-radius: 8px;
+                transition: background-color .15s ease;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-cta:hover, .king-addons-upgrade-notice-v2 .king-addons-un-cta:focus {
+                background: #3D01B0;
+                color: #fff;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-cta:focus-visible {
+                outline: 2px solid #5B03FF;
+                outline-offset: 2px;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-cta svg {
+                width: 15px;
+                height: 15px;
+                display: block;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-secondary {
+                font-size: 14px;
+                font-weight: 500;
+                color: #50575e;
+                text-decoration: none;
+                border-bottom: 1px solid #c9c4d8;
+                padding-bottom: 1px;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-secondary:hover, .king-addons-upgrade-notice-v2 .king-addons-un-secondary:focus {
+                color: #5B03FF;
+                border-bottom-color: #5B03FF;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-trust {
+                margin: 4px 0 0;
+                font-size: 13px;
+                color: #50575e;
+                display: flex;
+                align-items: center;
+                gap: 8px 18px;
+                flex-wrap: wrap;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-trust-item {
+                display: inline-flex;
+                align-items: baseline;
+                gap: 6px;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-trust strong {
+                color: #1d2327;
+                font-weight: 700;
+            }
+
+            .king-addons-upgrade-notice-v2 .king-addons-un-check {
+                color: #0a6b45;
+                font-weight: 700;
+                font-size: 12px;
+                line-height: 1;
+            }
+
+            @media screen and (max-width: 782px) {
+                .king-addons-upgrade-notice-v2 .king-addons-un-actions {
+                    align-items: flex-start;
+                    gap: 12px;
+                }
+            }
+        </style>
+        <div class="king-addons-upgrade-notice king-addons-upgrade-notice-v2 notice notice-info is-dismissible">
+            <div class="king-addons-un-main">
+                <div class="king-addons-un-brand">
+                    <svg viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path d="M504.981,150.787c-6.048-5.163-14.583-6.251-21.736-2.769l-109.444,53.28L271.109,82.896C267.311,78.516,261.798,76,256,76c-5.798,0-11.31,2.516-15.109,6.896L138.199,201.297l-109.444-53.28c-7.153-3.481-15.687-2.394-21.737,2.769c-6.05,5.163-8.466,13.421-6.153,21.031l76,250C79.426,430.242,87.195,436,96,436h320c8.804,0,16.574-5.758,19.134-14.182l76-250C513.448,164.208,511.032,155.95,504.981,150.787z M401.175,396H110.823L52.472,204.052l82.022,39.931c8.144,3.964,17.93,1.962,23.863-4.878L256,126.525l97.644,112.58c5.932,6.841,15.721,8.841,23.862,4.878l82.022-39.931L401.175,396z"></path></svg>
+                    <?php esc_html_e('King Addons Pro', 'king-addons'); ?>
+                </div>
+                <h2 class="king-addons-un-headline">
+                    <?php esc_html_e('Mega Menu, Popup Builder, Theme Builder &amp; AI Tools', 'king-addons'); ?>
+                </h2>
+                <p class="king-addons-un-sub">
+                    <?php esc_html_e('200+ Pro features, premium widgets and 4,000+ templates &amp; sections for Elementor.', 'king-addons'); ?>
+                </p>
+                <div class="king-addons-un-actions">
+                    <a class="king-addons-un-cta" href="<?php echo esc_url($pricing_url); ?>" target="_blank" rel="noopener noreferrer">
+                        <?php
+                        printf(
+                            /* translators: %s: monthly price, for example $6.99/mo */
+                            esc_html__('Upgrade to Pro for %s', 'king-addons'),
+                            esc_html__('$6.99/mo', 'king-addons')
+                        );
+                        ?>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a class="king-addons-un-secondary" href="<?php echo esc_url($explore_url); ?>" target="_blank" rel="noopener noreferrer">
+                        <?php esc_html_e('Explore Pro features', 'king-addons'); ?>
+                    </a>
+                </div>
+                <p class="king-addons-un-trust">
+                    <span class="king-addons-un-trust-item">
+                        <span class="king-addons-un-check" aria-hidden="true">&#10003;</span>
+                        <?php esc_html_e('30-day money-back guarantee', 'king-addons'); ?>
+                    </span>
+                    <span class="king-addons-un-trust-item">
+                        <span class="king-addons-un-check" aria-hidden="true">&#10003;</span>
+                        <?php esc_html_e('Cancel anytime', 'king-addons'); ?>
+                    </span>
+                    <span class="king-addons-un-trust-item">
+                        <span class="king-addons-un-check" aria-hidden="true">&#10003;</span>
+                        <?php
+                        printf(
+                            /* translators: %s: number of users, wrapped in bold */
+                            esc_html__('Trusted by %s users', 'king-addons'),
+                            '<strong>' . esc_html__('20,000+', 'king-addons') . '</strong>'
+                        );
+                        ?>
+                    </span>
+                </p>
+            </div>
+        </div>
+        <script>
+            (function ($) {
+                const kingAddonsPremiumNoticeNonce = '<?php echo esc_js(wp_create_nonce('king_addons_premium_notice_dismiss')); ?>';
+                $(document).ready(function () {
                     $('.king-addons-upgrade-notice.notice.is-dismissible').on('click', '.notice-dismiss', function () {
                         $.post(ajaxurl, {
                             action: 'king_addons_premium_notice_dismiss',
@@ -1609,6 +1856,8 @@ final class Core
      */
     public function enqueueAiFieldScript(): void
     {
+        $ai_options = get_option('king_addons_ai_options', []);
+
         wp_enqueue_script(
             'king-addons-ai-field',
             KING_ADDONS_URL . 'includes/admin/js/ai-textfield.js',
@@ -1634,6 +1883,24 @@ final class Core
                 'is_pro' => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
                 'premium_active' => king_addons_freemius()->can_use_premium_code__premium_only() ? true : false,
                 'translator_enabled' => isset($ai_options['enable_ai_page_translator']) ? (bool) $ai_options['enable_ai_page_translator'] : true,
+                // Editor prompts name the configured provider rather than always OpenAI.
+                'provider' => \King_Addons\AI_Provider::getProvider(),
+                'provider_label' => \King_Addons\AI_Provider::getLabel(),
+                'api_keys_url' => \King_Addons\AI_Provider::getApiKeysUrl(),
+                'api_keys_label' => \King_Addons\AI_Provider::isOpenRouter()
+                    ? esc_html__('OpenRouter Keys', 'king-addons')
+                    : esc_html__('OpenAI Platform', 'king-addons'),
+                'setup_billing_note' => \King_Addons\AI_Provider::isOpenRouter()
+                    ? esc_html__('Free models work without adding any credit.', 'king-addons')
+                    : esc_html__('and top up your OpenAI account balance by at least $5', 'king-addons'),
+                'setup_cost_note' => \King_Addons\AI_Provider::isOpenRouter()
+                    ? esc_html__('Free models cost nothing. Paid models cost pennies (about $0.01 per full page).', 'king-addons')
+                    : esc_html__('Processing a page costs pennies (about $0.01 per full page).', 'king-addons'),
+                'missing_key_message' => sprintf(
+                    /* translators: %s: provider name */
+                    esc_html__('%s API key is missing or invalid. Please configure your API key in AI Settings.', 'king-addons'),
+                    \King_Addons\AI_Provider::getLabel()
+                ),
             ]
         );
     }
@@ -1645,8 +1912,6 @@ final class Core
      */
     public function enqueueAiImageGenerationScript(): void
     {
-        // Retrieve AI options and ensure it's an array to prevent warnings.
-        $ai_options = get_option('king_addons_ai_options', []);
         wp_enqueue_script(
             'king-addons-ai-image-field',
             KING_ADDONS_URL . 'includes/admin/js/ai-imagefield.js',
@@ -1663,11 +1928,25 @@ final class Core
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'generate_nonce' => wp_create_nonce('king_addons_ai_generate_image_nonce'),
                 'generate_action' => 'king_addons_ai_generate_image',
-                'image_model' => sanitize_text_field($ai_options['openai_image_model'] ?? ''),
+                'image_model' => \King_Addons\AI_Provider::getImageModel(),
+                // The editor builds its model dropdown from this list, so the
+                // options follow whichever provider is configured.
+                'image_models' => array_map(
+                    static function ($model) {
+                        return ['value' => $model['id'], 'label' => $model['label']];
+                    },
+                    \King_Addons\AI_Provider::getModelsFor('image')
+                ),
+                'provider' => \King_Addons\AI_Provider::getProvider(),
                 'icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai.svg',
                 'rewrite_icon_url' => KING_ADDONS_URL . 'includes/admin/img/ai-refresh.svg',
                 'settings_url' => admin_url('admin.php?page=king-addons-ai-settings'),
                 'plugin_url' => KING_ADDONS_URL,
+                'missing_key_message' => sprintf(
+                    /* translators: %s: provider name */
+                    esc_html__('%s API key is missing or invalid. Please configure your API key in AI Settings.', 'king-addons'),
+                    \King_Addons\AI_Provider::getLabel()
+                ),
             ]
         );
     }

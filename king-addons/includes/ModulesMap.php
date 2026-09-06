@@ -2345,7 +2345,7 @@ final class ModulesMap
                     'docs-link' => '',
                     'demo-link' => 'https://kingaddons.com/elementor/wrapper-link/',
                     'css' => [],
-                    'js' => []
+                    'js' => ['wrapper-link']
                 ],
                 'duplicator' => [
                     'title' => esc_html__('Duplicator', 'king-addons'),

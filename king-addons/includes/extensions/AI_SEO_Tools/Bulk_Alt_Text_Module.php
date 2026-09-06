@@ -43,7 +43,7 @@ class Bulk_Alt_Text_Module
         }
 
         $ka_ai_opts = get_option('king_addons_ai_options', []);
-        if (empty($ka_ai_opts['openai_api_key'])) {
+        if ('' === \King_Addons\AI_Provider::getApiKey()) {
             wp_send_json_error(['message' => esc_html__('OpenAI API key is not set. Please add it in AI Settings.', 'king-addons'), 'code' => 'no_api_key'], 400);
         }
 

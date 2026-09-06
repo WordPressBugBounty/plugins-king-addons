@@ -172,7 +172,7 @@ function king_addons_get_extensions_list(): array {
         ],
         'ai-seo-tools' => [
             'title' => esc_html__('AI SEO Tools', 'king-addons'),
-            'description' => esc_html__('AI-powered toolkit: bulk Alt Text Generator for media, Auto Tagging for posts, and Blog Post Generator — all with progress tracking and OpenAI integration.', 'king-addons'),
+            'description' => esc_html__('AI-powered toolkit: bulk Alt Text Generator for media, Auto Tagging for posts, and Blog Post Generator — all with progress tracking and AI provider integration.', 'king-addons'),
             'icon' => 'dashicons-chart-area',
             'constant' => 'KING_ADDONS_EXT_AI_SEO_TOOLS',
             'link' => admin_url('admin.php?page=king-addons-ai-seo-tools'),

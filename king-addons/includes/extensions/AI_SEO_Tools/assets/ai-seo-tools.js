@@ -118,7 +118,7 @@
 			return '<br><span class="ka-api-hint">💡 Your OpenAI account may have run out of credits. <a href="https://platform.openai.com/usage" target="_blank">Check usage →</a></span>';
 		}
 		if (lower.includes('invalid api key') || lower.includes('incorrect api key') || lower.includes('no api key') || lower.includes('authentication') || lower.includes('unauthorized')) {
-			return '<br><span class="ka-api-hint">💡 Check that your API key is correct. <a href="' + settingsUrl + '">Open AI Settings →</a></span>';
+			return '<br><span class="ka-api-hint">💡 Check that your API key is correct. <a href="' + settingsUrl + '">Go to AI Settings →</a></span>';
 		}
 		if (lower.includes('rate limit') || lower.includes('too many request') || lower.includes('rate_limit')) {
 			return '<br><span class="ka-api-hint">💡 Rate limit exceeded — wait a moment and try again.</span>';
@@ -342,7 +342,7 @@
 					const settingsUrl = (kingAddonsAiSeoTools && kingAddonsAiSeoTools.settingsUrl) ? kingAddonsAiSeoTools.settingsUrl : '';
 					let html = (isNoKey ? '⚠️ ' : '❌ ') + escHtml(errMsg);
 					if (settingsUrl) {
-						html += ' &nbsp;<a href="' + settingsUrl + '" class="ka-bulk-error-link">Open AI Settings →</a>';
+						html += ' &nbsp;<a href="' + settingsUrl + '" class="ka-bulk-error-link">Go to AI Settings →</a>';
 					}
 					if (!isNoKey) {
 						html += getApiErrorHints(errMsg);
@@ -605,11 +605,17 @@
 			$('#ka-postgen-image-settings').prop('hidden', !this.checked);
 		});
 
-		$('#ka-postgen-image-model').on('change', function () {
-			const isGpt = $(this).val() === 'gpt-image-1';
-			$('#ka-postgen-dalle3-opts').prop('hidden', isGpt);
-			$('#ka-postgen-gptimg-opts').prop('hidden', !isGpt);
-		});
+		// Quality and size options only apply to OpenAI's own image models.
+		// Any other model (for example one routed through OpenRouter) takes
+		// just the prompt, so both option blocks stay hidden.
+		function updatePostGenImageOptions() {
+			const model = $('#ka-postgen-image-model').val();
+			$('#ka-postgen-dalle3-opts').prop('hidden', model !== 'dall-e-3');
+			$('#ka-postgen-gptimg-opts').prop('hidden', model !== 'gpt-image-1');
+		}
+
+		$('#ka-postgen-image-model').on('change', updatePostGenImageOptions);
+		updatePostGenImageOptions();
 
 		runBulk({
 			start: '#ka-postgen-start',
@@ -661,7 +667,7 @@
 					const prompt = currentItem && currentItem.prompt ? currentItem.prompt : '';
 					if (prompt) {
 						html += '<details class="ka-postgen-prompt-details" open>' +
-							'<summary>🤖 OpenAI Prompt</summary>' +
+							'<summary>🤖 AI Prompt</summary>' +
 							'<pre class="ka-postgen-prompt-pre">' + escHtml(prompt) + '</pre>' +
 							'</details>';
 					}

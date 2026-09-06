@@ -3,7 +3,7 @@
  * Post Generator module for AI SEO Tools.
  *
  * Generates full blog posts (title, HTML content, excerpt, tags)
- * via OpenAI and optionally generates a matching featured image.
+ * via the configured AI provider and optionally generates a matching featured image.
  *
  * @package King_Addons
  */
@@ -39,7 +39,7 @@ class Post_Generator_Module
         }
 
         $ka_ai_opts = get_option('king_addons_ai_options', []);
-        if (empty($ka_ai_opts['openai_api_key'])) {
+        if ('' === \King_Addons\AI_Provider::getApiKey()) {
             wp_send_json_error(['message' => esc_html__('OpenAI API key is not set. Please add it in AI Settings.', 'king-addons'), 'code' => 'no_api_key'], 400);
         }
 
@@ -54,9 +54,11 @@ class Post_Generator_Module
         $category_raw = sanitize_text_field(wp_unslash($_POST['category_id'] ?? 'auto'));
         $category_id  = ($category_raw === 'auto' || $category_raw === '0') ? $category_raw : (string) absint($category_raw);
         $gen_image    = !empty($_POST['generate_image']) && king_addons_freemius()->can_use_premium_code();
-        $image_model  = in_array($_POST['image_model'] ?? 'dall-e-3', ['dall-e-3', 'gpt-image-1'], true)
-            ? sanitize_key(wp_unslash($_POST['image_model']))
-            : 'dall-e-3';
+        $posted_model = sanitize_text_field(wp_unslash($_POST['image_model'] ?? ''));
+        $allowed_models = wp_list_pluck(\King_Addons\AI_Provider::getModelsFor('image'), 'id');
+        $image_model  = in_array($posted_model, $allowed_models, true)
+            ? $posted_model
+            : \King_Addons\AI_Provider::getImageModel();
         $image_quality = sanitize_key(wp_unslash($_POST['image_quality'] ?? 'standard'));
         $image_size    = sanitize_key(wp_unslash($_POST['image_size'] ?? '1024x1024'));
 
@@ -174,7 +176,7 @@ class Post_Generator_Module
             ];
             update_option(self::BULK_OPTION_PROGRESS, $progress, false);
 
-            // 1. Generate content via OpenAI.
+            // 1. Generate content via the configured AI provider.
             $post_data = $this->generate_post_content(
                 (string) ($settings['description'] ?? ''),
                 $idx,
@@ -232,7 +234,7 @@ class Post_Generator_Module
                 $attach_id = $this->generate_and_attach_image(
                     $post_data['title'],
                     (string) ($settings['description'] ?? ''),
-                    (string) ($settings['image_model']   ?? 'dall-e-3'),
+                    (string) ($settings['image_model']   ?: \King_Addons\AI_Provider::getImageModel()),
                     (string) ($settings['image_quality'] ?? 'standard'),
                     (string) ($settings['image_size']    ?? '1024x1024'),
                     $post_id
@@ -274,14 +276,14 @@ class Post_Generator_Module
     }
 
     /**
-     * Call OpenAI Chat Completions to generate post fields as JSON.
+     * Call the provider's Chat Completions endpoint to generate post fields as JSON.
      *
      * @param string $description User-supplied topic/description.
      * @param int    $post_num    Index within the batch (for uniqueness).
      * @return array|\WP_Error   Associative array with keys: title, content, excerpt, tags.
      */
     /**
-     * Build the OpenAI prompt string (same logic as generate_post_content) without making an API call.
+     * Build the prompt string (same logic as generate_post_content) without making an API call.
      * Used to expose the current prompt in the status response.
      */
     private function build_prompt_preview(string $description, int $post_num, string $length = 'medium', string $category_mode = 'auto'): string
@@ -314,11 +316,15 @@ class Post_Generator_Module
     private function generate_post_content(string $description, int $post_num, string $length = 'medium', string $category_mode = 'auto')
     {
         $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
-        $model   = $options['openai_model'] ?? 'gpt-4o-mini';
+        $api_key = \King_Addons\AI_Provider::getApiKey();
+        $model   = \King_Addons\AI_Provider::getTextModel();
 
         if ($api_key === '') {
-            return new \WP_Error('missing_api_key', esc_html__('OpenAI API key is missing.', 'king-addons'));
+            return new \WP_Error('missing_api_key', sprintf(
+                /* translators: %s: provider name */
+                esc_html__('%s API key is missing.', 'king-addons'),
+                \King_Addons\AI_Provider::getLabel()
+            ));
         }
 
         $word_targets = ['short' => 300, 'medium' => 600, 'long' => 1200];
@@ -348,16 +354,13 @@ class Post_Generator_Module
         $max_tokens_map = ['short' => 700, 'medium' => 1200, 'long' => 2400];
         $max_tokens     = $max_tokens_map[$length] ?? 1200;
 
-        $response = wp_remote_post('https://api.openai.com/v1/chat/completions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $api_key,
-                'Content-Type'  => 'application/json',
-            ],
-            'body'        => wp_json_encode([
+        $response = wp_remote_post(\King_Addons\AI_Provider::getChatEndpoint(), [
+            'headers' => \King_Addons\AI_Provider::getHeaders(),
+            'body'        => wp_json_encode(\King_Addons\AI_Provider::prepareChatPayload([
                 'model'      => $model,
                 'messages'   => [['role' => 'user', 'content' => $prompt]],
                 'max_tokens' => $max_tokens,
-            ]),
+            ])),
             'timeout'     => 120,
             'data_format' => 'body',
         ]);
@@ -370,7 +373,7 @@ class Post_Generator_Module
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if ($code !== 200 || empty($body['choices'][0]['message']['content'])) {
-            $api_error = $body['error']['message'] ?? esc_html__('API request failed.', 'king-addons');
+            $api_error = \King_Addons\AI_Provider::extractErrorMessage($body, esc_html__('API request failed.', 'king-addons'));
             return new \WP_Error('api_error', $api_error);
         }
 
@@ -397,11 +400,11 @@ class Post_Generator_Module
     }
 
     /**
-     * Generate an image via OpenAI Images API and attach it to a post.
+     * Generate an image via the provider's Images API and attach it to a post.
      *
      * @param string $title       Post title (used as image prompt context).
      * @param string $description Overall topic description.
-     * @param string $model       'dall-e-3' or 'gpt-image-1'.
+     * @param string $model       Image model id of the configured AI provider.
      * @param string $quality     Quality setting for the selected model.
      * @param string $size        Image dimensions string.
      * @param int    $post_id     Post to attach the image to.
@@ -409,74 +412,104 @@ class Post_Generator_Module
      */
     private function generate_and_attach_image(string $title, string $description, string $model, string $quality, string $size, int $post_id)
     {
-        $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
+        $api_key = \King_Addons\AI_Provider::getApiKey();
 
         if ($api_key === '') {
-            return new \WP_Error('missing_api_key', esc_html__('OpenAI API key is missing.', 'king-addons'));
+            return new \WP_Error('missing_api_key', sprintf(
+                /* translators: %s: provider name */
+                esc_html__('%s API key is missing.', 'king-addons'),
+                \King_Addons\AI_Provider::getLabel()
+            ));
         }
 
         $prompt = 'Professional blog featured image for an article titled: "' . $title . '". Topic: ' . $description . '. Photorealistic style, no text overlays, no watermarks.';
 
-        $body = ['model' => $model, 'prompt' => $prompt, 'size' => $size];
+        // OpenAI's image models take vendor specific size/quality options;
+        // OpenRouter fans out to many vendors that do not share them.
+        $body = ['model' => $model, 'prompt' => $prompt];
 
-        if ($model === 'dall-e-3') {
-            $body['n']       = 1;
-            $body['quality'] = ($quality === 'hd') ? 'hd' : 'standard';
-        } elseif ($model === 'gpt-image-1') {
-            $body['quality'] = in_array($quality, ['low', 'medium', 'high', 'auto'], true) ? $quality : 'auto';
+        if (\King_Addons\AI_Provider::isOpenRouter()) {
+            $body['n'] = 1;
+        } else {
+            $body['size'] = $size;
+
+            if ($model === 'dall-e-3') {
+                $body['n']       = 1;
+                $body['quality'] = ($quality === 'hd') ? 'hd' : 'standard';
+            } elseif ($model === 'gpt-image-1') {
+                $body['quality'] = in_array($quality, ['low', 'medium', 'high', 'auto'], true) ? $quality : 'auto';
+            }
         }
 
-        $response = wp_remote_post('https://api.openai.com/v1/images/generations', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $api_key,
-                'Content-Type'  => 'application/json',
-            ],
-            'body'    => wp_json_encode($body),
-            'timeout' => 120,
-        ]);
+        $data = \King_Addons\AI_Provider::decodeResponse(
+            wp_remote_post(\King_Addons\AI_Provider::getImagesEndpoint(), [
+                'headers' => \King_Addons\AI_Provider::getHeaders(),
+                'body'    => wp_json_encode($body),
+                'timeout' => 120,
+            ]),
+            esc_html__('Image generation failed.', 'king-addons')
+        );
 
-        if (is_wp_error($response)) {
-            return $response;
+        if (is_wp_error($data)) {
+            return $data;
         }
 
         require_once ABSPATH . 'wp-admin/includes/image.php';
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
-        $code = wp_remote_retrieve_response_code($response);
-        $data = json_decode(wp_remote_retrieve_body($response), true);
+        // An image comes back either as a hosted URL or as inline base64.
+        $item       = (isset($data['data'][0]) && is_array($data['data'][0])) ? $data['data'][0] : [];
+        $base64     = '';
+        $remote_url = '';
+        $mime       = 'image/png';
 
-        if ($model === 'gpt-image-1') {
-            $b64 = $data['data'][0]['b64_json'] ?? '';
-            if ($b64 === '') {
-                $err = $data['error']['message'] ?? esc_html__('No image data returned.', 'king-addons');
-                return new \WP_Error('api_error', $err);
+        if (!empty($item['b64_json']) && is_string($item['b64_json'])) {
+            $base64 = $item['b64_json'];
+            if (!empty($item['media_type']) && is_string($item['media_type'])) {
+                $mime = $item['media_type'];
             }
+        } elseif (!empty($item['url']) && is_string($item['url'])) {
+            $remote_url = $item['url'];
+        } elseif (!empty($item['image_url']['url']) && is_string($item['image_url']['url'])) {
+            $remote_url = $item['image_url']['url'];
+        }
 
-            $bytes = base64_decode($b64);
+        if ($remote_url !== '' && strpos($remote_url, 'data:') === 0 && preg_match('#^data:([^;,]+);base64,(.+)$#s', $remote_url, $matches)) {
+            $mime       = $matches[1];
+            $base64     = $matches[2];
+            $remote_url = '';
+        }
+
+        if ($base64 === '' && $remote_url === '') {
+            return new \WP_Error('api_error', esc_html__('No image data returned.', 'king-addons'));
+        }
+
+        if ($base64 !== '') {
+            $bytes = base64_decode($base64, true);
             if (!$bytes) {
                 return new \WP_Error('decode_error', esc_html__('Failed to decode image data.', 'king-addons'));
             }
 
-            $tmp = wp_tempnam('postgen.png');
+            $type_map  = ['image/jpeg' => 'jpg', 'image/jpg' => 'jpg', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+            $extension = $type_map[$mime] ?? 'png';
+            $name      = substr(sanitize_file_name($title), 0, 80);
+            if ($name === '') {
+                $name = 'postgen';
+            }
+
+            $tmp = wp_tempnam($name . '.' . $extension);
             if (!$tmp || !file_put_contents($tmp, $bytes)) {
                 return new \WP_Error('write_error', esc_html__('Failed to write temp image file.', 'king-addons'));
             }
 
             return media_handle_sideload([
-                'name'     => substr(sanitize_file_name($title), 0, 80) . '.png',
+                'name'     => $name . '.' . $extension,
                 'tmp_name' => $tmp,
             ], $post_id, $title);
         }
 
-        // DALL·E 3 (URL-based).
-        if ($code !== 200 || empty($data['data'][0]['url'])) {
-            $err = $data['error']['message'] ?? esc_html__('Image generation failed.', 'king-addons');
-            return new \WP_Error('api_error', $err);
-        }
-
-        return media_sideload_image(esc_url_raw($data['data'][0]['url']), $post_id, $title, 'id');
+        return media_sideload_image(esc_url_raw($remote_url), $post_id, $title, 'id');
     }
 
     /**

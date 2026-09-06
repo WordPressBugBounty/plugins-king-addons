@@ -32,7 +32,7 @@ body.king-addons_page_king-addons-ai-settings #wpbody-content {
 
 /* Header Section */
 .king-addons-settings-header {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    background: #8b5cf6;
     border-radius: 12px;
     padding: 25px 30px;
     margin-bottom: 25px;
@@ -367,7 +367,7 @@ body.king-addons_page_king-addons-ai-settings #wpbody-content {
 }
 
 .king-addons-save-button {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%) !important;
+    background: #8b5cf6 !important;
     border: none !important;
     border-radius: 8px !important;
     color: #fff !important;
@@ -473,7 +473,7 @@ body.ka-dark-theme .king-addons-ai-usage-stats {
 
 .king-addons-ai-usage-bar {
     height: 100%;
-    background: linear-gradient(90deg, #8b5cf6, #a855f7);
+    background: #8b5cf6;
     border-radius: 4px;
     transition: width 0.6s ease;
 }
@@ -676,7 +676,7 @@ body.ka-dark-theme .king-addons-settings-footer {
 }
 
 body.ka-dark-theme .king-addons-save-button {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    background: #8b5cf6;
 }
 
 body.ka-dark-theme .king-addons-ai-settings .button-secondary,

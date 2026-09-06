@@ -9,6 +9,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$ka_ai_provider = \King_Addons\AI_Provider::getProvider();
+$ka_ai_provider_label = \King_Addons\AI_Provider::getLabel($ka_ai_provider);
+
 // Theme mode is per-user
 $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $allowed_theme_modes = ['dark', 'light', 'auto'];
@@ -38,6 +41,15 @@ wp_enqueue_style(
 </script>
 
 <style>
+/*
+ * Rows of the provider that is not selected. The class is applied server side so
+ * there is no flash of both providers' fields, and the settings script toggles
+ * the same class when the provider changes.
+ */
+.ka-ai-settings .ka-ai-row-hidden {
+    display: none;
+}
+
 /* AI Settings V3 */
 .ka-ai-settings .form-table {
     margin: 0;
@@ -93,7 +105,7 @@ body.ka-v3-dark .ka-ai-settings .form-table td {
     border-radius: 12px;
     font-size: 15px;
     font-family: inherit;
-    background: #fff;
+    background-color: #fff;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -102,7 +114,7 @@ body.ka-v3-dark .ka-ai-settings input[type="password"],
 body.ka-v3-dark .ka-ai-settings input[type="number"],
 body.ka-v3-dark .ka-ai-settings textarea,
 body.ka-v3-dark .ka-ai-settings select {
-    background: #2c2c2e;
+    background-color: #2c2c2e;
     border-color: rgba(255, 255, 255, 0.1);
     color: #f5f5f7;
 }
@@ -129,7 +141,7 @@ body.ka-v3-dark .ka-ai-settings select:focus {
     line-height: 1.5;
 }
 
-.ka-ai-settings select {
+.ka-admin-wrap.ka-ai-settings select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -138,6 +150,10 @@ body.ka-v3-dark .ka-ai-settings select:focus {
     background-position: right 16px center;
     background-size: 10px 6px;
     padding-right: 44px;
+}
+
+body.ka-v3-dark .ka-admin-wrap.ka-ai-settings select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3e%3cpath fill='%23a1a1a6' d='M6 8L0 0h12z'/%3e%3c/svg%3e");
 }
 
 /* Section titles */
@@ -204,7 +220,7 @@ body.ka-v3-dark .ka-ai-settings .button:hover {
             </div>
             <div>
                 <h1 class="ka-admin-title"><?php esc_html_e('AI Settings', 'king-addons'); ?></h1>
-                <p class="ka-admin-subtitle"><?php esc_html_e('Configure OpenAI integration and AI features for Elementor editor', 'king-addons'); ?></p>
+                <p class="ka-admin-subtitle"><?php esc_html_e('Configure your AI provider and AI features for the Elementor editor', 'king-addons'); ?></p>
             </div>
         </div>
         <div class="ka-admin-header-actions">
@@ -223,9 +239,15 @@ body.ka-v3-dark .ka-ai-settings .button:hover {
                     <?php esc_html_e('Auto', 'king-addons'); ?>
                 </button>
             </div>
-            <a href="https://platform.openai.com/usage" target="_blank" class="ka-btn ka-btn-secondary">
+            <a href="<?php echo esc_url(\King_Addons\AI_Provider::getDashboardUrl($ka_ai_provider)); ?>" target="_blank" rel="noopener noreferrer" class="ka-btn ka-btn-secondary">
                 <span class="dashicons dashicons-external"></span>
-                <?php esc_html_e('OpenAI Dashboard', 'king-addons'); ?>
+                <?php
+                printf(
+                    /* translators: %s: provider name */
+                    esc_html__('%s Dashboard', 'king-addons'),
+                    esc_html($ka_ai_provider_label)
+                );
+                ?>
             </a>
         </div>
     </div>
@@ -239,12 +261,12 @@ body.ka-v3-dark .ka-ai-settings .button:hover {
         <div class="ka-card-body">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
                 <div>
-                    <h4 style="margin: 0 0 8px; font-size: 15px; font-weight: 600; color: inherit;">1. <?php esc_html_e('Get API Key', 'king-addons'); ?></h4>
-                    <p class="ka-row-desc" style="margin: 0;"><?php esc_html_e('Create an account at OpenAI and generate an API key from the dashboard.', 'king-addons'); ?></p>
+                    <h4 style="margin: 0 0 8px; font-size: 15px; font-weight: 600; color: inherit;">1. <?php esc_html_e('Pick a Provider', 'king-addons'); ?></h4>
+                    <p class="ka-row-desc" style="margin: 0;"><?php esc_html_e('Choose OpenAI to use the OpenAI API directly, or OpenRouter to reach models from many vendors — including free ones — with one key.', 'king-addons'); ?></p>
                 </div>
                 <div>
-                    <h4 style="margin: 0 0 8px; font-size: 15px; font-weight: 600; color: inherit;">2. <?php esc_html_e('Enter Key Below', 'king-addons'); ?></h4>
-                    <p class="ka-row-desc" style="margin: 0;"><?php esc_html_e('Paste your API key in the field below and select your preferred model.', 'king-addons'); ?></p>
+                    <h4 style="margin: 0 0 8px; font-size: 15px; font-weight: 600; color: inherit;">2. <?php esc_html_e('Enter Key & Test', 'king-addons'); ?></h4>
+                    <p class="ka-row-desc" style="margin: 0;"><?php esc_html_e('Paste the API key in the field below, press Test Connection to verify it, then select your preferred models.', 'king-addons'); ?></p>
                 </div>
                 <div>
                     <h4 style="margin: 0 0 8px; font-size: 15px; font-weight: 600; color: inherit;">3. <?php esc_html_e('Use', 'king-addons'); ?></h4>

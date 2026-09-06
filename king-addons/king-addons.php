@@ -5,7 +5,7 @@
  * Description: Elementor addons, 4,000+ Templates & Sections, 80+ Widgets, AI Tools, Mega Menu, Popup Builder, WooCommerce, Templates & Sections. Lightweight & fast Elementor toolkit.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 51.1.78
+ * Version: 51.1.79
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 load_plugin_textdomain('king-addons');
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '51.1.78';
+const KING_ADDONS_VERSION = '51.1.79';
 
 /** DEFINES */
 define('KING_ADDONS_PATH', plugin_dir_path(__FILE__));
@@ -32,6 +32,9 @@ define('KING_ADDONS_URL', plugins_url('/', __FILE__));
 const KING_ADDONS_ASSETS_UNIQUE_KEY = 'king-addons';
 
 require_once(KING_ADDONS_PATH . 'includes/helpers/Global/global-constants.php');
+
+// Shared AI provider abstraction (OpenAI / OpenRouter), used by admin and extensions.
+require_once(KING_ADDONS_PATH . 'includes/AI_Provider.php');
 
 if (!function_exists('king_addons_freemius')) {
     // Create a helper function for easy SDK access.

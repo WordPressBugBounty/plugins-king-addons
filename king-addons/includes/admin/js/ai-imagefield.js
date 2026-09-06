@@ -84,7 +84,7 @@
                         justifyContent: 'space-between'
                     });
                     $errorMessage.html(
-                        '<span>OpenAI API key is missing or invalid. Please configure your API key in AI Settings.</span>' +
+                        '<span>' + ((window.KingAddonsAiImageField && KingAddonsAiImageField.missing_key_message) || 'The AI API key is missing or invalid. Please configure your API key in AI Settings.') + '</span>' +
                         '<a href="' + settingsUrl + '" style="color:#0073aa;text-decoration:underline;white-space:nowrap;margin-left:10px;" target="_blank">Settings</a>'
                     );
                     $wrapper.after($errorMessage).hide().fadeIn(200);
@@ -110,18 +110,24 @@
                 resolutions.forEach(function(res) {
                     $resolution.append('<option value="' + res.value + '">' + res.label + '</option>');
                 });
-                // Model selector reflecting saved default
+                // Model selector reflecting the configured provider and default
                 var $modelSelect = $('<select class="kng-ai-image-model" style="margin-right:6px;"></select>');
-                var imageModels = [
-                    { value: 'dall-e-3', label: 'DALL·E 3' },
-                    { value: 'gpt-image-1', label: 'GPT Image 1' }
-                ];
+                var imageModels = KingAddonsAiImageField.image_models;
+                if (!Array.isArray(imageModels) || !imageModels.length) {
+                    imageModels = [
+                        { value: 'dall-e-3', label: 'DALL\u00b7E 3' },
+                        { value: 'gpt-image-1', label: 'GPT Image 1' }
+                    ];
+                }
                 imageModels.forEach(function(m) {
-                    $modelSelect.append('<option value="' + m.value + '">' + m.label + '</option>');
+                    $modelSelect.append($('<option></option>').val(m.value).text(m.label));
                 });
                 // Apply default from settings
                 if (KingAddonsAiImageField.image_model) {
                     $modelSelect.val(KingAddonsAiImageField.image_model);
+                }
+                if (!$modelSelect.val() && imageModels.length) {
+                    $modelSelect.val(imageModels[0].value);
                 }
                 // Define controls per model
                 var modelControls = {
@@ -151,17 +157,31 @@
                         ]
                     }
                 };
-                // Function to update selects based on chosen model
+                // Function to update selects based on chosen model. Models that
+                // are not OpenAI's own (for example anything routed through
+                // OpenRouter) take no quality/size arguments, so those rows are
+                // hidden rather than sending options the provider will reject.
                 function updateControlsByModel() {
                     var m = $modelSelect.val();
+                    var controls = modelControls[m];
+
+                    if (!controls) {
+                        $quality.empty().closest('.kng-ai-image-field-row').hide();
+                        $resolution.empty().closest('.kng-ai-image-field-row').hide();
+                        return;
+                    }
+
+                    $quality.closest('.kng-ai-image-field-row').show();
+                    $resolution.closest('.kng-ai-image-field-row').show();
+
                     // update quality options
                     $quality.empty();
-                    modelControls[m].qualities.forEach(function(opt) {
+                    controls.qualities.forEach(function(opt) {
                         $quality.append('<option value="'+opt.value+'">'+opt.label+'</option>');
                     });
                     // update size options
                     $resolution.empty();
-                    modelControls[m].sizes.forEach(function(opt) {
+                    controls.sizes.forEach(function(opt) {
                         $resolution.append('<option value="'+opt.value+'">'+opt.label+'</option>');
                     });
                 }
@@ -206,6 +226,9 @@
                     )
                 );
                 $outer.append($promptContainer);
+                // Re-run now that the rows exist, so a model without quality /
+                // size options can hide them.
+                updateControlsByModel();
                 // Add user note about processing time
                 $promptContainer.append($('<p class="kng-ai-image-prompt-note">Complex prompts may take up to 2 minutes to process.</p>'));
                 // Mark the Generate Image button as active (container open)

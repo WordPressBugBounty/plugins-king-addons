@@ -40,7 +40,7 @@ class Alt_Text_Generator {
             return; // Don't initialize if both features are disabled
         }
 
-        $has_api_key = !empty($options['openai_api_key']);
+        $has_api_key = '' !== \King_Addons\AI_Provider::getApiKey();
 
         // Hook for new attachments (only if auto generation is enabled and API key exists).
         if ($auto_enabled && $has_api_key) {
@@ -108,7 +108,7 @@ class Alt_Text_Generator {
 
         // Check if API key exists
         $options = get_option('king_addons_ai_options', []);
-        $has_api_key = !empty($options['openai_api_key']);
+        $has_api_key = '' !== \King_Addons\AI_Provider::getApiKey();
 
         // Pass data to JavaScript.
         wp_localize_script('king-addons-media-alt-text', 'kingAddonsMediaAltText', array(
@@ -163,7 +163,7 @@ class Alt_Text_Generator {
 
         $alt_text = get_post_meta($attachment_id, '_wp_attachment_image_alt', true);
         $options = get_option('king_addons_ai_options', []);
-        $has_api_key = !empty($options['openai_api_key']);
+        $has_api_key = '' !== \King_Addons\AI_Provider::getApiKey();
 
         echo '<div class="king-addons-alt-text-status" data-attachment-id="' . esc_attr($attachment_id) . '">';
         if (!empty($alt_text)) {
@@ -202,7 +202,7 @@ class Alt_Text_Generator {
 
         // Check if API key exists
         $options = get_option('king_addons_ai_options', []);
-        if (empty($options['openai_api_key'])) {
+        if ('' === \King_Addons\AI_Provider::getApiKey()) {
             wp_send_json_error(array(
                 'message' => esc_html__('OpenAI API key is not configured. Please set it in the AI settings.', 'king-addons'),
                 'needs_setup' => true
@@ -249,7 +249,7 @@ class Alt_Text_Generator {
     /**
      * Adds custom cron intervals.
      * 
-     * Note: Recommended interval is 60+ seconds to avoid OpenAI API rate limits.
+     * Note: Recommended interval is 60+ seconds to avoid provider API rate limits.
      * Lower intervals may cause API errors during high usage periods.
      *
      * @param array $schedules Existing cron schedules.
@@ -400,16 +400,20 @@ class Alt_Text_Generator {
             return $is_ajax ? $existing_alt : true;
         }
 
-        // Retrieve OpenAI API key and settings from King Addons AI options.
+        // Retrieve the API key and settings of the selected AI provider.
         $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
+        $api_key = \King_Addons\AI_Provider::getApiKey();
         // Use dedicated vision model for image analysis (fallback to text model).
-        $model = $options['openai_vision_model'] ?? ($options['openai_model'] ?? 'gpt-4o-mini');
+        $model = \King_Addons\AI_Provider::getVisionModel();
         // Get image detail level from settings (default to 'low')
         $image_detail_level = $options['ai_alt_text_image_detail_level'] ?? 'low';
 
         if (empty($api_key)) {
-            $error_msg = esc_html__('OpenAI API key is missing.', 'king-addons');
+            $error_msg = sprintf(
+                /* translators: %s: provider name */
+                esc_html__('%s API key is missing.', 'king-addons'),
+                \King_Addons\AI_Provider::getLabel()
+            );
             return $is_ajax ? new \WP_Error('missing_api_key', $error_msg) : $error_msg;
         }
 
@@ -441,8 +445,8 @@ class Alt_Text_Generator {
         // Create the data URI.
         $image_data_uri = "data:{$mime_type};base64,{$base64_image}";
 
-        // --- OpenAI API Call --- //
-        $api_endpoint = 'https://api.openai.com/v1/chat/completions';
+        // --- AI provider API call --- //
+        $api_endpoint = \King_Addons\AI_Provider::getChatEndpoint();
 
         $options_for_lang = get_option('king_addons_ai_options', []);
         $custom_lang_enabled = !empty($options_for_lang['content_language_custom_enable']);
@@ -479,11 +483,8 @@ class Alt_Text_Generator {
         );
 
         $args = array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $api_key,
-                'Content-Type'  => 'application/json',
-            ),
-            'body'    => wp_json_encode($payload),
+            'headers' => \King_Addons\AI_Provider::getHeaders(),
+            'body'    => wp_json_encode(\King_Addons\AI_Provider::prepareChatPayload($payload)),
             'timeout' => 60, // Increased timeout
             'method'  => 'POST',
             'data_format' => 'body',
@@ -502,13 +503,16 @@ class Alt_Text_Generator {
         $response_body = wp_remote_retrieve_body($response);
         $decoded_body  = json_decode($response_body, true);
 
-        if ($response_code !== 200 || !isset($decoded_body['choices'][0]['message']['content'])) {
-            $api_error_message = isset($decoded_body['error']['message']) ? $decoded_body['error']['message'] : esc_html__('API request failed or returned unexpected data.', 'king-addons');
+        if ($response_code !== 200 || isset($decoded_body['error'])) {
+            $api_error_message = \King_Addons\AI_Provider::extractErrorMessage($decoded_body, esc_html__('API request failed or returned unexpected data.', 'king-addons'));
             /* translators: 1: HTTP response code, 2: API error message. */
             return $is_ajax ? new \WP_Error('api_error', $api_error_message, array('status' => $response_code)) : sprintf(esc_html__('API error (%1$d): %2$s', 'king-addons'), $response_code, $api_error_message);
         }
 
-        $generated_alt_text = $decoded_body['choices'][0]['message']['content'];
+        $generated_alt_text = \King_Addons\AI_Provider::extractMessageContent($decoded_body);
+        if (is_wp_error($generated_alt_text)) {
+            return $is_ajax ? $generated_alt_text : $generated_alt_text->get_error_message();
+        }
         // --- End API Call --- //
 
         // If the response starts with "I'm sorry" (case-insensitive, allow whitespace before), treat as error and do not save

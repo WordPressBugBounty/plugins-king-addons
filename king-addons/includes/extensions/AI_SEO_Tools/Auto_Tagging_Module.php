@@ -198,13 +198,17 @@ class Auto_Tagging_Module
         }
 
         $options = get_option('king_addons_ai_options', []);
-        $api_key = $options['openai_api_key'] ?? '';
+        $api_key = \King_Addons\AI_Provider::getApiKey();
         $max_tags = isset($options['auto_tagging_max_tags']) ? (int) $options['auto_tagging_max_tags'] : 5;
         $max_tags = max(1, min(20, $max_tags));
         $stop_list = trim((string) ($options['auto_tagging_stop_words'] ?? ''));
 
         if ($api_key === '') {
-            $message = esc_html__('OpenAI API key is missing.', 'king-addons');
+            $message = sprintf(
+                /* translators: %s: provider name */
+                esc_html__('%s API key is missing.', 'king-addons'),
+                \King_Addons\AI_Provider::getLabel()
+            );
             return $is_ajax ? new \WP_Error('missing_api_key', $message) : $message;
         }
 
@@ -227,7 +231,7 @@ class Auto_Tagging_Module
         $prompt .= 'Title: "' . $title . '". Content: "' . $content . '".';
 
         $payload = [
-            'model' => $options['openai_model'] ?? 'gpt-4o-mini',
+            'model' => \King_Addons\AI_Provider::getTextModel(),
             'messages' => [
                 [
                     'role' => 'user',
@@ -237,12 +241,9 @@ class Auto_Tagging_Module
             'max_tokens' => 80,
         ];
 
-        $response = wp_remote_post('https://api.openai.com/v1/chat/completions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $api_key,
-                'Content-Type' => 'application/json',
-            ],
-            'body' => wp_json_encode($payload),
+        $response = wp_remote_post(\King_Addons\AI_Provider::getChatEndpoint(), [
+            'headers' => \King_Addons\AI_Provider::getHeaders(),
+            'body' => wp_json_encode(\King_Addons\AI_Provider::prepareChatPayload($payload)),
             'timeout' => 60,
             'data_format' => 'body',
         ]);
@@ -254,7 +255,7 @@ class Auto_Tagging_Module
         $code = wp_remote_retrieve_response_code($response);
         $body = json_decode(wp_remote_retrieve_body($response), true);
         if ($code !== 200 || empty($body['choices'][0]['message']['content'])) {
-            $api_error = $body['error']['message'] ?? esc_html__('API request failed.', 'king-addons');
+            $api_error = \King_Addons\AI_Provider::extractErrorMessage($body, esc_html__('API request failed.', 'king-addons'));
             return $is_ajax ? new \WP_Error('api_error', $api_error) : $api_error;
         }
 
@@ -389,7 +390,7 @@ class Auto_Tagging_Module
         }
 
         $ka_ai_opts = get_option('king_addons_ai_options', []);
-        if (empty($ka_ai_opts['openai_api_key'])) {
+        if ('' === \King_Addons\AI_Provider::getApiKey()) {
             wp_send_json_error(['message' => esc_html__('OpenAI API key is not set. Please add it in AI Settings.', 'king-addons'), 'code' => 'no_api_key'], 400);
         }
 

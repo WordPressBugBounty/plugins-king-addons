@@ -114,7 +114,7 @@ class AI_SEO_Tools
         wp_localize_script('king-addons-ai-seo-tools', 'kingAddonsAiSeoTools', [
             'ajaxUrl'          => admin_url('admin-ajax.php'),
             'settingsUrl'      => admin_url('admin.php?page=king-addons-ai-settings'),
-            'hasApiKey'        => !empty($ka_ai_options_for_js['openai_api_key']) ? '1' : '',
+            'hasApiKey'        => ('' !== \King_Addons\AI_Provider::getApiKey()) ? '1' : '',
             'dashboardUiNonce' => wp_create_nonce('king_addons_dashboard_ui'),
             'nonces' => [
                 'altStart' => wp_create_nonce('king_addons_ai_seo_bulk_alt_start_nonce'),
@@ -214,7 +214,7 @@ class AI_SEO_Tools
                 </p>
             </div>
 
-            <?php if (empty($ka_ai_options['openai_api_key'])) : ?>
+            <?php if ('' === \King_Addons\AI_Provider::getApiKey()) : ?>
             <div class="ka-ai-seo-nokey-banner">
                 ⚠️ <strong><?php esc_html_e('OpenAI API key is missing.', 'king-addons'); ?></strong>
                 <?php esc_html_e('AI features are disabled until you', 'king-addons'); ?>
@@ -380,8 +380,14 @@ class AI_SEO_Tools
                             <div class="ka-postgen-row">
                                 <label for="ka-postgen-image-model"><?php esc_html_e('Image model:', 'king-addons'); ?></label>
                                 <select id="ka-postgen-image-model">
-                                    <option value="dall-e-3" selected>DALL·E 3</option>
-                                    <option value="gpt-image-1">GPT Image 1</option>
+                                    <?php
+                                    // Options follow whichever AI provider is configured.
+                                    $ka_image_models   = \King_Addons\AI_Provider::getModelsFor('image');
+                                    $ka_selected_image = \King_Addons\AI_Provider::getImageModel();
+                                    foreach ($ka_image_models as $ka_image_model) :
+                                        ?>
+                                        <option value="<?php echo esc_attr($ka_image_model['id']); ?>" <?php selected($ka_selected_image, $ka_image_model['id']); ?>><?php echo esc_html($ka_image_model['label']); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div id="ka-postgen-dalle3-opts">
@@ -478,7 +484,7 @@ class AI_SEO_Tools
                     <div class="ka-card-body">
                         <h2 class="ka-seo-settings-section-title"><?php esc_html_e('AI Keys &amp; Models', 'king-addons'); ?></h2>
                         <p><?php esc_html_e('OpenAI API key, model selection and other general AI settings are managed in AI Settings.', 'king-addons'); ?></p>
-                        <a class="ka-btn ka-btn-primary" href="<?php echo esc_url(admin_url('admin.php?page=king-addons-ai-settings')); ?>"><?php esc_html_e('Open AI Settings', 'king-addons'); ?></a>
+                        <a class="ka-btn ka-btn-primary" href="<?php echo esc_url(admin_url('admin.php?page=king-addons-ai-settings')); ?>"><?php esc_html_e('Go to AI Settings', 'king-addons'); ?></a>
                     </div>
                 </div>
             </div>

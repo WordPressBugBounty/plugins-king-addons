@@ -96,12 +96,17 @@
 }
 .kng-ai-image-generate-btn,
 .kng-ai-image-prompt-submit {
-    background: linear-gradient(135deg, #E1CBFF, #5B03FF);
+    background: #5B03FF;
     color: #ffffff;
 }
 .kng-ai-image-generate-btn:hover,
 .kng-ai-image-prompt-submit:hover {
-    box-shadow: 0 0 8px rgba(91,3,255,0.6);
+    background: #4A02D6;
+    box-shadow: none;
+}
+.kng-ai-image-generate-btn:active,
+.kng-ai-image-prompt-submit:active {
+    background: #3D01B0;
 }
 .kng-ai-image-prompt-cancel {
     display: flex;

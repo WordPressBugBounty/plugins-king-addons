@@ -28,21 +28,30 @@
     justify-content: center;
     width: 48px;
     height: 32px;
-    border-radius: 12px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
-    transition: box-shadow 0.3s ease, background 0.3s ease;
+    transition: background-color 0.15s ease;
     padding: 0; /* Reset default button padding */
     margin: 0;  /* Reset any default margins */
     box-sizing: border-box;
     overflow: hidden;
 }
+/* Send is the one action of the prompt row, so it stays a solid fill while the
+   Cancel beside it stays neutral. A tint here read as unavailable, and the icon
+   file is white, which all but vanished on a pale ground. */
 .ai-prompt-submit {
-    background: linear-gradient(135deg, #E1CBFF, #5B03FF);
+    background: #5B03FF;
+    border-color: transparent;
     color: #ffffff;
 }
 .ai-prompt-submit:hover {
-    box-shadow: 0 0 8px rgba(91,3,255,0.6);
+    background: #4A02D6;
+    border-color: transparent;
+    box-shadow: none;
+}
+.ai-prompt-submit:active {
+    background: #3D01B0;
 }
 .ai-prompt-cancel {
     background: #f5f5f5;
@@ -50,5 +59,86 @@
 }
 .ai-prompt-cancel:hover {
     background: #e0e0e0;
-    box-shadow: 0 0 6px rgba(0,0,0,0.15);
+    box-shadow: none;
 } 
+/*
+ * AI Generate / AI Change buttons in the Elementor control panel.
+ *
+ * These used to be styled inline from JavaScript with a gradient and a glow on
+ * hover. Keeping them here gives them real interaction states and one place to
+ * change. The pair is deliberately identical: they are peers, and the label
+ * says which is which.
+ */
+.ai-generate-btn,
+.ai-change-btn {
+    /* A violet tint rather than a solid fill: the panel's other controls are
+       quiet, and a saturated block among them reads as an advertisement.
+       Values here are for the light panel; the dark panel overrides them. */
+    --ka-ai-btn-bg: rgba(91, 3, 255, .10);
+    --ka-ai-btn-bg-hover: rgba(91, 3, 255, .17);
+    --ka-ai-btn-bg-active: rgba(91, 3, 255, .24);
+    --ka-ai-btn-fg: #4A02D6;
+    --ka-ai-btn-ring: #5B03FF;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background: var(--ka-ai-btn-bg);
+    color: var(--ka-ai-btn-fg);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+}
+
+.ai-generate-btn:hover,
+.ai-change-btn:hover {
+    background: var(--ka-ai-btn-bg-hover);
+    color: var(--ka-ai-btn-fg);
+    box-shadow: none;
+}
+
+/* A small press response reads as more responsive than a glow. */
+.ai-generate-btn:active,
+.ai-change-btn:active {
+    background: var(--ka-ai-btn-bg-active);
+    transform: translateY(1px);
+}
+
+.ai-generate-btn:focus-visible,
+.ai-change-btn:focus-visible {
+    outline: 2px solid var(--ka-ai-btn-ring);
+    outline-offset: 2px;
+}
+
+.ai-generate-btn:disabled,
+.ai-change-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* The icon files are white, which is invisible on a tint - recolour them to
+   match the label. */
+.ai-generate-btn img,
+.ai-change-btn img {
+    filter: brightness(0) saturate(100%) invert(13%) sepia(96%) saturate(6704%) hue-rotate(266deg) brightness(85%) contrast(120%);
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    flex: 0 0 14px;
+    vertical-align: middle;
+}
+
+.ai-generate-btn__label {
+    display: inline-block;
+}

@@ -16,8 +16,117 @@
         fromLang: '',
         toLang: '',
         isCancelled: false,
-        currentRequests: [] // Store active AJAX requests to cancel them
+        currentRequests: [], // Store active AJAX requests to cancel them
+        doneElementIds: [],  // Elements finished in this run, for resuming later
+        failedElementIds: [],
+        consecutiveFailures: 0,
+        resumedCount: 0,
+        lastErrorMessage: ''
     };
+
+    // Saved progress lets a run continue after the editor is reloaded.
+    var PROGRESS_STORAGE_PREFIX = 'king_addons_ai_translator_progress_';
+    var PROGRESS_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // A week-old run is stale.
+
+    /**
+     * Id of the document currently open in the editor, or 0 when unknown.
+     */
+    function getCurrentDocumentId() {
+        try {
+            var doc = elementor.documents.getCurrent();
+            return doc && doc.id ? parseInt(doc.id, 10) : 0;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function getProgressStorageKey(documentId) {
+        return PROGRESS_STORAGE_PREFIX + (documentId || getCurrentDocumentId());
+    }
+
+    /**
+     * Persist where the run got to. Storage can be unavailable (private mode,
+     * blocked site data), and losing resume support must never break a run.
+     */
+    function saveTranslationProgress() {
+        var documentId = getCurrentDocumentId();
+        if (!documentId || !translationState.totalElements) {
+            return;
+        }
+
+        try {
+            window.localStorage.setItem(getProgressStorageKey(documentId), JSON.stringify({
+                v: 1,
+                documentId: documentId,
+                fromLang: translationState.fromLang,
+                toLang: translationState.toLang,
+                total: translationState.totalElements,
+                done: translationState.doneElementIds,
+                failed: translationState.failedElementIds,
+                updatedAt: Date.now()
+            }));
+        } catch (e) {
+            // Ignore - resuming is a convenience, not a requirement.
+        }
+    }
+
+    function clearTranslationProgress() {
+        try {
+            window.localStorage.removeItem(getProgressStorageKey());
+        } catch (e) {
+            // Ignore.
+        }
+    }
+
+    /**
+     * Saved progress for the open document, or null when there is nothing
+     * usable to resume.
+     */
+    function loadTranslationProgress() {
+        var documentId = getCurrentDocumentId();
+        if (!documentId) {
+            return null;
+        }
+
+        var raw;
+        try {
+            raw = window.localStorage.getItem(getProgressStorageKey(documentId));
+        } catch (e) {
+            return null;
+        }
+
+        if (!raw) {
+            return null;
+        }
+
+        var saved;
+        try {
+            saved = JSON.parse(raw);
+        } catch (e) {
+            clearTranslationProgress();
+            return null;
+        }
+
+        var valid = saved
+            && saved.v === 1
+            && saved.documentId === documentId
+            && saved.toLang
+            && Array.isArray(saved.done)
+            && typeof saved.total === 'number';
+
+        if (!valid) {
+            clearTranslationProgress();
+            return null;
+        }
+
+        // Drop stale entries, and finished ones that were never cleaned up.
+        if ((Date.now() - (saved.updatedAt || 0)) > PROGRESS_MAX_AGE_MS || saved.done.length >= saved.total) {
+            clearTranslationProgress();
+            return null;
+        }
+
+        return saved;
+    }
 
     // Language options
     var languages = {
@@ -66,35 +175,60 @@
         if ($('#king-addons-ai-translator-styles').length === 0) {
             const styles = `
                 <style id="king-addons-ai-translator-styles">
+                    /* Design tokens - flat surfaces, one accent, no gradients. */
+                    :root {
+                        --ka-tr-accent: #5B03FF;
+                        --ka-tr-accent-hover: #4A02D6;
+                        --ka-tr-accent-soft: rgba(91, 3, 255, 0.08);
+                        --ka-tr-ink: #16161a;
+                        --ka-tr-ink-muted: #6b7280;
+                        --ka-tr-surface: #ffffff;
+                        --ka-tr-surface-sunken: #f6f7f9;
+                        --ka-tr-border: #e4e6ea;
+                        --ka-tr-border-strong: #d3d6db;
+                        --ka-tr-success: #10794a;
+                        --ka-tr-success-soft: #eefaf3;
+                        --ka-tr-success-border: #c2e9d4;
+                        --ka-tr-warning: #8a5a00;
+                        --ka-tr-warning-soft: #fff8ec;
+                        --ka-tr-warning-border: #f3ddb4;
+                        --ka-tr-danger: #b3261e;
+                        --ka-tr-radius: 12px;
+                        --ka-tr-radius-sm: 8px;
+                        --ka-tr-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    }
+
                     /* Translator Button Styles */
+                    /* Desaturated violet at the toolbar's own 4px radius: the
+                       saturated fill shimmered against the near-black bar and
+                       its 8px corners did not match any neighbouring control. */
                     .king-addons-ai-translator-btn {
-                        background: linear-gradient(135deg, #E1CBFF, #5B03FF) !important;
+                        background: #6C5CE7 !important;
                         border: none !important;
-                        color: white !important;
-                        padding: 8px 12px !important;
-                        border-radius: 6px !important;
+                        color: #fff !important;
+                        padding: 8px 14px !important;
+                        border-radius: 4px !important;
                         font-size: 12px !important;
-                        font-weight: 500 !important;
+                        font-weight: 600 !important;
                         cursor: pointer !important;
                         display: inline-flex !important;
                         align-items: center !important;
                         gap: 6px !important;
-                        transition: all 0.3s ease !important;
+                        transition: background-color 0.15s ease !important;
                         margin: 8px !important;
                         position: relative !important;
                         z-index: 10 !important;
                         text-decoration: none !important;
                         outline: none !important;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+                        box-shadow: none !important;
                     }
                     .king-addons-ai-translator-btn:hover {
-                        background: linear-gradient(135deg, #d4a3ff, #4f00e6) !important;
-                        box-shadow: 0 4px 12px rgba(91,3,255,0.3) !important;
-                        transform: translateY(-1px) !important;
+                        background: #5B4BD6 !important;
+                        box-shadow: none !important;
                     }
-                    .king-addons-ai-translator-btn:active {
-                        transform: translateY(0) !important;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+                    .king-addons-ai-translator-btn:focus-visible {
+                        outline: 2px solid #8C7DFF !important;
+                        outline-offset: 2px !important;
                     }
                     .king-addons-ai-translator-btn img {
                         width: 16px !important;
@@ -234,7 +368,7 @@
                         left: 0;
                         right: 0;
                         bottom: 0;
-                        background: rgba(0,0,0,0.5);
+                        background: rgba(16, 16, 20, 0.55);
                         z-index: 999999;
                         display: flex;
                         align-items: center;
@@ -249,26 +383,31 @@
 
                     /* Popup Container */
                     .king-addons-translator-popup {
-                        background: white;
-                        padding: 24px;
-                        border-radius: 8px;
-                        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                        --ka-tr-pad: 28px;
+                        background: var(--ka-tr-surface);
+                        padding: var(--ka-tr-pad);
+                        border-radius: var(--ka-tr-radius);
+                        box-shadow: 0 1px 2px rgba(16,16,20,0.06), 0 12px 32px rgba(16,16,20,0.16);
                         width: 90%;
-                        max-width: 500px;
-                        max-height: 80vh;
+                        max-width: 480px;
+                        max-height: 82vh;
                         overflow-y: auto;
                         transition: all 0.3s ease;
                         transform: scale(1);
+                        font-family: var(--ka-tr-font);
+                        color: var(--ka-tr-ink);
+                        line-height: 1.5;
                     }
                     
                     /* Compact popup for top-right positioning */
                     .king-addons-translator-popup.compact {
+                        --ka-tr-pad: 16px;
                         position: fixed;
                         top: 80px;
                         right: 20px;
                         width: 350px;
                         max-width: 350px;
-                        padding: 16px;
+                        padding: var(--ka-tr-pad);
                         z-index: 999999;
                         max-height: 400px;
                         transform: scale(1);
@@ -338,12 +477,14 @@
                     }
 
                     .king-addons-translator-popup h3 {
-                        margin: 0 0 20px 0;
+                        margin: 0 0 6px 0;
                         font-size: 18px;
-                        color: #23282d;
+                        font-weight: 650;
+                        letter-spacing: -0.01em;
+                        color: var(--ka-tr-ink);
                         display: flex;
                         align-items: center;
-                        gap: 8px;
+                        gap: 10px;
                     }
 
                     .king-addons-translator-form {
@@ -359,17 +500,19 @@
                     }
 
                     .king-addons-translator-field label {
-                        font-weight: 500;
-                        color: #555;
-                        font-size: 14px;
+                        font-weight: 600;
+                        color: var(--ka-tr-ink);
+                        font-size: 13px;
                     }
 
                     .king-addons-translator-field select {
-                        padding: 8px 12px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
+                        padding: 10px 12px;
+                        border: 1px solid var(--ka-tr-border-strong);
+                        border-radius: var(--ka-tr-radius-sm);
                         font-size: 14px;
                         height: auto;
+                        background: var(--ka-tr-surface);
+                        color: var(--ka-tr-ink);
                     }
 
                     .king-addons-translator-field select:focus {
@@ -379,9 +522,9 @@
                     }
 
                     .king-addons-translator-field input[type="text"] {
-                        padding: 8px 12px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
+                        padding: 10px 12px;
+                        border: 1px solid var(--ka-tr-border-strong);
+                        border-radius: var(--ka-tr-radius-sm);
                         font-size: 14px;
                         margin-top: 6px;
                         transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -416,8 +559,8 @@
                     }
 
                     .king-addons-pro-badge {
-                        background: linear-gradient(135deg, #FFD700, #FFA500);
-                        color: #333;
+                        background: #f5b301;
+                        color: #3a2c00;
                         font-size: 10px;
                         font-weight: bold;
                         padding: 2px 6px;
@@ -440,11 +583,14 @@
                     
                     /* Info text for premium features */
                     .king-addons-pro-info {
-                        font-size: 13px;
-                        color: #666;
+                        font-size: 12px;
+                        color: var(--ka-tr-ink-muted);
                         margin-top: 4px;
-                        font-style: italic;
-                        line-height: 1.4;
+                        line-height: 1.5;
+                        background: var(--ka-tr-surface-sunken);
+                        border: 1px solid var(--ka-tr-border);
+                        border-radius: var(--ka-tr-radius-sm);
+                        padding: 12px 14px;
                     }
 
                     .king-addons-pro-info a {
@@ -461,10 +607,10 @@
                     /* Prompt examples styling */
                     .king-addons-prompt-examples {
                         margin-top: 6px;
-                        padding: 8px;
-                        background: #f8f9fa;
-                        border-left: 3px solid #5B03FF;
-                        border-radius: 0 4px 4px 0;
+                        padding: 10px 12px;
+                        background: var(--ka-tr-surface-sunken);
+                        border: 1px solid var(--ka-tr-border);
+                        border-radius: var(--ka-tr-radius-sm);
                     }
 
                     .king-addons-prompt-examples small {
@@ -524,56 +670,69 @@
                     .king-addons-translator-actions {
                         display: flex;
                         gap: 12px;
-                        margin-top: 8px;
+                        position: sticky;
+                        bottom: calc(var(--ka-tr-pad) * -1);
+                        margin: 8px calc(var(--ka-tr-pad) * -1) calc(var(--ka-tr-pad) * -1);
+                        padding: 14px var(--ka-tr-pad) var(--ka-tr-pad);
+                        background: var(--ka-tr-surface);
+                        border-top: 1px solid var(--ka-tr-border);
+                    }
+
+                    .king-addons-translator-btn-primary,
+                    .king-addons-translator-btn-secondary {
+                        padding: 11px 20px;
+                        border-radius: var(--ka-tr-radius-sm);
+                        font-size: 14px;
+                        font-weight: 600;
+                        font-family: inherit;
+                        line-height: 1.2;
+                        cursor: pointer;
+                        flex: 1;
+                        transition: background-color 0.15s ease, border-color 0.15s ease;
                     }
 
                     .king-addons-translator-btn-primary {
-                        background: linear-gradient(135deg, #E1CBFF, #5B03FF);
-                        border: none;
-                        color: white;
-                        padding: 10px 20px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        flex: 1;
-                        transition: all 0.3s ease;
+                        background: var(--ka-tr-accent);
+                        border: 1px solid var(--ka-tr-accent);
+                        color: #fff;
                     }
 
                     .king-addons-translator-btn-primary:hover {
-                        box-shadow: 0 0 12px rgba(91,3,255,0.5);
+                        background: var(--ka-tr-accent-hover);
+                        border-color: var(--ka-tr-accent-hover);
                         color: #fff;
                     }
 
                     .king-addons-translator-btn-primary:disabled {
-                        background: #ccc;
+                        background: var(--ka-tr-border-strong);
+                        border-color: var(--ka-tr-border-strong);
+                        color: #fff;
                         cursor: not-allowed;
-                        box-shadow: none;
                     }
 
                     .king-addons-translator-btn-secondary {
-                        background: #f1f1f1;
-                        border: 1px solid #ddd;
-                        color: #555;
-                        padding: 10px 20px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                        cursor: pointer;
-                        flex: 1;
-                        transition: all 0.3s ease;
+                        background: var(--ka-tr-surface);
+                        border: 1px solid var(--ka-tr-border-strong);
+                        color: var(--ka-tr-ink);
                     }
 
                     .king-addons-translator-btn-secondary:hover {
-                        background: #e8e8e8;
+                        background: var(--ka-tr-surface-sunken);
+                    }
+
+                    .king-addons-translator-btn-primary:focus-visible,
+                    .king-addons-translator-btn-secondary:focus-visible {
+                        outline: 2px solid var(--ka-tr-accent);
+                        outline-offset: 2px;
                     }
 
                     /* Progress Styles */
                     .king-addons-translator-progress {
                         margin-top: 16px;
                         padding: 16px;
-                        background: #f8f9fa;
-                        border-radius: 6px;
-                        border-left: 4px solid #5B03FF;
+                        background: var(--ka-tr-surface-sunken);
+                        border: 1px solid var(--ka-tr-border);
+                        border-radius: var(--ka-tr-radius-sm);
                     }
 
                     .king-addons-translator-progress-text {
@@ -584,24 +743,74 @@
 
                     .king-addons-translator-progress-bar {
                         width: 100%;
-                        height: 8px;
-                        background: #e0e0e0;
-                        border-radius: 4px;
+                        height: 6px;
+                        background: var(--ka-tr-border);
+                        border-radius: 999px;
                         overflow: hidden;
                         margin-bottom: 8px;
                     }
 
                     .king-addons-translator-progress-fill {
                         height: 100%;
-                        background: linear-gradient(90deg, #5B03FF, #E1CBFF);
+                        background: var(--ka-tr-accent);
                         width: 0%;
                         transition: width 0.3s ease;
                     }
 
                     .king-addons-translator-current-element {
                         font-size: 12px;
-                        color: #777;
-                        font-style: italic;
+                        color: var(--ka-tr-ink-muted);
+                    }
+
+                    .ka-tr-activity {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        min-height: 18px;
+                    }
+
+                    .ka-tr-spinner {
+                        flex: 0 0 13px;
+                        width: 13px;
+                        height: 13px;
+                        border: 2px solid var(--ka-tr-border);
+                        border-top-color: var(--ka-tr-accent);
+                        border-radius: 50%;
+                        animation: rotate 0.7s linear infinite;
+                    }
+
+                    /* Respect a reduced-motion preference rather than spinning regardless. */
+                    @media (prefers-reduced-motion: reduce) {
+                        .ka-tr-spinner {
+                            animation-duration: 2.4s;
+                        }
+                    }
+
+                    .ka-tr-snippet {
+                        margin-top: 8px;
+                        padding: 8px 10px;
+                        background: var(--ka-tr-surface);
+                        border: 1px solid var(--ka-tr-border);
+                        border-radius: var(--ka-tr-radius-sm);
+                        font-size: 12px;
+                        line-height: 1.45;
+                        color: var(--ka-tr-ink-muted);
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                    }
+
+                    .king-addons-translator-progress-note {
+                        display: none;
+                        margin-top: 10px;
+                        padding: 10px 12px;
+                        background: var(--ka-tr-warning-soft);
+                        border: 1px solid var(--ka-tr-warning-border);
+                        border-radius: var(--ka-tr-radius-sm);
+                        color: var(--ka-tr-warning);
+                        font-size: 12px;
+                        line-height: 1.5;
                     }
 
                     /* Stats Styles */
@@ -612,11 +821,174 @@
                         gap: 12px;
                     }
 
+                    /* Shared dialog building blocks */
+                    .ka-tr-dialog-head {
+                        margin-bottom: 20px;
+                    }
+
+                    .ka-tr-dialog-head h3 {
+                        margin: 0 0 6px 0;
+                    }
+
+                    .ka-tr-dialog-sub {
+                        margin: 0;
+                        font-size: 13px;
+                        color: var(--ka-tr-ink-muted);
+                    }
+
+                    /* Says whose feature this is - inside Elementor's editor the
+                       dialog otherwise reads as one of Elementor's own. */
+                    .ka-tr-byline {
+                        margin: -2px 0 12px;
+                        font-size: 11px;
+                        font-weight: 700;
+                        letter-spacing: .08em;
+                        text-transform: uppercase;
+                        color: var(--ka-tr-accent);
+                    }
+
+                    .ka-tr-panel {
+                        background: var(--ka-tr-surface-sunken);
+                        border: 1px solid var(--ka-tr-border);
+                        border-radius: var(--ka-tr-radius-sm);
+                        padding: 16px;
+                        margin-bottom: 12px;
+                    }
+
+                    .ka-tr-panel--accent {
+                        background: var(--ka-tr-accent-soft);
+                        border-color: rgba(91, 3, 255, 0.18);
+                    }
+
+                    .ka-tr-panel--warning {
+                        background: var(--ka-tr-warning-soft);
+                        border-color: var(--ka-tr-warning-border);
+                        color: var(--ka-tr-warning);
+                    }
+
+                    .ka-tr-panel h4 {
+                        margin: 0 0 10px 0;
+                        font-size: 13px;
+                        font-weight: 650;
+                        color: var(--ka-tr-ink);
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+
+                    .ka-tr-panel p {
+                        margin: 0 0 12px 0;
+                        font-size: 13px;
+                        color: var(--ka-tr-ink-muted);
+                    }
+
+                    .ka-tr-panel p:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    .ka-tr-steps {
+                        list-style: none;
+                        counter-reset: ka-tr-step;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .ka-tr-steps li {
+                        counter-increment: ka-tr-step;
+                        position: relative;
+                        padding-left: 28px;
+                        margin: 0 0 10px 0;
+                        font-size: 13px;
+                        color: var(--ka-tr-ink);
+                        line-height: 1.5;
+                    }
+
+                    .ka-tr-steps li:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    .ka-tr-steps li::before {
+                        content: counter(ka-tr-step);
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background: var(--ka-tr-accent);
+                        color: #fff;
+                        font-size: 11px;
+                        font-weight: 650;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .ka-tr-steps a,
+                    .ka-tr-panel a {
+                        color: var(--ka-tr-accent);
+                        font-weight: 600;
+                        text-decoration: none;
+                    }
+
+                    .ka-tr-steps a:hover,
+                    .ka-tr-panel a:hover {
+                        text-decoration: underline;
+                    }
+
+                    .ka-tr-rows {
+                        display: grid;
+                        gap: 8px;
+                    }
+
+                    .ka-tr-row {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 12px;
+                        font-size: 13px;
+                    }
+
+                    .ka-tr-row span {
+                        color: var(--ka-tr-ink-muted);
+                    }
+
+                    .ka-tr-row strong {
+                        color: var(--ka-tr-ink);
+                        font-weight: 600;
+                    }
+
+                    .ka-tr-detail {
+                        font-size: 12px;
+                        color: var(--ka-tr-ink-muted);
+                        line-height: 1.5;
+                        word-break: break-word;
+                        max-height: 120px;
+                        overflow-y: auto;
+                        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+                    }
+
                     .king-addons-translator-stat {
                         text-align: center;
-                        padding: 12px;
-                        background: #f8f9fa;
-                        border-radius: 6px;
+                        padding: 14px 12px;
+                        background: var(--ka-tr-surface-sunken);
+                        border: 1px solid var(--ka-tr-border);
+                        border-radius: var(--ka-tr-radius-sm);
+                    }
+
+                    .king-addons-translator-stat-number {
+                        font-size: 26px;
+                        font-weight: 650;
+                        line-height: 1.1;
+                        letter-spacing: -0.02em;
+                        color: var(--ka-tr-ink);
+                    }
+
+                    .king-addons-translator-stat-label {
+                        margin-top: 4px;
+                        font-size: 11px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        color: var(--ka-tr-ink-muted);
                     }
 
                     .king-addons-translator-stat-number {
@@ -703,18 +1075,18 @@
             // Material UI style button for toolbar with text and custom icon
             $translatorBtn = $('<span class="MuiBox-root eui-0">' +
                 '<button class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textInherit MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-colorInherit king-addons-ai-translator-btn eui-17yw4pm" ' +
-                'tabindex="0" type="button" aria-label="AI Page Translator" title="AI Page Translator">' +
+                'tabindex="0" type="button" aria-label="AI Page Translate & Transform" title="AI Page Translate & Transform">' +
                 '<span class="MuiButton-startIcon MuiButton-iconSizeSmall" style="margin-right: 4px;">' +
                 '<img src="' + iconUrl + '" alt="AI" onerror="this.src=\'' + fallbackIconUrl + '\'" style="width: 20px; height: 20px;" />' +
                 '</span>' +
-                '<span class="MuiStack-root" style="color: white;">AI Page Translator</span>' +
+                '<span class="MuiStack-root" style="color: white;">AI Page Translate &amp; Transform</span>' +
                 '</button>' +
                 '</span>');
         } else {
             // Original button style for panel locations
-            $translatorBtn = $('<button class="king-addons-ai-translator-btn" title="AI Page Translator">' +
-                '<img src="' + iconUrl + '" alt="AI Page Translator" onerror="this.src=\'' + fallbackIconUrl + '\'"/>' +
-                '<span>AI Page Translator</span>' +
+            $translatorBtn = $('<button class="king-addons-ai-translator-btn" title="AI Page Translate & Transform">' +
+                '<img src="' + iconUrl + '" alt="" onerror="this.src=\'' + fallbackIconUrl + '\'"/>' +
+                '<span>AI Page Translate &amp; Transform</span>' +
                 '</button>');
         }
         
@@ -815,6 +1187,12 @@
                 return;
             }
             
+            var saved = loadTranslationProgress();
+            if (saved) {
+                showResumePopup(saved);
+                return;
+            }
+
             createAndShowPopup();
         }).fail(function(xhr) {
             $loadingOverlay.remove();
@@ -864,58 +1242,51 @@
     }
     
     function showApiKeyErrorDelayed(title, message) {
-        var settingsUrl = window.KingAddonsAiField && window.KingAddonsAiField.settings_url
-            ? window.KingAddonsAiField.settings_url
-            : '/wp-admin/admin.php?page=king-addons-ai-settings';
+        var cfg = window.KingAddonsAiField || {};
+        var settingsUrl = cfg.settings_url || '/wp-admin/admin.php?page=king-addons-ai-settings';
+
+        // The setup steps name whichever AI provider is configured.
+        var keysUrl = cfg.api_keys_url || 'https://platform.openai.com/api-keys';
+        var keysLabel = cfg.api_keys_label || 'OpenAI Platform';
+        var billingNote = cfg.setup_billing_note || 'and top up your OpenAI account balance by at least $5';
+        var costNote = cfg.setup_cost_note || 'Processing a page costs pennies (about $0.01 per full page).';
+
+        function esc(value) {
+            return $('<div></div>').text(String(value == null ? '' : value)).html();
+        }
         
         var $overlay = $('<div class="king-addons-translator-overlay"></div>');
         var $popup = $('<div class="king-addons-translator-popup"></div>');
         
         var errorHtml = `
-            <div style="text-align: center; margin-bottom: 32px;">
-                <h3 style="margin: 0 0 16px 0; color: #2d3748; font-size: 20px; text-align: center;justify-content: center;">AI Translator Setup Required</h3>
-                <p style="color: #718096; margin: 0; font-size: 14px;">This is completely safe and takes only 2 minutes!</p>
+            <div class="ka-tr-dialog-head">
+                <h3>${esc(title || 'AI Page Translate & Transform')}</h3>
+                <div class="ka-tr-byline">by King Addons</div>
+                <p class="ka-tr-dialog-sub">Connect an AI provider once and the feature is ready to use.</p>
             </div>
-            
-            <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                <h4 style="color: #2d3748; margin: 0 0 12px 0; font-size: 16px;">📋 What you need to do:</h4>
-                
-                <div style="margin-bottom: 12px; display: flex; align-items: center;">
-                    <span style="background: #48bb78; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;max-width: 24px;flex-basis: 46px;">1</span>
-                    <span style="color: #4a5568;">Get an API key from <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #5B03FF; text-decoration: none;line-height: 1.4;">OpenAI Platform</a> and top up your OpenAI account balance by at least $5</span>
-                </div>
-                
-                <div style="margin-bottom: 12px; display: flex; align-items: center;">
-                    <span style="background: #48bb78; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">2</span>
-                    <span style="color: #4a5568;">Paste it in AI Settings</span>
-                </div>
-                
-                <div style="margin-bottom: 12px; display: flex; align-items: center;">
-                    <span style="background: #48bb78; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">3</span>
-                    <span style="color: #4a5568;">Done! Translate as much as you want 🎉</span>
-                </div>
+
+            <div class="ka-tr-panel">
+                <h4>What you need to do</h4>
+                <ol class="ka-tr-steps">
+                    <li>Get an API key from <a href="${esc(keysUrl)}" target="_blank" rel="noopener noreferrer">${esc(keysLabel)}</a> ${esc(billingNote)}</li>
+                    <li>Paste it into AI Settings</li>
+                    <li>Come back here and translate the page</li>
+                </ol>
             </div>
-            
-            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <span style="color: #495057; margin-right: 8px; font-size: 16px;">💰</span>
-                    <strong style="color: #495057;">How much does it cost?</strong>
-                </div>
-                <p style="color: #6c757d; margin: 0; font-size: 14px; line-height: 1.4;">
-                    Translation costs pennies (about $0.01 per full page).
-                </p>
+
+            ${message ? `<div class="ka-tr-panel"><h4>Details</h4><div class="ka-tr-detail">${esc(message)}</div></div>` : ''}
+
+            <div class="ka-tr-panel">
+                <h4>What it costs</h4>
+                <p>${esc(costNote)}</p>
             </div>
-            
-            <div style="display: flex; gap: 12px;">
-                <button class="king-addons-translator-btn-secondary" id="king-addons-error-close" style="flex: 1;">
-                    Not now
-                </button>
-                <a href="${settingsUrl}" class="king-addons-translator-btn-primary" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    Set up now
-                </a>
+
+            <div class="king-addons-translator-actions">
+                <button class="king-addons-translator-btn-secondary" id="king-addons-error-close">Not now</button>
+                <a href="${esc(settingsUrl)}" class="king-addons-translator-btn-primary" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Go to AI Settings</a>
             </div>
         `;
-        
+
         $popup.html(errorHtml);
         $overlay.append($popup);
         $('body').append($overlay);
@@ -936,82 +1307,142 @@
     /**
      * Show token limit error popup
      */
-    function showTokenLimitError(message) {
+    function showTokenLimitError(message, errorCode) {
         // Remove any existing popups first
         $('.king-addons-translator-overlay').remove();
         $('.king-addons-translator-popup').remove();
         
         // Wait a bit to ensure cleanup is complete
         setTimeout(function() {
-            showTokenLimitErrorDelayed(message);
+            showTokenLimitErrorDelayed(message, errorCode);
         }, 100);
     }
     
-    function showTokenLimitErrorDelayed(message) {
-        var settingsUrl = window.KingAddonsAiField && window.KingAddonsAiField.settings_url
-            ? window.KingAddonsAiField.settings_url
-            : '/wp-admin/admin.php?page=king-addons-ai-settings';
-        
+    /**
+     * A run can be stopped by four different limits, and they need four
+     * different answers: the plugin's own token cap, the provider's short-term
+     * throttling, a per-model daily cap, and an empty account balance. Showing
+     * "increase your Daily Token Limit" for all of them sends people to a
+     * setting that has nothing to do with the failure.
+     */
+    function showTokenLimitErrorDelayed(message, errorCode) {
+        var cfg = window.KingAddonsAiField || {};
+        var settingsUrl = cfg.settings_url || '/wp-admin/admin.php?page=king-addons-ai-settings';
+        var providerLabel = cfg.provider_label || 'the AI provider';
+        var isOpenRouter = cfg.provider === 'openrouter';
+
+        function esc(value) {
+            return $('<div></div>').text(String(value == null ? '' : value)).html();
+        }
+
+        var variants = {
+            local_limit: {
+                title: 'Daily token limit reached',
+                subtitle: 'Your own safety limit stopped the translation.',
+                heading: 'What happened',
+                body: 'King Addons has a <strong>"Daily Token Limit"</strong> setting that prevents accidental '
+                    + 'overspending, and this page hit it. Nothing is wrong with your ' + esc(providerLabel) + ' account.',
+                steps: [
+                    '<strong>Increase the "Daily Token Limit"</strong> in AI Settings (recommended)',
+                    'Or wait until tomorrow &mdash; the limit resets automatically'
+                ],
+                tip: 'Go to <strong>AI Settings → Daily Token Limit</strong> and set a higher number. '
+                    + 'For regular use, try <strong>50,000 or 100,000 tokens</strong>.'
+            },
+            rate_limit: {
+                title: 'Model rate limit reached',
+                subtitle: esc(providerLabel) + ' is throttling requests for the selected model.',
+                heading: 'What happened',
+                body: 'The model was asked for translations faster than the provider allows, and it kept '
+                    + 'refusing after several retries. This is a temporary limit, not a problem with your account.',
+                steps: [
+                    'Wait a minute and resume &mdash; the limit clears on its own',
+                    'Or pick a less busy model in AI Settings'
+                ].concat(isOpenRouter ? ['Free models share a pool with other users; a paid model has far higher limits'] : []),
+                tip: 'Your progress was saved. Reopen the AI Translator and choose <strong>Resume</strong> '
+                    + 'to continue from where it stopped.'
+            },
+            daily_limit: {
+                title: 'Daily model limit reached',
+                subtitle: esc(providerLabel) + ' has capped this model for today.',
+                heading: 'What happened',
+                body: 'The selected model has a daily request cap and it has been used up. Waiting a few '
+                    + 'seconds will not help &mdash; the cap resets on the provider\'s schedule.',
+                steps: [
+                    'Switch to a different model in AI Settings',
+                    'Or come back after the cap resets'
+                ].concat(isOpenRouter ? ['Free models have daily caps that credits do not lift; a paid model avoids them'] : []),
+                tip: 'Your progress was saved. Reopen the AI Translator and choose <strong>Resume</strong> '
+                    + 'to continue from where it stopped.'
+            },
+            credits: {
+                title: 'Out of credits',
+                subtitle: 'Your ' + esc(providerLabel) + ' account has no balance left.',
+                heading: 'What happened',
+                body: esc(providerLabel) + ' rejected the request because the account balance is empty. '
+                    + 'The plugin and your API key are fine.',
+                steps: isOpenRouter
+                    ? ['Add credit at <a href="https://openrouter.ai/settings/credits" target="_blank" rel="noopener noreferrer" style="color:#5B03FF;">openrouter.ai/settings/credits</a>',
+                       'Or switch to a free model in AI Settings']
+                    : ['Top up your account balance in the provider dashboard',
+                       'Then run the translation again'],
+                tip: 'Your progress was saved. Reopen the AI Translator and choose <strong>Resume</strong> '
+                    + 'to continue from where it stopped.'
+            }
+        };
+
+        var variant = variants[errorCode] || variants.local_limit;
+
         var $overlay = $('<div class="king-addons-translator-overlay"></div>');
         var $popup = $('<div class="king-addons-translator-popup"></div>');
-        
-        var errorHtml = `
-            <div style="text-align: center; margin-bottom: 32px;">
-                <h3 style="margin: 0 0 16px 0; color: #2d3748; font-size: 20px; text-align: center;justify-content: center;">🛡️ Daily Limit Reached</h3>
-                <p style="color: #718096; margin: 0; font-size: 14px;">Your safety limit is protecting your account!</p>
+
+        var stepsHtml = variant.steps.map(function(step) {
+            return '<li>' + step + '</li>';
+        }).join('');
+
+        // The provider's own wording is the most precise explanation there is,
+        // so it is shown verbatim rather than paraphrased away.
+        var detailHtml = message ? `
+            <div class="ka-tr-panel">
+                <h4>Provider response</h4>
+                <div class="ka-tr-detail">${esc(message)}</div>
+            </div>` : '';
+
+        $popup.html(`
+            <div class="ka-tr-dialog-head">
+                <h3>${variant.title}</h3>
+                <p class="ka-tr-dialog-sub">${variant.subtitle}</p>
             </div>
-            
-            <div style="background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border: 1px solid #c3e6cb; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                <h4 style="color: #155724; margin: 0 0 12px 0; font-size: 16px;">🎯 What's happening?</h4>
-                <p style="color: #155724; margin: 0 0 16px 0; font-size: 14px; line-height: 1.5;">
-                    You have a <strong>"Daily Token Limit"</strong> setting that prevents accidental overspending. 
-                    This is a <em>good thing</em> - it's working as intended to protect your account!
-                </p>
-                
-                <h4 style="color: #155724; margin: 0 0 12px 0; font-size: 16px;">⚙️ Easy solutions:</h4>
-                
-                <div style="margin-bottom: 12px; display: flex; align-items: center;">
-                    <span style="background: #28a745; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">1</span>
-                    <span style="color: #155724;"><strong>Increase the "Daily Token Limit"</strong> in AI Settings (recommended)</span>
-                </div>
-                
-                <div style="margin-bottom: 12px; display: flex; align-items: center;">
-                    <span style="background: #28a745; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">2</span>
-                    <span style="color: #155724;">Or wait until tomorrow (limit automatically resets)</span>
-                </div>
+
+            <div class="ka-tr-panel">
+                <h4>${variant.heading}</h4>
+                <p>${variant.body}</p>
             </div>
-            
-            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <span style="color: #495057; margin-right: 8px; font-size: 16px;">💡</span>
-                    <strong style="color: #495057;">Quick tip</strong>
-                </div>
-                <p style="color: #6c757d; margin: 0; font-size: 14px; line-height: 1.4;">
-                    Just go to <strong>AI Settings → Daily Token Limit</strong> and set a higher number. 
-                    For regular use, try setting it to <strong>50,000 or 100,000 tokens</strong>.
-                </p>
+
+            <div class="ka-tr-panel ka-tr-panel--accent">
+                <h4>What to do</h4>
+                <ol class="ka-tr-steps">${stepsHtml}</ol>
             </div>
-            
-            <div style="display: flex; gap: 12px;">
-                <button class="king-addons-translator-btn-secondary" id="king-addons-limit-close" style="flex: 1;">
-                    I understand
-                </button>
-                <a href="${settingsUrl}" class="king-addons-translator-btn-primary" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    Open AI Settings
-                </a>
+
+            ${detailHtml}
+
+            <div class="ka-tr-panel ka-tr-panel--warning">
+                <p>${variant.tip}</p>
             </div>
-        `;
-        
-        $popup.html(errorHtml);
+
+            <div class="king-addons-translator-actions">
+                <button class="king-addons-translator-btn-secondary" id="king-addons-limit-close">I understand</button>
+                <a href="${esc(settingsUrl)}" class="king-addons-translator-btn-primary" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Go to AI Settings</a>
+            </div>
+        `);
+
         $overlay.append($popup);
         $('body').append($overlay);
-        
-        // Bind close event
+
         $('#king-addons-limit-close').on('click', function() {
             $overlay.remove();
         });
-        
-        // Close on overlay click
+
         $overlay.on('click', function(e) {
             if (e.target === $overlay[0]) {
                 $overlay.remove();
@@ -1019,9 +1450,6 @@
         });
     }
 
-    /**
-     * Disable/enable the AI Translator button
-     */
     function toggleTranslatorButton(disabled) {
         var $button = $('.king-addons-ai-translator-btn');
         
@@ -1128,6 +1556,133 @@
     /**
      * Create and show the main popup
      */
+    /**
+     * Human readable name for a language code or a custom prompt.
+     */
+    function describeLanguage(code) {
+        return languages[code] || code || 'the target language';
+    }
+
+    /**
+     * Offer to continue an interrupted run instead of starting over.
+     *
+     * Elementor keeps translated content as unsaved changes, so a reload only
+     * preserves it once the document has been saved or autosaved - the prompt
+     * says so rather than pretending otherwise.
+     */
+    function showResumePopup(saved) {
+        $('.king-addons-translator-overlay').remove();
+
+        var $overlay = $('<div class="king-addons-translator-overlay"></div>');
+        var $popup = $('<div class="king-addons-translator-popup"></div>');
+
+        var remaining = Math.max(0, saved.total - saved.done.length);
+
+        function esc(value) {
+            return $('<div></div>').text(String(value == null ? '' : value)).html();
+        }
+
+        // Mirrors the main popup's skeleton (h3, a subtitle sibling, and a
+        // .king-addons-translator-form body) so showProgressInPopup() can take
+        // it over once the run starts.
+        $popup.html(`
+            <h3>
+                <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;filter: invert(1);" alt=""/>
+                Resume this run?
+            </h3>
+            <div class="ka-tr-byline">by King Addons</div>
+            <div class="ka-tr-dialog-sub" style="margin-bottom: 16px;">
+                A run on this page was interrupted.
+            </div>
+            <div class="king-addons-translator-form">
+                <div class="ka-tr-panel">
+                    <div class="ka-tr-rows">
+                        <div class="ka-tr-row"><span>Progress</span><strong>${esc(saved.done.length)} / ${esc(saved.total)} elements</strong></div>
+                        <div class="ka-tr-row"><span>Remaining</span><strong>${esc(remaining)} elements</strong></div>
+                        <div class="ka-tr-row"><span>Translating into</span><strong>${esc(describeLanguage(saved.toLang))}</strong></div>
+                    </div>
+                </div>
+
+                <div class="ka-tr-panel ka-tr-panel--warning">
+                    <p>
+                        Resuming skips the elements that were already done. If the page was reloaded
+                        without saving, those elements kept their original text &mdash; choose
+                        <strong>Start over</strong> to translate the whole page again.
+                    </p>
+                </div>
+
+                <div class="king-addons-translator-actions">
+                    <button class="king-addons-translator-btn-secondary" id="king-addons-resume-discard">Start over</button>
+                    <button class="king-addons-translator-btn-primary" id="king-addons-resume-continue">Resume</button>
+                </div>
+            </div>
+        `);
+
+        $overlay.append($popup);
+        $('body').append($overlay);
+
+        // Hand the same popup to the normal flow, which swaps its body for the
+        // progress UI and animates it into the corner.
+        $('#king-addons-resume-continue').on('click', function() {
+            startTranslation(saved.fromLang || 'auto', saved.toLang, $popup, $overlay, saved);
+        });
+
+        $('#king-addons-resume-discard').on('click', function() {
+            clearTranslationProgress();
+            $overlay.remove();
+            createAndShowPopup();
+        });
+
+        $overlay.on('click', function(e) {
+            if (e.target === $overlay[0]) {
+                $overlay.remove();
+            }
+        });
+    }
+
+    /**
+     * Small banner shown after the editor loads when a run can be continued.
+     */
+    function offerResumeOnLoad() {
+        if (translationState.isTranslating || $('#king-addons-translator-resume-banner').length) {
+            return;
+        }
+
+        var saved = loadTranslationProgress();
+        if (!saved) {
+            return;
+        }
+
+        var $banner = $(`
+            <div id="king-addons-translator-resume-banner" style="position: fixed; bottom: 20px; right: 20px; z-index: 999998; max-width: 320px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 16px; font-size: 13px; color: #2d3748;">
+                <div style="font-weight: 600; margin-bottom: 6px;">Unfinished run</div>
+                <div style="color: #718096; line-height: 1.5; margin-bottom: 12px;">
+                    ${saved.done.length} of ${saved.total} elements were processed into ${$('<div></div>').text(describeLanguage(saved.toLang)).html()}.
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="king-addons-resume-banner-dismiss" style="flex: 1; border: 1px solid #e2e8f0; background: #f7fafc; color: #4a5568; border-radius: 6px; padding: 7px 10px; cursor: pointer;">Later</button>
+                    <button type="button" id="king-addons-resume-banner-open" style="flex: 1; border: none; background: #5B03FF; color: #fff; border-radius: 6px; padding: 7px 10px; cursor: pointer;">Resume</button>
+                </div>
+            </div>
+        `);
+
+        $('body').append($banner);
+
+        $('#king-addons-resume-banner-open').on('click', function() {
+            $banner.remove();
+            var current = loadTranslationProgress();
+            if (current) {
+                showResumePopup(current);
+            }
+        });
+
+        // "Later" only hides the banner; the saved progress stays available
+        // from the AI Translator button.
+        $('#king-addons-resume-banner-dismiss').on('click', function() {
+            $banner.remove();
+        });
+    }
+
     function createAndShowPopup() {
         var $overlay = $('<div class="king-addons-translator-overlay"></div>');
         var $popup = $('<div class="king-addons-translator-popup"></div>');
@@ -1140,15 +1695,16 @@
         var upgradeUrl = 'https://kingaddons.com/pricing/?utm_source=ai-translator&utm_medium=plugin&utm_campaign=custom-prompts';
         var proInfoHtml = isPro ? 
             '<div class="king-addons-pro-info" style="color: #4CAF50; border-left-color: #4CAF50;">✅ PRO Active: Use custom languages and translation prompts!</div>' :
-            '<div class="king-addons-pro-info">💎 <a href="' + upgradeUrl + '" target="_blank" style="color: #5B03FF; text-decoration: none;">Upgrade to PRO</a> to use custom languages, regional dialects and custom translation prompts (formal tone, technical style, etc.)!</div>';
+            '<div class="king-addons-pro-info">💎 <a href="' + upgradeUrl + '" target="_blank" style="color: #5B03FF; text-decoration: none;">Upgrade to King Addons PRO</a> to use custom languages, regional dialects and custom translation prompts (formal tone, technical style, etc.)!</div>';
         
         var popupContent = `
             <h3>
-                <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;filter: invert(1);"/>
-                AI Page Translator
+                <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;filter: invert(1);" alt=""/>
+                AI Page Translate &amp; Transform
             </h3>
-            <div style="font-size: 12px; color: #666; margin-bottom: 16px; line-height: 1.4;">
-                Translate to any language or transform text style (formal, casual, technical, etc.)
+            <div class="ka-tr-byline">by King Addons</div>
+            <div class="ka-tr-dialog-sub" style="margin-bottom: 20px;">
+                Translate to any language, or transform the text style (formal, casual, technical).
             </div>
             <div class="king-addons-translator-form">
                 <div class="king-addons-translator-field">
@@ -1367,7 +1923,7 @@
     /**
      * Start the translation process
      */
-    function startTranslation(fromLang, toLang, $popup, $overlay) {
+    function startTranslation(fromLang, toLang, $popup, $overlay, resumeFrom) {
         translationState.isTranslating = true;
         translationState.isCancelled = false; // Reset cancellation flag
         translationState.currentRequests = []; // Clear any previous requests
@@ -1375,6 +1931,10 @@
         translationState.toLang = toLang;
         translationState.translatedElements = 0;
         translationState.failedElements = 0;
+        translationState.doneElementIds = [];
+        translationState.failedElementIds = [];
+        translationState.lastErrorMessage = '';
+        translationState.consecutiveFailures = 0;
         
         // Inject animation styles into preview iframe immediately
         injectPreviewStyles();
@@ -1384,14 +1944,44 @@
         
         // Get all translatable elements
         var elements = getTranslatableElements();
-        translationState.totalElements = elements.length;
         
         if (elements.length === 0) {
             alert('No translatable text elements found on this page.');
             translationState.isTranslating = false;
             toggleTranslatorButton(false);
+            clearTranslationProgress();
             return;
         }
+        
+        // Resuming: keep the elements already handled out of this run, but keep
+        // counting them so the progress bar reflects the whole page.
+        if (resumeFrom && Array.isArray(resumeFrom.done) && resumeFrom.done.length) {
+            var alreadyDone = resumeFrom.done;
+            var remaining = elements.filter(function(element) {
+                return alreadyDone.indexOf(element.elementId) === -1;
+            });
+
+            // Every element accounted for means there is nothing left to do.
+            if (!remaining.length) {
+                translationState.isTranslating = false;
+                toggleTranslatorButton(false);
+                clearTranslationProgress();
+                alert('This page has already been translated.');
+                return;
+            }
+
+            translationState.doneElementIds = alreadyDone.slice();
+            translationState.failedElementIds = Array.isArray(resumeFrom.failed) ? resumeFrom.failed.slice() : [];
+            translationState.translatedElements = alreadyDone.length;
+            translationState.failedElements = translationState.failedElementIds.length;
+            translationState.resumedCount = alreadyDone.length;
+            elements = remaining;
+        } else {
+            translationState.resumedCount = 0;
+        }
+
+        translationState.totalElements = elements.length + translationState.doneElementIds.length;
+        saveTranslationProgress();
         
         // Update popup to show progress
         showProgressInPopup($popup);
@@ -1786,30 +2376,33 @@
     function showProgressInPopup($popup) {
         // Update header for compact mode with close button
         var headerHtml = `
-            <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;"/>
-            AI Translation in Progress
+            <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;filter: invert(1);"/>
+            AI is working on your page
             <button class="king-addons-translator-close-btn" title="Close">×</button>
         `;
         
         var progressHtml = `
             <div class="king-addons-translator-progress">
                 <div class="king-addons-translator-progress-text">
-                    Translating page elements... <span id="king-addons-progress-count">0 / ${translationState.totalElements}</span>
+                    Processing page elements&hellip; <span id="king-addons-progress-count">0 / ${translationState.totalElements}</span>
                 </div>
                 <div class="king-addons-translator-progress-bar">
                     <div class="king-addons-translator-progress-fill" id="king-addons-progress-fill"></div>
                 </div>
-                <div class="king-addons-translator-current-element" id="king-addons-current-element">
-                    Starting translation...
+                <div class="ka-tr-activity">
+                    <span class="ka-tr-spinner" aria-hidden="true"></span>
+                    <span class="king-addons-translator-current-element" id="king-addons-current-element">Preparing…</span>
                 </div>
+                <div class="ka-tr-snippet" id="king-addons-progress-snippet" hidden></div>
+                <div class="king-addons-translator-progress-note" id="king-addons-progress-note"></div>
             </div>
         `;
         
         // Update header 
         $popup.find('h3').html(headerHtml);
         
-        // Hide the subtitle/description text during translation
-        $popup.find('h3').next('div').hide();
+        // Hide the description and the byline while the run is in progress.
+        $popup.find('.ka-tr-dialog-sub, .ka-tr-byline').hide();
         
         $popup.find('.king-addons-translator-form').html(progressHtml);
         
@@ -1834,7 +2427,7 @@
         translationState.currentElement = element;
         
         // Update progress UI
-        updateProgressUI(index + 1, element);
+        updateProgressUI(translationState.doneElementIds.length + 1, element);
         
         // Highlight current element in preview
         highlightElementInPreview(element.elementId, true);
@@ -1844,11 +2437,37 @@
             // Remove highlight
             highlightElementInPreview(element.elementId, false);
             
+            // A fatal error stops the run from inside the request handler; do
+            // not record the element or schedule the next one.
+            if (translationState.isCancelled) {
+                return;
+            }
+            
             if (success) {
                 translationState.translatedElements++;
+                translationState.consecutiveFailures = 0;
                 showElementSuccess(element.elementId);
             } else {
                 translationState.failedElements++;
+                translationState.consecutiveFailures++;
+                translationState.failedElementIds.push(element.elementId);
+            }
+            
+            // Either way the element is behind us, so a resume skips it.
+            translationState.doneElementIds.push(element.elementId);
+            saveTranslationProgress();
+            
+            // A long run of failures means the provider or model is unusable;
+            // stop rather than working through the rest of the page for nothing.
+            if (translationState.consecutiveFailures >= MAX_CONSECUTIVE_ELEMENT_FAILURES) {
+                handleFatalTranslationError({
+                    code: 'unknown',
+                    message: (translationState.lastErrorMessage || 'Several elements failed in a row.')
+                        + '\n\nTranslation stopped after '
+                        + MAX_CONSECUTIVE_ELEMENT_FAILURES
+                        + ' consecutive failures. You can resume it later from where it stopped.'
+                });
+                return;
             }
             
             // Continue with next element after a short delay
@@ -1898,6 +2517,7 @@
             }
             
             var field = fieldsToTranslate[completedFields];
+            setActivity(element, completedFields + 1, fieldsToTranslate.length, field.value);
             translateSingleField(field.value, function(translatedText, success) {
                 // Check if translation was cancelled while waiting for response
                 if (translationState.isCancelled) {
@@ -1922,172 +2542,225 @@
     /**
      * Translate a single text field
      */
-    function translateSingleField(text, callback) {
+    // How many times a temporary failure is retried before giving up on a field,
+    // and how long to wait before each retry.
+    var RETRY_DELAYS = [2000, 5000, 12000];
+
+    // A model that is throttled or down fails every field, so the run stops
+    // rather than grinding through the whole page collecting failures.
+    var MAX_CONSECUTIVE_ELEMENT_FAILURES = 5;
+
+    /**
+     * Normalise a failed translation request into { code, message, retryable }.
+     *
+     * The server classifies provider failures and answers with a meaningful
+     * status, but requests can also fail before reaching it (offline, proxy,
+     * PHP fatal), so the status code is used as a fallback.
+     */
+    function parseTranslationError(response, xhr) {
+        var data = null;
+
+        if (response && typeof response === 'object' && response.data) {
+            data = response.data;
+        } else if (xhr && xhr.responseJSON && xhr.responseJSON.data) {
+            data = xhr.responseJSON.data;
+        } else if (xhr && xhr.responseText) {
+            try {
+                var parsed = JSON.parse(xhr.responseText);
+                data = parsed && parsed.data;
+            } catch (e) {
+                // Not JSON - fall back to the status code below.
+            }
+        }
+
+        // No xhr means the HTTP call itself succeeded and the body carried the
+        // failure, so it must not be mistaken for a lost connection.
+        var status = xhr && typeof xhr.status === 'number' ? xhr.status : (response ? 200 : 0);
+        var message = '';
+        var code = '';
+        var retryable = null;
+
+        if (data && typeof data === 'object') {
+            message = data.message || '';
+            code = data.code || '';
+            if (typeof data.retryable === 'boolean') {
+                retryable = data.retryable;
+            }
+        } else if (typeof data === 'string') {
+            message = data;
+        }
+
+        if (!code) {
+            if (status === 200) {
+                code = 'unknown';
+            } else if (status === 0) {
+                code = 'network';
+            } else if (status === 401 || status === 403) {
+                code = 'auth';
+            } else if (status === 402) {
+                code = 'credits';
+            } else if (status === 400 || status === 404) {
+                code = 'model';
+            } else if (status === 429) {
+                code = 'rate_limit';
+            } else if (status >= 500) {
+                code = 'upstream';
+            } else {
+                code = 'unknown';
+            }
+        }
+
+        if (retryable === null) {
+            retryable = (code === 'rate_limit' || code === 'upstream' || code === 'network');
+        }
+
+        if (!message) {
+            var fallbacks = {
+                network: 'Network connection failed. Please check your internet connection.',
+                auth: 'The API key is invalid or expired. Please check it in AI Settings.',
+                credits: 'The AI provider reports insufficient credits.',
+                model: 'The selected model was rejected by the provider. Pick another model in AI Settings.',
+                rate_limit: 'Rate limit reached. Please wait a moment and try again.',
+                daily_limit: 'The daily limit for this model has been reached.',
+                upstream: 'The AI provider is temporarily unavailable. Please try again shortly.'
+            };
+            message = fallbacks[code] || 'Translation failed.';
+        }
+
+        return { code: code, message: message, retryable: retryable, status: status };
+    }
+
+    /**
+     * Stop the run and explain why, choosing the popup that fits the cause.
+     */
+    function handleFatalTranslationError(error) {
+        // Keep whatever has been translated so far resumable.
+        saveTranslationProgress();
+        stopTranslationProcess();
+
+        var providerLabel = (window.KingAddonsAiField && KingAddonsAiField.provider_label) || 'AI provider';
+
+        setTimeout(function() {
+            if (error.code === 'auth') {
+                showApiKeyError('Setup Required', error.message + '\n\nPlease check your API key in AI Settings and try again.');
+            } else if (error.code === 'credits' || error.code === 'daily_limit'
+                || error.code === 'rate_limit' || error.code === 'local_limit') {
+                showTokenLimitError(error.message, error.code);
+            } else if (error.code === 'model') {
+                showApiKeyError('Model Not Available', error.message);
+            } else {
+                showApiKeyError('Run Stopped', error.message);
+            }
+        }, 500);
+    }
+
+    /**
+     * Show a short-lived note in the progress popup (retry countdown, warnings).
+     */
+    function setProgressNote(text) {
+        var $note = $('#king-addons-progress-note');
+        if (!$note.length) {
+            return;
+        }
+        if (text) {
+            $note.text(text).show();
+        } else {
+            $note.text('').hide();
+        }
+    }
+
+    /**
+     * Translate a single text field, retrying temporary provider failures.
+     */
+    function translateSingleField(text, callback, attempt) {
+        attempt = attempt || 0;
+
         // Check if translation was cancelled before making request
         if (translationState.isCancelled) {
             callback(text, false);
             return;
         }
-        
+
         var request = $.post(KingAddonsAiField.ajax_url, {
             action: 'king_addons_ai_translate_text',
             nonce: KingAddonsAiField.generate_nonce,
             text: text,
             from_lang: translationState.fromLang,
             to_lang: translationState.toLang
-        }, function(response) {
-            // Remove request from active requests list
-            var index = translationState.currentRequests.indexOf(request);
-            if (index > -1) {
-                translationState.currentRequests.splice(index, 1);
-            }
-            
-            // Check if translation was cancelled while request was in progress
-            if (translationState.isCancelled) {
-                callback(text, false);
-                return;
-            }
-            
-            if (response.success && response.data.translated_text) {
-                callback(response.data.translated_text, true);
-            } else {
-                // Handle API errors with more detail
-                var errorMessage = 'Translation failed';
-                if (response.data && response.data.message) {
-                    errorMessage = response.data.message;
-                } else if (!response.success && response.data) {
-                    errorMessage = typeof response.data === 'string' ? response.data : 'API Error';
-                }
-                
-                // console.error('Translation API Error:', errorMessage);
-                
-                // Check for token limit errors first
-                if (errorMessage.toLowerCase().includes('token limit') || 
-                    errorMessage.toLowerCase().includes('daily limit') ||
-                    errorMessage.toLowerCase().includes('limit reached') ||
-                    errorMessage.toLowerCase().includes('quota exceeded') ||
-                    errorMessage.toLowerCase().includes('rate limit') ||
-                    errorMessage.toLowerCase().includes('too many requests')) {
-                    
-                    // Stop translation process for limit errors
-                    stopTranslationProcess();
-                    
-                    // Show token limit error popup
-                    setTimeout(function() {
-                        showTokenLimitError(errorMessage);
-                    }, 500);
-                    return;
-                }
-                
-                // Show error notification for API key issues
-                if (errorMessage.toLowerCase().includes('api key') || 
-                    errorMessage.toLowerCase().includes('invalid') ||
-                    errorMessage.toLowerCase().includes('unauthorized')) {
-                    
-                    // Stop translation process for critical errors
-                    stopTranslationProcess();
-                    
-                    // Show API key error popup
-                    setTimeout(function() {
-                        showApiKeyError('Setup Required', errorMessage + '\n\nPlease check your API key in settings and try again.');
-                    }, 500);
-                    return;
-                }
-                
-                callback(text, false);
-            }
-        }).fail(function(xhr, textStatus, errorThrown) {
-            // Remove request from active requests list
-            var index = translationState.currentRequests.indexOf(request);
-            if (index > -1) {
-                translationState.currentRequests.splice(index, 1);
-            }
-            
-            // Don't process failed requests if cancelled
-            if (translationState.isCancelled) {
-                return;
-            }
-            
-            // Handle different types of network errors
-            var errorMessage = 'Network error occurred';
-            var shouldShowError = false;
-            
-            if (xhr.status === 0) {
-                errorMessage = 'Network connection failed. Please check your internet connection.';
-                shouldShowError = true;
-            } else if (xhr.status === 401) {
-                errorMessage = 'API key is invalid or expired. Please check your API key in settings.';
-                shouldShowError = true;
-            } else if (xhr.status === 403) {
-                errorMessage = 'Access forbidden. Please check your API key permissions.';
-                shouldShowError = true;
-            } else if (xhr.status === 429) {
-                // Try to get detailed error message from response
-                var detailedMessage = 'Rate limit exceeded. Please wait a moment and try again.';
-                if (xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
-                    detailedMessage = xhr.responseJSON.data.message;
-                } else if (xhr.responseText) {
-                    try {
-                        var response = JSON.parse(xhr.responseText);
-                        if (response && response.data && response.data.message) {
-                            detailedMessage = response.data.message;
-                        }
-                    } catch (e) {
-                        // Keep default message if parsing fails
-                    }
-                }
-                errorMessage = detailedMessage;
-                shouldShowError = true;
-            } else if (xhr.status >= 500) {
-                errorMessage = 'Server error. Please try again later.';
-                shouldShowError = true;
-            }
-            
-            // console.error('Translation Network Error:', {
-                // status: xhr.status,
-                // statusText: textStatus,
-                // error: errorThrown,
-                // message: errorMessage,
-                // responseText: xhr.responseText,
-                // responseJSON: xhr.responseJSON
-            // });
-            
-            // Show error popup for critical network issues
-            if (shouldShowError) {
-                stopTranslationProcess();
-                
-                setTimeout(function() {
-                    // Check for token limit errors first (including 429 status)
-                    if (errorMessage.toLowerCase().includes('token limit') || 
-                        errorMessage.toLowerCase().includes('daily limit') ||
-                        errorMessage.toLowerCase().includes('limit reached') ||
-                        errorMessage.toLowerCase().includes('quota exceeded') ||
-                        errorMessage.toLowerCase().includes('rate limit exceeded') ||
-                        errorMessage.toLowerCase().includes('too many requests') ||
-                        (xhr.status === 429 && (
-                            errorMessage.toLowerCase().includes('limit') ||
-                            errorMessage.toLowerCase().includes('exceeded') ||
-                            errorMessage.toLowerCase().includes('quota')
-                        ))) {
-                        
-                        showTokenLimitError(errorMessage);
-                        return;
-                    }
-                    
-                    if (xhr.status === 401 || xhr.status === 403) {
-                        showApiKeyError('Authentication Error', errorMessage);
-                    } else {
-                        showApiKeyError('Network Error', errorMessage);
-                    }
-                }, 500);
-                return;
-            }
-            
-            callback(text, false);
         });
-        
+
         // Store the request so we can cancel it if needed
         translationState.currentRequests.push(request);
+
+        function releaseRequest() {
+            var index = translationState.currentRequests.indexOf(request);
+            if (index > -1) {
+                translationState.currentRequests.splice(index, 1);
+            }
+        }
+
+        function onFailure(error) {
+            if (translationState.isCancelled) {
+                callback(text, false);
+                return;
+            }
+
+            // Temporary problem: wait and try the same field again.
+            if (error.retryable && attempt < RETRY_DELAYS.length) {
+                var delay = RETRY_DELAYS[attempt];
+                setProgressNote('⏳ ' + error.message + ' Retrying in ' + Math.round(delay / 1000) + 's…');
+
+                setTimeout(function() {
+                    if (translationState.isCancelled) {
+                        callback(text, false);
+                        return;
+                    }
+                    setProgressNote('');
+                    translateSingleField(text, callback, attempt + 1);
+                }, delay);
+                return;
+            }
+
+            setProgressNote('');
+
+            // A dead end (bad key, no credit, unusable model, daily cap) will
+            // fail every remaining field, so stop instead of burning the page.
+            var fatalCodes = ['auth', 'credits', 'model', 'daily_limit', 'rate_limit', 'local_limit'];
+            if (fatalCodes.indexOf(error.code) > -1) {
+                handleFatalTranslationError(error);
+                return;
+            }
+
+            // Anything else: give up on this field and let the run continue.
+            translationState.lastErrorMessage = error.message;
+            callback(text, false);
+        }
+
+        request.done(function(response) {
+            releaseRequest();
+
+            if (translationState.isCancelled) {
+                callback(text, false);
+                return;
+            }
+
+            if (response && response.success && response.data && response.data.translated_text) {
+                setProgressNote('');
+                callback(response.data.translated_text, true);
+                return;
+            }
+
+            onFailure(parseTranslationError(response, null));
+        }).fail(function(xhr, textStatus) {
+            releaseRequest();
+
+            // An aborted request is a cancellation, not a provider failure.
+            if (translationState.isCancelled || textStatus === 'abort') {
+                return;
+            }
+
+            onFailure(parseTranslationError(null, xhr));
+        });
     }
 
     /**
@@ -2253,7 +2926,37 @@
         
         $('#king-addons-progress-count').text(current + ' / ' + translationState.totalElements);
         $('#king-addons-progress-fill').css('width', percentage + '%');
-        $('#king-addons-current-element').text('Translating: ' + element.widgetType + ' (' + element.textFields.length + ' fields)');
+        setActivity(element, 0, element.textFields.length, '');
+    }
+
+    /**
+     * Describe what the translator is working on right now.
+     *
+     * @param {Object} element    Element being processed.
+     * @param {number} fieldIndex 1-based field position, 0 while starting out.
+     * @param {number} fieldTotal Number of fields on the element.
+     * @param {string} text       Source text of the current field.
+     */
+    function setActivity(element, fieldIndex, fieldTotal, text) {
+        var label = element ? element.widgetType : '';
+        if (fieldTotal > 1 && fieldIndex > 0) {
+            label += ' — field ' + fieldIndex + ' of ' + fieldTotal;
+        }
+        if (translationState.toLang) {
+            label += ' → ' + describeLanguage(translationState.toLang);
+        }
+
+        $('#king-addons-current-element').text(label);
+
+        // Showing the actual string makes a long run legible: you can see it
+        // move rather than watching a counter that only ticks per element.
+        var $snippet = $('#king-addons-progress-snippet');
+        var plain = $('<div></div>').html(String(text || '')).text().replace(/\s+/g, ' ').trim();
+        if (plain) {
+            $snippet.text(plain.length > 160 ? plain.slice(0, 160) + '…' : plain).prop('hidden', false);
+        } else {
+            $snippet.text('').prop('hidden', true);
+        }
     }
 
     /**
@@ -2419,8 +3122,59 @@
             // Remove any existing classes first
             $previewElement.removeClass('king-addons-translated-element');
             $previewElement.addClass('king-addons-translating-element');
+            scrollPreviewToElement($previewElement);
         } else {
             $previewElement.removeClass('king-addons-translating-element');
+        }
+    }
+
+    /**
+     * Bring the element being translated into view inside the preview.
+     *
+     * A long page otherwise translates itself off screen, so the highlight and
+     * the success animation are never actually seen.
+     *
+     * The preview iframe is not scrolled by plain window.scrollTo - Elementor
+     * drives it itself - so its own helper is used, the same one the Navigator
+     * uses to jump to a widget. It already skips elements that are in view and
+     * animates the rest.
+     *
+     * @param {jQuery} $element Element inside the preview document.
+     */
+    function scrollPreviewToElement($element) {
+        if (!$element || !$element.length) {
+            return;
+        }
+
+        try {
+            if (elementor.helpers && typeof elementor.helpers.scrollToView === 'function') {
+                // Second argument is the delay before scrolling; the default
+                // half second would lag behind a fast run.
+                elementor.helpers.scrollToView($element, 0);
+                return;
+            }
+        } catch (e) {
+            // Fall through to the native path below.
+        }
+
+        try {
+            $element[0].scrollIntoView({
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+                block: 'center'
+            });
+        } catch (e) {
+            // A torn-down preview must not break the run.
+        }
+    }
+
+    /**
+     * Whether the viewer asked for less animation.
+     */
+    function prefersReducedMotion() {
+        try {
+            return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {
+            return false;
         }
     }
 
@@ -2457,6 +3211,24 @@
      * Show translation complete with stats (stays open until manually closed)
      */
     function showTranslationComplete($popup) {
+        translationState.isTranslating = false;
+
+        var failedIds = translationState.failedElementIds.slice();
+
+        // Elements that failed are worth another attempt - a model can refuse
+        // one string and handle it fine on a retry. Keeping a progress entry
+        // that marks everything except the failures as done turns the normal
+        // Resume path into "retry just the ones that failed".
+        if (failedIds.length) {
+            translationState.doneElementIds = translationState.doneElementIds.filter(function(id) {
+                return failedIds.indexOf(id) === -1;
+            });
+            saveTranslationProgress();
+        } else {
+            // The page is done, so there is nothing left to resume.
+            clearTranslationProgress();
+        }
+
         if (!$popup || $popup.length === 0) {
             // console.error('❌ Cannot show translation results: popup not found');
             return;
@@ -2464,27 +3236,31 @@
         
         var statsHtml = `
             <div class="king-addons-translator-progress">
-                <div class="king-addons-translator-progress-text">
-                    ✅ Translation Complete!
-                </div>
                 <div class="king-addons-translator-stats">
                     <div class="king-addons-translator-stat">
-                        <div class="king-addons-translator-stat-number" style="font-size: 32px; font-weight: bold; color: #2196F3;">${translationState.totalElements}</div>
-                        <div class="king-addons-translator-stat-label">Total Elements</div>
+                        <div class="king-addons-translator-stat-number">${translationState.totalElements}</div>
+                        <div class="king-addons-translator-stat-label">Elements</div>
                     </div>
                     <div class="king-addons-translator-stat">
-                        <div class="king-addons-translator-stat-number" style="font-size: 32px; font-weight: bold; color: #4CAF50; animation: pulse 2s infinite;">${translationState.translatedElements}</div>
-                        <div class="king-addons-translator-stat-label">✅ Translated</div>
+                        <div class="king-addons-translator-stat-number" style="color: var(--ka-tr-success);">${translationState.translatedElements}</div>
+                        <div class="king-addons-translator-stat-label">Translated</div>
                     </div>
                     <div class="king-addons-translator-stat">
-                        <div class="king-addons-translator-stat-number" style="font-size: 32px; font-weight: bold; color: ${translationState.failedElements > 0 ? '#F44336' : '#999'};">${translationState.failedElements}</div>
-                        <div class="king-addons-translator-stat-label">${translationState.failedElements > 0 ? '❌' : '⚪'} Failed</div>
+                        <div class="king-addons-translator-stat-number" style="color: ${translationState.failedElements > 0 ? 'var(--ka-tr-danger)' : 'var(--ka-tr-ink-muted)'};">${translationState.failedElements}</div>
+                        <div class="king-addons-translator-stat-label">Failed</div>
                     </div>
                 </div>
-                <div class="king-addons-translator-actions" style="margin-top: 20px; text-align: center;">
-                    <button class="king-addons-translator-btn-primary" id="king-addons-close-stats" style="background: #4CAF50; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 120px;">
-                        Close Results
-                    </button>
+                ${failedIds.length ? `
+                <div class="ka-tr-panel ka-tr-panel--warning" style="margin-top: 16px;">
+                    <p>${failedIds.length} element${failedIds.length === 1 ? '' : 's'} could not be translated${
+                        translationState.lastErrorMessage
+                            ? ': ' + $('<div></div>').text(translationState.lastErrorMessage).html()
+                            : '.'
+                    }</p>
+                </div>` : ''}
+                <div class="king-addons-translator-actions" style="margin-top: 20px;">
+                    <button class="king-addons-translator-btn-secondary" id="king-addons-close-stats">Close</button>
+                    ${failedIds.length ? '<button class="king-addons-translator-btn-primary" id="king-addons-retry-failed">Retry failed</button>' : ''}
                 </div>
             </div>
         `;
@@ -2492,6 +3268,21 @@
         var $form = $popup.find('.king-addons-translator-form');
         
         $form.html(statsHtml);
+
+        if (!failedIds.length) {
+            $form.find('#king-addons-close-stats')
+                .removeClass('king-addons-translator-btn-secondary')
+                .addClass('king-addons-translator-btn-primary');
+        }
+
+        $form.find('#king-addons-retry-failed').on('click', function() {
+            var saved = loadTranslationProgress();
+            $popup.closest('.king-addons-translator-overlay').remove();
+            $popup.remove();
+            if (saved) {
+                showResumePopup(saved);
+            }
+        });
         
         // Play success sound (Web Audio API)
         try {
@@ -2515,7 +3306,7 @@
         }
         
         // Show temporary notification to attract attention
-        var $notificationBanner = $('<div style="position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; padding: 12px; text-align: center; font-size: 16px; font-weight: bold; z-index: 1000000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); animation: slideDown 0.5s ease;">🎉 Translation Complete! Check the results popup below.</div>');
+        var $notificationBanner = $('<div style="position: fixed; top: 0; left: 0; right: 0; background: #10794a; color: #fff; padding: 12px; text-align: center; font-size: 14px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; z-index: 1000000; animation: slideDown 0.4s ease;">Your page is ready &mdash; see the results panel.</div>');
         $('body').append($notificationBanner);
         
         // Remove notification after 5 seconds
@@ -2528,12 +3319,17 @@
         // Update header to show completion
         var completionHeaderHtml = `
             <img src="${KingAddonsAiField.plugin_url}includes/admin/img/ai.svg" style="width:20px;height:20px;filter: invert(1);"/>
-            AI Translation Complete
+            Your page is ready
         `;
         $popup.find('h3').html(completionHeaderHtml);
         
-        // Show the subtitle/description text again  
-        $popup.find('h3').next('div').show();
+        // Restore the byline, and rewrite the description for the result - the
+        // popup may have started life as the resume prompt, whose subtitle no
+        // longer applies.
+        $popup.find('.ka-tr-byline').show();
+        $popup.find('.ka-tr-dialog-sub')
+            .text('Into ' + describeLanguage(translationState.toLang) + '.')
+            .show();
         
         // If popup is in compact mode, move it back to center for better visibility
         if ($popup.hasClass('compact')) {
@@ -2662,6 +3458,9 @@
 
         // Monitor for panel changes
         observePanelChanges();
+
+        // Surface an interrupted run once the document is available.
+        setTimeout(offerResumeOnLoad, 1500);
     }
 
     /**
@@ -2758,7 +3557,7 @@
                 stopTranslationProcess();
                 
                 // Show cancellation notice
-                var $notice = $('<div style="position: fixed; top: 120px; right: 20px; background: #ff9800; color: white; padding: 8px 12px; border-radius: 4px; font-size: 14px; z-index: 1000000;">Translation cancelled</div>');
+                var $notice = $('<div style="position: fixed; top: 120px; right: 20px; background: #ff9800; color: white; padding: 8px 12px; border-radius: 4px; font-size: 14px; z-index: 1000000;">Run cancelled</div>');
                 $('body').append($notice);
                 setTimeout(function() {
                     $notice.fadeOut(300, function() {
@@ -2775,7 +3574,8 @@
                 $popup.closest('.king-addons-translator-overlay').remove();
             }
             
-            // Reset state and re-enable button
+            // Reset state and re-enable button. Saved progress is deliberately
+            // kept so a cancelled run can be resumed from the same place.
             translationState.isTranslating = false;
             translationState.isCancelled = false; 
             translationState.currentRequests = [];
