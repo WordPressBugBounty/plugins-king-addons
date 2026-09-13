@@ -483,10 +483,18 @@ body.toplevel_page_king-addons-custom-code #wpbody-content {
 
 .kng-cc-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 48px;
     gap: 24px;
+}
+
+.kng-cc-header-left {
+    /* Keep the title readable instead of letting the action group squeeze it;
+       below this width the header wraps onto two rows. */
+    flex: 1 1 420px;
+    min-width: 0;
 }
 
 .kng-cc-header-left {

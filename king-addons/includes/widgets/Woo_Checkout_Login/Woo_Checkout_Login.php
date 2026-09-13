@@ -46,7 +46,7 @@ class Woo_Checkout_Login extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-lock-user';
+        return 'king-addons-icon king-addons-woo-checkout-login';
     }
 
     /**
@@ -118,9 +118,26 @@ class Woo_Checkout_Login extends Abstract_Checkout_Widget
             return;
         }
 
-        echo '<div class="ka-woo-checkout-login">';
+        // woocommerce_checkout_login_form() prints nothing for a signed-in
+            // visitor, or when the login reminder is switched off in WooCommerce.
+        // An empty wrapper on the page - and a blank box in the editor -
+        // reads as a broken widget rather than a context that has nothing
+        // to show.
+        ob_start();
         woocommerce_checkout_login_form();
-        echo '</div>';
+        $output = trim((string) ob_get_clean());
+
+        if ('' === $output) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The returning-customer form only appears for a signed-out visitor when "allow customers to log in during checkout" is on.', 'king-addons')
+                    . '</div>';
+            }
+            return;
+        }
+
+        // WooCommerce's own markup, not user input.
+        echo '<div class="ka-woo-checkout-login">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 

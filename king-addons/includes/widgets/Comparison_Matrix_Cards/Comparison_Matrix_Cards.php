@@ -48,7 +48,7 @@ class Comparison_Matrix_Cards extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-price-table';
+        return 'king-addons-icon king-addons-comparison-matrix-cards';
     }
 
     /**

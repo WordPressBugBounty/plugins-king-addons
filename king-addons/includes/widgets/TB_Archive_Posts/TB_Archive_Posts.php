@@ -47,7 +47,7 @@ class TB_Archive_Posts extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-post-list';
+        return 'king-addons-icon king-addons-tb-archive-posts';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Archive_Posts extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**

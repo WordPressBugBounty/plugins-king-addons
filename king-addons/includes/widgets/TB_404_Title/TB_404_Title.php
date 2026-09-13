@@ -47,7 +47,7 @@ class TB_404_Title extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-heading';
+        return 'king-addons-icon king-addons-tb-404-title';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_404_Title extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -140,6 +140,7 @@ class TB_404_Title extends Widget_Base
             [
                 'label' => esc_html__('Title', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Page not found', 'king-addons'),
             ]
         );

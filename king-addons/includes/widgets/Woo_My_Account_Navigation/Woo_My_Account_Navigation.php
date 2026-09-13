@@ -34,7 +34,7 @@ class Woo_My_Account_Navigation extends Abstract_My_Account_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-menu-bar';
+        return 'king-addons-icon king-addons-woo-my-account-navigation';
     }
 
     public function get_categories(): array
@@ -230,7 +230,9 @@ class Woo_My_Account_Navigation extends Abstract_My_Account_Widget
 
         $this->add_render_attribute('nav', 'class', 'woocommerce-MyAccount-navigation');
         if (!empty($settings['sticky']) && $can_pro) {
-            $offset = isset($settings['sticky_offset']) ? (int) $settings['sticky_offset'] : 20;
+            // A cleared field is '' rather than unset, which pinned the menu to
+            // the very top instead of using the default offset.
+            $offset = max(0, (int) (($settings['sticky_offset'] ?? null) ?: 20));
             $this->add_render_attribute('nav', 'style', 'position: sticky; top: ' . $offset . 'px;');
         }
 
@@ -253,9 +255,15 @@ class Woo_My_Account_Navigation extends Abstract_My_Account_Widget
                 }
                 $position = isset($item['position']) ? (int) $item['position'] : 20;
                 if (($item['type'] ?? 'endpoint') === 'custom') {
+                    // A URL control stores an array; take its url so esc_url()
+                    // never receives one and throws.
+                    $custom_url = $item['custom_url'] ?? '#';
+                    if (is_array($custom_url)) {
+                        $custom_url = $custom_url['url'] ?? '#';
+                    }
                     $custom_links[$position . ':' . $endpoint] = [
                         'label' => $item['label'] ?: $endpoint,
-                        'url' => $item['custom_url'] ?? '#',
+                        'url' => is_scalar($custom_url) ? (string) $custom_url : '#',
                     ];
                     continue;
                 }

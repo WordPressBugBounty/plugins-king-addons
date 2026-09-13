@@ -415,7 +415,7 @@ class Hovering_Image_Stack extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-hovering-image-stack-wrapper' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-hovering-image-stack-wrapper' => 'width: {{SIZE}}{{UNIT}}; max-width: 100%;',
                 ],
             ]
         );

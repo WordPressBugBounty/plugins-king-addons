@@ -544,6 +544,94 @@ class Context
         echo '<div class="king-addons-woo-builder-notice">' . esc_html($message) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         return false;
     }
+
+    /**
+     * Whether the active Woo Builder template for a context contains a widget.
+     *
+     * Used so companion widgets can hide the native WooCommerce copy of the
+     * same block (login, coupon, payment, variable add-to-cart, and so on).
+     *
+     * @param string      $widget_type Elementor widget name.
+     * @param string|null $context     Woo Builder context. Detected when omitted.
+     *
+     * @return bool
+     */
+    public static function template_has_widget(string $widget_type, ?string $context = null): bool
+    {
+        static $cache = [];
+
+        $widget_type = sanitize_key($widget_type);
+        if ('' === $widget_type) {
+            return false;
+        }
+
+        $context = $context ?: (self::detect_context() ?? self::get_editor_template_type());
+        if (!$context) {
+            return false;
+        }
+
+        $key = $context . '|' . $widget_type;
+        if (array_key_exists($key, $cache)) {
+            return $cache[$key];
+        }
+
+        $widgets = self::find_template_widgets($widget_type, $context);
+        $cache[$key] = !empty($widgets);
+        return $cache[$key];
+    }
+
+    /**
+     * Widget instances of a type on the current Woo Builder template.
+     *
+     * @param string      $widget_type Elementor widget name.
+     * @param string|null $context     Woo Builder context. Detected when omitted.
+     *
+     * @return array<int,array{id:string,settings:array<string,mixed>}>
+     */
+    public static function find_template_widgets(string $widget_type, ?string $context = null): array
+    {
+        $widget_type = sanitize_key($widget_type);
+        if ('' === $widget_type) {
+            return [];
+        }
+
+        $context = $context ?: (self::detect_context() ?? self::get_editor_template_type());
+        if (!$context) {
+            return [];
+        }
+
+        $template_id = (int) apply_filters('king_addons/woo_builder/current_template_id', 0, $context);
+        if ($template_id < 1 && self::is_editor()) {
+            $template_id = (int) self::get_editor_post_id();
+        }
+
+        if ($template_id < 1) {
+            return [];
+        }
+
+        $data = json_decode((string) get_post_meta($template_id, '_elementor_data', true), true);
+        if (!is_array($data)) {
+            return [];
+        }
+
+        $found = [];
+        $walk = static function ($els) use (&$walk, &$found, $widget_type): void {
+            foreach ($els as $el) {
+                if (($el['elType'] ?? '') === 'widget' && ($el['widgetType'] ?? '') === $widget_type) {
+                    $found[] = [
+                        'id' => (string) ($el['id'] ?? ''),
+                        'settings' => is_array($el['settings'] ?? null) ? $el['settings'] : [],
+                    ];
+                }
+                if (!empty($el['elements']) && is_array($el['elements'])) {
+                    $walk($el['elements']);
+                }
+            }
+        };
+        $walk($data);
+
+        return $found;
+    }
 }
 
 

@@ -31,7 +31,7 @@ class Woo_Product_Rating extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-star';
+        return 'king-addons-icon king-addons-woo-product-rating';
     }
 
     public function get_categories(): array
@@ -73,6 +73,7 @@ class Woo_Product_Rating extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Count text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '({count} reviews)',
             ]
         );
@@ -225,8 +226,23 @@ class Woo_Product_Rating extends Abstract_Single_Widget
 
         $rating = (float) $product->get_average_rating();
         $count = (int) $product->get_rating_count();
+        $reviews = (int) $product->get_review_count();
 
+        // Woo can report reviews without a rating_count (comments that never
+        // stored a star value). Hiding the widget then looks like a fault
+        // next to a Reviews tab that already shows those comments.
         if ($count === 0) {
+            $count = $reviews;
+        }
+
+        if ($count === 0 && $rating <= 0) {
+            // No reviews yet is a normal state, but a blank widget in the
+            // editor reads as a fault.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The rating appears once the product has reviews.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 

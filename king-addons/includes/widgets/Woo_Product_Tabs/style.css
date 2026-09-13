@@ -67,6 +67,14 @@
     display: block;
 }
 
+/* An accordion has to keep every header on the page - the shared
+   .ka-woo-tabs__panel { display: none } rule hid the inactive panels
+   outright, which took their headers with them and left a single
+   section that could never be switched away from. */
+.ka-woo-tabs--accordion .ka-woo-tabs__panel {
+    display: block;
+}
+
 .ka-woo-tabs__accordion-body {
     display: none;
 }
@@ -100,9 +108,3 @@
         background-position: -100% 0;
     }
 }
-
-
-
-
-
-

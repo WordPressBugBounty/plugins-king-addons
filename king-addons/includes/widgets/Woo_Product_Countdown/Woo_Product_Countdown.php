@@ -31,7 +31,7 @@ class Woo_Product_Countdown extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-countdown';
+        return 'king-addons-icon king-addons-woo-product-countdown';
     }
 
     public function get_categories(): array
@@ -108,6 +108,7 @@ class Woo_Product_Countdown extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Expired text (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Offer ended', 'king-addons'),
             ]
         );
@@ -190,7 +191,12 @@ class Woo_Product_Countdown extends Abstract_Single_Widget
         $settings = $this->get_settings_for_display();
         $can_pro = king_addons_can_use_pro();
 
-        $format = $settings['display_format'] ?? 'blocks';
+        // Both values land in markup the script switches on, so anything off
+        // the list has to fall back.
+        $format = (string) ($settings['display_format'] ?? 'blocks');
+        if (!in_array($format, ['blocks', 'inline'], true)) {
+            $format = 'blocks';
+        }
         if ('inline' === $format && !$can_pro) {
             $format = 'blocks';
         }
@@ -209,6 +215,12 @@ class Woo_Product_Countdown extends Abstract_Single_Widget
             $behavior = $settings['expired_behavior'] ?? 'hide';
             if (!empty($settings['expired_text']) && 'text' === $behavior && $can_pro) {
                 echo '<div class="ka-woo-countdown ka-woo-countdown--expired">' . esc_html($settings['expired_text']) . '</div>';
+            } elseif (\Elementor\Plugin::$instance->editor->is_edit_mode() && 'zero' !== $behavior) {
+                // Hiding is the right answer on the front end, but a blank
+                // widget in the editor reads as a fault.
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The countdown needs a sale end date on the product, or a custom date.', 'king-addons')
+                    . '</div>';
             } elseif ('zero' === $behavior) {
                 echo '<div class="ka-woo-countdown ka-woo-countdown--expired"><div class="ka-woo-countdown__item"><span class="ka-woo-countdown__number">0</span><span class="ka-woo-countdown__label">' . esc_html__('Time', 'king-addons') . '</span></div></div>';
             }
@@ -217,7 +229,10 @@ class Woo_Product_Countdown extends Abstract_Single_Widget
 
         $show_seconds = !empty($settings['show_seconds']) && $can_pro;
 
-        $behavior = $settings['expired_behavior'] ?? 'hide';
+        $behavior = (string) ($settings['expired_behavior'] ?? 'hide');
+        if (!in_array($behavior, ['hide', 'zero', 'text'], true)) {
+            $behavior = 'hide';
+        }
         $expired_text = (!empty($settings['expired_text']) && $can_pro) ? $settings['expired_text'] : '';
 
         $classes = ['ka-woo-countdown', 'ka-woo-countdown--' . $format];

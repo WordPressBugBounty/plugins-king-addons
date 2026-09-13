@@ -934,7 +934,7 @@ class Testimonial extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // Define allowed tags and attributes
         $allowed_tags = wp_kses_allowed_html('post');

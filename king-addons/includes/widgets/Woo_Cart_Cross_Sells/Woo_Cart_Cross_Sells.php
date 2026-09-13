@@ -48,7 +48,7 @@ class Woo_Cart_Cross_Sells extends Abstract_Cart_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-product-categories';
+        return 'king-addons-icon king-addons-woo-cart-cross-sells';
     }
 
     /**
@@ -68,7 +68,7 @@ class Woo_Cart_Cross_Sells extends Abstract_Cart_Widget
      */
     public function get_style_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-cart-cross-sells-style'];
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-loop-style', KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-cart-cross-sells-style'];
     }
 
     /**
@@ -157,7 +157,8 @@ class Woo_Cart_Cross_Sells extends Abstract_Cart_Widget
             [
                 'label' => esc_html__('Heading text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('You may also like…', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('You may also like…', 'king-addons'),
                 'condition' => [
                     'show_heading' => 'yes',
                 ],
@@ -266,21 +267,29 @@ class Woo_Cart_Cross_Sells extends Abstract_Cart_Widget
         }
 
         if (!function_exists('WC') || !WC()->cart || WC()->cart->is_empty()) {
-            woocommerce_output_all_notices();
-            wc_get_template('cart/cart-empty.php');
+            // Printing WooCommerce's whole empty-cart template from a
+            // cross-sells widget duplicated the message the cart itself already
+            // shows. Say nothing on the front end; explain in the editor.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('Cross-sells are listed for the products in the cart.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
         $settings = $this->get_settings_for_display();
-        $limit = max(1, (int) ($settings['limit'] ?? 4));
-        $columns = max(1, (int) ($settings['columns'] ?? 4));
-        $columns_tablet = max(1, (int) ($settings['columns_tablet'] ?? 2));
-        $columns_mobile = max(1, (int) ($settings['columns_mobile'] ?? 1));
+        // ?: not ??: a cleared number field is '' rather than null, and
+        // (int) '' is 0 - every one of these collapsed to a single column.
+        $limit = max(1, (int) (($settings['limit'] ?? null) ?: 4));
+        $columns = max(1, (int) (($settings['columns'] ?? null) ?: 4));
+        $columns_tablet = max(1, (int) (($settings['columns_tablet'] ?? null) ?: 2));
+        $columns_mobile = max(1, (int) (($settings['columns_mobile'] ?? null) ?: 1));
         $show_arrows = !empty($settings['show_arrows']);
         $show_dots = !empty($settings['show_dots']);
         $loop = !empty($settings['loop']);
         $autoplay = !empty($settings['autoplay']);
-        $autoplay_speed = isset($settings['autoplay_speed']) ? (int) $settings['autoplay_speed'] : 4000;
+        $autoplay_speed = max(500, (int) (($settings['autoplay_speed'] ?? null) ?: 4000));
         $heading_text = (!empty($settings['show_heading']) && !empty($settings['heading_text'])) ? $settings['heading_text'] : '';
 
         echo '<div class="ka-woo-cart-cross-sells" data-ka-cross-sell="1" data-cols="' . esc_attr((string) $columns) . '" data-cols-tablet="' . esc_attr((string) $columns_tablet) . '" data-cols-mobile="' . esc_attr((string) $columns_mobile) . '" data-arrows="' . ($show_arrows ? '1' : '0') . '" data-dots="' . ($show_dots ? '1' : '0') . '" data-loop="' . ($loop ? '1' : '0') . '" data-autoplay="' . ($autoplay ? '1' : '0') . '" data-autoplay-speed="' . esc_attr((string) $autoplay_speed) . '">';

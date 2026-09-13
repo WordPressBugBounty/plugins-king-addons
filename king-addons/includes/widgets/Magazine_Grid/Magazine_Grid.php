@@ -1024,8 +1024,7 @@ $this->end_controls_section();
             ]
         );
 
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'magazine-grid', 'element_select', ['pro-lk', 'pro-shr']);
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'magazine-grid', 'element_select', ['pro-cf']);
+        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'magazine-grid', 'element_select', ['pro-lk', 'pro-shr', 'pro-cf']);
 
         $repeater->add_control(
             'element_display',
@@ -5020,7 +5019,7 @@ $this->end_controls_section();
 
     public function get_main_query_args($slide_offset)
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $author = !empty($settings['query_author']) ? implode(',', $settings['query_author']) : '';
         $paged = get_query_var('paged') ?: (get_query_var('page') ?: 1);
 
@@ -5144,7 +5143,7 @@ $this->end_controls_section();
 
     public function get_tax_query_args()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // If "related" source
         if ('related' === $settings['query_source']) {
@@ -5236,7 +5235,7 @@ $this->end_controls_section();
 
     public function render_post_title($settings, $class)
     {
-        $open_links_in_new_tab = ('yes' === $settings['open_links_in_new_tab']) ? '_blank' : '_self';
+        $open_links_in_new_tab = ('yes' === ($settings['open_links_in_new_tab'] ?? '')) ? '_blank' : '_self';
 
         // If premium unavailable, fallback pointer settings
         $title_pointer = king_addons_freemius()->can_use_premium_code__premium_only()
@@ -5414,10 +5413,10 @@ $this->end_controls_section();
         $pointer = king_addons_freemius()->can_use_premium_code__premium_only();
 
         // Pointer settings
-        $tax1_pointer = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax1_pointer'] ?? 'none') : 'none';
-        $tax1_pointer_animation = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax1_pointer_animation'] ?? 'fade') : 'fade';
-        $tax2_pointer = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax2_pointer'] ?? 'none') : 'none';
-        $tax2_pointer_animation = $pointer ? Grid_Ajax_Security::sanitize_class_token($this->get_settings()['tax2_pointer_animation'] ?? 'fade') : 'fade';
+        $tax1_pointer = $pointer ? Grid_Ajax_Security::sanitize_class_token(Core::displaySettings($this)['tax1_pointer'] ?? 'none') : 'none';
+        $tax1_pointer_animation = $pointer ? Grid_Ajax_Security::sanitize_class_token(Core::displaySettings($this)['tax1_pointer_animation'] ?? 'fade') : 'fade';
+        $tax2_pointer = $pointer ? Grid_Ajax_Security::sanitize_class_token(Core::displaySettings($this)['tax2_pointer'] ?? 'none') : 'none';
+        $tax2_pointer_animation = $pointer ? Grid_Ajax_Security::sanitize_class_token(Core::displaySettings($this)['tax2_pointer_animation'] ?? 'fade') : 'fade';
 
         if ($settings['element_tax_style'] === 'king-addons-grid-tax-style-1') {
             $class .= " king-addons-pointer-$tax1_pointer king-addons-pointer-fx-$tax1_pointer_animation";
@@ -5427,8 +5426,8 @@ $this->end_controls_section();
         $class .= ' king-addons-pointer-line-fx';
 
         $pointer_item_class = (
-            (isset($this->get_settings()['tax1_pointer']) && $this->get_settings()['tax1_pointer'] !== 'none') ||
-            (isset($this->get_settings()['tax2_pointer']) && $this->get_settings()['tax2_pointer'] !== 'none')
+            (isset(Core::displaySettings($this)['tax1_pointer']) && Core::displaySettings($this)['tax1_pointer'] !== 'none') ||
+            (isset(Core::displaySettings($this)['tax2_pointer']) && Core::displaySettings($this)['tax2_pointer'] !== 'none')
         ) ? 'king-addons-pointer-item' : '';
 
         echo '<div class="' . esc_attr($class . ' ' . ($settings['element_tax_style'] ?? '')) . '">';
@@ -5438,13 +5437,13 @@ $this->end_controls_section();
 
         foreach ($terms as $term) {
             // Check if premium color styling
-            $enable_custom_colors = $pointer ? $this->get_settings()['tax1_custom_color_switcher'] : '';
+            $enable_custom_colors = $pointer ? Core::displaySettings($this)['tax1_custom_color_switcher'] : '';
             if ('yes' === $enable_custom_colors) {
                 $cfc_text = Grid_Ajax_Security::sanitize_css_color(
-                    get_term_meta($term->term_id, sanitize_key($this->get_settings()['tax1_custom_color_field_text'] ?? ''), true)
+                    get_term_meta($term->term_id, sanitize_key(Core::displaySettings($this)['tax1_custom_color_field_text'] ?? ''), true)
                 );
                 $cfc_bg = Grid_Ajax_Security::sanitize_css_color(
-                    get_term_meta($term->term_id, sanitize_key($this->get_settings()['tax1_custom_color_field_bg'] ?? ''), true)
+                    get_term_meta($term->term_id, sanitize_key(Core::displaySettings($this)['tax1_custom_color_field_bg'] ?? ''), true)
                 );
 
                 if ($cfc_text || $cfc_bg) {
@@ -5683,7 +5682,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $render_attribute = '';
 
         // If no premium, reset slider options

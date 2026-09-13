@@ -47,7 +47,7 @@ class TB_404_Description extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-editor-paragraph';
+        return 'king-addons-icon king-addons-tb-404-description';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_404_Description extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -140,6 +140,7 @@ class TB_404_Description extends Widget_Base
             [
                 'label' => esc_html__('Text', 'king-addons'),
                 'type' => Controls_Manager::TEXTAREA,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.', 'king-addons'),
             ]
         );
@@ -219,8 +220,16 @@ class TB_404_Description extends Widget_Base
                         'icon' => 'eicon-text-align-right',
                     ],
                 ],
+                'selectors_dictionary' => [
+                    'left' => 'text-align: left; margin-inline: 0 auto;',
+                    'center' => 'text-align: center; margin-inline: auto;',
+                    'right' => 'text-align: right; margin-inline: auto 0;',
+                ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-tb-404-description' => 'text-align: {{VALUE}};',
+                    // The block carries a readable max-width and is centred by
+                    // default, so text-align alone cannot move it - the author
+                    // picked "left" and the paragraph stayed in the middle.
+                    '{{WRAPPER}} .king-addons-tb-404-description' => '{{VALUE}}',
                 ],
             ]
         );

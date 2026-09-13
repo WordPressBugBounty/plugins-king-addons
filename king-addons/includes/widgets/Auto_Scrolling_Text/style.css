@@ -38,14 +38,34 @@
 }
 
 .king-addons-auto-scrolling-text-wrapper {
-    display: inline-block;
+    display: flex;
+    width: max-content;
     white-space: nowrap;
     animation: king-addons-auto-scrolling-animation 20s linear infinite;
+
+    /* Keep the track on its own compositor layer. Without this the browser can
+       promote and demote it around the animation and re-rasterize the text,
+       which shows up as an occasional hitch in an otherwise steady scroll. */
+    will-change: transform;
 }
 
+.king-addons-auto-scrolling-text-group {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* The shift is one copy of the content, so the next copy lands exactly where
+   this one started and the reset is invisible. The script sets the value once
+   it knows how many copies fit; -50% is the two-copy fallback. */
 @keyframes king-addons-auto-scrolling-animation {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
+    100% { transform: translateX(var(--king-addons-marquee-shift, -50%)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .king-addons-auto-scrolling-text-wrapper {
+        animation: none;
+    }
 }
 
 .swiper-container:not(.swiper-container-initialized) > .swiper-wrapper,

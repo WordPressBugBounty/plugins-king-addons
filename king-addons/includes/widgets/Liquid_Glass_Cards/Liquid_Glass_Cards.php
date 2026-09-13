@@ -34,7 +34,7 @@ class Liquid_Glass_Cards extends Widget_Base
 
     public function get_icon(): string
     {
-        return 'eicon-info-box';
+        return 'king-addons-icon king-addons-liquid-glass-cards';
     }
 
     public function get_style_depends(): array

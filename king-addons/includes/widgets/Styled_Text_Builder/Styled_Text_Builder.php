@@ -130,7 +130,6 @@ class Styled_Text_Builder extends Widget_Base
             [
                 'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Content', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
-                'frontend_available' => true,
             ]
         );
 
@@ -1394,7 +1393,7 @@ class Styled_Text_Builder extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // Get the wrapper HTML tag, default to 'div' if not set
         $wrapper_tag = isset($settings['kng_styled_txt_wrapper_html_tag']) ? $settings['kng_styled_txt_wrapper_html_tag'] : 'div';

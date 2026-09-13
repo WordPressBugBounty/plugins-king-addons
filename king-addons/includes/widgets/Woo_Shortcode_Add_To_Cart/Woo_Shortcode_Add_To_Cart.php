@@ -51,7 +51,7 @@ class Woo_Shortcode_Add_To_Cart extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-cart-medium';
+        return 'king-addons-icon king-addons-woo-shortcode-add-to-cart';
     }
 
     /**
@@ -59,9 +59,19 @@ class Woo_Shortcode_Add_To_Cart extends Widget_Base
      *
      * @return array<int,string>
      */
+    /**
+     * Style dependencies.
+     *
+     * @return array
+     */
+    public function get_style_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-shortcode-add-to-cart-style'];
+    }
+
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -539,7 +549,16 @@ class Woo_Shortcode_Add_To_Cart extends Widget_Base
         } elseif ($product_source === 'id' && !empty($settings['product_id'])) {
             $attrs[] = 'id="' . absint($settings['product_id']) . '"';
         } elseif ($product_source === 'sku' && !empty($settings['product_sku'])) {
-            $attrs[] = 'sku="' . esc_attr($settings['product_sku']) . '"';
+            $sku = wp_specialchars_decode(wc_clean((string) $settings['product_sku']), ENT_QUOTES);
+            $sku_id = wc_get_product_id_by_sku($sku);
+            if ($sku_id) {
+                $attrs[] = 'id="' . absint($sku_id) . '"';
+            } else {
+                if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                    echo '<div class="king-addons-woo-builder-notice">' . esc_html__('No product found for this SKU.', 'king-addons') . '</div>';
+                }
+                return;
+            }
         } else {
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
                 echo '<div class="king-addons-woo-builder-notice">' . esc_html__('Please select a product source or enter a product ID/SKU.', 'king-addons') . '</div>';
@@ -562,9 +581,14 @@ class Woo_Shortcode_Add_To_Cart extends Widget_Base
             $attrs[] = 'class="' . esc_attr($settings['class']) . '"';
         }
 
+        // Empty Woo's default inline border/padding so Elementor container STYLE can apply.
+        $attrs[] = 'style=""';
+
         $shortcode = '[add_to_cart ' . implode(' ', $attrs) . ']';
 
+        echo '<div class="king-addons-woo-shortcode-add-to-cart">';
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo do_shortcode($shortcode);
+        echo '</div>';
     }
 }

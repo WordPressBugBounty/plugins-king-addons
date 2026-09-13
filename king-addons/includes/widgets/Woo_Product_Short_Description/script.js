@@ -13,9 +13,12 @@
         if (wrapper.dataset[INIT_FLAG] === "1") return;
         wrapper.dataset[INIT_FLAG] = "1";
 
-        const trimmed = wrapper.querySelector('.ka-woo-product-short-description__content.is-trimmed');
-        const full = wrapper.querySelector('.ka-woo-product-short-description__content.is-full');
-        const btn = wrapper.querySelector('.ka-woo-product-short-description__toggle');
+        const prefix = wrapper.classList.contains("ka-woo-product-full-description")
+            ? "ka-woo-product-full-description"
+            : "ka-woo-product-short-description";
+        const trimmed = wrapper.querySelector("." + prefix + "__content.is-trimmed");
+        const full = wrapper.querySelector("." + prefix + "__content.is-full");
+        const btn = wrapper.querySelector("." + prefix + "__toggle");
         if (!trimmed || !full || !btn) return;
 
         let expanded = false;
@@ -64,6 +67,12 @@
     $(window).on("elementor/frontend/init", function () {
         elementorFrontend.hooks.addAction(
             "frontend/element_ready/woo_product_short_description.default",
+            function ($scope) {
+                initAll($scope && $scope[0] ? $scope[0] : document);
+            }
+        );
+        elementorFrontend.hooks.addAction(
+            "frontend/element_ready/woo_product_full_description.default",
             function ($scope) {
                 initAll($scope && $scope[0] ? $scope[0] : document);
             }

@@ -50,7 +50,7 @@ class WooCommerce_Floating_Cart_Icon extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-cart-medium';
+        return 'king-addons-icon king-addons-woocommerce-floating-cart-icon';
     }
 
     /**
@@ -84,7 +84,7 @@ class WooCommerce_Floating_Cart_Icon extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-woo'];
     }
 
     /**

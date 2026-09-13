@@ -1965,7 +1965,7 @@ $this->end_controls_section();
 
     protected function team_member_social_media()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // Define which icon slots to loop over
         $icon_indexes = [1, 2, 3, 4, 5];
@@ -2007,13 +2007,13 @@ $this->end_controls_section();
 
     protected function team_member_button()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         if ('' !== $settings['member_btn_text']) {
             $this->add_render_attribute(
                 'btn_attribute',
                 'class',
-                'king-addons-member-btn king-addons-button-effect ' . $settings['btn_animation']
+                'king-addons-member-btn king-addons-button-effect ' . sanitize_html_class((string) ($settings['btn_animation'] ?? ''))
             );
             $this->add_render_attribute('btn_attribute', 'href', esc_url($settings['member_btn_url']['url']));
 
@@ -2035,7 +2035,7 @@ $this->end_controls_section();
 
     protected function team_member_content()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         /** @noinspection DuplicatedCode */
         if (
@@ -2101,7 +2101,7 @@ $this->end_controls_section();
 
     protected function team_member_overlay()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         /** @noinspection DuplicatedCode */
         if (
@@ -2178,7 +2178,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings(); ?>
+        $settings = Core::displaySettings($this); ?>
 
         <div class="king-addons-team-member">
             <?php if (!empty($settings['member_image']['url'])) : ?>

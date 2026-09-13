@@ -690,7 +690,9 @@ class Taxonomy_List extends Widget_Base
     private function get_term_class($settings, $term, $level): string
     {
         $is_active = isset(get_queried_object()->term_taxonomy_id) && $term->term_id == get_queried_object()->term_taxonomy_id && 'yes' === $settings['highlight_active'];
-        $hidden_class = $settings['show_sub_categories_on_click'] === 'yes' ? ' king-addons-tax-list-sub-hidden' : '';
+        $hidden_class = ($level > 0 && ($settings['show_sub_categories_on_click'] ?? '') === 'yes')
+            ? ' king-addons-tax-list-sub-hidden'
+            : '';
 
         $base_class = $level === 0 ? 'king-addons-tax-list-taxonomy' : "king-addons-tax-list-sub-taxonomy-$level";
         return ' class="' . $base_class . ($is_active ? ' king-addons-tax-list-taxonomy-active' : '') . $hidden_class . '"';

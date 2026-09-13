@@ -50,7 +50,7 @@ class Woo_Shortcode_Product_Categories extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-folder-o';
+        return 'king-addons-icon king-addons-woo-shortcode-product-categories';
     }
 
     /**
@@ -60,7 +60,7 @@ class Woo_Shortcode_Product_Categories extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**

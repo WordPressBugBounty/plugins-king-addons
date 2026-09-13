@@ -47,7 +47,7 @@ class Woo_Product_ACF_Field extends Abstract_Single_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-database';
+        return 'king-addons-icon king-addons-woo-product-acf-field';
     }
 
     /**
@@ -140,6 +140,7 @@ class Woo_Product_ACF_Field extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Label Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'placeholder' => esc_html__('Color', 'king-addons'),
                 'condition' => [
                     'source' => 'attribute',
@@ -153,6 +154,7 @@ class Woo_Product_ACF_Field extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Fallback Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'placeholder' => esc_html__('Not set', 'king-addons'),
             ]
         );
@@ -162,6 +164,7 @@ class Woo_Product_ACF_Field extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Values Separator', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => ', ',
                 'condition' => [
                     'source' => 'attribute',
@@ -194,7 +197,12 @@ class Woo_Product_ACF_Field extends Abstract_Single_Widget
             return;
         }
 
-        $source = $settings['source'] ?? 'attribute';
+        // The value decides which branch runs and which gate applies, so an
+        // unknown one has to fall back rather than skip every branch silently.
+        $source = (string) ($settings['source'] ?? 'attribute');
+        if (!in_array($source, ['attribute', 'acf', 'meta'], true)) {
+            $source = 'attribute';
+        }
         $is_pro_only = in_array($source, ['acf', 'meta'], true);
         if ($is_pro_only && !king_addons_can_use_pro()) {
             if (Woo_Context::is_editor()) {

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $allowed_theme_modes = ['dark', 'light', 'auto'];
 if (!in_array($theme_mode, $allowed_theme_modes, true)) {
-    $theme_mode = 'dark';
+    $theme_mode = 'auto';
 }
 
 // Handle form submission
@@ -30,6 +30,20 @@ if (isset($_POST['king_addons_settings_submit_settings'])) {
     update_option('king_addons_recaptcha_v3_site_key', sanitize_text_field($_POST['king_addons_recaptcha_v3_site_key']));
     update_option('king_addons_recaptcha_v3_secret_key', sanitize_text_field($_POST['king_addons_recaptcha_v3_secret_key']));
     update_option('king_addons_recaptcha_v3_score_threshold', floatval($_POST['king_addons_recaptcha_v3_score_threshold']));
+
+    // Alternatives to reCAPTCHA, offered per form in the Form Builder panel.
+    update_option('king_addons_turnstile_site_key', sanitize_text_field($_POST['king_addons_turnstile_site_key'] ?? ''));
+    update_option('king_addons_turnstile_secret_key', sanitize_text_field($_POST['king_addons_turnstile_secret_key'] ?? ''));
+    update_option('king_addons_hcaptcha_site_key', sanitize_text_field($_POST['king_addons_hcaptcha_site_key'] ?? ''));
+    update_option('king_addons_hcaptcha_secret_key', sanitize_text_field($_POST['king_addons_hcaptcha_secret_key'] ?? ''));
+
+    // Payment providers used by the Form Builder payment action.
+    update_option('king_addons_stripe_secret_key', sanitize_text_field($_POST['king_addons_stripe_secret_key'] ?? ''));
+    update_option('king_addons_stripe_webhook_secret', sanitize_text_field($_POST['king_addons_stripe_webhook_secret'] ?? ''));
+    update_option('king_addons_paypal_client_id', sanitize_text_field($_POST['king_addons_paypal_client_id'] ?? ''));
+    update_option('king_addons_paypal_secret', sanitize_text_field($_POST['king_addons_paypal_secret'] ?? ''));
+    $king_addons_paypal_env = sanitize_key($_POST['king_addons_paypal_environment'] ?? 'sandbox');
+    update_option('king_addons_paypal_environment', 'live' === $king_addons_paypal_env ? 'live' : 'sandbox');
 
     // Lightbox colors
     update_option('king_addons_lightbox_bg_color', sanitize_text_field($_POST['king_addons_lightbox_bg_color']));
@@ -65,6 +79,15 @@ $mailchimp_key = get_option('king_addons_mailchimp_api_key', '');
 $recaptcha_site_key = get_option('king_addons_recaptcha_v3_site_key', '');
 $recaptcha_secret_key = get_option('king_addons_recaptcha_v3_secret_key', '');
 $recaptcha_score_threshold = get_option('king_addons_recaptcha_v3_score_threshold', 0.5);
+$turnstile_site_key = get_option('king_addons_turnstile_site_key', '');
+$turnstile_secret_key = get_option('king_addons_turnstile_secret_key', '');
+$hcaptcha_site_key = get_option('king_addons_hcaptcha_site_key', '');
+$hcaptcha_secret_key = get_option('king_addons_hcaptcha_secret_key', '');
+$stripe_secret_key = get_option('king_addons_stripe_secret_key', '');
+$stripe_webhook_secret = get_option('king_addons_stripe_webhook_secret', '');
+$paypal_client_id = get_option('king_addons_paypal_client_id', '');
+$paypal_secret = get_option('king_addons_paypal_secret', '');
+$paypal_environment = get_option('king_addons_paypal_environment', 'sandbox');
 $improve_import_performance = get_option('king_addons_improve_import_performance', '1');
 $disable_template_catalog_button = get_option('king_addons_disable_template_catalog_button', '0');
 
@@ -191,6 +214,115 @@ document.body.classList.add('ka-admin-v3');
                         <div class="ka-row-field">
                             <input type="number" step="0.1" min="0" max="1" name="king_addons_recaptcha_v3_score_threshold" value="<?php echo esc_attr($recaptcha_score_threshold); ?>" style="max-width:100px" />
                             <p class="ka-row-desc"><?php esc_html_e('Score threshold 0.0 to 1.0 (default 0.5). Higher values are more strict.', 'king-addons'); ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-shield-alt"></span>
+                    <h2><?php esc_html_e('Cloudflare Turnstile', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body">
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Site Key', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="text" name="king_addons_turnstile_site_key" value="<?php echo esc_attr($turnstile_site_key); ?>" />
+                            <p class="ka-row-desc">
+                                <?php esc_html_e('Pick Turnstile per form in the Form Builder panel.', 'king-addons'); ?>
+                                <a href="https://www.cloudflare.com/products/turnstile/" target="_blank"><?php esc_html_e('Get keys →', 'king-addons'); ?></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Secret Key', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="password" name="king_addons_turnstile_secret_key" value="<?php echo esc_attr($turnstile_secret_key); ?>" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-shield-alt"></span>
+                    <h2><?php esc_html_e('hCaptcha', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body">
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Site Key', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="text" name="king_addons_hcaptcha_site_key" value="<?php echo esc_attr($hcaptcha_site_key); ?>" />
+                            <p class="ka-row-desc">
+                                <?php esc_html_e('Pick hCaptcha per form in the Form Builder panel.', 'king-addons'); ?>
+                                <a href="https://www.hcaptcha.com/" target="_blank"><?php esc_html_e('Get keys →', 'king-addons'); ?></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Secret Key', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="password" name="king_addons_hcaptcha_secret_key" value="<?php echo esc_attr($hcaptcha_secret_key); ?>" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-money-alt"></span>
+                    <h2><?php esc_html_e('Stripe', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body">
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Secret Key', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="password" name="king_addons_stripe_secret_key" value="<?php echo esc_attr($stripe_secret_key); ?>" />
+                            <p class="ka-row-desc">
+                                <?php esc_html_e('Used to open a Stripe Checkout session. Visitors pay on Stripe, so no card details reach this site.', 'king-addons'); ?>
+                                <a href="https://dashboard.stripe.com/apikeys" target="_blank"><?php esc_html_e('Get keys →', 'king-addons'); ?></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Webhook signing secret', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="password" name="king_addons_stripe_webhook_secret" value="<?php echo esc_attr($stripe_webhook_secret); ?>" />
+                            <p class="ka-row-desc">
+                                <?php esc_html_e('Endpoint to add in the Stripe Dashboard:', 'king-addons'); ?>
+                                <code><?php echo esc_html(class_exists('King_Addons\\Form_Payment_Confirm') ? \King_Addons\Form_Payment_Confirm::stripe_webhook_url() : rest_url('king-addons/v1/stripe-webhook')); ?></code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ka-card">
+                <div class="ka-card-header">
+                    <span class="dashicons dashicons-money-alt"></span>
+                    <h2><?php esc_html_e('PayPal', 'king-addons'); ?></h2>
+                </div>
+                <div class="ka-card-body">
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Client ID', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="text" name="king_addons_paypal_client_id" value="<?php echo esc_attr($paypal_client_id); ?>" />
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Secret', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <input type="password" name="king_addons_paypal_secret" value="<?php echo esc_attr($paypal_secret); ?>" />
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Environment', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <select name="king_addons_paypal_environment">
+                                <option value="sandbox" <?php selected($paypal_environment, 'sandbox'); ?>><?php esc_html_e('Sandbox', 'king-addons'); ?></option>
+                                <option value="live" <?php selected($paypal_environment, 'live'); ?>><?php esc_html_e('Live', 'king-addons'); ?></option>
+                            </select>
                         </div>
                     </div>
                 </div>

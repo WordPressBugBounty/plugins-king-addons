@@ -2,11 +2,60 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.81 - September 11, 2026 =
+* **Security:** Template Catalog import into an existing page now requires permission to edit that specific page.
+* **Security:** Image Accordion, Team Member, and Pricing Table button animation classes are sanitized before output.
+* **Security:** The Maintenance Page shortcode no longer renders private, draft, pending, or password-protected posts to users who cannot read them.
+* **Security:** Image Optimizer AJAX actions that target an attachment now require permission to edit that attachment, not only the ability to upload files.
+* **Fix:** Taxonomy List no longer hides parent terms when “Show Sub Child on Click” is enabled.
+
+= King Addons for Elementor version 51.1.80 - September 11, 2026 =
+* **Fix:** Cookie Consent and Age Gate — stored texts that were saved with HTML entities (`&quot;`, `&#039;`) are decoded once so banners and settings forms show real quotes and apostrophes. New defaults use `__()` instead of `esc_html__()`, including Pro Age Gate date-of-birth error strings.
+* **Fix:** Form Builder — an empty Field ID no longer produces `name="form_fields[]"`. The field key falls back to the Elementor `_id`, including in payments, integrations, and calculation formulas.
+* **Fix:** WooCommerce My Account builder widgets only render on their own endpoint (Orders, Addresses, Account details, Downloads, Order details, Dashboard, ACF). My Account Content skips the native Woo block when a dedicated widget is already on the template. Custom Content endpoints are treated as WooCommerce endpoints so Dashboard cards no longer stack on them.
+* **Fix:** Checkout Form no longer reprints login, coupon, or payment when those dedicated widgets are on the same template. The Payment widget moves into the checkout form; its native Place order button hides when the Place Order widget is present.
+* **Fix:** Product Variations hides the native quantity and Add to cart controls when the Add To Cart widget is on the same Single Product template.
+* **New:** Form Builder payments — Stripe Checkout is confirmed by a signed webhook and a session retrieve on return; PayPal Orders v2 captures on return and will not capture twice. Submissions store payment status, and Settings shows the Stripe webhook URL.
+* **Improved:** Dynamic Tags — Custom Field, Request Parameter, Shortcode, ACF Field, ACF Image, and Product Field require Pro. They stay in the picker with a notice; without a licence they render empty so Elementor Fallback still works.
+* **New:** Loop Grid — Masonry and Carousel layouts, plus a taxonomy filter bar (Pro). Free sites keep the grid and see an upgrade notice.
+* **Fix:** WooCommerce Cart, Checkout, and My Account builder widgets no longer render on WooCommerce pages without Pro.
+* **Fix:** Related Products, Upsells, Cross-Sells, Products Pagination, Wishlist Button, and Wishlist Counter no longer advertise a Pro version that does not exist.
+* **Fix:** Products Result Count and Pagination follow the Products Grid page size when a Grid is on the archive (optional Query ID). They no longer always read the main shop query.
+* **Fix:** Cookie Consent modal layout stays centered when Animation is Fade (or Slide). Fade used `transform: none`, which cancelled `translate(-50%, -50%)` and parked the banner at the viewport midpoint.
+* **Fix:** Age Gate Pro no longer strips Top / Side / Fullscreen templates, top card alignment, or a custom deny-redirect URL when the settings page is saved.
+* **Fix:** Cookie Consent page targeting treats the WooCommerce shop page as its assigned page. `is_page()` is false on the shop archive, so Include/Exclude previously ignored that page.
+* **Fix:** Age Gate “All pages” and Exclude Pages now treat the WooCommerce shop archive as the Shop page. `is_page()` / `is_singular()` are false on that archive, so the gate previously skipped shop.
+* **Fix:** Age Gate Pro Custom rules now expose WooCommerce targeting (single products, product categories, shop) on the Display tab. The engine already applied those rules, but the settings form had no fields for them.
+* **Fix:** Theme Builder Author Box now applies Custom URL and Social Links Open in new window / nofollow from the Elementor URL control.
+* **Fix:** Form Builder payments check the amount (and max-amount ceiling) before Stripe/PayPal keys, so an over-max total still shows the over-max message when keys are empty.
+* **Fix:** Form Builder payment settings are stored per page and form, so two widgets that share an Elementor ID no longer overwrite each other.
+* **Fix:** Mailchimp list and group pickers return empty defaults when the API key is missing or has no data-center suffix, instead of requesting a bad hostname.
+* **Fix:** Form Builder payment with Provider None now shows “No payment is configured for this form.” instead of the generic success copy.
+* **Fix:** After Stripe or PayPal send the visitor back, `?ka-payment=cancelled` and `?ka-payment=success` print a status banner. A PayPal cancel token marks the matching submission cancelled.
+* **Fix:** Product Tabs now insert merged Custom Tabs by Woo priority, so the Custom Tabs Priority control can place a tab before Description / Reviews.
+* **Fix:** Product Images Gallery zoom lens now shows when the script adds `is-visible` (mousemove), not only on CSS `:hover`.
+* **Fix:** Form Builder unsupported file-type notice uses a real `</li>` list (and matching list CSS) instead of malformed `<li/>` markup inside the `<ul>`.
+* **Fix:** Loop Grid Load More still works after a taxonomy filter click. Filters replace the footer (and the Load More button); the click is now delegated so the new button is not a dead control.
+* **Fix:** Form Builder icon-only submit hid the fallback “Submit” span with `.king-addons-hidden-element`, but that class lives in general.css which the widget does not load. The span is now hidden in the Form Builder stylesheet.
+* **Fix:** Wishlist Button AJAX toggle now keeps each widget’s Default / Added text (`data-label-default` / `data-label-added`) instead of always swapping to the global settings labels.
+* **Fix:** Wishlist Page no longer advertises a Pro version that does not exist.
+* **Fix:** Wishlist Counter stays visible when the count is 0. Only the floating icon badge is dimmed.
+* **Fix:** Wishlist Counter no longer prints an undefined `wishlist_id` notice when the widget leaves that argument empty.
+* **Fix:** Wishlist AJAX toggle now updates every button for that product and restores the empty table row, instead of only the control that was clicked.
+* **Fix:** Wishlist Button now prints next to the Product Add To Cart widget on Single Product templates. Native `woocommerce_after_add_to_cart_button` never runs when that widget replaces the Woo form.
+* **Fix:** Wishlist Button default icon is Font Awesome `fas fa-heart`, and the frontend loads Elementor icons when a button still uses `eicon-heart` so the glyph paints.
+* **Fix:** Wishlist Mini List “Show title” now hides the Title column (`--no-titles`) instead of leaving the control unused.
+* **Fix:** Products Grid cards now fire `king_addons/woo_products_grid/after_add_to_cart`, so Show in archives can print the Wishlist Button on King Addons shop/list/slider grids (native `woocommerce_after_shop_loop_item` never runs there).
+* **Fix:** Wishlist Button Current product mode no longer treats a normal page as a product. Auto mode on a non-product page prints “Select a product…”, and toggle AJAX rejects non-product ids.
+* **Fix:** Wishlist Icon, Share Buttons, and Multiple Lists Switcher hide when the Wishlist extension is disabled. Icon no longer wraps an empty FAB around a blank counter.
+* **Fix:** Wishlist Multiple Lists Switcher now has layout CSS so the list name and count sit on one cream/amber pill instead of concatenating as “My Wishlist1”.
+
 = King Addons for Elementor version 51.1.79 - September 6, 2026 =
-* **New:** OpenRouter as an alternative AI provider - one API key reaches models from many vendors, including free ones. Pick the provider in AI Settings; OpenAI and OpenRouter keep separate keys and models, so switching between them loses nothing.
+* **New:** OpenRouter as an alternative AI provider, and the new default - one API key reaches models from many vendors, including free ones you can start with at no cost. Pick the provider in AI Settings; OpenAI and OpenRouter keep separate keys and models, so switching between them loses nothing. Sites already set up with an OpenAI key stay on OpenAI.
 * **Improved:** AI Page Translate & Transform extension.
 * **Fix:** Wrapper Link feature - a link or button inside the container triggered both itself and the wrapper link, sending visitors to two places at once. The wrapper now stands aside when the click belongs to something inside it, leaves text selections alone, and no longer fires while you are editing the page.
 * **Fix:** The AI controls in the Elementor panel were styled for the light theme only and were barely readable on the dark one; they now follow the panel theme.
+* **Fix:** King Addons admin pages in dark mode - text inside WordPress notices, and the heading of the Pro upgrade card on the Activity Log screen, were almost invisible. The dark theme restyled those boxes but left the text inside them with WordPress's own dark colour, so it came out dark on dark.
 * **Fix:** AI Settings - the Content Language options were discarded on every save.
 * **Fix:** AI Settings - dropdown arrows were missing in dark mode, and long model names could run underneath them.
 

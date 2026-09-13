@@ -29,7 +29,7 @@ $show_descriptions = !empty($dashboard_settings['show_descriptions']);
 $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $allowed_theme_modes = ['dark', 'light', 'auto'];
 if (!in_array($theme_mode, $allowed_theme_modes, true)) {
-    $theme_mode = 'dark';
+    $theme_mode = 'auto';
 }
 
 // Handle settings update
@@ -115,6 +115,11 @@ $categories = [
     'woocommerce' => [
         'title' => esc_html__('WooCommerce', 'king-addons'),
         'icon' => 'dashicons-cart',
+        'widgets' => [],
+    ],
+    'woo-builder' => [
+        'title' => esc_html__('WooCommerce Builder', 'king-addons'),
+        'icon' => 'dashicons-store',
         'widgets' => [],
     ],
     'navigation' => [
@@ -376,7 +381,7 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
             <!-- Quick Actions -->
             <div class="ka-v3-quick-actions">
                 <?php if (defined('KING_ADDONS_EXT_HEADER_FOOTER_BUILDER') && KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
-                <a href="<?php echo esc_url(admin_url('edit.php?post_type=king-addons-el-hf')); ?>" class="ka-v3-btn ka-v3-btn-secondary">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=king-addons-el-hf')); ?>" class="ka-v3-btn ka-v3-btn-secondary">
                     <span class="dashicons dashicons-welcome-widgets-menus"></span>
                     <?php esc_html_e('Header & Footer', 'king-addons'); ?>
                 </a>
@@ -551,7 +556,12 @@ $css_version = file_exists($css_path) ? filemtime($css_path) : KING_ADDONS_VERSI
                         <p class="ka-v3-card-requirement"><?php echo esc_html($ext_requirement_msg); ?></p>
                     <?php endif; ?>
                     <div class="ka-v3-card-footer">
-                        <?php if ($ext_available): ?>
+                        <?php if ($ext_available && empty($ext['link'])): ?>
+                            <?php /* Extensions with no admin panel of their own, such as Dynamic Tags. */ ?>
+                            <span class="ka-v3-card-link ka-v3-link-disabled">
+                                <?php esc_html_e('No settings needed', 'king-addons'); ?>
+                            </span>
+                        <?php elseif ($ext_available): ?>
                             <a href="<?php echo esc_url($ext['link']); ?>" class="ka-v3-card-link <?php echo !$ext_enabled ? 'ka-v3-link-disabled' : ''; ?>">
                                 <?php esc_html_e('Open Panel', 'king-addons'); ?>
                                 <span class="dashicons dashicons-arrow-right-alt"></span>

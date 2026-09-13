@@ -639,6 +639,13 @@ class Off_Canvas_Content extends Widget_Base
                 const offCanvas = document.querySelector('." . esc_js($class_ID) . "');
                 const overlay = document.querySelector('." . esc_js($overlay_ID) . "');
 
+                // With no template picked the widget prints a placeholder instead of
+                // the panel markup, so these lookups come back empty. Bail out rather
+                // than throwing on insertBefore and losing the handlers below.
+                if (!offCanvas || !overlay) {
+                    return;
+                }
+
                 // Moves all off-canvases to right after the <body> opens
                 document.body.insertBefore(overlay, document.body.firstChild);
                 document.body.insertBefore(offCanvas, document.body.firstChild);

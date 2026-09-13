@@ -20,30 +20,6 @@ if (!defined('ABSPATH')) {
  */
 class Woo_Product_Tabs extends Abstract_Single_Widget
 {
-    /**
-     * Whether AJAX handlers are already registered.
-     *
-     * @var bool
-     */
-    private static $ajax_actions_registered = false;
-
-    /**
-     * Constructor.
-     *
-     * @param array<mixed> $data Widget data.
-     * @param array|null   $args Widget args.
-     */
-    public function __construct($data = [], $args = null)
-    {
-        parent::__construct($data, $args);
-
-        if (!self::$ajax_actions_registered) {
-            add_action('wp_ajax_king_addons_render_product_tab', [self::class, 'ajax_render_tab']);
-            add_action('wp_ajax_nopriv_king_addons_render_product_tab', [self::class, 'ajax_render_tab']);
-            self::$ajax_actions_registered = true;
-        }
-    }
-
     public function get_name(): string
     {
         return 'woo_product_tabs';
@@ -56,7 +32,7 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-tabs';
+        return 'king-addons-icon king-addons-woo-product-tabs';
     }
 
     public function get_categories(): array
@@ -302,11 +278,89 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
             return;
         }
 
-        global $product;
+        // WooCommerce assembles the tab list - and runs every tab callback -
+        // off the globals: woocommerce_default_product_tabs() reads
+        // $post->post_content for the description tab and comments_open() for
+        // the reviews tab, and the callbacks themselves call the_content().
+        // Point both globals at the product this widget resolved and put them
+        // back afterwards. Declaring `global $product` here instead would
+        // rebind the variable to the global and throw away the product
+        // resolved above, which is null on any page that reaches the widget
+        // without the global set; and leaving $post alone left the widget
+        // completely blank in the editor, where $post is the template.
+        $previous_product = $GLOBALS['product'] ?? null;
+        $previous_post = $GLOBALS['post'] ?? null;
+        $product_post = get_post($product->get_id());
+
+        $GLOBALS['product'] = $product;
+        if ($product_post instanceof \WP_Post) {
+            $GLOBALS['post'] = $product_post;
+            setup_postdata($product_post);
+        }
+
+        try {
+            $this->render_tabs($product);
+        } finally {
+            $GLOBALS['product'] = $previous_product;
+            $GLOBALS['post'] = $previous_post;
+            if ($previous_post instanceof \WP_Post) {
+                setup_postdata($previous_post);
+            }
+        }
+    }
+
+    /**
+     * Insert a merged / third-party tab among already-ordered tabs by Woo priority.
+     *
+     * Product Tabs rebuilds the list from the manager or “Tabs to show”, then
+     * used to append Custom Tabs after every native row. That ignored the
+     * Custom Tabs Priority control (qa-526).
+     *
+     * @param array<string, array<string, mixed>> $ordered Already ordered tabs.
+     * @param string                              $key     Tab key to insert.
+     * @param array<string, mixed>                $tab     Tab payload from woocommerce_product_tabs.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private static function insert_tab_by_priority(array $ordered, string $key, array $tab): array
+    {
+        if (isset($ordered[$key])) {
+            return $ordered;
+        }
+        $pri = isset($tab['priority']) ? (int) $tab['priority'] : 80;
+        $out = [];
+        $inserted = false;
+        foreach ($ordered as $existing_key => $existing) {
+            $existing_pri = isset($existing['priority']) ? (int) $existing['priority'] : 80;
+            if (!$inserted && $pri < $existing_pri) {
+                $out[$key] = $tab;
+                $inserted = true;
+            }
+            $out[$existing_key] = $existing;
+        }
+        if (!$inserted) {
+            $out[$key] = $tab;
+        }
+        return $out;
+    }
+
+    /**
+     * Render the tab nav and panels for a product.
+     *
+     * @param \WC_Product $product Product to render tabs for.
+     * @return void
+     */
+    private function render_tabs($product): void
+    {
         $settings = $this->get_settings_for_display();
         $can_pro = king_addons_can_use_pro();
 
-        $layout = $settings['layout'] ?? 'horizontal';
+        // The value lands in a class name, so anything outside the three known
+        // layouts has to be dropped rather than passed through.
+        $layout = (string) ($settings['layout'] ?? 'horizontal');
+        if (!in_array($layout, ['horizontal', 'vertical', 'accordion'], true)) {
+            $layout = 'horizontal';
+        }
         if (in_array($layout, ['vertical', 'accordion'], true) && !$can_pro) {
             $layout = 'horizontal';
         }
@@ -321,7 +375,15 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
         $ajax = !empty($settings['ajax_load']) && $can_pro;
 
         $tabs = apply_filters('woocommerce_product_tabs', []);
+        $all_tabs = $tabs;
         if (empty($tabs)) {
+            // Nothing to show, but an editor that renders nothing at all looks
+            // like the widget is broken - say why instead.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('This product has no description, attributes or reviews, so there are no tabs to show.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
@@ -338,13 +400,26 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
                     continue;
                 }
                 if (!empty($row['custom_label'])) {
-                    $tabs[$key]['title'] = esc_html($row['custom_label']);
+                    // Titles go out through wp_kses_post() below, which is what
+                    // makes them safe. Escaping here as well turned a label like
+                    // "<b>New</b>" into visible &lt;b&gt; markup on the page.
+                    $tabs[$key]['title'] = $row['custom_label'];
                 }
                 $ordered_tabs[$key] = $tabs[$key];
             }
             // If manager removed everything, keep original.
             if (!empty($ordered_tabs)) {
                 $tabs = $ordered_tabs;
+            }
+            // Manager only lists native Woo tabs. Keep merged / third-party keys
+            // (Product Custom Tabs merge_wc_tabs, extra plugins) ordered by
+            // their Woo priority so Custom Tabs Priority is not a no-op.
+            $native_keys = ['description', 'additional_information', 'reviews'];
+            foreach ($all_tabs as $key => $tab) {
+                if (isset($tabs[$key]) || in_array($key, $native_keys, true)) {
+                    continue;
+                }
+                $tabs = self::insert_tab_by_priority($tabs, $key, $tab);
             }
         } else {
             $ordered_tabs = [];
@@ -353,11 +428,16 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
                     $ordered_tabs[$key] = $tabs[$key];
                 }
             }
-            // Append any remaining tabs to avoid losing 3rd-party ones.
+            // Keep third-party tabs, but honor “Tabs to show” for Woo’s own keys.
+            $native_keys = ['description', 'additional_information', 'reviews'];
             foreach ($tabs as $key => $tab) {
-                if (!isset($ordered_tabs[$key])) {
-                    $ordered_tabs[$key] = $tab;
+                if (isset($ordered_tabs[$key])) {
+                    continue;
                 }
+                if (in_array($key, $native_keys, true)) {
+                    continue;
+                }
+                $ordered_tabs = self::insert_tab_by_priority($ordered_tabs, $key, $tab);
             }
             $tabs = $ordered_tabs;
         }
@@ -367,12 +447,12 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
         }
 
         $wrapper_classes = ['ka-woo-tabs', 'ka-woo-tabs--' . $layout];
-        echo '<div class="' . esc_attr(implode(' ', $wrapper_classes)) . '" data-active="' . esc_attr($active_tab) . '" data-ajax="' . ($ajax ? 'yes' : 'no') . '" data-ajax-url="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr(wp_create_nonce('king_addons_woo_tabs')) . '" data-product-id="' . esc_attr($product->get_id()) . '">';
+        echo '<div class="' . esc_attr(implode(' ', $wrapper_classes)) . '" data-active="' . esc_attr($active_tab) . '" data-ajax="' . ($ajax ? 'yes' : 'no') . '" data-ajax-url="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr(wp_create_nonce(Woo_Product_Tabs_Ajax::NONCE)) . '" data-product-id="' . esc_attr($product->get_id()) . '" data-error-text="' . esc_attr__('Could not load content.', 'king-addons') . '">';
 
-        echo '<div class="ka-woo-tabs__nav">';
+        echo '<div class="ka-woo-tabs__nav" role="tablist">';
         foreach ($tabs as $key => $tab) {
             $is_active = $key === $active_tab ? ' is-active' : '';
-            echo '<button type="button" class="ka-woo-tabs__tab' . $is_active . '" data-tab="' . esc_attr($key) . '">' . wp_kses_post($tab['title']) . '</button>';
+            echo '<button type="button" role="tab" class="ka-woo-tabs__tab' . $is_active . '" data-tab="' . esc_attr($key) . '" aria-selected="' . ($is_active ? 'true' : 'false') . '">' . wp_kses_post($tab['title']) . '</button>';
         }
         echo '</div>';
 
@@ -381,10 +461,16 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
             $is_active = $key === $active_tab ? ' is-active' : '';
             echo '<div class="ka-woo-tabs__panel' . $is_active . '" data-tab="' . esc_attr($key) . '">';
             if ('accordion' === $layout) {
-                echo '<button type="button" class="ka-woo-tabs__accordion-toggle" data-tab="' . esc_attr($key) . '">' . wp_kses_post($tab['title']) . '</button>';
+                echo '<button type="button" class="ka-woo-tabs__accordion-toggle" data-tab="' . esc_attr($key) . '" aria-expanded="' . ($is_active ? 'true' : 'false') . '">' . wp_kses_post($tab['title']) . '</button>';
                 echo '<div class="ka-woo-tabs__accordion-body">';
             }
-            if ($ajax && !$is_active) {
+            // Native Woo tabs can be deferred. Merged / third-party tabs
+            // (Custom Tabs merge_wc_tabs) are not in the AJAX handler's
+            // default list unless the builder template is already current,
+            // so they must render inline or the panel shows the error string.
+            $native_keys = ['description', 'additional_information', 'reviews'];
+            $defer = $ajax && !$is_active && in_array($key, $native_keys, true);
+            if ($defer) {
                 echo '<div class="ka-woo-tabs__placeholder"></div>';
             } else {
                 if (isset($tab['callback'])) {
@@ -400,59 +486,4 @@ class Woo_Product_Tabs extends Abstract_Single_Widget
 
         echo '</div>';
     }
-
-    /**
-     * AJAX render a single tab.
-     */
-    public static function ajax_render_tab(): void
-    {
-        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-        if (!wp_verify_nonce($nonce, 'king_addons_woo_tabs')) {
-            wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
-        }
-
-        if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
-            wp_send_json_error(['message' => esc_html__('WooCommerce is not available.', 'king-addons')], 400);
-        }
-
-        $product_id = isset($_POST['product_id']) ? (int) $_POST['product_id'] : 0;
-        $tab_key = isset($_POST['tab_key']) ? sanitize_key(wp_unslash($_POST['tab_key'])) : '';
-
-        if ($product_id <= 0 || empty($tab_key)) {
-            wp_send_json_error(['message' => esc_html__('Invalid request.', 'king-addons')], 400);
-        }
-
-        $product = wc_get_product($product_id);
-        if (!$product) {
-            wp_send_json_error(['message' => esc_html__('Product not found.', 'king-addons')], 404);
-        }
-
-        $previous_product = $GLOBALS['product'] ?? null;
-        $GLOBALS['product'] = $product;
-
-        $tabs = apply_filters('woocommerce_product_tabs', []);
-        if (!isset($tabs[$tab_key]) || empty($tabs[$tab_key]['callback'])) {
-            $GLOBALS['product'] = $previous_product;
-            wp_send_json_error(['message' => esc_html__('Tab not found.', 'king-addons')], 404);
-        }
-
-        ob_start();
-        call_user_func($tabs[$tab_key]['callback'], $tab_key, $tabs[$tab_key]);
-        $html = ob_get_clean();
-
-        $GLOBALS['product'] = $previous_product;
-
-        wp_send_json_success(
-            [
-                'html' => $html,
-            ]
-        );
-    }
 }
-
-
-
-
-
-
-

@@ -47,7 +47,7 @@ class TB_Post_Title extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-t-letter';
+        return 'king-addons-icon king-addons-tb-post-title';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Post_Title extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**

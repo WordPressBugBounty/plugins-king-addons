@@ -1260,10 +1260,30 @@ class Maintenance_Mode
         return '<div class="' . esc_attr(implode(' ', $classes)) . '">' . $content . '</div>';
     }
 
+    /**
+     * Whether the current user may see this post's body, including status and password.
+     */
+    private function user_can_view_post_content(\WP_Post $post): bool
+    {
+        if (!current_user_can('read_post', $post->ID)) {
+            return false;
+        }
+
+        return !post_password_required($post);
+    }
+
     private function get_page_content(int $page_id): string
     {
         $page = get_post($page_id);
         if (!$page) {
+            return $this->render_builtin_template('minimal');
+        }
+
+        if (!$this->user_can_view_post_content($page)) {
+            if (post_password_required($page) && current_user_can('read_post', $page_id)) {
+                return get_the_password_form($page);
+            }
+
             return $this->render_builtin_template('minimal');
         }
 
@@ -1281,6 +1301,15 @@ class Maintenance_Mode
 
     private function get_elementor_content(int $template_id): string
     {
+        $template = get_post($template_id);
+        if (!$template || !$this->user_can_view_post_content($template)) {
+            if ($template && post_password_required($template) && current_user_can('read_post', $template_id)) {
+                return get_the_password_form($template);
+            }
+
+            return $this->render_builtin_template('minimal');
+        }
+
         if (!class_exists('\\Elementor\\Plugin')) {
             return $this->render_builtin_template('minimal');
         }

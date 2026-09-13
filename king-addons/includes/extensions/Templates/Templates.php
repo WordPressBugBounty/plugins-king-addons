@@ -135,7 +135,7 @@ final class Templates
                             </div>
                             <?php if (KING_ADDONS_EXT_HEADER_FOOTER_BUILDER): ?>
                                 <div class="kng-nav-item kng-nav-item-current">
-                                    <a href="<?php echo admin_url('edit.php?post_type=king-addons-el-hf'); ?>">
+                                    <a href="<?php echo admin_url('admin.php?page=king-addons-el-hf'); ?>">
                                         <div class="kng-nav-item-txt"><?php echo esc_html__('Free Header & Footer Builder', 'king-addons'); ?></div>
                                     </a>
                                 </div>
@@ -768,6 +768,11 @@ final class Templates
             // Check if this is for existing page (from popup import)
             $existing_page_id = isset($import_data['existing_page_id']) ? intval($import_data['existing_page_id']) : 0;
             $create_new_page = isset($import_data['create_new_page']) ? (bool)$import_data['create_new_page'] : true;
+
+            if ($existing_page_id && !current_user_can('edit_post', $existing_page_id)) {
+                wp_send_json_error('Insufficient permissions');
+                return;
+            }
 
             delete_transient('elementor_import_content');
             delete_transient('elementor_import_images');

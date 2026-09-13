@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.79
+Stable tag: 51.1.81
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -261,11 +261,29 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.81 - September 11, 2026 =
+* **Security:** Template Catalog import into an existing page now requires permission to edit that specific page.
+* **Security:** Image Accordion, Team Member, and Pricing Table button animation classes are sanitized before output.
+* **Security:** The Maintenance Page shortcode no longer renders private, draft, pending, or password-protected posts to users who cannot read them.
+* **Security:** Image Optimizer AJAX actions that target an attachment now require permission to edit that attachment, not only the ability to upload files.
+* **Fix:** Taxonomy List no longer hides parent terms when “Show Sub Child on Click” is enabled.
+
+= King Addons for Elementor version 51.1.80 - September 7, 2026 =
+* **Fix:** PHP warnings were printed into the page itself in Magazine Grid, Auto Scrolling Text, Quick Product Grid and Quick Product Slider.
+* **Fix:** JavaScript errors in Google Maps without an API key, and in Popup, Off-Canvas Content and Video Popup before a template is picked.
+* **Fix:** Featured images render through the chosen image size again in the product and Theme Builder widgets.
+* **Fix:** Posts Grid and Blog Posts no longer break the row when a post has no featured image.
+* **Fix:** Ajax Add To Cart and Compare Table rendered nothing at all; the editor now says what they need.
+* **Fix:** Various panel controls that were silently dropped or opened with nothing selected.
+* **Fix:** Clearing a number field - cards per view, breakpoint, speed, delay - could stop a widget from appearing at all on the published page. Affected the carousels, Slider, Content Ticker, Smooth Counter, Flip Countdown, Progress Bar, Pricing Calculator, Media Grid and WooCommerce Grid.
+* **Fix:** Auto Scrolling Text now loops without a gap. The text used to scroll off, leave the strip empty and jump back to the start.
+
 = King Addons for Elementor version 51.1.79 - September 6, 2026 =
-* **New:** OpenRouter as an alternative AI provider - one API key reaches models from many vendors, including free ones. Pick the provider in AI Settings; OpenAI and OpenRouter keep separate keys and models, so switching between them loses nothing.
+* **New:** OpenRouter as an alternative AI provider, and the new default - one API key reaches models from many vendors, including free ones you can start with at no cost. Pick the provider in AI Settings; OpenAI and OpenRouter keep separate keys and models, so switching between them loses nothing. Sites already set up with an OpenAI key stay on OpenAI.
 * **Improved:** AI Page Translate & Transform extension.
 * **Fix:** Wrapper Link feature - a link or button inside the container triggered both itself and the wrapper link, sending visitors to two places at once. The wrapper now stands aside when the click belongs to something inside it, leaves text selections alone, and no longer fires while you are editing the page.
 * **Fix:** The AI controls in the Elementor panel were styled for the light theme only and were barely readable on the dark one; they now follow the panel theme.
+* **Fix:** King Addons admin pages in dark mode - text inside WordPress notices, and the heading of the Pro upgrade card on the Activity Log screen, were almost invisible. The dark theme restyled those boxes but left the text inside them with WordPress's own dark colour, so it came out dark on dark.
 * **Fix:** AI Settings - the Content Language options were discarded on every save.
 * **Fix:** AI Settings - dropdown arrows were missing in dark mode, and long model names could run underneath them.
 

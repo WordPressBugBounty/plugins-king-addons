@@ -115,6 +115,10 @@ class Image_Optimizer_Ajax
             wp_send_json_error(['message' => 'Invalid attachment'], 400);
         }
 
+        if (!$this->require_attachment_edit($attachment_id)) {
+            return;
+        }
+
         $optimizer = Image_Optimizer::instance();
         $html = $optimizer->get_attachment_optimizer_card_html($attachment_id);
 
@@ -142,6 +146,48 @@ class Image_Optimizer_Ajax
     }
 
     /**
+     * Whether the current user may change this attachment.
+     */
+    private function user_can_edit_attachment(int $attachment_id): bool
+    {
+        return $attachment_id > 0
+            && get_post_type($attachment_id) === 'attachment'
+            && current_user_can('edit_post', $attachment_id);
+    }
+
+    /**
+     * Reject the request unless the user can edit this attachment.
+     */
+    private function require_attachment_edit(int $attachment_id): bool
+    {
+        if (!$this->user_can_edit_attachment($attachment_id)) {
+            wp_send_json_error(['message' => __('Permission denied.', 'king-addons')]);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Drop attachment IDs the current user cannot edit.
+     *
+     * @param array<int|string> $ids
+     * @return array<int>
+     */
+    private function filter_editable_attachment_ids(array $ids): array
+    {
+        $out = [];
+        foreach ($ids as $id) {
+            $id = absint($id);
+            if ($id && $this->user_can_edit_attachment($id)) {
+                $out[] = $id;
+            }
+        }
+
+        return array_values(array_unique($out));
+    }
+
+    /**
      * Get image data for optimization.
      */
     public function get_image_data(): void
@@ -155,6 +201,10 @@ class Image_Optimizer_Ajax
 
         if (!$attachment_id || !wp_attachment_is_image($attachment_id)) {
             wp_send_json_error(['message' => __('Invalid attachment ID.', 'king-addons')]);
+            return;
+        }
+
+        if (!$this->require_attachment_edit($attachment_id)) {
             return;
         }
 
@@ -230,6 +280,10 @@ class Image_Optimizer_Ajax
 
         if (!$attachment_id || !wp_attachment_is_image($attachment_id)) {
             wp_send_json_error(['message' => __('Invalid attachment ID.', 'king-addons')]);
+            return;
+        }
+
+        if (!$this->require_attachment_edit($attachment_id)) {
             return;
         }
 
@@ -400,6 +454,10 @@ class Image_Optimizer_Ajax
             return;
         }
 
+        if (!$this->require_attachment_edit($attachment_id)) {
+            return;
+        }
+
         $meta = Image_Optimizer_DB::get_optimization_meta($attachment_id) ?: [];
         $meta['status'] = 'skipped';
         $meta['skipped_reason'] = $reason ?: 'skipped';
@@ -430,6 +488,10 @@ class Image_Optimizer_Ajax
 
         if (!$attachment_id || !wp_attachment_is_image($attachment_id)) {
             wp_send_json_error(['message' => __('Invalid attachment ID.', 'king-addons')]);
+            return;
+        }
+
+        if (!$this->require_attachment_edit($attachment_id)) {
             return;
         }
 
@@ -473,6 +535,7 @@ class Image_Optimizer_Ajax
         );
 
         $ids = array_values(array_unique(array_map('absint', $ids)));
+        $ids = $this->filter_editable_attachment_ids($ids);
 
         wp_send_json_success([
             'ids' => $ids,
@@ -507,6 +570,11 @@ class Image_Optimizer_Ajax
         foreach ($ids as $attachment_id) {
             $attachment_id = absint($attachment_id);
             if (!$attachment_id) {
+                $skipped++;
+                continue;
+            }
+
+            if (!$this->user_can_edit_attachment($attachment_id)) {
                 $skipped++;
                 continue;
             }
@@ -554,6 +622,10 @@ class Image_Optimizer_Ajax
             return;
         }
 
+        if (!$this->require_attachment_edit($attachment_id)) {
+            return;
+        }
+
         $meta = Image_Optimizer_DB::get_optimization_meta($attachment_id);
         
         if (empty($meta) || $meta['status'] !== 'optimized') {
@@ -583,6 +655,10 @@ class Image_Optimizer_Ajax
 
         if (!$attachment_id) {
             wp_send_json_error(['message' => __('Invalid attachment ID.', 'king-addons')]);
+            return;
+        }
+
+        if (!$this->require_attachment_edit($attachment_id)) {
             return;
         }
 
@@ -621,6 +697,10 @@ class Image_Optimizer_Ajax
             'orderby' => 'date',
             'order' => 'DESC',
         ];
+
+        if (!current_user_can('edit_others_posts')) {
+            $args['author'] = get_current_user_id();
+        }
 
         // Format filter
         if (!empty($format_filter)) {
@@ -669,6 +749,9 @@ class Image_Optimizer_Ajax
         $images = [];
 
         foreach ($query->posts as $post) {
+            if (!$this->user_can_edit_attachment((int) $post->ID)) {
+                continue;
+            }
             $file = get_attached_file($post->ID);
             $metadata = wp_get_attachment_metadata($post->ID);
             $opt_meta = Image_Optimizer_DB::get_optimization_meta($post->ID);
@@ -805,6 +888,10 @@ class Image_Optimizer_Ajax
             return;
         }
 
+        if (!$this->require_attachment_edit($attachment_id)) {
+            return;
+        }
+
         // First revert URLs
         Image_Optimizer_DB::revert_to_original_urls($attachment_id);
 
@@ -917,8 +1004,10 @@ class Image_Optimizer_Ajax
             )
         );
 
+        $ids = $this->filter_editable_attachment_ids(array_map('absint', $ids));
+
         wp_send_json_success([
-            'ids' => array_map('absint', $ids),
+            'ids' => $ids,
             'total' => count($ids),
         ]);
     }
@@ -936,6 +1025,10 @@ class Image_Optimizer_Ajax
 
         if (!$attachment_id) {
             wp_send_json_error(['message' => __('Invalid attachment ID.', 'king-addons')]);
+            return;
+        }
+
+        if (!$this->require_attachment_edit($attachment_id)) {
             return;
         }
 

@@ -788,7 +788,7 @@ class Image_Hotspots extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         /** START: Hotspots Container ===================== */
         ?>
         <div class="king-addons-image-hotspots-container">

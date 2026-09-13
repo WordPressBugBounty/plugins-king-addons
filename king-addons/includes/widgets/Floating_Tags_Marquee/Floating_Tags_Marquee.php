@@ -56,7 +56,7 @@ class Floating_Tags_Marquee extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-tags';
+        return 'king-addons-icon king-addons-floating-tags-marquee';
     }
 
     /**

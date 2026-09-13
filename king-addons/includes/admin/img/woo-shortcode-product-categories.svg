@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+        <linearGradient id="wspc" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9B62FF"/>
+            <stop offset="100%" stop-color="#5B03FF"/>
+        </linearGradient>
+    </defs>
+    
+    <path d="M8 18h10l3-4h19v22H8z" fill="none" stroke="url(#wspc)" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M12 22h8l2-3h14" fill="none" stroke="url(#wspc)" stroke-width="1.6" opacity="0.6"/>
+
+</svg>

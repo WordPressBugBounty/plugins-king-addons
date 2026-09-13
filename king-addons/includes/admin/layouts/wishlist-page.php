@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $allowed_theme_modes = ['dark', 'light', 'auto'];
 if (!in_array($theme_mode, $allowed_theme_modes, true)) {
-    $theme_mode = 'dark';
+    $theme_mode = 'auto';
 }
 
 $settings = Wishlist_Settings::get_settings();
@@ -185,7 +185,7 @@ document.body.classList.add('ka-admin-v3');
                         <div class="ka-row-label"><?php esc_html_e('Icon Class', 'king-addons'); ?></div>
                         <div class="ka-row-field">
                             <input type="text" name="king_addons_wishlist_settings[icon_choice]" value="<?php echo esc_attr($settings['icon_choice']); ?>" />
-                            <p class="ka-row-desc"><?php esc_html_e('Elementor or FontAwesome class, e.g. eicon-heart', 'king-addons'); ?></p>
+                            <p class="ka-row-desc"><?php esc_html_e('Built-in heart is used for the default class. Or paste another Elementor / Font Awesome class.', 'king-addons'); ?></p>
                         </div>
                     </div>
                     <div class="ka-row">

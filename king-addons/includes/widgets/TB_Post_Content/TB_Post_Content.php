@@ -47,7 +47,7 @@ class TB_Post_Content extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-editor-paragraph';
+        return 'king-addons-icon king-addons-tb-post-content';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Post_Content extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -140,6 +140,7 @@ class TB_Post_Content extends Widget_Base
             [
                 'label' => esc_html__('Read More Anchor ID', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'placeholder' => esc_html__('example-anchor', 'king-addons'),
                 'description' => esc_html__('Adds an id attribute to scroll to this widget.', 'king-addons'),
             ]

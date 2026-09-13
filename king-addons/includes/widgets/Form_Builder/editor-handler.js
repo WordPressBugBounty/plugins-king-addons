@@ -184,43 +184,34 @@
                         ];
 
                         const options = {none: "None"};
-                        let prevFieldId;
+                        const seenIds = {};
+                        $panelRoot.find(".king-addons-field-id-dup-notice").remove();
 
                         formFieldsModel.each(function (field) {
                             const fieldLabel = field.get("field_label");
-                            const fieldId = field.get("field_id");
+                            let fieldId = (field.get("field_id") || "").toString().trim();
+                            const fallbackId = (field.get("_id") || "").toString();
 
-                            if (prevFieldId === fieldId) {
-                                $panelRoot
-                                    .find(":input[value=" + field.attributes._id + "]")
-                                    .closest(".elementor-repeater-fields")
-                                    .find(':input[data-setting="field_id"]')
-                                    .val(field.attributes._id);
-                                $panelRoot
-                                    .find(":input[value=" + field.attributes._id + "]")
-                                    .closest(".elementor-repeater-fields")
-                                    .find(".king-addons-form-field-shortcode")
-                                    .val('id=["' + field.attributes._id + '"]');
-                                field.attributes.field_id = field.attributes._id;
+                            if (!fieldId && fallbackId) {
+                                assignFieldId(field, fallbackId);
+                                fieldId = fallbackId;
                             }
 
-                            prevFieldId = fieldId;
-
-                            if (!fieldId) {
-                                $panelRoot
-                                    .find(":input[value=" + field.attributes._id + "]")
-                                    .closest(".elementor-repeater-fields")
-                                    .find(':input[data-setting="field_id"]')
-                                    .val(field.attributes._id);
-                                $panelRoot
-                                    .find(":input[value=" + field.attributes._id + "]")
-                                    .closest(".elementor-repeater-fields")
-                                    .find(".king-addons-form-field-shortcode")
-                                    .val('id=["' + field.attributes._id + '"]');
-                                field.attributes.field_id = field.attributes._id;
+                            if (fieldId && seenIds[fieldId]) {
+                                const $wrap = $panelRoot.find(".elementor-repeater-fields-wrapper").first();
+                                if ($wrap.length && !$panelRoot.find(".king-addons-field-id-dup-notice").length) {
+                                    $wrap.prepend(
+                                        '<div class="elementor-panel-alert elementor-panel-alert-warning king-addons-field-id-dup-notice">' +
+                                        "Two fields share the same Field ID. Each ID must be unique or submitted values will collide." +
+                                        "</div>"
+                                    );
+                                }
                             }
 
-                            options[fieldId] = fieldLabel;
+                            if (fieldId) {
+                                seenIds[fieldId] = true;
+                                options[fieldId] = fieldLabel;
+                            }
                         });
 
                         view.model.setSetting("email_field", _.extend(emailField, {options}));
@@ -246,6 +237,26 @@
                                 );
                             });
                         });
+                    }
+
+                    function assignFieldId(field, nextId) {
+                        if (!field || !nextId) {
+                            return;
+                        }
+
+                        if (typeof field.setSetting === "function") {
+                            field.setSetting("field_id", nextId);
+                        } else if (typeof field.set === "function") {
+                            field.set("field_id", nextId);
+                        } else {
+                            field.attributes.field_id = nextId;
+                        }
+
+                        const $row = $panelRoot
+                            .find(":input[value=" + field.attributes._id + "]")
+                            .closest(".elementor-repeater-fields");
+                        $row.find(':input[data-setting="field_id"]').val(nextId);
+                        $row.find(".king-addons-form-field-shortcode").val('id=["' + nextId + '"]');
                     }
 
                     // Change the selector below to match the field_id field in your repeater.

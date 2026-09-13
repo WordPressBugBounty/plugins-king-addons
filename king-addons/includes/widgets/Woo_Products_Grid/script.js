@@ -6,6 +6,7 @@
         grid.style.setProperty('--ka-grid-tablet', grid.dataset.colsTablet || 3);
         grid.style.setProperty('--ka-grid-mobile', grid.dataset.colsMobile || 2);
         grid.style.setProperty('--ka-masonry-row', '8px');
+        grid.style.setProperty('--ka-masonry-gap', '16px');
     };
 
     const appendItems = (grid, html, replace = false) => {
@@ -22,10 +23,14 @@
 
     const reflowMasonry = (grid) => {
         if (grid.dataset.layoutType !== 'masonry') return;
-        const rowHeight = parseFloat(getComputedStyle(grid).getPropertyValue('--ka-masonry-row')) || 8;
+        const styles = getComputedStyle(grid);
+        const rowHeight = parseFloat(styles.getPropertyValue('--ka-masonry-row')) || 8;
+        const gap = parseFloat(styles.getPropertyValue('--ka-masonry-gap')) || 16;
         const items = grid.querySelectorAll('.ka-woo-products-grid__item');
         items.forEach((item) => {
-            const span = Math.ceil(item.getBoundingClientRect().height / rowHeight);
+            // The container's row gap is zero, so the spacing between cards has
+            // to come out of the span itself.
+            const span = Math.ceil((item.getBoundingClientRect().height + gap) / rowHeight);
             item.style.gridRowEnd = `span ${span}`;
         });
     };
@@ -230,6 +235,12 @@
         form.append('show_brand', boolVal(grid.dataset.showBrand));
         form.append('show_sku', boolVal(grid.dataset.showSku));
         form.append('card_layout', grid.dataset.cardLayout || 'classic');
+        // Keep the listing scoped to the category or tag being browsed - the
+        // server cannot work that out from an admin-ajax request.
+        if (grid.dataset.archiveTaxonomy && grid.dataset.archiveTerm) {
+            form.append('archive_taxonomy', grid.dataset.archiveTaxonomy);
+            form.append('archive_term', grid.dataset.archiveTerm);
+        }
 
         const filters = grid.dataset.filters ? grid.dataset.filters : '';
         if (filters) {
@@ -301,12 +312,16 @@
     };
 
     const handleAjax = (grid) => {
-        const paginationType = grid.dataset.paginationType;
-        if (!paginationType || paginationType === 'none' || paginationType === 'numbers') return;
+        // Sorting and filtering are wired up further down, and every grid needs
+        // them regardless of how it paginates. Bailing out here for "none" and
+        // "numbers" - the two default choices - meant the Sorting widget and
+        // the faceted filters silently did nothing on most grids.
+        const paginationType = grid.dataset.paginationType || 'none';
+        const isIncremental = 'load_more' === paginationType || 'infinite' === paginationType;
 
         const parent = grid.parentElement;
         if (!parent) return;
-        const btn = parent.querySelector('.ka-woo-products-grid__load-more');
+        const btn = isIncremental ? parent.querySelector('.ka-woo-products-grid__load-more') : null;
         let page = parseInt(grid.dataset.page || '1', 10);
         const max = () => parseInt(grid.dataset.maxPages || '1', 10);
         let sentinelObserver;
@@ -393,10 +408,7 @@
             btn.addEventListener('click', () => process(false));
         }
 
-        if (paginationType === 'infinite') {
-            if (typeof IntersectionObserver === 'undefined') {
-                return;
-            }
+        if ('infinite' === paginationType && typeof IntersectionObserver !== 'undefined') {
             sentinelEl = document.createElement('div');
             sentinelEl.className = 'ka-woo-products-grid__sentinel';
             parent.appendChild(sentinelEl);

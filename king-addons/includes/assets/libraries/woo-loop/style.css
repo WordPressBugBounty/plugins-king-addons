@@ -1,0 +1,38 @@
+/**
+ * Shared corrections for WooCommerce loop markup rendered inside King Addons widgets.
+ *
+ * WooCommerce styles its sale badge with min-width and min-height of 3.236em
+ * and border-radius:100%, but also gives it line-height:3.236 and padding:.202em.
+ * The padding lands on top of the line box, so the badge ends up 3.64em tall
+ * against 3.236em wide - a vertical ellipse rather than the circle the
+ * border-radius is asking for. Centring the text with flex instead of a tall
+ * line box lets both minimums decide the size.
+ *
+ * Scoped to the widgets that render product loops, so a theme's own shop pages
+ * keep whatever they already look like.
+ *
+ * ".onsale.onsale" is not a typo: WooCommerce's own rule is ".woocommerce
+ * span.onsale", and on pages where that .woocommerce wrapper sits inside the
+ * widget it outweighs a single class here. Repeating the class settles it
+ * without reaching for !important.
+ */
+.elementor-widget-woo_shortcode_products span.onsale.onsale,
+.elementor-widget-woo_shortcode_product_page span.onsale.onsale,
+.elementor-widget-woo_shortcode_product_category span.onsale.onsale,
+.elementor-widget-woo_product_related span.onsale.onsale,
+.elementor-widget-woo_product_upsell span.onsale.onsale,
+.elementor-widget-woo_product_cross_sell span.onsale.onsale,
+.elementor-widget-woo_cart_cross_sells span.onsale.onsale,
+.elementor-widget-woo_shortcode_cart span.onsale.onsale {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-sizing: border-box;
+
+    /* A long label - "-30%", or a translation - grows sideways into a pill of
+       the same height rather than wrapping and stretching the circle. Horizontal
+       padding stays at WooCommerce's own .202em: widening it pushed "Sale!" past
+       the 3.236em minimum and produced an ellipse the other way round. */
+    white-space: nowrap;
+}

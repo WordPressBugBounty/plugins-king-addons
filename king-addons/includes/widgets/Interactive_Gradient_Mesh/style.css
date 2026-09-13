@@ -154,6 +154,15 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    /* The copy is white and the mesh can be any colour the user picks, including
+       very pale ones. This scrim sits only behind the text, fades out well before
+       the edges, and keeps the wording readable on any mesh. */
+    padding: 26px 22px;
+    background: radial-gradient(ellipse at center,
+        rgba(0, 0, 0, 0.34) 0%,
+        rgba(0, 0, 0, 0.20) 55%,
+        rgba(0, 0, 0, 0) 78%);
 }
 
 .king-addons-gradient-mesh__template {
@@ -168,11 +177,20 @@
     margin-right: 0;
 }
 
+/* The mesh defaults to pale colours while the copy is white, so without this the
+   heading and eyebrow are close to invisible. A soft shadow restores legibility
+   over any mesh, and leaves the colours themselves to the widget's controls. */
+.king-addons-gradient-mesh__subtitle,
+.king-addons-gradient-mesh__title,
+.king-addons-gradient-mesh__text {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+
 .king-addons-gradient-mesh__subtitle {
     font-size: 14px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.95);
 }
 
 .king-addons-gradient-mesh__title {
@@ -183,7 +201,7 @@
 }
 
 .king-addons-gradient-mesh__text {
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.94);
     font-size: 16px;
     line-height: 1.6;
 }

@@ -9,6 +9,7 @@ use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
+use Elementor\Utils;
 use Elementor\Widget_Base;
 use WP_Query;
 
@@ -2374,7 +2375,7 @@ class Blog_Posts extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $this_ID = $this->get_id();
 
         $query_args = [
@@ -2415,16 +2416,20 @@ class Blog_Posts extends Widget_Base
 
                             // CONTAINER 1
                             if ('yes' !== $settings['kng_blog_posts_cards_image_switcher']) {
-                                if (has_post_thumbnail($post->ID)) {
-                                    echo '<div class="king-addons-blog-posts-card-container-1">';
+                                // Without a fallback, a post that has no featured image loses
+                                // the whole image block and stops lining up with the cards beside it.
+                                $thumbnail_url = has_post_thumbnail($post->ID)
+                                    ? get_the_post_thumbnail_url($post->ID, $settings['kng_blog_posts_image_size'])
+                                    : Utils::get_placeholder_image_src();
 
-                                    // image
-                                    echo '<div class="king-addons-blog-posts-image">';
-                                    echo '<img src="' . esc_url(get_the_post_thumbnail_url($post->ID, $settings['kng_blog_posts_image_size'])) . '" alt="' . esc_attr($post->post_title) . '">';
-                                    echo '</div>';
+                                echo '<div class="king-addons-blog-posts-card-container-1">';
 
-                                    echo '</div>';
-                                }
+                                // image
+                                echo '<div class="king-addons-blog-posts-image">';
+                                echo '<img src="' . esc_url($thumbnail_url) . '" alt="' . esc_attr($post->post_title) . '">';
+                                echo '</div>';
+
+                                echo '</div>';
                             }
                             // END CONTAINER 1
 
@@ -2498,27 +2503,27 @@ class Blog_Posts extends Widget_Base
         $js_swiper = "new Swiper('.king-addons-blog-posts-items-" . esc_js($this_ID) . "', {";
         $js_swiper .= "direction: 'horizontal',";
 
-        $js_swiper .= "slidesPerView: " . esc_js($settings['kng_blog_posts_desktop_cards_per_view']) . ",";
-        $js_swiper .= "spaceBetween: " . esc_js($settings['kng_blog_posts_desktop_space_between_cards']) . ",";
+        $js_swiper .= "slidesPerView: " . Core::jsNumber($settings, 'kng_blog_posts_desktop_cards_per_view', 4) . ",";
+        $js_swiper .= "spaceBetween: " . Core::jsNumber($settings, 'kng_blog_posts_desktop_space_between_cards', 30) . ",";
 
         // Responsive breakpoints
         $js_swiper .= 'breakpoints: {0: {slidesPerView: ' .
-            esc_js($settings['kng_blog_posts_mobile_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings['kng_blog_posts_mobile_space_between_cards']) . '}, ';
+            Core::jsNumber($settings, 'kng_blog_posts_mobile_cards_per_view', 1) . ', spaceBetween: ' .
+            Core::jsNumber($settings, 'kng_blog_posts_mobile_space_between_cards', 30) . '}, ';
         $js_swiper .=
-            esc_js(($settings['kng_blog_posts_mobile_breakpoint'] + 1)) . ': {slidesPerView: ' .
-            esc_js($settings['kng_blog_posts_tablet_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings['kng_blog_posts_tablet_space_between_cards']) . '}, ';
+            (Core::jsNumber($settings, 'kng_blog_posts_mobile_breakpoint', 767) + 1) . ': {slidesPerView: ' .
+            Core::jsNumber($settings, 'kng_blog_posts_tablet_cards_per_view', 3) . ', spaceBetween: ' .
+            Core::jsNumber($settings, 'kng_blog_posts_tablet_space_between_cards', 30) . '}, ';
         $js_swiper .=
-            esc_js(($settings['kng_blog_posts_tablet_breakpoint'] + 1)) . ': {slidesPerView: ' .
-            esc_js($settings['kng_blog_posts_desktop_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings['kng_blog_posts_desktop_space_between_cards']) . '}},';
+            (Core::jsNumber($settings, 'kng_blog_posts_tablet_breakpoint', 1024) + 1) . ': {slidesPerView: ' .
+            Core::jsNumber($settings, 'kng_blog_posts_desktop_cards_per_view', 4) . ', spaceBetween: ' .
+            Core::jsNumber($settings, 'kng_blog_posts_desktop_space_between_cards', 30) . '}},';
 
         // Scrolling speed
         if ('yes' !== $settings['kng_blog_posts_autoplay_like_ticker_switcher']) {
-            $js_swiper .= "speed: " . esc_js($settings['kng_blog_posts_scrolling_speed']) . ",";
+            $js_swiper .= "speed: " . Core::jsNumber($settings, 'kng_blog_posts_scrolling_speed', 600) . ",";
         } else {
-            $js_swiper .= "speed: " . esc_js($settings['kng_blog_posts_autoplay_like_ticker_autoplay_speed']) . ",";
+            $js_swiper .= "speed: " . Core::jsNumber($settings, 'kng_blog_posts_autoplay_like_ticker_autoplay_speed', 6000) . ",";
         }
 
         // Pagination
@@ -2528,7 +2533,7 @@ class Blog_Posts extends Widget_Base
                 ('yes' === $settings['kng_blog_posts_pag_clickable_switcher'] ? 'clickable: true, ' : '');
             if ('yes' === $settings['kng_blog_posts_pag_dynamic_switcher']) {
                 $js_swiper .= 'dynamicBullets: true, ';
-                $js_swiper .= 'dynamicMainBullets: ' . esc_js($settings['kng_blog_posts_pag_dynamic_number'] . ', ');
+                $js_swiper .= 'dynamicMainBullets: ' . Core::jsNumber($settings, 'kng_blog_posts_pag_dynamic_number', 1) . ', ';
             }
             $js_swiper .= "type: '" . esc_js($settings['kng_blog_posts_pag_type']) . "'},";
         }
@@ -2554,7 +2559,7 @@ class Blog_Posts extends Widget_Base
         if ('yes' === $settings['kng_blog_posts_autoplay_switcher']) {
             $js_swiper .= "autoplay: {";
             if ('yes' !== $settings['kng_blog_posts_autoplay_like_ticker_switcher']) {
-                $js_swiper .= "delay: " . esc_js($settings['kng_blog_posts_autoplay_delay']) . ",";
+                $js_swiper .= "delay: " . Core::jsNumber($settings, 'kng_blog_posts_autoplay_delay', 2000) . ",";
             } else {
                 $js_swiper .= "delay: 0,";
             }

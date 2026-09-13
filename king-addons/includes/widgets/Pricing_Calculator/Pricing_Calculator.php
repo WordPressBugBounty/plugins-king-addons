@@ -2019,7 +2019,10 @@ $this->end_controls_section();
      */
     protected function format_number($number, $settings)
     {
-        $decimal_places = intval($settings['decimal_places']);
+        // Any of these can arrive empty from a cleared field, and number_format()
+        // refuses a non-numeric first argument outright.
+        $number = is_numeric($number) ? (float) $number : 0.0;
+        $decimal_places = intval($settings['decimal_places'] ?? 2);
         // Sanitize separators to prevent XSS
         $thousand_separator = wp_strip_all_tags($settings['thousand_separator']);
         $decimal_separator = wp_strip_all_tags($settings['decimal_separator']);

@@ -35,7 +35,9 @@
             'king-addons-tb-404-title',
             'king-addons-tb-404-description',
             'king-addons-tb-404-search-form',
-            'king-addons-tb-back-to-home'
+            'king-addons-tb-back-to-home',
+            'king-addons-tb-search-results',
+            'king-addons-tb-author-info'
         ];
 
         // Check if this is a TB widget

@@ -30,7 +30,7 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-pagination';
+        return 'king-addons-icon king-addons-woo-products-pagination';
     }
 
     public function get_categories(): array
@@ -50,6 +50,15 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Content', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'query_id',
+            [
+                'label' => sprintf(__('Query ID %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'type' => Controls_Manager::TEXT,
+                'description' => esc_html__('Match a Products Grid Query ID. Leave empty to paginate the first Products Grid on this archive, or the main shop query if there is none.', 'king-addons'),
             ]
         );
 
@@ -74,7 +83,11 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
                 ],
                 'default' => 'center',
                 'selectors' => [
+                    // WooCommerce's own stylesheet centres nav.woocommerce-pagination,
+                    // which sits inside the wrapper - aligning only the wrapper
+                    // left the list centred whatever the control said.
                     '{{WRAPPER}} .ka-woo-pagination' => 'text-align: {{VALUE}};',
+                    '{{WRAPPER}} .ka-woo-pagination .woocommerce-pagination' => 'text-align: {{VALUE}};',
                 ],
             ]
         );
@@ -93,9 +106,45 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
             return;
         }
 
-        echo '<div class="ka-woo-pagination">';
+        $settings = $this->get_settings_for_display();
+        $can_pro = king_addons_can_use_pro();
+        $query_id = $can_pro ? sanitize_title((string) ($settings['query_id'] ?? '')) : '';
+        $stats = class_exists(__NAMESPACE__ . '\\Woo_Products_Grid') ? Woo_Products_Grid::query_stats($query_id) : null;
+
+        if ($stats && (int) ($stats['max_num_pages'] ?? 1) > 1 && !empty($stats['page_arg'])) {
+            $output = paginate_links([
+                'base' => add_query_arg($stats['page_arg'], '%#%'),
+                'format' => '',
+                'total' => (int) $stats['max_num_pages'],
+                'current' => max(1, (int) $stats['paged']),
+                'prev_text' => '&laquo;',
+                'next_text' => '&raquo;',
+            ]);
+            $output = is_string($output) ? trim($output) : '';
+            if ('' !== $output) {
+                echo '<div class="ka-woo-pagination">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                return;
+            }
+        }
+
+        // woocommerce_pagination() prints nothing when there is only one page -
+        // including in the editor, where the widget then looks broken rather
+        // than simply having nothing to page through.
+        ob_start();
         woocommerce_pagination();
-        echo '</div>';
+        $output = trim((string) ob_get_clean());
+
+        if ('' === $output) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('Pagination appears once the archive has more than one page.', 'king-addons')
+                    . '</div>';
+            }
+            return;
+        }
+
+        // WooCommerce's own markup, not user input.
+        echo '<div class="ka-woo-pagination">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 

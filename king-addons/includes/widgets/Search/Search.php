@@ -2001,7 +2001,7 @@ $this->end_controls_section();
 
     protected function render_search_submit_btn(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         $this->add_render_attribute(
             'button', [
@@ -2031,7 +2031,7 @@ $this->end_controls_section();
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $this->add_render_attribute(
             'input', [
                 'ajax-search' => $settings['ajax_search'] ?? '',

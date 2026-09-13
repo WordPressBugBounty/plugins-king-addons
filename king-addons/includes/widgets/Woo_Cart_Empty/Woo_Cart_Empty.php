@@ -47,7 +47,7 @@ class Woo_Cart_Empty extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-alert';
+        return 'king-addons-icon king-addons-woo-cart-empty';
     }
 
     /**
@@ -85,7 +85,8 @@ class Woo_Cart_Empty extends Widget_Base
             [
                 'label' => esc_html__('Message', 'king-addons'),
                 'type' => Controls_Manager::TEXTAREA,
-                'default' => esc_html__('Your cart is currently empty.', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Your cart is currently empty.', 'king-addons'),
             ]
         );
 
@@ -124,8 +125,14 @@ class Woo_Cart_Empty extends Widget_Base
         }
 
         $settings = $this->get_settings_for_display();
+        $message = (string) ($settings['message'] ?? '');
+
         echo '<div class="ka-woo-cart-empty">';
-        echo '<p>' . esc_html($settings['message']) . '</p>';
+        if ('' !== trim($message)) {
+            // The control is a textarea, so line breaks the author typed have
+            // to survive - printing it raw collapsed the message into one line.
+            echo '<p>' . nl2br(esc_html($message)) . '</p>';
+        }
 
         if (!empty($settings['show_return_shop'])) {
             $shop_url = wc_get_page_permalink('shop');

@@ -31,12 +31,26 @@ class Woo_Archive_Description extends Abstract_Archive_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-editor-paragraph';
+        return 'king-addons-icon king-addons-woo-archive-description';
     }
 
     public function get_categories(): array
     {
         return ['king-addons-woo-builder'];
+    }
+
+    /**
+     * Script handles.
+     *
+     * ModulesMap registers this file, but without declaring the dependency here
+     * Elementor never enqueues it - the "Read more" toggle had no script behind
+     * it on the page.
+     *
+     * @return array<int,string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-archive-description-script'];
     }
 
     public function get_style_depends(): array
@@ -68,6 +82,7 @@ class Woo_Archive_Description extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Read more text (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Read more', 'king-addons'),
             ]
         );
@@ -100,6 +115,7 @@ class Woo_Archive_Description extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Custom text', 'king-addons'),
                 'type' => Controls_Manager::TEXTAREA,
+                'dynamic' => ['active' => true],
                 'rows' => 4,
                 'condition' => [
                     'source' => 'custom',
@@ -178,8 +194,17 @@ class Woo_Archive_Description extends Abstract_Archive_Widget
         }
 
         if (empty($desc)) {
+            // Nothing to show is a legitimate state, but a blank widget in the
+            // editor reads as a fault.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The description comes from the shop page or the category being viewed.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
+
+        $full_desc = $desc;
 
         $trim = !empty($settings['trim_words']) && $can_pro ? (int) $settings['trim_words'] : 0;
         $trimmed = false;
@@ -199,11 +224,22 @@ class Woo_Archive_Description extends Abstract_Archive_Widget
             );
         }
 
-        echo '<div class="ka-woo-archive-description">';
-        echo wp_kses_post($desc);
-        if ($trimmed && !empty($settings['read_more_text']) && $can_pro) {
-            echo '<a class="ka-woo-archive-description__readmore" href="#">' . esc_html($settings['read_more_text']) . '</a>';
+        $has_more = $trimmed && !empty($settings['read_more_text']) && $can_pro;
+
+        echo '<div class="ka-woo-archive-description"' . ($has_more ? ' data-ka-expandable="1"' : '') . '>';
+        echo '<div class="ka-woo-archive-description__short">' . wp_kses_post($desc) . '</div>';
+
+        if ($has_more) {
+            // The link was an href="#" with no behaviour behind it: clicking
+            // "Read more" jumped to the top of the page and never revealed
+            // anything. The full text ships alongside, hidden until asked for -
+            // and only when the toggle exists, so the page never carries the
+            // same paragraph twice for nothing.
+            echo '<div class="ka-woo-archive-description__full" hidden>' . wp_kses_post($full_desc) . '</div>';
+            echo '<button type="button" class="ka-woo-archive-description__readmore" aria-expanded="false">'
+                . esc_html($settings['read_more_text']) . '</button>';
         }
+
         echo '</div>';
     }
 }

@@ -31,7 +31,7 @@ class Woo_Archive_Title extends Abstract_Archive_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-heading';
+        return 'king-addons-icon king-addons-woo-archive-title';
     }
 
     public function get_categories(): array
@@ -74,6 +74,7 @@ class Woo_Archive_Title extends Abstract_Archive_Widget
             [
                 'label' => sprintf(__('Prefix (Pro) %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '',
             ]
         );
@@ -144,8 +145,16 @@ class Woo_Archive_Title extends Abstract_Archive_Widget
         }
 
         $settings = $this->get_settings_for_display();
-        $tag = $settings['html_tag'] ?? 'h1';
-        $title = woocommerce_page_title(false);
+
+        // The value is written straight into the markup as an element name, so
+        // anything off the list has to fall back rather than produce a tag the
+        // browser has never heard of.
+        $tag = strtolower((string) ($settings['html_tag'] ?? 'h1'));
+        if (!in_array($tag, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p'], true)) {
+            $tag = 'h1';
+        }
+
+        $title = (string) woocommerce_page_title(false);
         $can_pro = king_addons_can_use_pro();
         if (!empty($settings['prefix']) && $can_pro) {
             $title = $settings['prefix'] . ' ' . $title;
@@ -162,7 +171,18 @@ class Woo_Archive_Title extends Abstract_Archive_Widget
             $title = $formatted;
         }
 
-        echo '<' . esc_html($tag) . ' class="ka-woo-archive-title">' . esc_html($title) . '</' . esc_html($tag) . '>';
+        if ('' === trim($title)) {
+            // Outside a real archive there is no page title to print, and a
+            // blank widget in the editor reads as a fault.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The archive title comes from the shop or category being viewed.', 'king-addons')
+                    . '</div>';
+            }
+            return;
+        }
+
+        echo '<' . $tag . ' class="ka-woo-archive-title">' . esc_html($title) . '</' . $tag . '>';
     }
 }
 

@@ -46,7 +46,7 @@ class Facet_Taxonomy extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-checkbox';
+        return 'king-addons-icon king-addons-facet-taxonomy';
     }
 
     /**

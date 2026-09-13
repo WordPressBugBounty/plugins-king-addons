@@ -31,7 +31,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-meta-data';
+        return 'king-addons-icon king-addons-woo-product-meta';
     }
 
     public function get_categories(): array
@@ -150,6 +150,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Separator', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => ', ',
             ]
         );
@@ -159,6 +160,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Label: Categories', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Category:', 'king-addons'),
             ]
         );
@@ -168,6 +170,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Label: Tags', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Tags:', 'king-addons'),
             ]
         );
@@ -177,6 +180,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Label: Brand (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Brand:', 'king-addons'),
             ]
         );
@@ -186,6 +190,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Label: SKU (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('SKU:', 'king-addons'),
             ]
         );
@@ -294,7 +299,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             $cats = wc_get_product_category_list($product->get_id(), $sep);
             if ($cats) {
                 $items[] = [
-                    'label' => $settings['label_categories'] ?: esc_html__('Category:', 'king-addons'),
+                    'label' => $settings['label_categories'] ?: __('Category:', 'king-addons'),
                     'value' => $cats,
                 ];
             }
@@ -304,7 +309,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             $tags = wc_get_product_tag_list($product->get_id(), $sep);
             if ($tags) {
                 $items[] = [
-                    'label' => $settings['label_tags'] ?: esc_html__('Tags:', 'king-addons'),
+                    'label' => $settings['label_tags'] ?: __('Tags:', 'king-addons'),
                     'value' => $tags,
                 ];
             }
@@ -314,7 +319,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
             $sku = $product->get_sku();
             if ($sku) {
                 $items[] = [
-                    'label' => $settings['label_sku'] ?: esc_html__('SKU:', 'king-addons'),
+                    'label' => $settings['label_sku'] ?: __('SKU:', 'king-addons'),
                     'value' => esc_html($sku),
                 ];
             }
@@ -337,7 +342,7 @@ class Woo_Product_Meta extends Abstract_Single_Widget
                         $links[] = '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
                     }
                     $items[] = [
-                        'label' => $settings['label_brand'] ?: esc_html__('Brand:', 'king-addons'),
+                        'label' => $settings['label_brand'] ?: __('Brand:', 'king-addons'),
                         'value' => implode($sep, $links),
                     ];
                     break;
@@ -346,10 +351,22 @@ class Woo_Product_Meta extends Abstract_Single_Widget
         }
 
         if (empty($items)) {
+            // Nothing to list is normal for a product with no terms; say so in
+            // the editor instead of drawing an empty box.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('This product has no categories, tags, SKU or brand to show.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
-        $layout = $settings['layout'] ?? 'inline';
+        // The value goes straight into a class name, so an unknown one has to
+        // fall back rather than pass through.
+        $layout = (string) ($settings['layout'] ?? 'inline');
+        if (!in_array($layout, ['inline', 'stacked', 'inline_no_label'], true)) {
+            $layout = 'inline';
+        }
         if (in_array($layout, ['stacked', 'inline_no_label'], true) && !$can_pro) {
             $layout = 'inline';
         }

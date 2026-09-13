@@ -47,7 +47,7 @@ class TB_Post_Comments extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-comments';
+        return 'king-addons-icon king-addons-tb-post-comments';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Post_Comments extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -166,6 +166,7 @@ class TB_Post_Comments extends Widget_Base
                     esc_html__('No Comments Text', 'king-addons') :
                     sprintf(__('No Comments Text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('No comments yet.', 'king-addons'),
                 'classes' => $is_pro ? '' : 'king-addons-pro-control',
             ]

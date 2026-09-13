@@ -1,14 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
-  <line x1="25" y1="50" x2="75" y2="50" stroke="url(#g)" stroke-width="3" opacity="0.3"/>
-  <line x1="25" y1="50" x2="50" y2="50" stroke="url(#g)" stroke-width="3"/>
-  <circle cx="25" cy="50" r="10" fill="url(#g)"/>
-  <path d="M22 50l3 3 5-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <circle cx="50" cy="50" r="10" fill="url(#g)"/>
-  <text x="50" y="54" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">2</text>
-  <circle cx="75" cy="50" r="10" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <text x="75" y="54" font-family="Arial" font-size="10" fill="url(#g)" text-anchor="middle">3</text>
-  <text x="25" y="70" font-family="Arial" font-size="8" fill="url(#g)" text-anchor="middle">Cart</text>
-  <text x="50" y="70" font-family="Arial" font-size="8" fill="url(#g)" text-anchor="middle">Info</text>
-  <text x="75" y="70" font-family="Arial" font-size="8" fill="url(#g)" text-anchor="middle" opacity="0.5">Pay</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+        <linearGradient id="wcpg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9B62FF"/>
+            <stop offset="100%" stop-color="#5B03FF"/>
+        </linearGradient>
+    </defs>
+    
+    <circle cx="10" cy="22" r="5" fill="url(#wcpg)"/>
+    <circle cx="24" cy="22" r="5" fill="url(#wcpg)"/>
+    <circle cx="38" cy="22" r="5" fill="none" stroke="url(#wcpg)" stroke-width="2"/>
+    <path d="M15 22h4M29 22h4" stroke="url(#wcpg)" stroke-width="2" stroke-linecap="round"/>
+    <rect x="8" y="34" width="32" height="3" rx="1.5" fill="url(#wcpg)" opacity="0.2"/>
+    <rect x="8" y="34" width="22" height="3" rx="1.5" fill="url(#wcpg)"/>
+
 </svg>

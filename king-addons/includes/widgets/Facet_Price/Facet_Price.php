@@ -46,7 +46,7 @@ class Facet_Price extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-range-slider';
+        return 'king-addons-icon king-addons-facet-price';
     }
 
     /**

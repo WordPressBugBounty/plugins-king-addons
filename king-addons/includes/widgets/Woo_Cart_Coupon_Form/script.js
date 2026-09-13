@@ -19,6 +19,13 @@
     if (data.cart_html && document.querySelector('.ka-cart-table')) {
       document.querySelectorAll('.ka-cart-table').forEach((table) => {
         table.innerHTML = data.cart_html;
+        // Those widgets mark a wrapper as bound and skip it next time. The
+        // listeners lived on the markup just replaced, so without clearing the
+        // flag the cart's quantity and remove controls went dead after
+        // applying a coupon from here.
+        if (table.dataset) {
+          delete table.dataset.kaCartTableInit;
+        }
         if (window.KACartTable && typeof window.KACartTable.init === "function") {
           window.KACartTable.init(document);
         }
@@ -28,6 +35,9 @@
     if (data.totals_html !== undefined) {
       document.querySelectorAll('.ka-woo-cart-totals').forEach((totals) => {
         totals.innerHTML = data.totals_html || '';
+        if (totals.dataset) {
+          delete totals.dataset.kaCartTotalsInit;
+        }
         if (window.KACartTotals && typeof window.KACartTotals.init === "function") {
           window.KACartTotals.init(document);
         }
@@ -52,6 +62,8 @@
       }
       container.innerHTML = data.notices;
     }
+
+    document.body.dispatchEvent(new Event('wc_fragments_refreshed'));
   };
 
   const sendCoupon = (wrap, mode, code) => {

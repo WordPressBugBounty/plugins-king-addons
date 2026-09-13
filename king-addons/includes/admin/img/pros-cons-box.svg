@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+        <linearGradient id="pcb" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9B62FF"/>
+            <stop offset="100%" stop-color="#5B03FF"/>
+        </linearGradient>
+    </defs>
+    
+    <rect x="6" y="10" width="16" height="28" rx="3" fill="none" stroke="url(#pcb)" stroke-width="2"/>
+    <rect x="26" y="10" width="16" height="28" rx="3" fill="none" stroke="url(#pcb)" stroke-width="2"/>
+    <path d="M14 16v8M10 20h8" stroke="url(#pcb)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M30 20h8" stroke="url(#pcb)" stroke-width="2.2" stroke-linecap="round"/>
+    <rect x="10" y="28" width="8" height="2" rx="1" fill="url(#pcb)" opacity="0.45"/>
+    <rect x="30" y="28" width="8" height="2" rx="1" fill="url(#pcb)" opacity="0.45"/>
+
+</svg>

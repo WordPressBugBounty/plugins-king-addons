@@ -532,7 +532,7 @@ final class ModulesMap
                     'docs-link' => '',
                     'demo-link' => 'https://kingaddons.com/elementor/auto-scrolling-text/',
                     'css' => ['style'],
-                    'js' => [],
+                    'js' => ['script'],
                     'category' => 'creative',
                 ],
                 'popup' => [
@@ -1183,7 +1183,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-price' => [
                     'title' => esc_html__('Product Price', 'king-addons'),
@@ -1194,7 +1194,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-sku' => [
                     'title' => esc_html__('Product SKU', 'king-addons'),
@@ -1205,7 +1205,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-rating' => [
                     'title' => esc_html__('Product Rating', 'king-addons'),
@@ -1216,7 +1216,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-stock' => [
                     'title' => esc_html__('Product Stock', 'king-addons'),
@@ -1227,7 +1227,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-short-description' => [
                     'title' => esc_html__('Product Short Description', 'king-addons'),
@@ -1238,7 +1238,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-full-description' => [
                     'title' => esc_html__('Product Full Description', 'king-addons'),
@@ -1249,7 +1249,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-add-to-cart' => [
                     'title' => esc_html__('Add To Cart', 'king-addons'),
@@ -1260,7 +1260,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-images-gallery' => [
                     'title' => esc_html__('Product Images Gallery', 'king-addons'),
@@ -1271,7 +1271,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-meta' => [
                     'title' => esc_html__('Product Meta', 'king-addons'),
@@ -1282,7 +1282,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-breadcrumbs' => [
                     'title' => esc_html__('Product Breadcrumbs', 'king-addons'),
@@ -1293,7 +1293,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-tabs' => [
                     'title' => esc_html__('Product Tabs', 'king-addons'),
@@ -1304,7 +1304,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-custom-tabs' => [
                     'title' => esc_html__('Product Custom Tabs', 'king-addons'),
@@ -1315,7 +1315,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-acf-field' => [
                     'title' => esc_html__('Product ACF / Attribute Field', 'king-addons'),
@@ -1326,7 +1326,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-variations' => [
                     'title' => esc_html__('Product Variations', 'king-addons'),
@@ -1337,7 +1337,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-countdown' => [
                     'title' => esc_html__('Product Sale Countdown', 'king-addons'),
@@ -1348,7 +1348,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-badges' => [
                     'title' => esc_html__('Product Badges', 'king-addons'),
@@ -1359,7 +1359,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-related' => [
                     'title' => esc_html__('Related Products', 'king-addons'),
@@ -1369,8 +1369,8 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => [],
-                    'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'has-pro' => false,
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-upsell' => [
                     'title' => esc_html__('Upsell Products', 'king-addons'),
@@ -1380,8 +1380,8 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => [],
-                    'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'has-pro' => false,
+                    'category' => 'woo-builder',
                 ],
                 'woo-product-cross-sell' => [
                     'title' => esc_html__('Cross-sell Products', 'king-addons'),
@@ -1391,8 +1391,8 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => [],
-                    'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'has-pro' => false,
+                    'category' => 'woo-builder',
                 ],
                 'woo-archive-title' => [
                     'title' => esc_html__('Archive Title', 'king-addons'),
@@ -1403,7 +1403,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-archive-description' => [
                     'title' => esc_html__('Archive Description', 'king-addons'),
@@ -1414,7 +1414,18 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
+                ],
+                'loop-grid' => [
+                    'title' => esc_html__('Loop Grid', 'king-addons'),
+                    'description' => esc_html__('Repeats a Loop Builder item template for every entry a query returns.', 'king-addons'),
+                    'php-class' => 'Loop_Grid',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                    'has-pro' => false,
+                    'category' => 'king-addons',
                 ],
                 'woo-products-grid' => [
                     'title' => esc_html__('Products Grid', 'king-addons'),
@@ -1425,7 +1436,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-products-pagination' => [
                     'title' => esc_html__('Products Pagination', 'king-addons'),
@@ -1435,8 +1446,8 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => [],
-                    'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'has-pro' => false,
+                    'category' => 'woo-builder',
                 ],
                 'woo-products-sorting' => [
                     'title' => esc_html__('Products Sorting', 'king-addons'),
@@ -1447,7 +1458,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-products-result-count' => [
                     'title' => esc_html__('Products Result Count', 'king-addons'),
@@ -1458,7 +1469,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-cart-table' => [
                     'title' => esc_html__('Cart Table', 'king-addons'),
@@ -1469,7 +1480,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-cart-totals' => [
                     'title' => esc_html__('Cart Totals', 'king-addons'),
@@ -1480,7 +1491,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-cart-cross-sells' => [
                     'title' => esc_html__('Cart Cross-sells', 'king-addons'),
@@ -1491,7 +1502,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-archive-banner' => [
                     'title' => esc_html__('Archive Banner', 'king-addons'),
@@ -1502,7 +1513,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-form' => [
                     'title' => esc_html__('Checkout Form', 'king-addons'),
@@ -1511,9 +1522,9 @@ final class ModulesMap
                     'docs-link' => '',
                     'demo-link' => '',
                     'css' => ['style'],
-                    'js' => [],
+                    'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-order-summary' => [
                     'title' => esc_html__('Checkout Order Summary', 'king-addons'),
@@ -1524,7 +1535,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-payment' => [
                     'title' => esc_html__('Checkout Payment', 'king-addons'),
@@ -1535,7 +1546,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-place-order' => [
                     'title' => esc_html__('Checkout Place Order Button', 'king-addons'),
@@ -1544,9 +1555,9 @@ final class ModulesMap
                     'docs-link' => '',
                     'demo-link' => '',
                     'css' => ['style'],
-                    'js' => [],
+                    'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-coupon' => [
                     'title' => esc_html__('Checkout Coupon', 'king-addons'),
@@ -1557,7 +1568,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-login' => [
                     'title' => esc_html__('Checkout Login', 'king-addons'),
@@ -1568,7 +1579,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-progress' => [
                     'title' => esc_html__('Checkout Progress', 'king-addons'),
@@ -1579,7 +1590,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-navigation' => [
                     'title' => esc_html__('My Account Navigation', 'king-addons'),
@@ -1590,7 +1601,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-content' => [
                     'title' => esc_html__('My Account Content', 'king-addons'),
@@ -1601,7 +1612,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-orders' => [
                     'title' => esc_html__('My Account Orders', 'king-addons'),
@@ -1612,7 +1623,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-downloads' => [
                     'title' => esc_html__('My Account Downloads', 'king-addons'),
@@ -1623,7 +1634,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-address' => [
                     'title' => esc_html__('My Account Address', 'king-addons'),
@@ -1634,7 +1645,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-details' => [
                     'title' => esc_html__('My Account Details', 'king-addons'),
@@ -1645,7 +1656,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-dashboard' => [
                     'title' => esc_html__('My Account Dashboard', 'king-addons'),
@@ -1656,7 +1667,7 @@ final class ModulesMap
                     'css' => [],
                     'js' => [],
                     'has-pro' => false,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-order-details' => [
                     'title' => esc_html__('My Account Order Details', 'king-addons'),
@@ -1667,7 +1678,7 @@ final class ModulesMap
                     'css' => [],
                     'js' => [],
                     'has-pro' => false,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-logout' => [
                     'title' => esc_html__('My Account Logout', 'king-addons'),
@@ -1678,7 +1689,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => false,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-my-account-acf-fields' => [
                     'title' => esc_html__('My Account ACF Extra Fields', 'king-addons'),
@@ -1689,7 +1700,7 @@ final class ModulesMap
                     'css' => [],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-steps' => [
                     'title' => esc_html__('Checkout Steps (Multi-step)', 'king-addons'),
@@ -1700,7 +1711,7 @@ final class ModulesMap
                     'css' => [],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-sticky-sidebar' => [
                     'title' => esc_html__('Checkout Sticky Sidebar', 'king-addons'),
@@ -1711,7 +1722,7 @@ final class ModulesMap
                     'css' => [],
                     'js' => [],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-checkout-acf-fields' => [
                     'title' => esc_html__('Checkout ACF Extra Fields', 'king-addons'),
@@ -1720,9 +1731,9 @@ final class ModulesMap
                     'docs-link' => '',
                     'demo-link' => '',
                     'css' => [],
-                    'js' => [],
+                    'js' => ['script'],
                     'has-pro' => true,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-cart-coupon-form' => [
                     'title' => esc_html__('Cart Coupon Form', 'king-addons'),
@@ -1733,7 +1744,7 @@ final class ModulesMap
                     'css' => ['style'],
                     'js' => ['script'],
                     'has-pro' => false,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 'woo-cart-empty' => [
                     'title' => esc_html__('Cart Empty Message', 'king-addons'),
@@ -1744,7 +1755,7 @@ final class ModulesMap
                     'css' => [],
                     'js' => [],
                     'has-pro' => false,
-                    'category' => 'woocommerce',
+                    'category' => 'woo-builder',
                 ],
                 // WooCommerce Shortcode Wrapper Widgets
                 'woo-shortcode-cart' => [
@@ -1841,7 +1852,7 @@ final class ModulesMap
                     'php-class' => 'Woo_Shortcode_Add_To_Cart',
                     'docs-link' => '',
                     'demo-link' => '',
-                    'css' => [],
+                    'css' => ['style'],
                     'js' => [],
                     'has-pro' => false,
                     'category' => 'woocommerce',
@@ -2022,6 +2033,28 @@ final class ModulesMap
                     'has-pro' => true,
                     'category' => 'theme-builder',
                 ],
+                'tb-search-results' => [
+                    'title' => esc_html__('TB - Search Results', 'king-addons'),
+                    'description' => esc_html__('Renders the results of the current search query, with a configurable empty state; Pro adds custom query arguments and skins.', 'king-addons'),
+                    'php-class' => 'TB_Search_Results',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                    'has-pro' => true,
+                    'category' => 'theme-builder',
+                ],
+                'tb-author-info' => [
+                    'title' => esc_html__('TB - Author Info', 'king-addons'),
+                    'description' => esc_html__('Shows the author of the current author archive - avatar, name, post count and biography; Pro adds social profile links.', 'king-addons'),
+                    'php-class' => 'TB_Author_Info',
+                    'docs-link' => '',
+                    'demo-link' => '',
+                    'css' => ['style'],
+                    'js' => ['script'],
+                    'has-pro' => true,
+                    'category' => 'theme-builder',
+                ],
                 'tb-404-title' => [
                     'title' => esc_html__('TB - 404 Title', 'king-addons'),
                     'description' => esc_html__('Customizable 404 page title with alignment and spacing controls; Pro adds style presets.', 'king-addons'),
@@ -2120,7 +2153,7 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => ['script'],
-                    'has-pro' => true,
+                    'has-pro' => false,
                     'category' => 'woocommerce',
                 ],
                 'wishlist-counter' => [
@@ -2131,7 +2164,7 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => ['script'],
-                    'has-pro' => true,
+                    'has-pro' => false,
                     'category' => 'woocommerce',
                 ],
                 'wishlist-page' => [
@@ -2142,7 +2175,7 @@ final class ModulesMap
                     'demo-link' => '',
                     'css' => ['style'],
                     'js' => ['script'],
-                    'has-pro' => true,
+                    'has-pro' => false,
                     'category' => 'woocommerce',
                 ],
                 'wishlist-icon' => [

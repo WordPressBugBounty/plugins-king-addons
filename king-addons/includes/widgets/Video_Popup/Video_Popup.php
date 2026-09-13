@@ -840,6 +840,13 @@ class Video_Popup extends Widget_Base
 
                 const offCanvas = document.querySelector('." . esc_js($class_ID) . "');
                 const overlay = document.querySelector('." . esc_js($overlay_ID) . "');
+
+                // With no template picked the widget prints a placeholder instead of
+                // the panel markup, so these lookups come back empty. Bail out rather
+                // than throwing on insertBefore and losing the handlers below.
+                if (!offCanvas || !overlay) {
+                    return;
+                }
                 const video = offCanvas ? offCanvas.querySelector('.king-addons-video-popup-video') : null;
                 const autoplayEnabled = " . $hosted_autoplay_js . ";
                 const popupButton = document.querySelector('.king-addons-video-popup-button-" . esc_js((string) $this_ID) . "');

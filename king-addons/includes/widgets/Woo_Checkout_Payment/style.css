@@ -46,6 +46,11 @@
     font-weight: 400;
 }
 
+.ka-woo-checkout-payment.ka-woo-checkout-payment--external-place-order #place_order,
+.ka-woo-checkout-payment.ka-woo-checkout-payment--external-place-order button[name="woocommerce_checkout_place_order"] {
+    display: none;
+}
+
 
 
 

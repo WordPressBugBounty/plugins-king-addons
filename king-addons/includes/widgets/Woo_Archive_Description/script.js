@@ -1,34 +1,53 @@
 /**
- * Woo Archive Description widget behavior.
+ * Woo Archive Description widget behaviour.
  *
- * This widget is static; behavior is handled by WooCommerce/theme templates.
- * We keep an Elementor hook to ensure correct initialization in the editor.
+ * Expands a trimmed description when the "Read more" control is used. The
+ * markup ships both the trimmed and the full text; this only swaps which one
+ * is visible.
  */
-(function ($) {
-  "use strict";
+(function () {
+    'use strict';
 
-  /**
-   * Initialize widget instance.
-   *
-   * @param {Object} $scope Elementor scope.
-   * @returns {void}
-   */
-  const initWooArchiveDescription = ($scope) => {
-    void $scope;
-  };
+    const BOUND = 'kaArchiveDescriptionBound';
 
-  $(window).on("elementor/frontend/init", function () {
-    elementorFrontend.hooks.addAction(
-      "frontend/element_ready/woo_archive_description.default",
-      function ($scope) {
-        initWooArchiveDescription($scope);
-      }
-    );
-  });
-})(jQuery);
+    const bind = (wrap) => {
+        if (!wrap || !wrap.dataset || wrap.dataset[BOUND] === '1') {
+            return;
+        }
 
+        const button = wrap.querySelector('.ka-woo-archive-description__readmore');
+        const short = wrap.querySelector('.ka-woo-archive-description__short');
+        const full = wrap.querySelector('.ka-woo-archive-description__full');
+        if (!button || !short || !full) {
+            return;
+        }
 
+        wrap.dataset[BOUND] = '1';
+        const moreLabel = button.textContent;
+        const lessLabel = button.dataset.lessText || '';
 
+        button.addEventListener('click', () => {
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            short.hidden = !expanded;
+            full.hidden = expanded;
+            button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            if (lessLabel) {
+                button.textContent = expanded ? moreLabel : lessLabel;
+            }
+        });
+    };
 
+    const init = (scope) => {
+        const root = scope && scope.querySelectorAll ? scope : document;
+        root.querySelectorAll('[data-ka-expandable="1"]').forEach(bind);
+    };
 
+    document.addEventListener('DOMContentLoaded', () => init(document));
 
+    if (window.elementorFrontend && window.elementorFrontend.hooks) {
+        window.elementorFrontend.hooks.addAction(
+            'frontend/element_ready/woo_archive_description.default',
+            (scope) => init(scope && scope[0] ? scope[0] : document)
+        );
+    }
+})();

@@ -47,13 +47,16 @@
     });
   };
 
-  return { init };
+  return { init, initSlider };
 })();
 
   const initInScope = ($scope) => {
     const root = $scope && $scope[0] ? $scope[0] : document;
     root.querySelectorAll(".ka-woo-cart-cross-sells").forEach((wrap) => {
-      initSlider(wrap);
+      // initSlider lives in the closure above; calling it by name here threw
+      // "ReferenceError: initSlider is not defined" on every Elementor
+      // element_ready - in the editor and after any AJAX cart refresh.
+      window.KACartCrossSells.initSlider(wrap);
     });
   };
 

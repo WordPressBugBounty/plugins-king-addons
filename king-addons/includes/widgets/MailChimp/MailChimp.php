@@ -1050,7 +1050,10 @@ class Mailchimp extends Widget_Base
                         'icon' => 'eicon-text-align-right',
                     ],
                 ],
-                'default' => 'left',
+                // Was 'left', which is not a valid align-self value, so browsers
+                // dropped the rule and the control opened with nothing selected.
+                // Empty keeps today's rendering and leaves the choice to the user.
+                'default' => '',
                 'selectors' => [
                     '{{WRAPPER}}.king-addons-mailchimp-layout-vr .king-addons-mailchimp-subscribe' => 'align-self: {{VALUE}};',
                 ],
@@ -1456,7 +1459,7 @@ class Mailchimp extends Widget_Base
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // Conditionally set the clear_fields_on_submit value
         $clear_fields_on_submit = king_addons_freemius()->can_use_premium_code__premium_only()

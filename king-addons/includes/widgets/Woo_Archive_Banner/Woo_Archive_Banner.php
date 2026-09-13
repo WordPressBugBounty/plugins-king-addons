@@ -33,7 +33,7 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-banner';
+        return 'king-addons-icon king-addons-woo-archive-banner';
     }
 
     public function get_categories(): array
@@ -61,6 +61,7 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Image', 'king-addons'),
                 'type' => Controls_Manager::MEDIA,
+                'dynamic' => ['active' => true],
                 'default' => [
                     'url' => Utils::get_placeholder_image_src(),
                 ],
@@ -80,6 +81,7 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Title', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Archive Banner', 'king-addons'),
             ]
         );
@@ -89,6 +91,7 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Description', 'king-addons'),
                 'type' => Controls_Manager::TEXTAREA,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Highlight your category or shop with a banner.', 'king-addons'),
             ]
         );
@@ -98,6 +101,7 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Button Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '',
             ]
         );
@@ -107,6 +111,7 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Button URL', 'king-addons'),
                 'type' => Controls_Manager::URL,
+                'dynamic' => ['active' => true],
                 'placeholder' => 'https://',
             ]
         );
@@ -225,7 +230,16 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
             $term_title = get_term_meta($term->term_id, 'banner_title', true);
             $term_desc = get_term_meta($term->term_id, 'banner_desc', true);
             if ($term_img_id) {
-                $img_html = Group_Control_Image_Size::get_attachment_image_html($settings, 'image_size', $term_img_id);
+                // The third argument is the name of a settings key, not an
+                // attachment id - passing the id made Elementor look up
+                // $settings[128], warn, and return nothing. Feed it a synthetic
+                // key so the chosen image size still applies.
+                $img_settings = $settings;
+                $img_settings['ka_term_banner_image'] = [
+                    'id' => (int) $term_img_id,
+                    'url' => wp_get_attachment_image_url((int) $term_img_id, 'full') ?: '',
+                ];
+                $img_html = Group_Control_Image_Size::get_attachment_image_html($img_settings, 'image_size', 'ka_term_banner_image');
             }
             if ($term_title) {
                 $title = $term_title;
@@ -255,7 +269,19 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
         }
 
         if (empty($img_html) && !empty($settings['image']['id'])) {
-            $img_html = Group_Control_Image_Size::get_attachment_image_html($settings, 'image_size', $settings['image']['id']);
+            $img_html = Group_Control_Image_Size::get_attachment_image_html($settings, 'image_size', 'image');
+        }
+
+        // With no image, title, description or button there is nothing but an
+        // empty shell - which in the editor looks like the widget failed.
+        $has_button = !empty($settings['button_text']) && !empty($settings['button_url']['url']);
+        if (!$img_html && '' === trim((string) $title) && '' === trim((string) $desc) && !$has_button) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('Set a title, description, image or button for the banner.', 'king-addons')
+                    . '</div>';
+            }
+            return;
         }
 
         echo '<div class="ka-woo-archive-banner">';
@@ -269,8 +295,10 @@ class Woo_Archive_Banner extends Abstract_Archive_Widget
         if ($desc) {
             echo '<div class="ka-woo-archive-banner__desc">' . wp_kses_post($desc) . '</div>';
         }
-        if (!empty($settings['button_text']) && !empty($settings['button_url']['url'])) {
-            $target = $settings['button_url']['is_external'] ? ' target="_blank" rel="noopener noreferrer"' : '';
+        if ($has_button) {
+            // is_external is absent until the author opens the link options, so
+            // reading it directly warned on a plain URL.
+            $target = !empty($settings['button_url']['is_external']) ? ' target="_blank" rel="noopener noreferrer"' : '';
             echo '<a class="ka-woo-archive-banner__btn" href="' . esc_url($settings['button_url']['url']) . '"' . $target . '>' . esc_html($settings['button_text']) . '</a>';
         }
         echo '</div>';

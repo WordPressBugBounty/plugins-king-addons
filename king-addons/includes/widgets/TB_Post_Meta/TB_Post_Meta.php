@@ -48,7 +48,7 @@ class TB_Post_Meta extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-meta-data';
+        return 'king-addons-icon king-addons-tb-post-meta';
     }
 
     /**
@@ -78,7 +78,7 @@ class TB_Post_Meta extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -174,6 +174,7 @@ class TB_Post_Meta extends Widget_Base
             [
                 'label' => esc_html__('Separator', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '•',
                 'condition' => [
                     'kng_layout' => 'inline',

@@ -48,7 +48,7 @@ class TB_Related_Posts extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-posts-grid';
+        return 'king-addons-icon king-addons-tb-related-posts';
     }
 
     /**
@@ -78,7 +78,7 @@ class TB_Related_Posts extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -471,6 +471,7 @@ class TB_Related_Posts extends Widget_Base
 
         $source = $settings['kng_source'] ?? 'categories';
         $tax_query = [];
+        $needs_terms = in_array($source, ['categories', 'tags', 'taxonomy'], true);
         if ('categories' === $source) {
             $terms = wp_get_post_categories($post->ID);
             if (!empty($terms)) {
@@ -503,6 +504,11 @@ class TB_Related_Posts extends Widget_Base
 
         if (!empty($tax_query)) {
             $args['tax_query'] = $tax_query;
+        } elseif ($needs_terms) {
+            // No matching terms is “nothing related”, not “every other post”.
+            // Without this, fallback=hide never ran because the unfiltered query
+            // always found latest posts.
+            $args['post__in'] = [0];
         }
 
         return new WP_Query($args);

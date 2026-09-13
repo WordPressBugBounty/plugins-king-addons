@@ -3238,7 +3238,7 @@ class Card_Carousel extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $this_ID = $this->get_id();
 
         // Define allowed tags and attributes
@@ -3426,27 +3426,27 @@ class Card_Carousel extends Widget_Base
         $js_swiper = "new Swiper('.king-addons-card-carousel-items-" . esc_js($this_ID) . "', {";
         $js_swiper .= "direction: 'horizontal',";
 
-        $js_swiper .= "slidesPerView: " . esc_js($settings['kng_card_carousel_desktop_cards_per_view']) . ",";
-        $js_swiper .= "spaceBetween: " . esc_js($settings['kng_card_carousel_desktop_space_between_cards']) . ",";
+        $js_swiper .= "slidesPerView: " . Core::jsNumber($settings, 'kng_card_carousel_desktop_cards_per_view', 4) . ",";
+        $js_swiper .= "spaceBetween: " . Core::jsNumber($settings, 'kng_card_carousel_desktop_space_between_cards', 30) . ",";
 
         // Responsive breakpoints
         $js_swiper .= 'breakpoints: {0: {slidesPerView: ' .
-            esc_js($settings['kng_card_carousel_mobile_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings['kng_card_carousel_mobile_space_between_cards']) . '}, ';
+            Core::jsNumber($settings, 'kng_card_carousel_mobile_cards_per_view', 1) . ', spaceBetween: ' .
+            Core::jsNumber($settings, 'kng_card_carousel_mobile_space_between_cards', 30) . '}, ';
         $js_swiper .=
-            esc_js(($settings['kng_card_carousel_mobile_breakpoint'] + 1)) . ': {slidesPerView: ' .
-            esc_js($settings['kng_card_carousel_tablet_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings['kng_card_carousel_tablet_space_between_cards']) . '}, ';
+            (Core::jsNumber($settings, 'kng_card_carousel_mobile_breakpoint', 767) + 1) . ': {slidesPerView: ' .
+            Core::jsNumber($settings, 'kng_card_carousel_tablet_cards_per_view', 3) . ', spaceBetween: ' .
+            Core::jsNumber($settings, 'kng_card_carousel_tablet_space_between_cards', 30) . '}, ';
         $js_swiper .=
-            esc_js(($settings['kng_card_carousel_tablet_breakpoint'] + 1)) . ': {slidesPerView: ' .
-            esc_js($settings['kng_card_carousel_desktop_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings['kng_card_carousel_desktop_space_between_cards']) . '}},';
+            (Core::jsNumber($settings, 'kng_card_carousel_tablet_breakpoint', 1024) + 1) . ': {slidesPerView: ' .
+            Core::jsNumber($settings, 'kng_card_carousel_desktop_cards_per_view', 4) . ', spaceBetween: ' .
+            Core::jsNumber($settings, 'kng_card_carousel_desktop_space_between_cards', 30) . '}},';
 
         // Scrolling speed
         if ('yes' !== $settings['kng_card_carousel_autoplay_like_ticker_switcher']) {
-            $js_swiper .= "speed: " . esc_js($settings['kng_card_carousel_scrolling_speed']) . ",";
+            $js_swiper .= "speed: " . Core::jsNumber($settings, 'kng_card_carousel_scrolling_speed', 600) . ",";
         } else {
-            $js_swiper .= "speed: " . esc_js($settings['kng_card_carousel_autoplay_like_ticker_autoplay_speed']) . ",";
+            $js_swiper .= "speed: " . Core::jsNumber($settings, 'kng_card_carousel_autoplay_like_ticker_autoplay_speed', 6000) . ",";
         }
 
         // Pagination
@@ -3456,7 +3456,7 @@ class Card_Carousel extends Widget_Base
                 ('yes' === $settings['kng_card_carousel_pag_clickable_switcher'] ? 'clickable: true, ' : '');
             if ('yes' === $settings['kng_card_carousel_pag_dynamic_switcher']) {
                 $js_swiper .= 'dynamicBullets: true, ';
-                $js_swiper .= 'dynamicMainBullets: ' . esc_js($settings['kng_card_carousel_pag_dynamic_number'] . ', ');
+                $js_swiper .= 'dynamicMainBullets: ' . Core::jsNumber($settings, 'kng_card_carousel_pag_dynamic_number', 1) . ', ';
             }
             $js_swiper .= "type: '" . esc_js($settings['kng_card_carousel_pag_type']) . "'},";
         }
@@ -3482,7 +3482,7 @@ class Card_Carousel extends Widget_Base
         if ('yes' === $settings['kng_card_carousel_autoplay_switcher']) {
             $js_swiper .= "autoplay: {";
             if ('yes' !== $settings['kng_card_carousel_autoplay_like_ticker_switcher']) {
-                $js_swiper .= "delay: " . esc_js($settings['kng_card_carousel_autoplay_delay']) . ",";
+                $js_swiper .= "delay: " . Core::jsNumber($settings, 'kng_card_carousel_autoplay_delay', 2000) . ",";
             } else {
                 $js_swiper .= "delay: 0,";
             }

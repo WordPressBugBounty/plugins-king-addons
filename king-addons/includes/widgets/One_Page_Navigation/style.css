@@ -1,6 +1,9 @@
 body,
 main {
+    /* hidden first as a fallback; clip does the same job without turning body
+       into a scroll container, which would break position: sticky above it. */
     overflow-x: hidden;
+    overflow-x: clip;
 }
 
 .king-addons-one-page-nav {

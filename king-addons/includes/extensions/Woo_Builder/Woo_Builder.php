@@ -57,6 +57,43 @@ class Woo_Builder
 
         require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Context.php';
 
+        // The ACF extra fields widgets: validation and saving run in the
+        // ?wc-ajax=checkout request and in the account form's POST, where no
+        // widget renders; display runs on order screens and in emails.
+        require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/ACF_Fields.php';
+        Woo_Builder\ACF_Fields::register();
+
+        // Widget AJAX endpoints have to be hooked here rather than from the
+        // widget classes: admin-ajax.php never builds Elementor widgets, so a
+        // handler added in a widget constructor is missing exactly when the
+        // request needs it.
+        require_once KING_ADDONS_PATH . 'includes/widgets/Woo_Product_Tabs/Woo_Product_Tabs_Ajax.php';
+        Woo_Product_Tabs_Ajax::register();
+
+        add_action('wp_ajax_ka_products_grid', [$this, 'ajax_products_grid']);
+        add_action('wp_ajax_nopriv_ka_products_grid', [$this, 'ajax_products_grid']);
+
+        add_action('wp_ajax_ka_cart_update', [$this, 'ajax_cart_update']);
+        add_action('wp_ajax_nopriv_ka_cart_update', [$this, 'ajax_cart_update']);
+        add_action('wp_ajax_ka_cart_coupon', [$this, 'ajax_cart_coupon']);
+        add_action('wp_ajax_nopriv_ka_cart_coupon', [$this, 'ajax_cart_coupon']);
+
+        // The order is created by ?wc-ajax=checkout, where no widget renders.
+        // These two forward to the checkout form widget, which reads the field
+        // configuration it stored in the session; both are inert when there is
+        // none. The widget class is loaded inside the callbacks - requiring an
+        // Elementor widget during plugin bootstrap breaks WooCommerce's own
+        // init chain, and with it add-to-cart.
+        add_filter('woocommerce_checkout_fields', [$this, 'filter_stored_checkout_fields'], 9998);
+        add_action('woocommerce_checkout_update_order_meta', [$this, 'save_stored_checkout_fields'], 20, 2);
+        add_action('woocommerce_admin_order_data_after_billing_address', [$this, 'render_checkout_extra_fields_admin']);
+        add_action('woocommerce_order_details_after_order_table', [$this, 'render_checkout_extra_fields_front']);
+        add_filter('woocommerce_email_order_meta_fields', [$this, 'email_checkout_extra_fields'], 10, 3);
+
+        // Custom account endpoints need their rewrite rule and menu entry in
+        // place at init, long before the widget that defines them renders.
+        add_action('init', [$this, 'boot_account_endpoints'], 5);
+
         add_action('init', [$this, 'register_template_types']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
         add_filter('template_include', [$this, 'override_wc_template'], 99);
@@ -64,15 +101,22 @@ class Woo_Builder
         add_filter('body_class', [$this, 'filter_body_class']);
 
         // My Account endpoint manager (Pro routing).
-        add_action(
-            'plugins_loaded',
-            static function () {
-                if (!class_exists(My_Account_Manager::class)) {
-                    require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/My_Account_Manager.php';
-                }
-                new My_Account_Manager();
+        // This class is constructed while plugins_loaded is already finished,
+        // so hooking the manager onto that action meant it was never created:
+        // no endpoint templates, no endpoint permissions and no logout
+        // confirmation screen.
+        $boot_account_manager = static function () {
+            if (!class_exists(My_Account_Manager::class)) {
+                require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/My_Account_Manager.php';
             }
-        );
+            new My_Account_Manager();
+        };
+
+        if (did_action('plugins_loaded')) {
+            $boot_account_manager();
+        } else {
+            add_action('plugins_loaded', $boot_account_manager);
+        }
         add_filter('default_post_metadata', [$this, 'prefill_template_meta'], 10, 5);
 
         // Save template type meta when post is created via URL parameter
@@ -88,6 +132,228 @@ class Woo_Builder
 
         add_action('elementor/documents/register_controls', [$this, 'register_document_controls']);
         add_action('elementor/document/after_save', [$this, 'handle_document_after_save'], 10, 2);
+    }
+
+    /**
+     * Forward the products-grid load-more request to the widget.
+     *
+     * The widget class is pulled in here rather than at load time: by the time
+     * an AJAX request runs, Elementor is fully booted and Widget_Base resolves.
+     *
+     * @return void
+     */
+    public function ajax_products_grid(): void
+    {
+        if (!class_exists('King_Addons\\Woo_Products_Grid')) {
+            $file = KING_ADDONS_PATH . 'includes/widgets/Woo_Products_Grid/Woo_Products_Grid.php';
+            if (file_exists($file)) {
+                require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Archive_Widget.php';
+                require_once $file;
+            }
+        }
+
+        if (!class_exists('King_Addons\\Woo_Products_Grid')) {
+            wp_send_json_error(['message' => esc_html__('Products Grid is not available.', 'king-addons')], 400);
+        }
+
+        Woo_Products_Grid::ajax_render();
+    }
+
+    /**
+     * Register the account endpoints stored by the My Account Content widget.
+     *
+     * @return void
+     */
+    public function boot_account_endpoints(): void
+    {
+        // Custom endpoints are a Pro feature. Without this check a stored set
+        // would keep adding menu entries and URLs after a licence lapses,
+        // while the widget that fills them no longer renders.
+        if (!$this->can_use_pro()) {
+            return;
+        }
+
+        $stored = get_option('king_addons_account_endpoints', []);
+        if (!is_array($stored) || empty($stored)) {
+            return;
+        }
+
+        if (!class_exists('King_Addons\\Woo_My_Account_Content')) {
+            $base = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_My_Account_Widget.php';
+            $file = KING_ADDONS_PATH . 'includes/widgets/Woo_My_Account_Content/Woo_My_Account_Content.php';
+            if (!file_exists($base) || !file_exists($file) || !class_exists('\\Elementor\\Widget_Base')) {
+                return;
+            }
+            require_once $base;
+            require_once $file;
+        }
+
+        if (class_exists('King_Addons\\Woo_My_Account_Content')) {
+            Woo_My_Account_Content::boot();
+        }
+    }
+
+    /**
+     * Load the checkout form widget on demand.
+     *
+     * @return bool True when the class is available.
+     */
+    private function load_checkout_widget(): bool
+    {
+        if (class_exists('King_Addons\\Woo_Checkout_Form')) {
+            return true;
+        }
+
+        $base = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Checkout_Widget.php';
+        $file = KING_ADDONS_PATH . 'includes/widgets/Woo_Checkout_Form/Woo_Checkout_Form.php';
+        if (!file_exists($base) || !file_exists($file) || !class_exists('\\Elementor\\Widget_Base')) {
+            return false;
+        }
+
+        require_once $base;
+        require_once $file;
+
+        return class_exists('King_Addons\\Woo_Checkout_Form');
+    }
+
+    /**
+     * Apply the checkout field configuration stored by the widget.
+     *
+     * @param array<string,mixed> $fields WooCommerce checkout fields.
+     *
+     * @return array<string,mixed>
+     */
+    public function filter_stored_checkout_fields($fields)
+    {
+        if (!is_array($fields) || !$this->load_checkout_widget()) {
+            return $fields;
+        }
+
+        return Woo_Checkout_Form::filter_stored_checkout_fields($fields);
+    }
+
+    /**
+     * Save extra checkout fields for an order created without a widget render.
+     *
+     * @param int                 $order_id Order ID.
+     * @param array<string,mixed> $data     Posted data.
+     *
+     * @return void
+     */
+    public function save_stored_checkout_fields($order_id, $data): void
+    {
+        if (!$this->load_checkout_widget()) {
+            return;
+        }
+
+        Woo_Checkout_Form::save_stored_extra_fields((int) $order_id, is_array($data) ? $data : []);
+    }
+
+    /**
+     * Extra checkout fields on the admin order screen.
+     *
+     * @param \WC_Order $order Order.
+     *
+     * @return void
+     */
+    public function render_checkout_extra_fields_admin($order): void
+    {
+        if (!$this->load_checkout_widget()) {
+            return;
+        }
+
+        Woo_Checkout_Form::render_extra_fields_admin($order);
+    }
+
+    /**
+     * Extra checkout fields on thank-you / view-order.
+     *
+     * @param \WC_Order $order Order.
+     *
+     * @return void
+     */
+    public function render_checkout_extra_fields_front($order): void
+    {
+        if (!$this->load_checkout_widget()) {
+            return;
+        }
+
+        Woo_Checkout_Form::render_extra_fields_front($order);
+    }
+
+    /**
+     * Extra checkout fields in emails.
+     *
+     * @param array<string,mixed> $fields        Existing fields.
+     * @param bool                $sent_to_admin Unused.
+     * @param \WC_Order           $order         Order.
+     *
+     * @return array<string,mixed>
+     */
+    public function email_checkout_extra_fields($fields, $sent_to_admin, $order)
+    {
+        if (!$this->load_checkout_widget()) {
+            return $fields;
+        }
+
+        return Woo_Checkout_Form::email_extra_fields($fields, $sent_to_admin, $order);
+    }
+
+    /**
+     * Load the cart widget classes on demand for an AJAX request.
+     *
+     * @return bool True when the class is available.
+     */
+    private function load_cart_widget(): bool
+    {
+        if (class_exists('King_Addons\\Woo_Cart_Table')) {
+            return true;
+        }
+
+        $base = KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/Abstract_Cart_Widget.php';
+        $table = KING_ADDONS_PATH . 'includes/widgets/Woo_Cart_Table/Woo_Cart_Table.php';
+        $totals = KING_ADDONS_PATH . 'includes/widgets/Woo_Cart_Totals/Woo_Cart_Totals.php';
+
+        if (!file_exists($base) || !file_exists($table)) {
+            return false;
+        }
+
+        require_once $base;
+        // Woo_Cart_Table::render_totals_html() calls into the totals widget.
+        if (file_exists($totals)) {
+            require_once $totals;
+        }
+        require_once $table;
+
+        return class_exists('King_Addons\\Woo_Cart_Table');
+    }
+
+    /**
+     * Forward a cart quantity/remove request to the cart widget.
+     *
+     * @return void
+     */
+    public function ajax_cart_update(): void
+    {
+        if (!$this->load_cart_widget()) {
+            wp_send_json_error(['message' => esc_html__('Cart widget is not available.', 'king-addons')], 400);
+        }
+
+        Woo_Cart_Table::ajax_update();
+    }
+
+    /**
+     * Forward a coupon request to the cart widget.
+     *
+     * @return void
+     */
+    public function ajax_cart_coupon(): void
+    {
+        if (!$this->load_cart_widget()) {
+            wp_send_json_error(['message' => esc_html__('Cart widget is not available.', 'king-addons')], 400);
+        }
+
+        Woo_Cart_Table::ajax_coupon();
     }
 
     /**
@@ -1511,16 +1777,14 @@ class Woo_Builder
      */
     private function can_use_pro(): bool
     {
-        if (!function_exists('king_addons_freemius')) {
+        // Was a private copy of the same freemius check. Keeping a second copy
+        // meant this gate could drift from the one every widget uses, and it
+        // already did not follow filters applied to the shared helper.
+        if (!function_exists('king_addons_can_use_pro')) {
             return false;
         }
 
-        $fs = king_addons_freemius();
-        if (!is_object($fs) || !method_exists($fs, 'can_use_premium_code')) {
-            return false;
-        }
-
-        return (bool) $fs->can_use_premium_code();
+        return king_addons_can_use_pro();
     }
 
     /**

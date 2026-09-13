@@ -9,6 +9,7 @@ namespace King_Addons;
 use Elementor\Plugin;
 use Elementor\Widgets_Manager;
 use Elementor\Controls_Manager;
+use Elementor\Group_Control_Image_Size;
 use King_Addons\Wishlist\Wishlist_Module;
 
 if (!defined('ABSPATH')) {
@@ -104,6 +105,8 @@ final class Core
     {
         require_once(KING_ADDONS_PATH . 'includes/ModulesMap.php');
         require_once(KING_ADDONS_PATH . 'includes/LibrariesMap.php');
+        require_once(KING_ADDONS_PATH . 'includes/helpers/Global/Text_Entities_Migration.php');
+        Text_Entities_Migration::boot();
 
         if ($this->hasElementorCompatibility()) {
 
@@ -137,6 +140,24 @@ final class Core
             if ($this->isExtensionEnabled('cookie-consent', 'KING_ADDONS_EXT_COOKIE_CONSENT')) {
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Cookie_Consent/Cookie_Consent.php');
                 Cookie_Consent::instance();
+            }
+
+            // Dynamic Tags
+            // Loaded before the builders so their widgets can offer dynamic
+            // values as soon as the editor asks Elementor for the tag list.
+            if ($this->isExtensionEnabled('dynamic-tags', 'KING_ADDONS_EXT_DYNAMIC_TAGS')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Dynamic_Tags/Dynamic_Tags.php');
+                if (class_exists('King_Addons\\Dynamic_Tags')) {
+                    new Dynamic_Tags();
+                }
+            }
+
+            // Loop Builder
+            if ($this->isExtensionEnabled('loop-builder', 'KING_ADDONS_EXT_LOOP_BUILDER')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Loop_Builder/Loop_Builder.php');
+                if (class_exists('King_Addons\\Loop_Builder')) {
+                    new Loop_Builder();
+                }
             }
 
             // WooCommerce Builder
@@ -277,6 +298,22 @@ final class Core
                 Site_Preloader::instance();
             }
 
+            // Free Shipping Bar
+            if ($this->isExtensionEnabled('free-shipping-bar', 'KING_ADDONS_EXT_FREE_SHIPPING_BAR')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Free_Shipping_Bar/Free_Shipping_Bar.php');
+                if (class_exists('King_Addons\\Free_Shipping_Bar')) {
+                    Free_Shipping_Bar::instance();
+                }
+            }
+
+            // Sticky Add To Cart
+            if ($this->isExtensionEnabled('sticky-add-to-cart', 'KING_ADDONS_EXT_STICKY_ADD_TO_CART')) {
+                require_once(KING_ADDONS_PATH . 'includes/extensions/Sticky_Add_To_Cart/Sticky_Add_To_Cart.php');
+                if (class_exists('King_Addons\\Sticky_Add_To_Cart')) {
+                    Sticky_Add_To_Cart::instance();
+                }
+            }
+
             // Image Optimizer
             if ($this->isExtensionEnabled('image-optimizer', 'KING_ADDONS_EXT_IMAGE_OPTIMIZER')) {
                 require_once(KING_ADDONS_PATH . 'includes/extensions/Image_Optimizer/Image_Optimizer.php');
@@ -311,6 +348,17 @@ final class Core
 
             // Additional - Form Builder
             if (KING_ADDONS_WGT_FORM_BUILDER) {
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Extra_Fields.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Conditional_Logic.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Spam_Protection.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Integrations.php');
+                new Form_Integrations();
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Partial_Entries.php');
+                new Form_Partial_Entries();
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Formula.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Payments.php');
+                require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Payment_Confirm.php');
+                new Form_Payments();
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Form_Builder_Security.php');
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Create_Submission.php');
                 require_once(KING_ADDONS_PATH . 'includes/widgets/Form_Builder/helpers/Send_Email.php');
@@ -362,6 +410,11 @@ final class Core
             add_action('elementor/init', [$this, 'initElementor']);
 
             add_action('elementor/elements/categories_registered', [$this, 'addWidgetCategory']);
+            // Elementor promotes Atomic / Custom Widget / Pro after that hook, so the
+            // panel order is applied again once categories are fully initialised.
+            add_action('elementor/init', [$this, 'reorderWidgetCategoriesLate'], 100);
+            add_action('elementor/editor/before_enqueue_scripts', [$this, 'reorderWidgetCategoriesLate'], 1);
+            add_filter('elementor/document/config', [$this, 'filterDocumentPanelCategories'], 1, 2);
             add_action('elementor/controls/controls_registered', [$this, 'registerControls']);
 
             self::enableFeatures();
@@ -766,7 +819,7 @@ final class Core
                     <?php esc_html_e('King Addons Pro', 'king-addons'); ?>
                 </div>
                 <h2 class="king-addons-un-headline">
-                    <?php esc_html_e('Mega Menu, Popup Builder, Theme Builder &amp; AI Tools', 'king-addons'); ?>
+                    <?php esc_html_e('Mega Menu, Popup Builder, WooCommerce Builder, Theme Builder &amp; AI Tools', 'king-addons'); ?>
                 </h2>
                 <p class="king-addons-un-sub">
                     <?php esc_html_e('200+ Pro features, premium widgets and 4,000+ templates &amp; sections for Elementor.', 'king-addons'); ?>
@@ -918,29 +971,113 @@ final class Core
     {
         $elements_manager = Plugin::instance()->elements_manager;
 
-        // Add our categories
         $elements_manager->add_category(
             'king-addons',
             [
                 'title' => esc_html__('King Addons', 'king-addons'),
-                'icon' => 'fa fa-plug'
+                'icon' => 'fa fa-plug',
             ]
         );
+
+        if (class_exists('WooCommerce') && function_exists('WC')) {
+            $elements_manager->add_category(
+                'king-addons-woo',
+                [
+                    'title' => esc_html__('King Addons WooCommerce', 'king-addons'),
+                    'icon' => 'fa fa-shopping-cart',
+                    'hideIfEmpty' => true,
+                ]
+            );
+
+            $elements_manager->add_category(
+                'king-addons-woo-builder',
+                [
+                    'title' => esc_html__('King Addons WooCommerce Builder', 'king-addons'),
+                    'icon' => 'fa fa-shopping-cart',
+                    'hideIfEmpty' => true,
+                ]
+            );
+        }
 
         $elements_manager->add_category(
-            'king-addons-woo-builder',
+            'king-addons-theme-builder',
             [
-                'title' => esc_html__('King Addons Woo Builder', 'king-addons'),
-                'icon' => 'fa fa-shopping-cart'
+                'title' => esc_html__('King Addons Theme Builder', 'king-addons'),
+                'icon' => 'fa fa-plug',
+                'hideIfEmpty' => true,
             ]
         );
-
-        // Move our categories to the top of the panel
-        $this->reorderWidgetCategories($elements_manager);
     }
 
     /**
-     * Reorder widget categories so King Addons categories appear after Layout and Basic.
+     * Apply the panel category order after Elementor has finished registering its own.
+     *
+     * @return void
+     */
+    public function reorderWidgetCategoriesLate(): void
+    {
+        if (!did_action('elementor/loaded')) {
+            return;
+        }
+
+        $elements_manager = Plugin::instance()->elements_manager;
+        $elements_manager->get_categories();
+        $this->reorderWidgetCategories($elements_manager);
+
+        if (!$this->shouldApplyEditorPanelVisibility()) {
+            return;
+        }
+
+        $post_id = $this->getCurrentEditorPostId();
+        if ($post_id > 0) {
+            $this->applyContextCategoryVisibility($elements_manager, $post_id);
+        }
+    }
+
+    /**
+     * Overwrite the editor panel category snapshot after Elementor has built document config.
+     *
+     * @param array $additional_config
+     * @param int   $post_id
+     * @return array
+     */
+    public function filterDocumentPanelCategories($additional_config, $post_id = 0)
+    {
+        $post_id = (int) $post_id;
+        if ($post_id <= 0) {
+            $post_id = $this->getCurrentEditorPostId();
+        }
+        if (!is_array($additional_config)) {
+            $additional_config = [];
+        }
+
+        if (!did_action('elementor/loaded')) {
+            return $additional_config;
+        }
+
+        $elements_manager = Plugin::instance()->elements_manager;
+        $elements_manager->get_categories();
+        $this->reorderWidgetCategories($elements_manager);
+        if ($post_id > 0) {
+            $this->applyContextCategoryVisibility($elements_manager, $post_id);
+        }
+
+        $categories = \Elementor\Core\Base\Document::get_filtered_editor_panel_categories();
+        foreach ($this->getHiddenPanelCategoryKeys($post_id) as $hidden_key) {
+            unset($categories[$hidden_key]);
+        }
+
+        $additional_config['panel']['elements_categories'] = $categories;
+
+        foreach ($this->getHiddenPanelWidgetNames($post_id) as $widget_name) {
+            $additional_config['widgets'][$widget_name]['show_in_panel'] = false;
+        }
+
+        return $additional_config;
+    }
+
+    /**
+     * Reorder widget categories: Layout, then King Addons groups, then the rest of Elementor.
      *
      * @param \Elementor\Elements_Manager $elements_manager
      * @return void
@@ -950,57 +1087,233 @@ final class Core
         try {
             $reflection = new \ReflectionClass($elements_manager);
             $categories_property = $reflection->getProperty('categories');
-            $categories_property->setAccessible(true);
+            if (PHP_VERSION_ID < 80100) {
+                $categories_property->setAccessible(true);
+            }
 
             $categories = $categories_property->getValue($elements_manager);
-            if (!is_array($categories)) {
+            if (!is_array($categories) || $categories === []) {
                 return;
             }
 
-            // Extract our categories
-            $our_categories = [];
-            if (isset($categories['king-addons'])) {
-                $our_categories['king-addons'] = $categories['king-addons'];
-                unset($categories['king-addons']);
-            }
-            if (isset($categories['king-addons-woo-builder'])) {
-                $our_categories['king-addons-woo-builder'] = $categories['king-addons-woo-builder'];
-                unset($categories['king-addons-woo-builder']);
-            }
-
-            // Insert our categories after Layout and Basic
-            $reordered = [];
-            $insert_after = ['layout', 'basic']; // Categories after which we insert ours
-            $inserted = false;
+            $layout = [];
+            $ours = [];
+            $rest = [];
 
             foreach ($categories as $key => $value) {
-                $reordered[$key] = $value;
-                
-                // Insert our categories after the last target category
-                if (!$inserted && in_array($key, $insert_after, true)) {
-                    // Check if next category is also in our target list
-                    $keys = array_keys($categories);
-                    $current_index = array_search($key, $keys, true);
-                    $next_key = $keys[$current_index + 1] ?? null;
-                    
-                    // Only insert if the next category is NOT in our target list
-                    if ($next_key === null || !in_array($next_key, $insert_after, true)) {
-                        $reordered = array_merge($reordered, $our_categories);
-                        $inserted = true;
-                    }
+                if ('layout' === $key) {
+                    $layout[$key] = $value;
+                } elseif (str_starts_with((string) $key, 'king-addons')) {
+                    $ours[$key] = $value;
+                } else {
+                    $rest[$key] = $value;
                 }
             }
 
-            // If target categories weren't found, append at the end
-            if (!$inserted) {
-                $reordered = array_merge($reordered, $our_categories);
+            $ours_sorted = [];
+            foreach (['king-addons', 'king-addons-woo', 'king-addons-woo-builder', 'king-addons-theme-builder'] as $preferred) {
+                if (isset($ours[$preferred])) {
+                    $ours_sorted[$preferred] = $ours[$preferred];
+                    unset($ours[$preferred]);
+                }
             }
+            $ours_sorted += $ours;
 
-            // Set back the reordered array
-            $categories_property->setValue($elements_manager, $reordered);
+            $categories_property->setValue($elements_manager, $layout + $ours_sorted + $rest);
         } catch (\ReflectionException $e) {
             // Silently fail if reflection doesn't work (e.g., future Elementor changes)
         }
+    }
+
+    /**
+     * Drop context-only categories from the manager for the current editor document.
+     *
+     * @param \Elementor\Elements_Manager $elements_manager
+     * @param int                         $post_id
+     * @return void
+     */
+    private function applyContextCategoryVisibility($elements_manager, int $post_id): void
+    {
+        $hidden = $this->getHiddenPanelCategoryKeys($post_id);
+        if ($hidden === []) {
+            return;
+        }
+
+        try {
+            $reflection = new \ReflectionClass($elements_manager);
+            $categories_property = $reflection->getProperty('categories');
+            if (PHP_VERSION_ID < 80100) {
+                $categories_property->setAccessible(true);
+            }
+
+            $categories = $categories_property->getValue($elements_manager);
+            if (!is_array($categories) || $categories === []) {
+                return;
+            }
+
+            foreach ($hidden as $key) {
+                unset($categories[$key]);
+            }
+
+            $categories_property->setValue($elements_manager, $categories);
+        } catch (\ReflectionException $e) {
+            // Silently fail if reflection doesn't work (e.g., future Elementor changes)
+        }
+    }
+
+    /**
+     * Category keys that should not appear in the current editor document.
+     *
+     * @param int $post_id
+     * @return array<int,string>
+     */
+    private function getHiddenPanelCategoryKeys(int $post_id): array
+    {
+        $hidden = [];
+        $is_woo_builder = $this->isWooBuilderDocument($post_id);
+        $is_theme_builder = $this->isThemeBuilderDocument($post_id);
+        $is_loop_item = $this->isLoopItemDocument($post_id);
+        $woocommerce_active = class_exists('WooCommerce') && function_exists('WC');
+
+        if (!$woocommerce_active) {
+            $hidden[] = 'king-addons-woo';
+            $hidden[] = 'king-addons-woo-builder';
+        } elseif (!$is_woo_builder && !$is_loop_item) {
+            $hidden[] = 'king-addons-woo-builder';
+        }
+
+        if (!$is_theme_builder && !$is_loop_item) {
+            $hidden[] = 'king-addons-theme-builder';
+        }
+
+        return $hidden;
+    }
+
+    /**
+     * Widget names that belong to hidden context categories.
+     *
+     * @param int $post_id
+     * @return array<int,string>
+     */
+    private function getHiddenPanelWidgetNames(int $post_id): array
+    {
+        $hidden_categories = $this->getHiddenPanelCategoryKeys($post_id);
+        if ($hidden_categories === [] || !did_action('elementor/loaded')) {
+            return [];
+        }
+
+        $hidden_lookup = array_fill_keys($hidden_categories, true);
+        $names = [];
+
+        foreach (Plugin::instance()->widgets_manager->get_widget_types() as $widget_name => $widget) {
+            if (!is_object($widget) || !method_exists($widget, 'get_categories')) {
+                continue;
+            }
+
+            foreach ((array) $widget->get_categories() as $category) {
+                if (isset($hidden_lookup[$category])) {
+                    $names[] = (string) $widget_name;
+                    break;
+                }
+            }
+        }
+
+        return $names;
+    }
+
+    /**
+     * Whether the current request is the Elementor editor (or its AJAX).
+     *
+     * @return bool
+     */
+    private function shouldApplyEditorPanelVisibility(): bool
+    {
+        if (!empty($_GET['action']) && 'elementor' === $_GET['action']) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return true;
+        }
+
+        if (!empty($_REQUEST['editor_post_id'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return true;
+        }
+
+        return class_exists('\Elementor\Plugin')
+            && Plugin::instance()->editor
+            && Plugin::instance()->editor->is_edit_mode();
+    }
+
+    /**
+     * Current Elementor editor post ID, if any.
+     *
+     * @return int
+     */
+    private function getCurrentEditorPostId(): int
+    {
+        foreach (['editor_post_id', 'post_id', 'post'] as $key) {
+            if (!empty($_REQUEST[$key])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                $post_id = absint(wp_unslash($_REQUEST[$key])); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                if ($post_id > 0) {
+                    return $post_id;
+                }
+            }
+        }
+
+        $post = get_post();
+        return $post ? (int) $post->ID : 0;
+    }
+
+    /**
+     * Whether the post is a King Addons Woo Builder template.
+     *
+     * @param int $post_id
+     * @return bool
+     */
+    private function isWooBuilderDocument(int $post_id): bool
+    {
+        if ($post_id <= 0) {
+            return false;
+        }
+
+        $elementor_type = (string) get_post_meta($post_id, '_elementor_template_type', true);
+        if ('king-addons-woo-builder' === $elementor_type) {
+            return true;
+        }
+
+        return (string) get_post_meta($post_id, 'ka_woo_template_type', true) !== '';
+    }
+
+    /**
+     * Whether the post is a King Addons Theme Builder template.
+     *
+     * @param int $post_id
+     * @return bool
+     */
+    private function isThemeBuilderDocument(int $post_id): bool
+    {
+        if ($post_id <= 0) {
+            return false;
+        }
+
+        $location_key = '_ka_theme_builder_location';
+        if (class_exists('\King_Addons\Theme_Builder\Meta_Keys')) {
+            $location_key = \King_Addons\Theme_Builder\Meta_Keys::LOCATION;
+        }
+
+        return (string) get_post_meta($post_id, $location_key, true) !== '';
+    }
+
+    /**
+     * Whether the post is a King Addons Loop Item template.
+     *
+     * @param int $post_id
+     * @return bool
+     */
+    private function isLoopItemDocument(int $post_id): bool
+    {
+        if ($post_id <= 0) {
+            return false;
+        }
+
+        return 'king-addons-loop-item' === (string) get_post_meta($post_id, '_elementor_template_type', true);
     }
 
     /**
@@ -1293,6 +1606,38 @@ final class Core
         }
     }
 
+    /**
+     * Widget settings with dynamic tags resolved, and nothing missing.
+     *
+     * get_settings() never parses dynamic tags, so a tag placed in such a
+     * widget printed its placeholder instead of the value. get_settings_for_display()
+     * does parse them, but it also drops every setting whose control condition
+     * is currently false - and widgets written against the raw array index into
+     * those keys without checking, which turns the switch into a batch of
+     * "Trying to access array offset on null" warnings.
+     *
+     * A hidden control comes back as null rather than missing, so the parsed
+     * value is preferred only when there is one, and the raw value fills in
+     * everywhere else.
+     *
+     * @param \Elementor\Controls_Stack $widget Widget being rendered.
+     *
+     * @return array<string,mixed>
+     */
+    public static function displaySettings($widget): array
+    {
+        $raw = (array) $widget->get_settings();
+        $display = (array) $widget->get_settings_for_display();
+
+        foreach ($display as $key => $value) {
+            if (null !== $value) {
+                $raw[$key] = $value;
+            }
+        }
+
+        return $raw;
+    }
+
     public static function renderProFeaturesSection($module, $section, $type, $widget_name, $features): void
     {
         if (king_addons_freemius()->can_use_premium_code__premium_only()) {
@@ -1319,6 +1664,32 @@ final class Core
         );
 
         $module->end_controls_section();
+    }
+
+    /**
+     * Same upgrade notice as renderUpgradeProNotice(), but not tied to another
+     * control's value. Use it where a whole section is Pro-only, so the free
+     * build does not show a section header that opens onto nothing.
+     *
+     * @param mixed  $module           Widget or repeater the control belongs to.
+     * @param string $controls_manager Control type to render the notice with.
+     * @param string $widget_name      Widget slug, used for the campaign link.
+     * @param string $control_id       Unique control id for the notice.
+     */
+    public static function renderUpgradeProSection($module, $controls_manager, string $widget_name, string $control_id): void
+    {
+        if (king_addons_freemius()->can_use_premium_code__premium_only()) {
+            return;
+        }
+
+        $module->add_control(
+            $control_id,
+            [
+                'raw' => 'Upgrade to the <strong><a href="https://kingaddons.com/pricing/?utm_source=kng-module-' . $widget_name . '-settings-upgrade-pro&utm_medium=plugin&utm_campaign=kng" target="_blank">Pro version</a></strong> now<br> and unlock this feature!',
+                'type' => $controls_manager,
+                'content_classes' => 'king-addons-pro-notice',
+            ]
+        );
     }
 
     public static function renderUpgradeProNotice($module, $controls_manager, $widget_name, $option, $condition = []): void
@@ -1685,7 +2056,12 @@ final class Core
             return $mailchimp_list;
         }
 
-        $url = 'https://' . explode('-', $api_key)[1] . '.api.mailchimp.com/3.0/lists/';
+        $parts = explode('-', (string) $api_key);
+        if (count($parts) < 2 || '' === $parts[1]) {
+            return $mailchimp_list;
+        }
+
+        $url = 'https://' . $parts[1] . '.api.mailchimp.com/3.0/lists/';
         $response = wp_remote_get($url, [
             'headers' => ['Authorization' => 'Basic ' . base64_encode('user:' . $api_key)]
         ]);
@@ -1702,10 +2078,20 @@ final class Core
 
     public static function getMailchimpGroups()
     {
-        $apiKey = get_option('king_addons_mailchimp_api_key');
-        $domain = 'https://' . substr($apiKey, strpos($apiKey, '-') + 1) . '.api.mailchimp.com/3.0/';
-        $authArgs = ['headers' => ['Authorization' => 'Basic ' . base64_encode('user:' . $apiKey)]];
+        $apiKey = (string) get_option('king_addons_mailchimp_api_key', '');
         $groups = ['def' => 'Select Group'];
+
+        if ('' === $apiKey || false === strpos($apiKey, '-')) {
+            return $groups;
+        }
+
+        $dc = substr($apiKey, strpos($apiKey, '-') + 1);
+        if ('' === $dc) {
+            return $groups;
+        }
+
+        $domain = 'https://' . $dc . '.api.mailchimp.com/3.0/';
+        $authArgs = ['headers' => ['Authorization' => 'Basic ' . base64_encode('user:' . $apiKey)]];
         $mailchimpIDs = Core::getMailchimpLists();
 
         foreach ($mailchimpIDs as $audience => $ignore) {
@@ -1713,12 +2099,18 @@ final class Core
                 continue;
             }
 
-            $cats = wp_remote_get("{$domain}lists/$audience/interest-categories", $authArgs);
-            $cats = json_decode($cats['body'])->categories ?? [];
+            $cats_res = wp_remote_get("{$domain}lists/$audience/interest-categories", $authArgs);
+            if (is_wp_error($cats_res)) {
+                continue;
+            }
+            $cats = json_decode((string) wp_remote_retrieve_body($cats_res))->categories ?? [];
 
             foreach ($cats as $cat) {
-                $interests = wp_remote_get("{$domain}lists/$audience/interest-categories/$cat->id/interests", $authArgs);
-                $interests = json_decode($interests['body'])->interests ?? [];
+                $interests_res = wp_remote_get("{$domain}lists/$audience/interest-categories/$cat->id/interests", $authArgs);
+                if (is_wp_error($interests_res)) {
+                    continue;
+                }
+                $interests = json_decode((string) wp_remote_retrieve_body($interests_res))->interests ?? [];
 
                 foreach ($interests as $int) {
                     $groups[$int->id] = $int->name;
@@ -1896,6 +2288,29 @@ final class Core
                 'setup_cost_note' => \King_Addons\AI_Provider::isOpenRouter()
                     ? esc_html__('Free models cost nothing. Paid models cost pennies (about $0.01 per full page).', 'king-addons')
                     : esc_html__('Processing a page costs pennies (about $0.01 per full page).', 'king-addons'),
+                /**
+                 * Before either provider has a key there is no "configured
+                 * provider" to describe - the setting is just its default. The
+                 * setup dialog then has to present the choice instead of sending
+                 * everyone to OpenAI.
+                 */
+                'has_any_key' => (
+                    '' !== \King_Addons\AI_Provider::getApiKey(\King_Addons\AI_Provider::OPENAI)
+                    || '' !== \King_Addons\AI_Provider::getApiKey(\King_Addons\AI_Provider::OPENROUTER)
+                ),
+                'setup_providers' => [
+                    [
+                        'name' => esc_html__('OpenRouter', 'king-addons'),
+                        'url' => \King_Addons\AI_Provider::getApiKeysUrl(\King_Addons\AI_Provider::OPENROUTER),
+                        'note' => esc_html__('has free models, no credit needed to start', 'king-addons'),
+                    ],
+                    [
+                        'name' => esc_html__('OpenAI', 'king-addons'),
+                        'url' => \King_Addons\AI_Provider::getApiKeysUrl(\King_Addons\AI_Provider::OPENAI),
+                        'note' => esc_html__('needs at least $5 on your account balance', 'king-addons'),
+                    ],
+                ],
+                'setup_cost_note_neutral' => esc_html__('With a free OpenRouter model, nothing. On a paid model it is pennies (about $0.01 per full page).', 'king-addons'),
                 'missing_key_message' => sprintf(
                     /* translators: %s: provider name */
                     esc_html__('%s API key is missing or invalid. Please configure your API key in AI Settings.', 'king-addons'),
@@ -2008,6 +2423,85 @@ final class Core
         // Note: Using existing KingAddonsAiField localization
         // The translator script will use the same AJAX endpoints and settings
         // No need for separate localization as it reuses existing AI infrastructure
+    }
+
+    /**
+     * Render an attachment through an Elementor image-size group control.
+     *
+     * Group_Control_Image_Size::get_attachment_image_html() takes a *key into
+     * $settings* as its third argument, not an attachment ID. Handing it an ID
+     * makes Elementor read $settings[<id>], which raises two PHP warnings and
+     * returns nothing, so callers silently lose the image.
+     *
+     * @param array<string, mixed> $settings      Widget settings; carries "<$size_key>_size" and friends.
+     * @param string               $size_key      Name of the image-size group control.
+     * @param int                  $attachment_id Attachment to render.
+     *
+     * @return string Image HTML, or an empty string when it cannot be rendered.
+     */
+    /**
+     * Show the person building the page why a widget rendered nothing.
+     *
+     * Only ever printed inside the Elementor editor, so the public page keeps
+     * rendering exactly what it rendered before.
+     *
+     * @param string $message Plain text explaining what the widget still needs.
+     */
+    public static function renderEditorHint(string $message): void
+    {
+        if (!Plugin::$instance->editor->is_edit_mode()) {
+            return;
+        }
+
+        $style = 'display:block;padding:12px 14px;border:1px dashed #c3c4c7;border-radius:4px;'
+            . 'background:#f6f7f7;color:#50575e;font-size:13px;line-height:1.5;';
+
+        echo '<div class="king-addons-editor-hint" style="' . esc_attr($style) . '">'
+            . esc_html($message) . '</div>';
+    }
+
+    /**
+     * A setting written straight into a JavaScript object literal has to be a
+     * number. Elementor stores a number field the user cleared as an empty
+     * string, which would emit `slidesPerView: ,` - a syntax error that stops
+     * the whole carousel from initialising - or blow up in PHP when the value
+     * is used in arithmetic.
+     *
+     * @param array<string, mixed> $settings Widget settings.
+     * @param string               $key      Setting to read.
+     * @param int|float            $fallback Value to use when the setting is empty or not a number.
+     *
+     * @return string Numeric string, safe to interpolate into JS.
+     */
+    public static function jsNumber(array $settings, string $key, $fallback = 0): string
+    {
+        $value = $settings[$key] ?? null;
+
+        // Slider controls keep their number under 'size'.
+        if (is_array($value)) {
+            $value = $value['size'] ?? null;
+        }
+
+        if (!is_numeric($value)) {
+            $value = $fallback;
+        }
+
+        return (string) (0 + $value);
+    }
+
+    public static function getAttachmentImageHTML(array $settings, string $size_key, int $attachment_id): string
+    {
+        if ($attachment_id < 1) {
+            return '';
+        }
+
+        $image_key = '__king_addons_image';
+        $settings[$image_key] = [
+            'id' => $attachment_id,
+            'url' => wp_get_attachment_image_url($attachment_id, 'full') ?: '',
+        ];
+
+        return (string) Group_Control_Image_Size::get_attachment_image_html($settings, $size_key, $image_key);
     }
 }
 

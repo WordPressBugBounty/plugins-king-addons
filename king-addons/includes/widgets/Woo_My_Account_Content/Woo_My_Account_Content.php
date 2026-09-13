@@ -32,7 +32,6 @@ class Woo_My_Account_Content extends Abstract_My_Account_Widget
      *
      * @var bool
      */
-    private static bool $hooks_added = false;
 
     /**
      * Constructor.
@@ -44,11 +43,11 @@ class Woo_My_Account_Content extends Abstract_My_Account_Widget
     {
         parent::__construct($data, $args);
 
-        if (!self::$hooks_added) {
-            add_action('init', [self::class, 'register_endpoints']);
-            add_filter('woocommerce_account_menu_items', [self::class, 'filter_menu_items'], 20);
-            self::$hooks_added = true;
-        }
+        // No hooks here: the endpoint list is only known once render() runs,
+        // long after init, so registering from the constructor could never see
+        // it. Woo_Builder boots this widget's endpoints from the stored option
+        // instead - see boot().
+        // (nothing to do)
     }
 
     public function get_name(): string
@@ -63,7 +62,7 @@ class Woo_My_Account_Content extends Abstract_My_Account_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-library-download';
+        return 'king-addons-icon king-addons-woo-my-account-content';
     }
 
     public function get_categories(): array
@@ -172,27 +171,166 @@ class Woo_My_Account_Content extends Abstract_My_Account_Widget
         $can_pro = king_addons_can_use_pro();
 
         if ($can_pro && !empty($settings['endpoints']) && is_array($settings['endpoints'])) {
+            $collected = [];
             foreach ($settings['endpoints'] as $ep) {
                 $slug = sanitize_title($ep['slug'] ?? '');
                 if (empty($slug)) {
                     continue;
                 }
-                self::$custom_endpoints[$slug] = [
-                    'label' => $ep['label'] ?? $slug,
-                    'content' => $ep['content'] ?? '',
+                $collected[$slug] = [
+                    'label' => (string) ($ep['label'] ?? $slug),
+                    'content' => (string) ($ep['content'] ?? ''),
                     'position' => isset($ep['position']) ? (int) $ep['position'] : 90,
                 ];
             }
+            self::$custom_endpoints = array_merge(self::$custom_endpoints, $collected);
+            // The rewrite rule for an endpoint has to exist at init, before any
+            // widget renders - store the list so the next request can set it up.
+            self::remember_endpoints(self::$custom_endpoints);
         }
 
         if ($this->maybe_render_login_form()) {
             return;
         }
 
+        $skip_native = false;
+        if (!Woo_Context::is_editor() && function_exists('is_wc_endpoint_url')) {
+            $dedicated = [
+                'orders' => 'woo_my_account_orders',
+                'view-order' => 'woo_my_account_order_details',
+                'edit-address' => 'woo_my_account_address',
+                'edit-account' => 'woo_my_account_details',
+                'downloads' => 'woo_my_account_downloads',
+            ];
+            foreach ($dedicated as $endpoint => $widget_type) {
+                if (is_wc_endpoint_url($endpoint) && Woo_Context::template_has_widget($widget_type, 'my_account')) {
+                    $skip_native = true;
+                    break;
+                }
+            }
+        }
+
         echo '<div class="ka-woo-my-account-content">';
         woocommerce_output_all_notices();
-        woocommerce_account_content();
+        if (!$skip_native) {
+            woocommerce_account_content();
+        }
         echo '</div>';
+    }
+
+    /**
+     * Option holding the custom endpoints between requests.
+     */
+    private const ENDPOINTS_OPTION = 'king_addons_account_endpoints';
+
+    /**
+     * Option flag asking for a one-off rewrite flush.
+     */
+    private const FLUSH_OPTION = 'king_addons_account_endpoints_flush';
+
+    /**
+     * Persist the endpoint list, and ask for a rewrite flush when it changed.
+     *
+     * @param array<string,array<string,mixed>> $endpoints Endpoint definitions.
+     *
+     * @return void
+     */
+    private static function remember_endpoints(array $endpoints): void
+    {
+        $stored = get_option(self::ENDPOINTS_OPTION, []);
+        if (!is_array($stored)) {
+            $stored = [];
+        }
+
+        if ($stored === $endpoints) {
+            return;
+        }
+
+        update_option(self::ENDPOINTS_OPTION, $endpoints, false);
+
+        // Rewrite rules only change when the set of slugs changes.
+        if (array_keys($stored) !== array_keys($endpoints)) {
+            update_option(self::FLUSH_OPTION, 1, false);
+        }
+    }
+
+    /**
+     * Set up custom endpoints for this request.
+     *
+     * Called on init by Woo_Builder: rewrite endpoints and the account menu
+     * filter both have to be in place before anything renders.
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $stored = get_option(self::ENDPOINTS_OPTION, []);
+        if (!is_array($stored) || empty($stored)) {
+            return;
+        }
+
+        self::$custom_endpoints = $stored;
+        self::register_endpoints();
+        add_filter('woocommerce_account_menu_items', [self::class, 'filter_menu_items'], 20);
+        add_filter('woocommerce_get_query_vars', [self::class, 'filter_wc_query_vars']);
+
+        if (get_option(self::FLUSH_OPTION)) {
+            delete_option(self::FLUSH_OPTION);
+            flush_rewrite_rules(false);
+        }
+    }
+
+    /**
+     * Whether this request is a King Addons custom My Account endpoint.
+     *
+     * Custom slugs are registered with add_rewrite_endpoint() but are not
+     * WooCommerce query vars unless filter_wc_query_vars() ran, so
+     * is_wc_endpoint_url() can miss them. Dashboard and other widgets use
+     * this to avoid stacking on those URLs.
+     *
+     * @return bool
+     */
+    public static function is_custom_endpoint_request(): bool
+    {
+        if (empty(self::$custom_endpoints)) {
+            $stored = get_option(self::ENDPOINTS_OPTION, []);
+            if (is_array($stored)) {
+                self::$custom_endpoints = $stored;
+            }
+        }
+
+        if (empty(self::$custom_endpoints)) {
+            return false;
+        }
+
+        global $wp;
+        if (!isset($wp->query_vars) || !is_array($wp->query_vars)) {
+            return false;
+        }
+
+        foreach (array_keys(self::$custom_endpoints) as $slug) {
+            if (array_key_exists((string) $slug, $wp->query_vars)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Expose custom account endpoints to WooCommerce's query-var map.
+     *
+     * @param array<string,string> $vars WooCommerce endpoint query vars.
+     *
+     * @return array<string,string>
+     */
+    public static function filter_wc_query_vars(array $vars): array
+    {
+        foreach (array_keys(self::$custom_endpoints) as $slug) {
+            $vars[(string) $slug] = (string) $slug;
+        }
+
+        return $vars;
     }
 
     /**
@@ -235,9 +373,15 @@ class Woo_My_Account_Content extends Abstract_My_Account_Widget
         if (empty(self::$custom_endpoints)) {
             return $items;
         }
+        // Every standard item used to get the same position, so the natural
+        // sort below fell back to comparing slugs and reordered WooCommerce's
+        // menu alphabetically - Log out ended up first. Keep their given order
+        // by spacing them out, leaving room for custom endpoints in between.
         $ordered = [];
+        $step = 10;
         foreach ($items as $slug => $label) {
-            $ordered[ sprintf('%05d:%s', 50, $slug) ] = [$slug, $label];
+            $ordered[ sprintf('%05d:%s', $step, $slug) ] = [$slug, $label];
+            $step += 10;
         }
         foreach (self::$custom_endpoints as $slug => $data) {
             $pos = $data['position'] ?? 90;

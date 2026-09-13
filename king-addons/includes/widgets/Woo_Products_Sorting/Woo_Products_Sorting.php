@@ -31,7 +31,7 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-filter';
+        return 'king-addons-icon king-addons-woo-products-sorting';
     }
 
     public function get_categories(): array
@@ -97,7 +97,7 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Default sorting', 'king-addons'),
+                'default' => __('Default sorting', 'king-addons'),
             ]
         );
 
@@ -108,12 +108,12 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => [
-                    ['key' => 'menu_order', 'label' => esc_html__('Default sorting', 'king-addons')],
-                    ['key' => 'popularity', 'label' => esc_html__('Sort by popularity', 'king-addons')],
-                    ['key' => 'rating', 'label' => esc_html__('Sort by rating', 'king-addons')],
-                    ['key' => 'date', 'label' => esc_html__('Sort by latest', 'king-addons')],
-                    ['key' => 'price', 'label' => esc_html__('Sort by price: low to high', 'king-addons')],
-                    ['key' => 'price-desc', 'label' => esc_html__('Sort by price: high to low', 'king-addons')],
+                    ['key' => 'menu_order', 'label' => __('Default sorting', 'king-addons')],
+                    ['key' => 'popularity', 'label' => __('Sort by popularity', 'king-addons')],
+                    ['key' => 'rating', 'label' => __('Sort by rating', 'king-addons')],
+                    ['key' => 'date', 'label' => __('Sort by latest', 'king-addons')],
+                    ['key' => 'price', 'label' => __('Sort by price: low to high', 'king-addons')],
+                    ['key' => 'price-desc', 'label' => __('Sort by price: high to low', 'king-addons')],
                 ],
                 'title_field' => '{{ label }}',
             ]
@@ -165,7 +165,11 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
         }
 
         $settings = $this->get_settings_for_display();
-        $layout = $settings['layout'] ?? 'dropdown';
+        // The value becomes a class name, so an unknown one has to fall back.
+        $layout = (string) ($settings['layout'] ?? 'dropdown');
+        if (!in_array($layout, ['dropdown', 'inline'], true)) {
+            $layout = 'dropdown';
+        }
         $can_pro = king_addons_can_use_pro();
         if ('inline' === $layout && !$can_pro) {
             $layout = 'dropdown';
@@ -177,10 +181,10 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
 
         if (!$can_pro) {
             $options = [
-                ['key' => 'menu_order', 'label' => esc_html__('Default sorting', 'king-addons')],
-                ['key' => 'date', 'label' => esc_html__('Sort by latest', 'king-addons')],
-                ['key' => 'price', 'label' => esc_html__('Sort by price: low to high', 'king-addons')],
-                ['key' => 'price-desc', 'label' => esc_html__('Sort by price: high to low', 'king-addons')],
+                ['key' => 'menu_order', 'label' => __('Default sorting', 'king-addons')],
+                ['key' => 'date', 'label' => __('Sort by latest', 'king-addons')],
+                ['key' => 'price', 'label' => __('Sort by price: low to high', 'king-addons')],
+                ['key' => 'price-desc', 'label' => __('Sort by price: high to low', 'king-addons')],
             ];
             $query_id = '';
         }
@@ -191,8 +195,18 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
 
         if (empty($options)) {
             $options = [
-                ['key' => 'menu_order', 'label' => esc_html__('Default sorting', 'king-addons')],
+                ['key' => 'menu_order', 'label' => __('Default sorting', 'king-addons')],
             ];
+        }
+
+        // A default that is not among the listed options leaves nothing marked
+        // as chosen, and the browser quietly selects the first entry instead -
+        // which is then not the option the widget claims is active.
+        $keys = array_map(static function ($opt) {
+            return sanitize_key($opt['key']);
+        }, $options);
+        if (!in_array($default, $keys, true)) {
+            $default = $keys[0];
         }
 
         echo '<div class="ka-woo-sorting ka-woo-sorting--' . esc_attr($layout) . '" data-query-id="' . esc_attr($query_id) . '">';
@@ -203,7 +217,7 @@ class Woo_Products_Sorting extends Abstract_Archive_Widget
                 $key = sanitize_key($opt['key']);
                 $label = !empty($opt['label']) ? $opt['label'] : $key;
                 $active = ($default === $key) ? ' is-active' : '';
-                echo '<button type="button" class="ka-woo-sorting__btn' . esc_attr($active) . '" data-sort="' . esc_attr($key) . '">' . esc_html($label) . '</button>';
+                echo '<button type="button" class="ka-woo-sorting__btn' . $active . '" data-sort="' . esc_attr($key) . '">' . esc_html($label) . '</button>';
             }
             echo '</div>';
         } else {

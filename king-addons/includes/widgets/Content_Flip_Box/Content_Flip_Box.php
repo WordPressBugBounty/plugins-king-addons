@@ -1685,7 +1685,7 @@ $this->end_controls_section();
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $id = $this->get_id();
 
         $front_image_src = Group_Control_Image_Size::get_attachment_image_src($settings['king_addons_content_flip_box_front_image']['id'], 'king_addons_content_flip_box_front_image_size', $settings);

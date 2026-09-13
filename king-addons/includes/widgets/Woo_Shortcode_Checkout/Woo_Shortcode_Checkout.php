@@ -50,7 +50,7 @@ class Woo_Shortcode_Checkout extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-checkout';
+        return 'king-addons-icon king-addons-woo-shortcode-checkout';
     }
 
     /**
@@ -60,7 +60,7 @@ class Woo_Shortcode_Checkout extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -173,6 +173,7 @@ class Woo_Shortcode_Checkout extends Widget_Base
                 'label' => esc_html__('Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
+                    '{{WRAPPER}} form.woocommerce-checkout label' => 'color: {{VALUE}};',
                     '{{WRAPPER}} .woocommerce-checkout form label' => 'color: {{VALUE}};',
                 ],
             ]
@@ -182,7 +183,7 @@ class Woo_Shortcode_Checkout extends Widget_Base
             Group_Control_Typography::get_type(),
             [
                 'name' => 'label_typography',
-                'selector' => '{{WRAPPER}} .woocommerce-checkout form label',
+                'selector' => '{{WRAPPER}} form.woocommerce-checkout label, {{WRAPPER}} .woocommerce-checkout form label',
             ]
         );
 
@@ -192,6 +193,7 @@ class Woo_Shortcode_Checkout extends Widget_Base
                 'label' => esc_html__('Required Asterisk Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
+                    '{{WRAPPER}} form.woocommerce-checkout label .required' => 'color: {{VALUE}};',
                     '{{WRAPPER}} .woocommerce-checkout form label .required' => 'color: {{VALUE}};',
                 ],
             ]
@@ -680,14 +682,33 @@ class Woo_Shortcode_Checkout extends Widget_Base
             return;
         }
 
-        // In editor mode, ensure WC session and cart are available
-        if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-            if (is_null(WC()->cart)) {
-                wc_load_cart();
-            }
+        // The cart is not loaded on pages WooCommerce does not own, and the
+        // checkout shortcode returns an empty string without it - the visitor
+        // then sees a blank block. Load it in both contexts, not just the editor.
+        if (is_null(WC()->cart)) {
+            wc_load_cart();
         }
 
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo do_shortcode('[woocommerce_checkout]');
+        $output = do_shortcode('[woocommerce_checkout]');
+
+        if ('' === trim(wp_strip_all_tags($output))) {
+            Core::renderEditorHint(
+                esc_html__('Checkout renders once the cart has items. Add a product to preview it.', 'king-addons')
+            );
+
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo wc_print_notice(
+                esc_html__('Checkout is not available whilst your cart is empty.', 'king-addons'),
+                'notice',
+                [],
+                true
+            );
+
+            return;
+        }
+
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $output;
     }
 }

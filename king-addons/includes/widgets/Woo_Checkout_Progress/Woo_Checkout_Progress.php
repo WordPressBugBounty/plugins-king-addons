@@ -46,7 +46,7 @@ class Woo_Checkout_Progress extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-progress-tracker';
+        return 'king-addons-icon king-addons-woo-checkout-progress';
     }
 
     /**
@@ -161,6 +161,10 @@ class Woo_Checkout_Progress extends Abstract_Checkout_Widget
         $order_received = function_exists('is_order_received_page') && is_order_received_page();
         $in_checkout = $this->should_render() || $order_received;
         $in_cart = function_exists('is_cart') && is_cart();
+        if (!$this->can_use_builder_widgets()) {
+            $this->render_missing_checkout_notice();
+            return;
+        }
         if (!$in_checkout && !$in_cart) {
             $this->render_missing_checkout_notice();
             return;
@@ -169,7 +173,11 @@ class Woo_Checkout_Progress extends Abstract_Checkout_Widget
         $settings = $this->get_settings_for_display();
         $can_pro = king_addons_can_use_pro();
 
-        $layout = $settings['layout'] ?? 'bar';
+        // The value goes into a class name, so an unknown one has to fall back.
+        $layout = (string) ($settings['layout'] ?? 'bar');
+        if (!in_array($layout, ['bar', 'steps'], true)) {
+            $layout = 'bar';
+        }
         if ('steps' === $layout && !$can_pro) {
             $layout = 'bar';
         }

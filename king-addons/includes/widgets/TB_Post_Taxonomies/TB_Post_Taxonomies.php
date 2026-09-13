@@ -47,7 +47,7 @@ class TB_Post_Taxonomies extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-post-list';
+        return 'king-addons-icon king-addons-tb-post-taxonomies';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Post_Taxonomies extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -179,6 +179,7 @@ class TB_Post_Taxonomies extends Widget_Base
             [
                 'label' => esc_html__('Label Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Categories:', 'king-addons'),
                 'condition' => [
                     'kng_show_label' => 'yes',
@@ -201,6 +202,7 @@ class TB_Post_Taxonomies extends Widget_Base
             [
                 'label' => esc_html__('Separator', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => ', ',
             ]
         );
@@ -225,6 +227,7 @@ class TB_Post_Taxonomies extends Widget_Base
             [
                 'label' => esc_html__('Placeholder Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('No terms found.', 'king-addons'),
                 'condition' => [
                     'kng_empty_behavior' => 'placeholder',

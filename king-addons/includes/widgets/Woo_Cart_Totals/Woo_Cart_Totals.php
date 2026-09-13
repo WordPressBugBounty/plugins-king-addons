@@ -48,7 +48,7 @@ class Woo_Cart_Totals extends Abstract_Cart_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-woocommerce';
+        return 'king-addons-icon king-addons-woo-cart-totals';
     }
 
     /**
@@ -193,11 +193,14 @@ class Woo_Cart_Totals extends Abstract_Cart_Widget
         $settings = $this->get_settings_for_display();
         $sticky_class = !empty($settings['enable_sticky']) ? ' ka-woo-cart-totals--sticky' : '';
         $sticky_style = '';
-        if (!empty($settings['enable_sticky']) && isset($settings['sticky_offset'])) {
-            $sticky_style = 'style="--ka-cart-sticky-offset:' . esc_attr((string) (int) $settings['sticky_offset']) . 'px"';
+        if (!empty($settings['enable_sticky'])) {
+            // A cleared field is '' rather than unset, which pinned the block
+            // to the very top instead of falling back to the default offset.
+            $offset = (int) (($settings['sticky_offset'] ?? null) ?: 16);
+            $sticky_style = 'style="--ka-cart-sticky-offset:' . esc_attr((string) max(0, $offset)) . 'px"';
         }
 
-        echo '<div class="ka-woo-cart-totals' . esc_attr($sticky_class) . '" data-ka-cart="1" data-ajax-url="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($ajax_nonce) . '" ' . $sticky_style . '>';
+        echo '<div class="ka-woo-cart-totals' . $sticky_class . '" data-ka-cart="1" data-ajax-url="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($ajax_nonce) . '" ' . $sticky_style . '>';
         echo self::render_totals_block_html();
         echo '</div>';
     }

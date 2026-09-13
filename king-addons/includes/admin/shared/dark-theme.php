@@ -25,7 +25,7 @@ global $ka_theme_mode;
 $ka_theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $ka_allowed_theme_modes = ['dark', 'light', 'auto'];
 if (!in_array($ka_theme_mode, $ka_allowed_theme_modes, true)) {
-    $ka_theme_mode = 'dark';
+    $ka_theme_mode = 'auto';
 }
 
 /**

@@ -40,7 +40,7 @@ class WooCommerce_Grid extends Widget_Base
 
     public function get_categories()
     {
-        return ['king-addons'];
+        return ['king-addons-woo'];
     }
 
     public function get_keywords()
@@ -1568,9 +1568,7 @@ class WooCommerce_Grid extends Widget_Base
             ]
         );
 
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'woocommerce-grid', 'element_select', ['pro-lk', 'pro-shr', 'pro-sd']);
-
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'woocommerce-grid', 'element_select', ['pro-ws', 'pro-cm']);
+        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'woocommerce-grid', 'element_select', ['pro-lk', 'pro-shr', 'pro-sd', 'pro-ws', 'pro-cm']);
 
         $repeater->add_control(
             'element_location',
@@ -9791,7 +9789,7 @@ class WooCommerce_Grid extends Widget_Base
                 'iframeMaxWidth' => '60%',
                 'hash' => false,
                 'autoplay' => $settings['lightbox_popup_autoplay'],
-                'pause' => $settings['lightbox_popup_pause'] * 1000,
+                'pause' => Core::jsNumber($settings, 'lightbox_popup_pause', 5) * 1000,
                 'progressBar' => $settings['lightbox_popup_progressbar'],
                 'counter' => $settings['lightbox_popup_counter'],
                 'controls' => $settings['lightbox_popup_arrows'],

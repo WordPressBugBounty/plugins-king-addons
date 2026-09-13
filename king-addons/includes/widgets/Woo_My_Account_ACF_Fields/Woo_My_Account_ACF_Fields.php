@@ -9,6 +9,7 @@ namespace King_Addons;
 
 use Elementor\Controls_Manager;
 use Elementor\Widget_Base;
+use King_Addons\Woo_Builder\ACF_Fields;
 use King_Addons\Woo_Builder\Context as Woo_Context;
 
 if (!defined('ABSPATH')) {
@@ -59,7 +60,7 @@ class Woo_My_Account_ACF_Fields extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-field-text';
+        return 'king-addons-icon king-addons-woo-my-account-acf-fields';
     }
 
     /**
@@ -70,6 +71,16 @@ class Woo_My_Account_ACF_Fields extends Widget_Base
     public function get_categories(): array
     {
         return ['king-addons-woo-builder'];
+    }
+
+    /**
+     * Styles.
+     *
+     * @return array<int,string>
+     */
+    public function get_style_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-acf-fields-style'];
     }
 
     /**
@@ -97,6 +108,7 @@ class Woo_My_Account_ACF_Fields extends Widget_Base
             [
                 'label' => esc_html__('Heading', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Account Details', 'king-addons'),
             ]
         );
@@ -123,6 +135,10 @@ class Woo_My_Account_ACF_Fields extends Widget_Base
             return;
         }
 
+        if (!$in_builder && function_exists('is_wc_endpoint_url') && !is_wc_endpoint_url('edit-account')) {
+            return;
+        }
+
         if (!king_addons_can_use_pro()) {
             if (Woo_Context::is_editor()) {
                 echo '<div class="king-addons-woo-builder-notice">';
@@ -132,18 +148,12 @@ class Woo_My_Account_ACF_Fields extends Widget_Base
             return;
         }
 
-        $settings = $this->get_settings_for_display();
-        echo '<div class="ka-woo-account-acf-fields">';
-        if (!empty($settings['heading'])) {
-            echo '<h4 class="ka-woo-account-acf-fields__heading">' . esc_html($settings['heading']) . '</h4>';
+        if (!class_exists('King_Addons\\Woo_Builder\\ACF_Fields')) {
+            require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/ACF_Fields.php';
         }
-        /**
-         * Render ACF fields for My Account.
-         *
-         * Developers can hook into this action to output ACF forms/fields.
-         */
-        do_action('king_addons_my_account_acf_fields');
-        echo '</div>';
+
+        // A form of its own that saves the fields to the customer's profile.
+        ACF_Fields::render_account($this->get_settings_for_display(), (string) $this->get_id());
     }
 }
 

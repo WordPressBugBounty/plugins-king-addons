@@ -33,7 +33,7 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-gallery-grid';
+        return 'king-addons-icon king-addons-woo-product-images-gallery';
     }
 
     public function get_categories(): array
@@ -225,17 +225,9 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
             ]
         );
 
-        $this->add_control(
-            'masonry_row_height',
-            [
-                'label' => esc_html__('Masonry Row Height (px)', 'king-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 8,
-                'condition' => [
-                    'layout' => 'masonry',
-                ],
-            ]
-        );
+        // No "Masonry Row Height" control: the masonry layout is built with CSS
+        // columns, which have no row height to set, and the old control wrote a
+        // variable no stylesheet ever read.
 
         $this->add_control(
             'show_captions',
@@ -280,11 +272,17 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
         $this->add_control(
             'thumbs_per_row',
             [
-                'label' => sprintf(__('Thumbs per row %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                // Named for the thumbnail strip, but it drives the column count
+                // of the image grid itself - and masonry reads the same
+                // variable, so it has to be offered there too. Conditioned on
+                // grid alone, masonry could never be anything but four columns.
+                'label' => sprintf(__('Columns %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::NUMBER,
+                'min' => 1,
+                'max' => 8,
                 'default' => 4,
                 'condition' => [
-                    'layout' => 'grid',
+                    'layout' => ['grid', 'masonry'],
                 ],
             ]
         );
@@ -384,7 +382,13 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
         $settings = $this->get_settings_for_display();
         $can_pro = king_addons_can_use_pro();
 
-        $layout = $settings['layout'] ?? 'slider';
+        // The layout ends up in a class name and in a data attribute the script
+        // switches on, so an unknown value has to fall back rather than pass
+        // through.
+        $layout = (string) ($settings['layout'] ?? 'slider');
+        if (!in_array($layout, ['slider', 'grid', 'thumbs_left', 'thumbs_right', 'masonry'], true)) {
+            $layout = 'slider';
+        }
         if (in_array($layout, ['thumbs_left', 'thumbs_right', 'masonry'], true) && !$can_pro) {
             $layout = 'slider';
         }
@@ -399,7 +403,7 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
 
         $slides = [];
         foreach ($gallery as $image_id) {
-            $img_html = Group_Control_Image_Size::get_attachment_image_html($settings, 'main_image_size', $image_id);
+            $img_html = Core::getAttachmentImageHTML($settings, 'main_image_size', (int) $image_id);
             if (!$img_html) {
                 $img_html = wp_get_attachment_image($image_id, 'full');
             }
@@ -443,28 +447,53 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
             }
         }
 
-        $wrapper_classes = ['ka-woo-gallery', 'ka-woo-gallery--' . esc_attr($layout)];
+        // The stylesheet spells these with hyphens (ka-woo-gallery--thumbs-left),
+        // so a raw setting value produced a class nothing matched and both
+        // thumbs layouts fell back to looking like the plain slider.
+        $wrapper_classes = ['ka-woo-gallery', 'ka-woo-gallery--' . str_replace('_', '-', $layout)];
         if (!empty($settings['lightbox']) && $can_pro) {
             $wrapper_classes[] = 'ka-woo-gallery--lightbox';
         }
         if (!empty($settings['zoom_on_hover']) && $can_pro) {
             $wrapper_classes[] = 'ka-woo-gallery--zoom';
         }
-        $mobile_layout = $settings['mobile_layout'] ?? '';
-        if (!empty($mobile_layout) && $can_pro) {
+        $mobile_layout = (string) ($settings['mobile_layout'] ?? '');
+        if (!in_array($mobile_layout, ['', 'slider', 'grid'], true)) {
+            $mobile_layout = '';
+        }
+        if (!$can_pro) {
+            $mobile_layout = '';
+        }
+        if ('' !== $mobile_layout) {
             $wrapper_classes[] = 'ka-woo-gallery--mobile-' . $mobile_layout;
         }
-        $nav_skin = $settings['nav_skin'] ?? 'dark';
-        $dots_skin = $settings['dots_skin'] ?? 'dark';
-        $wrapper_classes[] = 'ka-woo-gallery--nav-' . esc_attr($nav_skin);
-        $wrapper_classes[] = 'ka-woo-gallery--dots-' . esc_attr($dots_skin);
-        $lightbox_skin = $settings['lightbox_skin'] ?? 'dark';
+
+        // Both skins are advertised as Pro in their labels; without this the
+        // badge was decorative and the free tier got them anyway. The class
+        // names below are built from these values, so they are checked too.
+        $skin = static function ($value, bool $allowed): string {
+            $value = (string) $value;
+            if (!$allowed || !in_array($value, ['dark', 'light'], true)) {
+                return 'dark';
+            }
+            return $value;
+        };
+        $nav_skin = $skin($settings['nav_skin'] ?? 'dark', $can_pro);
+        $dots_skin = $skin($settings['dots_skin'] ?? 'dark', $can_pro);
+        $wrapper_classes[] = 'ka-woo-gallery--nav-' . $nav_skin;
+        $wrapper_classes[] = 'ka-woo-gallery--dots-' . $dots_skin;
+        // The lightbox itself is Pro, so its skin is free to choose once you
+        // have it.
+        $lightbox_skin = $skin($settings['lightbox_skin'] ?? 'dark', true);
         if (!empty($settings['lightbox']) && $can_pro) {
-            $wrapper_classes[] = 'ka-woo-gallery--lightbox-' . esc_attr($lightbox_skin);
+            $wrapper_classes[] = 'ka-woo-gallery--lightbox-' . $lightbox_skin;
         }
 
-        $aspect = ($settings['aspect_ratio'] ?? '');
-        $aspect_attr = $aspect && $can_pro ? ' data-aspect="' . esc_attr($aspect) . '"' : '';
+        $aspect = (string) ($settings['aspect_ratio'] ?? '');
+        if (!in_array($aspect, ['1:1', '4:3', '3:4', '16:9', '9:16'], true)) {
+            $aspect = '';
+        }
+        $aspect_attr = ($aspect && $can_pro) ? ' data-aspect="' . esc_attr($aspect) . '"' : '';
 
         $data_attrs = [];
         $show_arrows = !empty($settings['show_arrows']) && !$is_grid_layout;
@@ -483,17 +512,15 @@ class Woo_Product_Images_Gallery extends Abstract_Single_Widget
         $data_attrs[] = 'data-lightbox-thumbs="' . ((!empty($settings['lightbox_thumbs']) && $can_pro) ? 'yes' : 'no') . '"';
 
         $style_vars = [];
-        $grid_cols = max(1, (int) ($settings['thumbs_per_row'] ?? 4));
+        $grid_cols = $can_pro ? max(1, (int) (($settings['thumbs_per_row'] ?? null) ?: 4)) : 4;
         if ($is_grid_layout) {
             $style_vars[] = '--ka-gallery-grid-cols:' . $grid_cols;
         }
         if ('masonry' === $layout && $can_pro) {
-            if (isset($settings['masonry_gap'])) {
-                $style_vars[] = '--ka-gallery-gap:' . (int) $settings['masonry_gap'] . 'px';
-            }
-            if (isset($settings['masonry_row_height'])) {
-                $style_vars[] = '--ka-gallery-row:' . (int) $settings['masonry_row_height'] . 'px';
-            }
+            // An untouched or cleared field is '' rather than unset, and would
+            // have collapsed the gap to zero.
+            $gap = (int) (($settings['masonry_gap'] ?? null) ?: 8);
+            $style_vars[] = '--ka-gallery-gap:' . max(0, $gap) . 'px';
         }
 
         $style_attr = empty($style_vars) ? '' : ' style="' . esc_attr(implode(';', $style_vars)) . '"';

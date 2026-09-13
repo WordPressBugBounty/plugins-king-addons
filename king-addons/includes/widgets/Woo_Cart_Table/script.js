@@ -63,6 +63,8 @@
 
     setNotices(wrapper, data.notices || '');
     initWrapper(wrapper);
+
+    document.body.dispatchEvent(new Event('wc_fragments_refreshed'));
   };
 
   const request = (wrapper, payload) => {
@@ -75,6 +77,13 @@
     const body = new URLSearchParams();
     body.append('action', 'ka_cart_update');
     body.append('nonce', nonce);
+    // Empty-cart copy, so the block rendered after the last item is removed
+    // matches the one a full page load produces.
+    ['emptyTitle', 'emptyMessage', 'emptyPrimaryText', 'emptyPrimaryUrl', 'emptySecondaryText', 'emptySecondaryUrl']
+      .forEach((prop) => {
+        const key = prop.replace(/[A-Z]/g, (c) => '_' + c.toLowerCase());
+        body.append(key, wrapper.dataset[prop] || '');
+      });
     Object.entries(payload).forEach(([k, v]) => body.append(k, v));
 
     wrapper.classList.add('loading');
@@ -105,6 +114,13 @@
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      const updates = [...form.querySelectorAll('input[name^="cart["][name$="[qty]"]')]
+        .map((input) => ({ key: getKeyFromInput(input), qty: input.value }))
+        .filter((item) => item.key);
+      updates.reduce(
+        (chain, item) => chain.then(() => request(wrapper, { op: 'qty', cart_item_key: item.key, qty: item.qty })),
+        Promise.resolve()
+      );
     });
 
     form.addEventListener('change', (e) => {

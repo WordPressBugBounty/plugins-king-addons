@@ -32,7 +32,7 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-cart';
+        return 'king-addons-icon king-addons-woo-product-add-to-cart';
     }
 
     public function get_categories(): array
@@ -65,6 +65,7 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Button Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Add to cart', 'king-addons'),
             ]
         );
@@ -74,6 +75,7 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('Buy now text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Buy now', 'king-addons'),
             ]
         );
@@ -150,6 +152,7 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('Success message %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Added to cart', 'king-addons'),
             ]
         );
@@ -159,6 +162,7 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('Error message %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Please choose product options.', 'king-addons'),
             ]
         );
@@ -329,18 +333,31 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
         $buy_text = $settings['button_text_buy'] ?? esc_html__('Buy now', 'king-addons');
 
         $this->add_render_attribute('wrapper', 'class', 'ka-woo-product-atc');
+        $this->add_render_attribute('wrapper', 'id', 'ka-satc-form-anchor');
         $this->add_render_attribute('wrapper', 'data-product-id', (string) $product->get_id());
         $this->add_render_attribute('wrapper', 'data-ajax', $ajax_enabled ? 'yes' : 'no');
-        $this->add_render_attribute('wrapper', 'data-redirect', esc_attr($redirect_after));
-        $this->add_render_attribute('wrapper', 'data-success', esc_attr($success_text));
-        $this->add_render_attribute('wrapper', 'data-error', esc_attr($error_text));
+        // Elementor escapes attribute values itself; escaping here too turned a
+        // quote in the message into &amp;#039;.
+        $this->add_render_attribute('wrapper', 'data-redirect', $redirect_after);
+        $this->add_render_attribute('wrapper', 'data-success', $success_text);
+        $this->add_render_attribute('wrapper', 'data-error', $error_text);
         $this->add_render_attribute('wrapper', 'data-has-variations', $is_variable ? 'yes' : 'no');
 
         echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
 
+        // Without AJAX the script never binds, so the button has to submit a real
+        // WooCommerce add-to-cart request - otherwise clicking it does nothing.
+        $use_form = !$ajax_enabled && !$is_variable && $product->is_purchasable() && $product->is_in_stock();
+
+        if ($use_form) {
+            echo '<form class="cart" method="post" enctype="multipart/form-data" action="'
+                . esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())) . '">';
+        }
+
         $qty_html = '';
         if (!empty($settings['show_quantity'])) {
-            $qty_html = '<div class="ka-woo-product-atc__qty"><input type="number" min="1" step="1" value="1" /></div>';
+            $qty_html = '<div class="ka-woo-product-atc__qty"><input type="number" class="qty" name="quantity" min="1" step="1" value="1" aria-label="'
+                . esc_attr__('Quantity', 'king-addons') . '" /></div>';
         }
 
         $button_classes = ['ka-woo-product-atc__button', 'single_add_to_cart_button', 'button'];
@@ -349,16 +366,23 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
             $icon_html = '<span class="ka-woo-product-atc__icon" aria-hidden="true"></span>';
         }
 
-        $button = '<button type="button" class="' . esc_attr(implode(' ', $button_classes)) . '" data-redirect="' . esc_attr($redirect_after) . '">' . $icon_html . '<span class="ka-woo-product-atc__text">' . esc_html($btn_text) . '</span></button>';
+        $button = '<button type="' . ($use_form ? 'submit' : 'button') . '" class="' . esc_attr(implode(' ', $button_classes)) . '"'
+            . ($use_form ? ' name="add-to-cart" value="' . esc_attr((string) $product->get_id()) . '"' : '')
+            . ' data-redirect="' . esc_attr($redirect_after) . '">' . $icon_html
+            . '<span class="ka-woo-product-atc__text">' . esc_html($btn_text) . '</span></button>';
         $buy_button = '';
         if ($show_buy_now) {
             $buy_button = '<button type="button" class="' . esc_attr(implode(' ', $button_classes)) . ' ka-woo-product-atc__button--buy" data-redirect="checkout">' . $icon_html . '<span class="ka-woo-product-atc__text">' . esc_html($buy_text) . '</span></button>';
         }
 
         if ('left' === ($settings['quantity_position'] ?? 'left') && !empty($settings['show_quantity'])) {
+            do_action('king_addons/woo_product_atc/before_buttons', $product);
             echo $qty_html . $button . $buy_button;
+            do_action('king_addons/woo_product_atc/after_buttons', $product);
         } else {
+            do_action('king_addons/woo_product_atc/before_buttons', $product);
             echo $button . $buy_button . $qty_html;
+            do_action('king_addons/woo_product_atc/after_buttons', $product);
         }
 
         if ($is_variable) {
@@ -366,6 +390,10 @@ class Woo_Product_Add_To_Cart extends Abstract_Single_Widget
         }
 
         echo '<div class="ka-woo-product-atc__state" aria-live="polite"></div>';
+
+        if ($use_form) {
+            echo '</form>';
+        }
 
         echo '</div>';
     }

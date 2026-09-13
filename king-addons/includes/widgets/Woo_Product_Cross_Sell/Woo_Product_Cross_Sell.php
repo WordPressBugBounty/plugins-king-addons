@@ -23,6 +23,16 @@ class Woo_Product_Cross_Sell extends Abstract_Single_Widget
         return 'woo_product_cross_sell';
     }
 
+    /**
+     * Style dependencies.
+     *
+     * @return array<int, string>
+     */
+    public function get_style_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-loop-style'];
+    }
+
     public function get_title(): string
     {
         return esc_html__('Cross-sell Products', 'king-addons');
@@ -30,7 +40,7 @@ class Woo_Product_Cross_Sell extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-products';
+        return 'king-addons-icon king-addons-woo-product-cross-sell';
     }
 
     public function get_categories(): array
@@ -81,11 +91,20 @@ class Woo_Product_Cross_Sell extends Abstract_Single_Widget
         }
 
         $settings = $this->get_settings_for_display();
-        $limit = max(1, (int) ($settings['products_limit'] ?? 4));
-        $columns = max(1, min(6, (int) ($settings['columns'] ?? 4)));
+        // ?: not ??: a cleared number field is '' rather than null, and
+        // (int) '' is 0 - both settings collapsed to one.
+        $limit = max(1, (int) (($settings['products_limit'] ?? null) ?: 4));
+        $columns = max(1, min(6, (int) (($settings['columns'] ?? null) ?: 4)));
 
         $ids = $product->get_cross_sell_ids();
         if (empty($ids)) {
+            // Nothing linked is a normal state; a blank widget in the editor
+            // is not.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('No cross-sells are linked to this product.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
         $ids = array_slice($ids, 0, $limit);

@@ -1,0 +1,118 @@
+/**
+ * ACF fields on the WooCommerce checkout and My Account pages.
+ *
+ * ACF's own field chrome is made for wp-admin: a border between fields, 15px
+ * of padding and labels in the admin's weight. On a storefront the fields
+ * should read like the WooCommerce rows around them, so the chrome is reset
+ * inside these blocks only and inputs take the theme's own input styles.
+ *
+ * The gap comes from --ka-acf-gap, which the widget's "Fields gap" control
+ * sets on the block itself; the fallback here never competes with it.
+ */
+.ka-acf-block {
+    display: grid;
+    gap: var(--ka-acf-gap, 12px);
+    margin: 0 0 1.5em;
+}
+
+.ka-woo-checkout-acf-fields__heading,
+.ka-woo-account-acf-fields__heading {
+    margin: 0;
+}
+
+.ka-acf-block .acf-fields.ka-acf-fields {
+    display: grid;
+    gap: var(--ka-acf-gap, 12px);
+    border: 0;
+}
+
+.ka-acf-block .acf-fields.ka-acf-fields > .acf-field {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.ka-acf-block .acf-field .acf-label {
+    margin: 0 0 6px;
+}
+
+/* ACF sets its labels to weight 500; WooCommerce's inherit the body weight. */
+.ka-acf-block .acf-field .acf-label label {
+    font-weight: inherit;
+}
+
+/* The fields carry WooCommerce's form-row class, whose "label { display:block }"
+   outweighs ACF's flex on the true/false switch label. ACF's place-items:center
+   is left behind and centres the switch in a block box. */
+.ka-acf-block .acf-field .acf-true-false label {
+    display: flex;
+}
+
+.ka-acf-block .acf-field .acf-label .description,
+.ka-acf-block .acf-field p.description {
+    margin: 4px 0 0;
+    font-size: 0.875em;
+    opacity: 0.8;
+}
+
+.ka-acf-block .acf-input input[type="text"],
+.ka-acf-block .acf-input input[type="email"],
+.ka-acf-block .acf-input input[type="url"],
+.ka-acf-block .acf-input input[type="number"],
+.ka-acf-block .acf-input input[type="password"],
+.ka-acf-block .acf-input select,
+.ka-acf-block .acf-input textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ka-acf-block .acf-checkbox-list,
+.ka-acf-block .acf-radio-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ka-acf-block .acf-checkbox-list label,
+.ka-acf-block .acf-radio-list label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 400;
+}
+
+.ka-acf-block.ka-acf-no-required-mark .acf-required {
+    display: none;
+}
+
+.ka-acf-block .ka-acf-preview__note {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+.ka-woo-account-acf-fields__actions {
+    margin: 0;
+}
+
+/* Stored fields on the thank-you page and in My Account > Orders. */
+.ka-order-acf-fields {
+    margin-top: 2em;
+}
+
+.ka-order-acf-fields__table th,
+.ka-order-acf-fields__table td {
+    text-align: start;
+    vertical-align: top;
+}
+
+.ka-order-acf-fields__table th {
+    width: 40%;
+    font-weight: 600;
+}
+
+.ka-order-acf-fields--block .ka-order-acf-fields__heading {
+    margin: 0;
+    font-size: clamp(16px, 0.984rem + ((1vw - 3.2px) * 0.809), 24px);
+}

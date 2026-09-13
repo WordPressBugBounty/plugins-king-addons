@@ -1,14 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
-  <rect x="10" y="10" width="50" height="80" rx="4" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <rect x="16" y="18" width="38" height="4" rx="2" fill="url(#g)" opacity="0.5"/>
-  <rect x="16" y="28" width="38" height="4" rx="2" fill="url(#g)" opacity="0.4"/>
-  <rect x="16" y="38" width="30" height="4" rx="2" fill="url(#g)" opacity="0.4"/>
-  <rect x="65" y="10" width="25" height="50" rx="4" fill="url(#g)" opacity="0.15"/>
-  <rect x="65" y="10" width="25" height="50" rx="4" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <rect x="69" y="16" width="17" height="4" rx="1" fill="url(#g)" opacity="0.6"/>
-  <rect x="69" y="24" width="17" height="4" rx="1" fill="url(#g)" opacity="0.5"/>
-  <rect x="69" y="32" width="17" height="4" rx="1" fill="url(#g)" opacity="0.5"/>
-  <rect x="69" y="42" width="17" height="12" rx="2" fill="url(#g)" opacity="0.8"/>
-  <path d="M82 70v10M77 77h10" stroke="url(#g)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+        <linearGradient id="wcss" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9B62FF"/>
+            <stop offset="100%" stop-color="#5B03FF"/>
+        </linearGradient>
+    </defs>
+    <rect x="6" y="8" width="22" height="32" rx="3" fill="none" stroke="url(#wcss)" stroke-width="2"/>
+    <rect x="10" y="13" width="14" height="2.5" rx="1.25" fill="url(#wcss)" opacity="0.5"/>
+    <rect x="10" y="19" width="14" height="2.5" rx="1.25" fill="url(#wcss)" opacity="0.35"/>
+    <rect x="10" y="25" width="10" height="2.5" rx="1.25" fill="url(#wcss)" opacity="0.35"/>
+    <rect x="32" y="8" width="10" height="22" rx="3" fill="url(#wcss)" opacity="0.18"/>
+    <rect x="32" y="8" width="10" height="22" rx="3" fill="none" stroke="url(#wcss)" stroke-width="2"/>
+    <rect x="34" y="12" width="6" height="2" rx="1" fill="url(#wcss)"/>
+    <rect x="34" y="17" width="6" height="8" rx="1.5" fill="url(#wcss)" opacity="0.75"/>
+    <circle cx="37" cy="36" r="4.5" fill="url(#wcss)"/>
+    <circle cx="37" cy="36" r="1.6" fill="#fff"/>
 </svg>

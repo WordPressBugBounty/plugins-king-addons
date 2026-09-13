@@ -47,7 +47,7 @@ class TB_Post_Navigation extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-arrow-right';
+        return 'king-addons-icon king-addons-tb-post-navigation';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Post_Navigation extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -154,6 +154,7 @@ class TB_Post_Navigation extends Widget_Base
             [
                 'label' => esc_html__('Previous Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Previous', 'king-addons'),
             ]
         );
@@ -163,6 +164,7 @@ class TB_Post_Navigation extends Widget_Base
             [
                 'label' => esc_html__('Next Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Next', 'king-addons'),
             ]
         );

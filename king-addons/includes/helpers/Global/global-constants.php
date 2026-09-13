@@ -44,11 +44,15 @@ const KING_ADDONS_EXT_PRICING_TABLE_BUILDER = false; // needs fixes
 const KING_ADDONS_EXT_FOMO_NOTIFICATIONS = false; // create the new extension for this
 
 // Extensions - Complex and the most important
+const KING_ADDONS_EXT_DYNAMIC_TAGS = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_EXT_LOOP_BUILDER = true; /** IN PROGRESS OF QA */
 const KING_ADDONS_EXT_THEME_BUILDER = true; /** IN PROGRESS OF QA */
 const KING_ADDONS_EXT_WOO_BUILDER = true; /** IN PROGRESS OF QA */
 
 // Extensions - Advanced segment
-const KING_ADDONS_EXT_WISHLIST = false;
+const KING_ADDONS_EXT_WISHLIST = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_EXT_FREE_SHIPPING_BAR = true;
+const KING_ADDONS_EXT_STICKY_ADD_TO_CART = true;
 const KING_ADDONS_EXT_IMAGE_OPTIMIZER = true; /** DONE */
 const KING_ADDONS_EXT_AI_SEO_TOOLS = true;
 
@@ -125,13 +129,13 @@ const KING_ADDONS_WGT_TABLE_BUILDER = false;
 const KING_ADDONS_WGT_MAINTENANCE_PAGE = false;
 const KING_ADDONS_WGT_COOKIE_PREFERENCES_BUTTON = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
 const KING_ADDONS_WGT_STICKY_VIDEO = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_BUTTON = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_COUNTER = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_ICON = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_MINI_LIST = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_MULTIPLE_LISTS_SWITCHER = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_PAGE = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
-const KING_ADDONS_WGT_WISHLIST_SHARE_BUTTONS = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
+const KING_ADDONS_WGT_WISHLIST_BUTTON = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_WGT_WISHLIST_COUNTER = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_WGT_WISHLIST_ICON = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_WGT_WISHLIST_MINI_LIST = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_WGT_WISHLIST_MULTIPLE_LISTS_SWITCHER = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_WGT_WISHLIST_PAGE = true; /** IN PROGRESS OF QA */
+const KING_ADDONS_WGT_WISHLIST_SHARE_BUTTONS = true; /** IN PROGRESS OF QA */
 const KING_ADDONS_WGT_WOOCOMMERCE_FLOATING_CART_ICON = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
 const KING_ADDONS_WGT_PRICING_TABLE_EXT = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
 
@@ -144,25 +148,27 @@ const KING_ADDONS_WGT_FACET_SEARCH = false;
 const KING_ADDONS_WGT_FACET_TAXONOMY = false;
 
 // Widgets - Theme Builder (NEW) - the numbers of new widgets added: 19
-const KING_ADDONS_WGT_TB_404_DESCRIPTION = false;
-const KING_ADDONS_WGT_TB_404_SEARCH_FORM = false;
-const KING_ADDONS_WGT_TB_404_TITLE = false;
-const KING_ADDONS_WGT_TB_ARCHIVE_DESCRIPTION = false;
-const KING_ADDONS_WGT_TB_ARCHIVE_PAGINATION = false;
-const KING_ADDONS_WGT_TB_ARCHIVE_POSTS = false;
-const KING_ADDONS_WGT_TB_ARCHIVE_RESULT_COUNT = false;
-const KING_ADDONS_WGT_TB_ARCHIVE_TITLE = false;
-const KING_ADDONS_WGT_TB_AUTHOR_BOX = false;
-const KING_ADDONS_WGT_TB_BACK_TO_HOME = false;
-const KING_ADDONS_WGT_TB_FEATURED_IMAGE = false;
-const KING_ADDONS_WGT_TB_POST_COMMENTS = false;
-const KING_ADDONS_WGT_TB_POST_CONTENT = false;
-const KING_ADDONS_WGT_TB_POST_EXCERPT = false;
-const KING_ADDONS_WGT_TB_POST_META = false;
-const KING_ADDONS_WGT_TB_POST_NAVIGATION = false;
-const KING_ADDONS_WGT_TB_POST_TAXONOMIES = false;
-const KING_ADDONS_WGT_TB_POST_TITLE = false;
-const KING_ADDONS_WGT_TB_RELATED_POSTS = false;
+const KING_ADDONS_WGT_TB_404_DESCRIPTION = true;
+const KING_ADDONS_WGT_TB_404_SEARCH_FORM = true;
+const KING_ADDONS_WGT_TB_SEARCH_RESULTS = true;
+const KING_ADDONS_WGT_TB_AUTHOR_INFO = true;
+const KING_ADDONS_WGT_TB_404_TITLE = true;
+const KING_ADDONS_WGT_TB_ARCHIVE_DESCRIPTION = true;
+const KING_ADDONS_WGT_TB_ARCHIVE_PAGINATION = true;
+const KING_ADDONS_WGT_TB_ARCHIVE_POSTS = true;
+const KING_ADDONS_WGT_TB_ARCHIVE_RESULT_COUNT = true;
+const KING_ADDONS_WGT_TB_ARCHIVE_TITLE = true;
+const KING_ADDONS_WGT_TB_AUTHOR_BOX = true;
+const KING_ADDONS_WGT_TB_BACK_TO_HOME = true;
+const KING_ADDONS_WGT_TB_FEATURED_IMAGE = true;
+const KING_ADDONS_WGT_TB_POST_COMMENTS = true;
+const KING_ADDONS_WGT_TB_POST_CONTENT = true;
+const KING_ADDONS_WGT_TB_POST_EXCERPT = true;
+const KING_ADDONS_WGT_TB_POST_META = true;
+const KING_ADDONS_WGT_TB_POST_NAVIGATION = true;
+const KING_ADDONS_WGT_TB_POST_TAXONOMIES = true;
+const KING_ADDONS_WGT_TB_POST_TITLE = true;
+const KING_ADDONS_WGT_TB_RELATED_POSTS = true;
 
 
 // Widgets - WooCommerce Builder (NEW) - phased rollout plan (52 widgets)
@@ -176,41 +182,41 @@ const KING_ADDONS_WGT_TB_RELATED_POSTS = false;
 // ================================
 
 // --- Core infra (required for everything) ---
-/* P1-01 */ const KING_ADDONS_WGT_WOO_PRODUCTS_GRID = false;            // Page: Shop & Category | Core listing output
-/* P1-02 */ const KING_ADDONS_WGT_WOO_PRODUCT_IMAGES_GALLERY = false;   // Page: Single Product | Visual anchor for PDP
-/* P1-03 */ const KING_ADDONS_WGT_WOO_PRODUCT_TITLE = false;             // Page: Single Product | qa test
-/* P1-04 */ const KING_ADDONS_WGT_WOO_PRODUCT_PRICE = false;            // Page: Single Product | Core commercial signal
-/* P1-05 */ const KING_ADDONS_WGT_WOO_PRODUCT_SHORT_DESCRIPTION = false;// Page: Single Product | Key pitch copy
-/* P1-06 */ const KING_ADDONS_WGT_WOO_PRODUCT_VARIATIONS = false;       // Page: Single Product | Must-have for variable products
-/* P1-07 */ const KING_ADDONS_WGT_WOO_PRODUCT_ADD_TO_CART = false;      // Page: Single Product | Purchase action
-/* P1-08 */ const KING_ADDONS_WGT_WOO_PRODUCT_STOCK = false;            // Page: Single Product | Availability signal
-/* P1-09 */ const KING_ADDONS_WGT_WOO_PRODUCT_TABS = false;             // Page: Single Product | Description + reviews baseline
+/* P1-01 */ const KING_ADDONS_WGT_WOO_PRODUCTS_GRID = true;               // Page: Archive | QA passed
+/* P1-02 */ const KING_ADDONS_WGT_WOO_PRODUCT_IMAGES_GALLERY = true;      // Page: Single Product | QA passed
+/* P1-03 */ const KING_ADDONS_WGT_WOO_PRODUCT_TITLE = true;              // Page: Single Product | QA passed
+/* P1-04 */ const KING_ADDONS_WGT_WOO_PRODUCT_PRICE = true;             // Page: Single Product | QA passed
+/* P1-05 */ const KING_ADDONS_WGT_WOO_PRODUCT_SHORT_DESCRIPTION = true; // Page: Single Product | QA passed
+/* P1-06 */ const KING_ADDONS_WGT_WOO_PRODUCT_VARIATIONS = true;        // Page: Single Product | QA passed
+/* P1-07 */ const KING_ADDONS_WGT_WOO_PRODUCT_ADD_TO_CART = true;       // Page: Single Product | QA passed
+/* P1-08 */ const KING_ADDONS_WGT_WOO_PRODUCT_STOCK = true;             // Page: Single Product | QA passed
+/* P1-09 */ const KING_ADDONS_WGT_WOO_PRODUCT_TABS = true;              // Page: Single Product | QA passed
 
 // --- Shop & Category completion ---
-/* P1-10 */ const KING_ADDONS_WGT_WOO_PRODUCTS_SORTING = false;         // Page: Shop & Category | Sort dropdown
-/* P1-11 */ const KING_ADDONS_WGT_WOO_PRODUCTS_RESULT_COUNT = false;    // Page: Shop & Category | Result count text
-/* P1-12 */ const KING_ADDONS_WGT_WOO_PRODUCTS_PAGINATION = false;      // Page: Shop & Category | Paging navigation
-/* P1-13 */ const KING_ADDONS_WGT_WOO_ARCHIVE_TITLE = false;            // Page: Shop & Category | Category/shop title
+/* P1-10 */ const KING_ADDONS_WGT_WOO_PRODUCTS_SORTING = true;            // Page: Archive | QA passed
+/* P1-11 */ const KING_ADDONS_WGT_WOO_PRODUCTS_RESULT_COUNT = true;       // Page: Archive | QA passed
+/* P1-12 */ const KING_ADDONS_WGT_WOO_PRODUCTS_PAGINATION = true;         // Page: Archive | QA passed
+/* P1-13 */ const KING_ADDONS_WGT_WOO_ARCHIVE_TITLE = true;               // Page: Archive | QA passed
 
 // --- Cart completion ---
-/* P1-14 */ const KING_ADDONS_WGT_WOO_CART_TABLE = false;               // Page: Cart | Line items table
-/* P1-15 */ const KING_ADDONS_WGT_WOO_CART_TOTALS = false;              // Page: Cart | Totals + proceed to checkout
-/* P1-16 */ const KING_ADDONS_WGT_WOO_CART_EMPTY = false;               // Page: Cart | Empty state handling
+/* P1-14 */ const KING_ADDONS_WGT_WOO_CART_TABLE = true;                  // Page: Cart | QA passed
+/* P1-15 */ const KING_ADDONS_WGT_WOO_CART_TOTALS = true;                 // Page: Cart | QA passed
+/* P1-16 */ const KING_ADDONS_WGT_WOO_CART_EMPTY = true;                  // Page: Cart | QA passed
 
 // --- Checkout completion ---
-/* P1-17 */ const KING_ADDONS_WGT_WOO_CHECKOUT_FORM = false;            // Page: Checkout | Billing/shipping fields + notices
-/* P1-18 */ const KING_ADDONS_WGT_WOO_CHECKOUT_ORDER_SUMMARY = false;   // Page: Checkout | Order review table
-/* P1-19 */ const KING_ADDONS_WGT_WOO_CHECKOUT_PAYMENT = false;         // Page: Checkout | Payment methods + payment box
-/* P1-20 */ const KING_ADDONS_WGT_WOO_CHECKOUT_PLACE_ORDER = false;     // Page: Checkout | Place order button + terms
+/* P1-17 */ const KING_ADDONS_WGT_WOO_CHECKOUT_FORM = true;              // Page: Checkout | QA passed
+/* P1-18 */ const KING_ADDONS_WGT_WOO_CHECKOUT_ORDER_SUMMARY = true;     // Page: Checkout | QA passed
+/* P1-19 */ const KING_ADDONS_WGT_WOO_CHECKOUT_PAYMENT = true;           // Page: Checkout | QA passed
+/* P1-20 */ const KING_ADDONS_WGT_WOO_CHECKOUT_PLACE_ORDER = true;       // Page: Checkout | QA passed
 
 // --- My Account completion ---
-/* P1-21 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_NAVIGATION = false;    // Page: My Account | Menu/tabs
-/* P1-22 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_CONTENT = false;       // Page: My Account | Endpoint content renderer/router container
-/* P1-23 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DASHBOARD = false;     // Page: My Account | Default landing content
-/* P1-24 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_LOGOUT = false;        // Page: My Account | Logout link/button
+/* P1-21 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_NAVIGATION = true;      // Page: My Account | QA passed
+/* P1-22 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_CONTENT = true;         // Page: My Account | QA passed
+/* P1-23 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DASHBOARD = true;       // Page: My Account | QA passed
+/* P1-24 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_LOGOUT = true;          // Page: My Account | QA passed
 
 // --- MVP polish (optional inside Phase 1, but recommended if time allows) ---
-/* P1-25 */ const KING_ADDONS_WGT_WOO_PRODUCT_RELATED = false;          // Page: Single Product | Common expectation, improves UX
+/* P1-25 */ const KING_ADDONS_WGT_WOO_PRODUCT_RELATED = true;             // Page: Single Product | QA passed
 
 
 // ================================
@@ -219,30 +225,30 @@ const KING_ADDONS_WGT_TB_RELATED_POSTS = false;
 // ================================
 
 // Cart
-/* P2-01 */ const KING_ADDONS_WGT_WOO_CART_COUPON_FORM = false;         // Page: Cart | Coupon input
-/* P2-02 */ const KING_ADDONS_WGT_WOO_CART_CROSS_SELLS = false;         // Page: Cart | Cross-sells block
+/* P2-01 */ const KING_ADDONS_WGT_WOO_CART_COUPON_FORM = true;           // Page: Cart | QA passed
+/* P2-02 */ const KING_ADDONS_WGT_WOO_CART_CROSS_SELLS = true;           // Page: Cart | QA passed
 
 // Checkout
-/* P2-03 */ const KING_ADDONS_WGT_WOO_CHECKOUT_LOGIN = false;           // Page: Checkout | Returning customer login
-/* P2-04 */ const KING_ADDONS_WGT_WOO_CHECKOUT_COUPON = false;          // Page: Checkout | Coupon on checkout
+/* P2-03 */ const KING_ADDONS_WGT_WOO_CHECKOUT_LOGIN = true;             // Page: Checkout | QA passed
+/* P2-04 */ const KING_ADDONS_WGT_WOO_CHECKOUT_COUPON = true;            // Page: Checkout | QA passed
 
 // Shop & Category
-/* P2-05 */ const KING_ADDONS_WGT_WOO_ARCHIVE_DESCRIPTION = false;      // Page: Shop & Category | Term description
-/* P2-06 */ const KING_ADDONS_WGT_WOO_ARCHIVE_BANNER = false;           // Page: Shop & Category | Hero/banner area
+/* P2-05 */ const KING_ADDONS_WGT_WOO_ARCHIVE_DESCRIPTION = true;        // Page: Shop & Category | QA passed
+/* P2-06 */ const KING_ADDONS_WGT_WOO_ARCHIVE_BANNER = true;             // Page: Shop & Category | QA passed
 
 // Single Product
-/* P2-07 */ const KING_ADDONS_WGT_WOO_PRODUCT_BREADCRUMBS = false;      // Page: Single Product | Navigation clarity
-/* P2-08 */ const KING_ADDONS_WGT_WOO_PRODUCT_RATING = false;           // Page: Single Product | Social proof
-/* P2-09 */ const KING_ADDONS_WGT_WOO_PRODUCT_SKU = false;              // Page: Single Product | Merchant ops
-/* P2-10 */ const KING_ADDONS_WGT_WOO_PRODUCT_META = false;             // Page: Single Product | Categories/tags meta
-/* P2-11 */ const KING_ADDONS_WGT_WOO_PRODUCT_FULL_DESCRIPTION = false; // Page: Single Product | If separate from tabs needed
-/* P2-12 */ const KING_ADDONS_WGT_WOO_PRODUCT_UPSELL = false;           // Page: Single Product | Upsells
-/* P2-13 */ const KING_ADDONS_WGT_WOO_PRODUCT_CROSS_SELL = false;       // Page: Single Product | Cross-sells (PDP)
+/* P2-07 */ const KING_ADDONS_WGT_WOO_PRODUCT_BREADCRUMBS = true;         // Page: Single Product | QA passed
+/* P2-08 */ const KING_ADDONS_WGT_WOO_PRODUCT_RATING = true;              // Page: Single Product | QA passed
+/* P2-09 */ const KING_ADDONS_WGT_WOO_PRODUCT_SKU = true;                 // Page: Single Product | QA passed
+/* P2-10 */ const KING_ADDONS_WGT_WOO_PRODUCT_META = true;                // Page: Single Product | QA passed
+/* P2-11 */ const KING_ADDONS_WGT_WOO_PRODUCT_FULL_DESCRIPTION = true;    // Page: Single Product | QA passed
+/* P2-12 */ const KING_ADDONS_WGT_WOO_PRODUCT_UPSELL = true;              // Page: Single Product | QA passed
+/* P2-13 */ const KING_ADDONS_WGT_WOO_PRODUCT_CROSS_SELL = true;          // Page: Single Product | QA passed
 
 // My Account
-/* P2-14 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ORDERS = false;        // Page: My Account | Orders list
-/* P2-15 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ORDER_DETAILS = false; // Page: My Account | Single order details
-/* P2-16 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ADDRESS = false;       // Page: My Account | Addresses endpoint
+/* P2-14 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ORDERS = true;      // Page: My Account | QA passed
+/* P2-15 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ORDER_DETAILS = true;      // Page: My Account | QA passed
+/* P2-16 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ADDRESS = true;      // Page: My Account | QA passed
 
 
 // ================================
@@ -251,18 +257,18 @@ const KING_ADDONS_WGT_TB_RELATED_POSTS = false;
 // ================================
 
 // Checkout
-/* P3-01 */ const KING_ADDONS_WGT_WOO_CHECKOUT_STEPS = false;           // Page: Checkout | Stepper UI
-/* P3-02 */ const KING_ADDONS_WGT_WOO_CHECKOUT_PROGRESS = false;        // Page: Checkout | Progress indicator
-/* P3-03 */ const KING_ADDONS_WGT_WOO_CHECKOUT_STICKY_SIDEBAR = false;  // Page: Checkout | Sticky summary/sidebar
+/* P3-01 */ const KING_ADDONS_WGT_WOO_CHECKOUT_STEPS = true;      // Page: Checkout | QA passed
+/* P3-02 */ const KING_ADDONS_WGT_WOO_CHECKOUT_PROGRESS = true;      // Page: Checkout | QA passed
+/* P3-03 */ const KING_ADDONS_WGT_WOO_CHECKOUT_STICKY_SIDEBAR = true;      // Page: Checkout | QA passed
 
 // Single Product
-/* P3-04 */ const KING_ADDONS_WGT_WOO_PRODUCT_BADGES = false;           // Page: Single Product | Sale/new/out-of-stock badges
-/* P3-05 */ const KING_ADDONS_WGT_WOO_PRODUCT_COUNTDOWN = false;        // Page: Single Product | Promo countdown
-/* P3-06 */ const KING_ADDONS_WGT_WOO_PRODUCT_CUSTOM_TABS = false;      // Page: Single Product | Extra tabs
+/* P3-04 */ const KING_ADDONS_WGT_WOO_PRODUCT_BADGES = true;      // Page: Single Product | QA passed
+/* P3-05 */ const KING_ADDONS_WGT_WOO_PRODUCT_COUNTDOWN = true;      // Page: Single Product | QA passed
+/* P3-06 */ const KING_ADDONS_WGT_WOO_PRODUCT_CUSTOM_TABS = true;      // Page: Single Product | QA passed
 
 // My Account
-/* P3-07 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DETAILS = false;       // Page: My Account | Account details form
-/* P3-08 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DOWNLOADS = false;     // Page: My Account | Downloads endpoint
+/* P3-07 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DETAILS = true;      // Page: My Account | QA passed
+/* P3-08 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DOWNLOADS = true;      // Page: My Account | QA passed
 
 
 // ================================
@@ -270,9 +276,9 @@ const KING_ADDONS_WGT_TB_RELATED_POSTS = false;
 // Recommended order inside Phase 4
 // ================================
 
-/* P4-01 */ const KING_ADDONS_WGT_WOO_PRODUCT_ACF_FIELD = false;        // Page: Single Product | ACF output field
-/* P4-02 */ const KING_ADDONS_WGT_WOO_CHECKOUT_ACF_FIELDS = false;      // Page: Checkout | ACF fields block
-/* P4-03 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ACF_FIELDS = false;    // Page: My Account | ACF fields block
+/* P4-01 */ const KING_ADDONS_WGT_WOO_PRODUCT_ACF_FIELD = true;      // Page: see phase notes | QA passed
+/* P4-02 */ const KING_ADDONS_WGT_WOO_CHECKOUT_ACF_FIELDS = true;      // Page: see phase notes | QA passed
+/* P4-03 */ const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ACF_FIELDS = true;      // Page: see phase notes | QA passed
 
 
 // ================================
@@ -292,59 +298,5 @@ const KING_ADDONS_WGT_WOO_SHORTCODE_PRODUCT_CATEGORIES = true; // [product_categ
 const KING_ADDONS_WGT_WOO_SHORTCODE_ADD_TO_CART = true;        // [add_to_cart] button for specific product
 const KING_ADDONS_WGT_WOO_SHORTCODE_SHOP_MESSAGES = true;      // [shop_messages] store notices/messages
 
-
-/** ------------------------------------------------------- **/
-// SHORT LIST OF ALL WOO WIDGET CONSTANTS FOR EASY ACCESS
-
-// const KING_ADDONS_WGT_WOO_ARCHIVE_BANNER = false;
-// const KING_ADDONS_WGT_WOO_ARCHIVE_DESCRIPTION = false;
-// const KING_ADDONS_WGT_WOO_ARCHIVE_TITLE = false;
-// const KING_ADDONS_WGT_WOO_CART_COUPON_FORM = false;
-// const KING_ADDONS_WGT_WOO_CART_CROSS_SELLS = false;
-// const KING_ADDONS_WGT_WOO_CART_EMPTY = false;
-// const KING_ADDONS_WGT_WOO_CART_TABLE = false;
-// const KING_ADDONS_WGT_WOO_CART_TOTALS = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_ACF_FIELDS = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_COUPON = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_FORM = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_LOGIN = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_ORDER_SUMMARY = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_PAYMENT = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_PLACE_ORDER = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_PROGRESS = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_STEPS = false;
-// const KING_ADDONS_WGT_WOO_CHECKOUT_STICKY_SIDEBAR = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ACF_FIELDS = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ADDRESS = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_CONTENT = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DASHBOARD = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DETAILS = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_DOWNLOADS = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_LOGOUT = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_NAVIGATION = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ORDER_DETAILS = false;
-// const KING_ADDONS_WGT_WOO_MY_ACCOUNT_ORDERS = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_ACF_FIELD = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_ADD_TO_CART = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_BADGES = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_BREADCRUMBS = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_COUNTDOWN = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_CROSS_SELL = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_CUSTOM_TABS = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_FULL_DESCRIPTION = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_IMAGES_GALLERY = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_META = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_PRICE = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_RATING = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_RELATED = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_SHORT_DESCRIPTION = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_SKU = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_STOCK = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_TABS = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_TITLE = true; // qa test
-// const KING_ADDONS_WGT_WOO_PRODUCT_UPSELL = false;
-// const KING_ADDONS_WGT_WOO_PRODUCT_VARIATIONS = false;
-// const KING_ADDONS_WGT_WOO_PRODUCTS_GRID = false;
-// const KING_ADDONS_WGT_WOO_PRODUCTS_PAGINATION = false;
-// const KING_ADDONS_WGT_WOO_PRODUCTS_RESULT_COUNT = false;
-// const KING_ADDONS_WGT_WOO_PRODUCTS_SORTING = false;
+// Loop Builder
+const KING_ADDONS_WGT_LOOP_GRID = true;                        // Page: any | Repeats a Loop Builder item template

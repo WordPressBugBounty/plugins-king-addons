@@ -47,7 +47,7 @@ class Woo_My_Account_Dashboard extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-dashboard';
+        return 'king-addons-icon king-addons-woo-my-account-dashboard';
     }
 
     /**
@@ -165,8 +165,19 @@ class Woo_My_Account_Dashboard extends Widget_Base
             return;
         }
 
+        if (!$in_builder && function_exists('is_wc_endpoint_url') && is_wc_endpoint_url()) {
+            return;
+        }
+
+        if (!$in_builder && class_exists(__NAMESPACE__ . '\\Woo_My_Account_Content') && Woo_My_Account_Content::is_custom_endpoint_request()) {
+            return;
+        }
+
         $settings = $this->get_settings_for_display();
-        $orders_count = wc_get_customer_order_count(get_current_user_id());
+        // A logged-out visitor has no orders to count, and wc_get_customer_order_count(0)
+        // is a pointless query - the dashboard belongs to a signed-in customer.
+        $user_id = get_current_user_id();
+        $orders_count = $user_id > 0 ? wc_get_customer_order_count($user_id) : 0;
         $can_pro = king_addons_can_use_pro();
 
         echo '<div class="ka-woo-my-account-dashboard">';
@@ -180,7 +191,7 @@ class Woo_My_Account_Dashboard extends Widget_Base
         }
 
         if (($settings['show_downloads'] ?? 'yes') === 'yes' && function_exists('wc_get_customer_available_downloads')) {
-            $downloads = wc_get_customer_available_downloads(get_current_user_id());
+            $downloads = $user_id > 0 ? wc_get_customer_available_downloads($user_id) : [];
             echo '<div class="ka-woo-account-card">';
             echo '<div class="ka-woo-account-card__label">' . esc_html__('Downloads', 'king-addons') . '</div>';
             echo '<div class="ka-woo-account-card__value">' . esc_html((string) count($downloads)) . '</div>';
@@ -202,7 +213,12 @@ class Woo_My_Account_Dashboard extends Widget_Base
             foreach ($settings['custom_cards'] as $card) {
                 $title = $card['title'] ?? '';
                 $value = $card['value'] ?? '';
+                // esc_url() throws on an array, which would take the page down.
                 $url = $card['url'] ?? '';
+                if (is_array($url)) {
+                    $url = $url['url'] ?? '';
+                }
+                $url = is_scalar($url) ? (string) $url : '';
                 echo '<div class="ka-woo-account-card">';
                 if ($title) {
                     echo '<div class="ka-woo-account-card__label">' . esc_html($title) . '</div>';

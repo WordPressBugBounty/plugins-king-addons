@@ -35,7 +35,7 @@ class Interactive_Steps_Progress extends Widget_Base
 
     public function get_icon(): string
     {
-        return 'eicon-steps';
+        return 'king-addons-icon king-addons-interactive-steps-progress';
     }
 
     public function get_categories(): array

@@ -2197,7 +2197,8 @@ $this->end_controls_section();
     public function render_repeater_button($settings, $class, $item)
     {
         echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
-        echo '<a ' . $this->get_render_attribute_string('accordion_btn_url' . $item['_id']) . ' class="king-addons-button-effect ' . $this->get_settings_for_display()['button_animation'] . '">';
+        $button_animation = sanitize_html_class((string) ($this->get_settings_for_display()['button_animation'] ?? ''));
+        echo '<a ' . $this->get_render_attribute_string('accordion_btn_url' . $item['_id']) . ' class="king-addons-button-effect ' . esc_attr($button_animation) . '">';
         if ('before' === $settings['element_extra_icon_pos']) {
             echo '<i class="king-addons-img-accordion-extra-icon-left ' . esc_attr($settings['element_extra_icon']['value']) . '"></i>';
         }

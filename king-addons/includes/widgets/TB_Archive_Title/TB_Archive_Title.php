@@ -47,7 +47,7 @@ class TB_Archive_Title extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-archive-title';
+        return 'king-addons-icon king-addons-tb-archive-title';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Archive_Title extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -172,6 +172,7 @@ class TB_Archive_Title extends Widget_Base
             [
                 'label' => esc_html__('Custom Prefix Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'placeholder' => esc_html__('Posts in', 'king-addons'),
                 'condition' => [
                     'kng_prefix_mode' => 'custom',
@@ -298,13 +299,28 @@ class TB_Archive_Title extends Widget_Base
             $tag = 'h1';
         }
 
-        $title = get_the_archive_title();
+        // get_the_archive_title() has nothing to say on a search page and falls
+        // back to a bare "Archives", so the Search template needs the query.
+        if (is_search()) {
+            $title = sprintf(
+                /* translators: %s: the search phrase the visitor typed */
+                esc_html__('Search results for: %s', 'king-addons'),
+                get_search_query()
+            );
+        } else {
+            $title = get_the_archive_title();
+        }
+
         if ('remove' === ($settings['kng_prefix_mode'] ?? 'default')) {
             $title = preg_replace('/^[^:]+:\\s*/', '', $title);
         }
 
+        // Custom prefix replaces WordPress's "Category:" / "Tag:" prefix.
+        // Prepending to the already-prefixed string produced
+        // "ARCH-OK Category: Journal" instead of "ARCH-OK Journal".
         if ('custom' === ($settings['kng_prefix_mode'] ?? 'default') && $is_pro && !empty($settings['kng_custom_prefix'])) {
-            $title = sprintf('%s %s', $settings['kng_custom_prefix'], $title);
+            $bare = preg_replace('/^[^:]+:\\s*/', '', (string) $title);
+            $title = sprintf('%s %s', $settings['kng_custom_prefix'], $bare);
         }
 
         $title = wp_strip_all_tags((string) $title);

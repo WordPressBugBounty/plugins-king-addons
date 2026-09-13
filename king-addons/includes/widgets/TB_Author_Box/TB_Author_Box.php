@@ -50,7 +50,7 @@ class TB_Author_Box extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-person';
+        return 'king-addons-icon king-addons-tb-author-box';
     }
 
     /**
@@ -80,7 +80,7 @@ class TB_Author_Box extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -202,6 +202,7 @@ class TB_Author_Box extends Widget_Base
             [
                 'label' => esc_html__('Custom URL', 'king-addons'),
                 'type' => Controls_Manager::URL,
+                'dynamic' => ['active' => true],
                 'placeholder' => 'https://example.com',
                 'condition' => [
                     'kng_link_type' => 'custom',
@@ -438,8 +439,8 @@ class TB_Author_Box extends Widget_Base
                 $url = get_author_posts_url($author_id);
                 $name_html = '<a href="' . esc_url($url) . '">' . $name_html . '</a>';
             } elseif ('custom' === $link_type && $is_pro && !empty($settings['kng_custom_link']['url'])) {
-                $url = $settings['kng_custom_link']['url'];
-                $name_html = '<a href="' . esc_url($url) . '">' . $name_html . '</a>';
+                $this->add_link_attributes('kng_author_name', $settings['kng_custom_link']);
+                $name_html = '<a ' . $this->get_render_attribute_string('kng_author_name') . '>' . $name_html . '</a>';
             }
 
             echo '<div class="king-addons-tb-author-box__name">' . $name_html . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -455,12 +456,17 @@ class TB_Author_Box extends Widget_Base
 
         if ($is_pro && !empty($settings['kng_social_links'])) {
             echo '<div class="king-addons-tb-author-box__social">';
+            $social_i = 0;
             foreach ($settings['kng_social_links'] as $social) {
                 if (empty($social['kng_social_url']['url'])) {
                     continue;
                 }
+                $key = 'kng_social_' . sanitize_html_class((string) ($social['_id'] ?? $social_i));
+                $social_i++;
+                $this->add_link_attributes($key, $social['kng_social_url']);
+                $this->add_render_attribute($key, 'class', 'king-addons-tb-author-box__social-link');
                 $label = $social['kng_social_label'] ?? esc_html__('Social', 'king-addons');
-                echo '<a class="king-addons-tb-author-box__social-link" href="' . esc_url($social['kng_social_url']['url']) . '">' . esc_html($label) . '</a>';
+                echo '<a ' . $this->get_render_attribute_string($key) . '>' . esc_html($label) . '</a>';
             }
             echo '</div>';
         }

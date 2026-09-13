@@ -139,9 +139,18 @@ class View_Submissions_Pro
     public function king_addons_meta_box_callback($post, $metabox)
     {
         echo '<button class="king-addons-edit-submissions button button-primary">' . esc_html__('Edit', 'king-addons') . '</button>';
+        $this->render_payment_block($post);
         foreach (get_post_meta($post->ID) as $key => $value) {
 
-            $exclude = ['king_addons_form_id', 'king_addons_form_name', 'king_addons_form_page', 'king_addons_form_page_id', 'king_addons_user_agent', 'king_addons_user_ip', 'king_addons_submission_read_status', '_edit_lock', '_edit_last'];
+            $exclude = [
+                'king_addons_form_id', 'king_addons_form_name', 'king_addons_form_page', 'king_addons_form_page_id',
+                'king_addons_user_agent', 'king_addons_user_ip', 'king_addons_submission_read_status',
+                '_edit_lock', '_edit_last',
+                'king_addons_payment_status', 'king_addons_payment_provider', 'king_addons_payment_txn_id',
+                'king_addons_payment_amount', 'king_addons_payment_currency', 'king_addons_payment_time',
+                'king_addons_payment_events', 'king_addons_paypal_order_id', 'king_addons_stripe_session_id',
+                'king_addons_payment_expected_amount', 'king_addons_payment_expected_currency',
+            ];
 
             if (in_array($key, $exclude)) {
                 continue;
@@ -212,6 +221,46 @@ class View_Submissions_Pro
 
     }
 
+    /**
+     * Payment status block on the submission card.
+     *
+     * @param \WP_Post $post Submission.
+     *
+     * @return void
+     */
+    private function render_payment_block($post): void
+    {
+        $status = sanitize_key((string) get_post_meta($post->ID, 'king_addons_payment_status', true));
+        if ('' === $status) {
+            return;
+        }
+
+        $provider = sanitize_key((string) get_post_meta($post->ID, 'king_addons_payment_provider', true));
+        $txn = sanitize_text_field((string) get_post_meta($post->ID, 'king_addons_payment_txn_id', true));
+        $amount = get_post_meta($post->ID, 'king_addons_payment_amount', true);
+        $currency = sanitize_text_field((string) get_post_meta($post->ID, 'king_addons_payment_currency', true));
+        $time = absint(get_post_meta($post->ID, 'king_addons_payment_time', true));
+
+        echo '<div class="king-addons-submissions-wrap">';
+        echo '<label>' . esc_html__('Payment', 'king-addons') . '</label>';
+        echo '<p>';
+        echo esc_html($status);
+        if ('' !== $provider) {
+            echo ' · ' . esc_html($provider);
+        }
+        if ('' !== (string) $amount) {
+            echo ' · ' . esc_html((string) $amount . ' ' . $currency);
+        }
+        if ('' !== $txn) {
+            echo ' · ' . esc_html($txn);
+        }
+        if ($time) {
+            echo ' · ' . esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $time));
+        }
+        echo '</p>';
+        echo '</div>';
+    }
+
     public function register_post_type_king_addons_submissions()
     {
         $labels = [
@@ -253,6 +302,7 @@ class View_Submissions_Pro
 
         $columns['main'] = __('Main', 'king-addons');
         $columns['action_status'] = __('Action Status', 'king-addons');
+        $columns['payment'] = __('Payment', 'king-addons');
         $columns['form_id'] = __('Form', 'king-addons');
         $columns['page'] = __('Page', 'king-addons');
         $columns['post_id'] = __('ID', 'king-addons');
@@ -306,6 +356,20 @@ class View_Submissions_Pro
             case 'action_status':
 
                 echo esc_html($action_status);
+                break;
+
+            case 'payment':
+                $pay_status = sanitize_key((string) get_post_meta($post_id, 'king_addons_payment_status', true));
+                if ('' === $pay_status) {
+                    echo '&mdash;';
+                    break;
+                }
+                $pay_amount = get_post_meta($post_id, 'king_addons_payment_amount', true);
+                $pay_currency = sanitize_text_field((string) get_post_meta($post_id, 'king_addons_payment_currency', true));
+                echo esc_html($pay_status);
+                if ('' !== (string) $pay_amount) {
+                    echo ' ' . esc_html((string) $pay_amount . ' ' . $pay_currency);
+                }
                 break;
 
             case 'form_id':

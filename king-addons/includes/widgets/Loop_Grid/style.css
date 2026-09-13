@@ -1,0 +1,142 @@
+.king-addons-loop-grid__items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.king-addons-loop-grid__item {
+    min-width: 0;
+}
+
+/* Cards line up only when the item itself is allowed to fill the track. */
+.king-addons-loop-grid--equal .king-addons-loop-grid__items {
+    align-items: stretch;
+}
+
+.king-addons-loop-grid--equal .king-addons-loop-grid__item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.king-addons-loop-grid--equal .king-addons-loop-grid__item > .elementor {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.king-addons-loop-grid__footer {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.king-addons-loop-grid__pagination {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.king-addons-loop-grid__pagination .page-numbers {
+    display: inline-block;
+    padding: 6px 12px;
+    text-decoration: none;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    line-height: 1.2;
+}
+
+.king-addons-loop-grid__pagination .page-numbers.current {
+    font-weight: 700;
+}
+
+.king-addons-loop-grid__load-more {
+    padding: 10px 22px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    line-height: 1.2;
+}
+
+.king-addons-loop-grid__load-more[disabled] {
+    opacity: .6;
+    cursor: default;
+}
+
+.king-addons-loop-grid__load-more.king-addons-loop-grid--busy {
+    opacity: .6;
+    pointer-events: none;
+}
+
+.king-addons-loop-grid__notice {
+    padding: 12px 16px;
+    border: 1px dashed #c7c7c7;
+    border-radius: 4px;
+    color: #6d6d6d;
+    font-size: 13px;
+}
+
+.king-addons-loop-grid--masonry .king-addons-loop-grid__items {
+    display: block;
+    position: relative;
+}
+
+.king-addons-loop-grid--masonry .king-addons-loop-grid__sizer,
+.king-addons-loop-grid--masonry .king-addons-loop-grid__item {
+    width: calc((100% - (var(--ka-loop-cols, 3) - 1) * var(--ka-loop-gap, 24px)) / var(--ka-loop-cols, 3));
+}
+
+.king-addons-loop-grid--masonry .king-addons-loop-grid__item {
+    margin-bottom: var(--ka-loop-gap, 24px);
+}
+
+.king-addons-loop-grid--carousel .king-addons-loop-grid__swiper {
+    overflow: hidden;
+    position: relative;
+}
+
+.king-addons-loop-grid--carousel .king-addons-loop-grid__items {
+    display: flex;
+}
+
+.king-addons-loop-grid--carousel .swiper-button-prev,
+.king-addons-loop-grid--carousel .swiper-button-next {
+    color: inherit;
+}
+
+.king-addons-loop-grid__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.king-addons-loop-grid__filter {
+    padding: 6px 14px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    line-height: 1.2;
+}
+
+.king-addons-loop-grid__filter.is-active,
+.king-addons-loop-grid__filter[aria-pressed="true"] {
+    font-weight: 700;
+}
+
+@media (max-width: 375px) {
+    .king-addons-loop-grid,
+    .king-addons-loop-grid__items,
+    .king-addons-loop-grid--carousel .king-addons-loop-grid__swiper {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}

@@ -485,7 +485,7 @@ $this->end_controls_section();
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $id = $this->get_id();
 
         echo '<div class="king-addons-smooth-counter">';
@@ -510,12 +510,12 @@ $this->end_controls_section();
                 function doSmoothCounter() {
                     let od = new Odometer({
                         el: document.querySelector('.king-addons-smooth-counter-" . esc_js($id) . "'),
-                        value: " . esc_js($settings['king_addons_smooth_counter_start']) . ",
+                        value: " . Core::jsNumber($settings, 'king_addons_smooth_counter_start', 100) . ",
                         format: '" . esc_js($settings['king_addons_smooth_counter_format']) . "',
-                        duration: " . esc_js($settings['king_addons_smooth_counter_anim_duration']) . ",
+                        duration: " . Core::jsNumber($settings, 'king_addons_smooth_counter_anim_duration', 600) . ",
                         theme: 'minimal',
                     });
-                    od.update(" . esc_js($settings['king_addons_smooth_counter_finish']) . ")
+                    od.update(" . Core::jsNumber($settings, 'king_addons_smooth_counter_finish', 999) . ")
                 }
 
                 function onIntersection(entries, observer) {

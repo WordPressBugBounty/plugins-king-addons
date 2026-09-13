@@ -121,7 +121,7 @@ class Ajax_Add_To_Cart extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -160,6 +160,7 @@ class Ajax_Add_To_Cart extends Widget_Base
     public function render(): void
     {
         if (!class_exists('\WooCommerce')) {
+            Core::renderEditorHint(esc_html__('Ajax Add To Cart needs WooCommerce to be active.', 'king-addons'));
             return;
         }
 
@@ -167,6 +168,7 @@ class Ajax_Add_To_Cart extends Widget_Base
         $product_id = $this->resolve_product_id($settings);
 
         if (!$product_id) {
+            Core::renderEditorHint(esc_html__('Pick a product in the Content tab to show the Add to cart button.', 'king-addons'));
             return;
         }
 

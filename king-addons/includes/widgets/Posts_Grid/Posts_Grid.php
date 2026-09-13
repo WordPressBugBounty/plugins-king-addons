@@ -12,6 +12,7 @@ use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
 use Elementor\Repeater;
 use Elementor\Group_Control_Image_Size;
+use Elementor\Utils;
 use WP_Query;
 
 if (!defined('ABSPATH')) {
@@ -2227,8 +2228,7 @@ $this->end_controls_section();
             ]
         );
 
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'grid', 'element_select', ['pro-lk', 'pro-shr']);
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'grid', 'element_select', ['pro-cf']);
+        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'grid', 'element_select', ['pro-lk', 'pro-shr', 'pro-cf']);
 
         $repeater->add_control(
             'element_location',
@@ -8398,7 +8398,7 @@ $this->end_controls_section();
 
     public function get_main_query_args()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // Detect paged
         $paged = get_query_var('paged') ?: (get_query_var('page') ?: 1);
@@ -8547,7 +8547,7 @@ $this->end_controls_section();
 
     public function get_tax_query_args()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // "RELATED" means match the same terms as current post in a chosen taxonomy
         if ('related' === $settings['query_source']) {
@@ -8660,6 +8660,12 @@ $this->end_controls_section();
         $id = get_post_thumbnail_id();
         $src = Group_Control_Image_Size::get_attachment_image_src($id, 'layout_image_crop', $settings);
 
+        // A post with no featured image would otherwise drop the whole media block,
+        // and the cards beside it in the row would no longer line up.
+        if (!$src) {
+            $src = Utils::get_placeholder_image_src();
+        }
+
         // Secondary image
         $sec_meta = get_post_meta(get_the_ID(), 'king_addons_secondary_image_id', true);
         $src2 = !empty($sec_meta)
@@ -8671,25 +8677,23 @@ $this->end_controls_section();
             ? get_the_title()
             : wp_get_attachment_caption($id);
 
-        if (has_post_thumbnail()) {
-            echo '<div class="king-addons-grid-image-wrap" data-src="' . esc_url($src) . '" data-img-on-hover="' . esc_attr($settings['secondary_img_on_hover']) . '"  data-src-secondary="' . esc_url($src2) . '">';
+        echo '<div class="king-addons-grid-image-wrap" data-src="' . esc_url($src) . '" data-img-on-hover="' . esc_attr($settings['secondary_img_on_hover']) . '"  data-src-secondary="' . esc_url($src2) . '">';
 
-            // Lazy loading vs normal
-            /** @noinspection PhpIfWithCommonPartsInspection */
-            if ('yes' === $settings['grid_lazy_loading']) {
-                echo '<img loading="lazy" src="'.esc_url($src).'" 
+        // Lazy loading vs normal
+        /** @noinspection PhpIfWithCommonPartsInspection */
+        if ('yes' === $settings['grid_lazy_loading']) {
+            echo '<img loading="lazy" src="'.esc_url($src).'" 
                 alt="' . esc_attr($alt) . '" class="king-addons-hidden-image king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
-                if ('yes' === $settings['secondary_img_on_hover']) {
-                    echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
-                }
-            } else {
-                echo '<img src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '" class="king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
-                if ('yes' === $settings['secondary_img_on_hover']) {
-                    echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
-                }
+            if ('yes' === $settings['secondary_img_on_hover']) {
+                echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
             }
-            echo '</div>';
+        } else {
+            echo '<img src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '" class="king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+            if ('yes' === $settings['secondary_img_on_hover']) {
+                echo '<img src="' . esc_url($src2) . '" alt="' . esc_attr($alt) . '" class="king-addons-hidden-img king-addons-animation-timing-' . esc_attr($settings['image_effects_animation_timing']) . '">';
+            }
         }
+        echo '</div>';
     }
 
     public function render_media_overlay($settings)
@@ -8705,17 +8709,17 @@ $this->end_controls_section();
     {
         // Fallback pointer for non-premium
         $title_pointer = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? ($this->get_settings()['title_pointer'] ?? 'none')
+            ? (Core::displaySettings($this)['title_pointer'] ?? 'none')
             : 'none';
         $title_pointer_animation = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? ($this->get_settings()['title_pointer_animation'] ?? 'fade')
+            ? (Core::displaySettings($this)['title_pointer_animation'] ?? 'fade')
             : 'fade';
 
         $pointer_item_class = ($title_pointer !== 'none')
             ? 'class="king-addons-pointer-item"'
             : '';
 
-        $new_tab = ('yes' === $this->get_settings()['open_links_in_new_tab']) ? '_blank' : '_self';
+        $new_tab = ('yes' === Core::displaySettings($this)['open_links_in_new_tab']) ? '_blank' : '_self';
 
         $class .= ' king-addons-pointer-' . $title_pointer;
         $class .= ' king-addons-pointer-line-fx king-addons-pointer-fx-' . $title_pointer_animation;
@@ -8941,10 +8945,10 @@ $this->end_controls_section();
     {
         // Fallback animation for non-premium
         $read_more_animation = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? $this->get_settings()['read_more_animation']
+            ? Core::displaySettings($this)['read_more_animation']
             : 'king-addons-button-none';
 
-        $new_tab = ('yes' === $this->get_settings()['open_links_in_new_tab']) ? '_blank' : '_self';
+        $new_tab = ('yes' === Core::displaySettings($this)['open_links_in_new_tab']) ? '_blank' : '_self';
 
         echo '<div class="' . esc_attr($class) . '">';
         echo '  <div class="inner-block">';
@@ -9066,16 +9070,16 @@ $this->end_controls_section();
 
         // Handle pointer classes (premium or fallback)
         $tax1_pointer = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? ($this->get_settings()['tax1_pointer'] ?? 'none')
+            ? (Core::displaySettings($this)['tax1_pointer'] ?? 'none')
             : 'none';
         $tax1_pointer_animation = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? ($this->get_settings()['tax1_pointer_animation'] ?? 'fade')
+            ? (Core::displaySettings($this)['tax1_pointer_animation'] ?? 'fade')
             : 'fade';
         $tax2_pointer = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? ($this->get_settings()['tax2_pointer'] ?? 'none')
+            ? (Core::displaySettings($this)['tax2_pointer'] ?? 'none')
             : 'none';
         $tax2_pointer_animation = king_addons_freemius()->can_use_premium_code__premium_only()
-            ? ($this->get_settings()['tax2_pointer_animation'] ?? 'fade')
+            ? (Core::displaySettings($this)['tax2_pointer_animation'] ?? 'fade')
             : 'fade';
 
         // Decide which pointer to use
@@ -9107,11 +9111,11 @@ $this->end_controls_section();
         foreach ($terms as $term) {
             // Possibly set custom colors (premium) for tax style 1
             if (
-                'yes' === ($this->get_settings()['tax1_custom_color_switcher'] ?? '') &&
+                'yes' === (Core::displaySettings($this)['tax1_custom_color_switcher'] ?? '') &&
                 'king-addons-grid-tax-style-1' === $settings['element_tax_style']
             ) {
-                $cfc_text = get_term_meta($term->term_id, $this->get_settings()['tax1_custom_color_field_text'], true);
-                $cfc_bg = get_term_meta($term->term_id, $this->get_settings()['tax1_custom_color_field_bg'], true);
+                $cfc_text = get_term_meta($term->term_id, Core::displaySettings($this)['tax1_custom_color_field_text'], true);
+                $cfc_bg = get_term_meta($term->term_id, Core::displaySettings($this)['tax1_custom_color_field_bg'], true);
                 $color_css = "color:$cfc_text; background-color:$cfc_bg; border-color:$cfc_bg;";
                 $custom_selector = '.elementor-element' . $this->get_unique_selector() .
                     ' .king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . esc_attr($term->term_id);
@@ -9828,7 +9832,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $posts = new WP_Query($this->get_main_query_args());
 
         if ($posts->have_posts()) {
@@ -9858,7 +9862,7 @@ $this->end_controls_section();
                 $this->get_elements_by_location('above', $settings, get_the_ID());
 
                 // If has featured image, render
-                if (has_post_thumbnail() && 'yes' !== $settings['hide_post_thumbnail']) {
+                if ('yes' !== $settings['hide_post_thumbnail']) {
                     echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '" data-overlay-link="' . esc_attr($settings['overlay_post_link']) . '">';
                     $this->render_post_thumbnail($settings);
 

@@ -923,6 +923,20 @@
                         justify-content: center;
                     }
 
+                    .ka-tr-choices {
+                        list-style: none;
+                        margin: 8px 0 0;
+                        padding: 0;
+                        display: grid;
+                        gap: 6px;
+                    }
+
+                    .ka-tr-choices li {
+                        font-size: 13px;
+                        color: var(--ka-tr-ink-muted);
+                        line-height: 1.5;
+                    }
+
                     .ka-tr-steps a,
                     .ka-tr-panel a {
                         color: var(--ka-tr-accent);
@@ -1251,8 +1265,24 @@
         var billingNote = cfg.setup_billing_note || 'and top up your OpenAI account balance by at least $5';
         var costNote = cfg.setup_cost_note || 'Processing a page costs pennies (about $0.01 per full page).';
 
+        // With no key stored for either provider there is nothing configured to
+        // describe, so the dialog offers the choice rather than assuming one.
+        // wp_localize_script stringifies booleans, so false arrives as '' - test
+        // for falsiness rather than for the boolean itself.
+        var hasAnyKey = cfg.has_any_key;
+        var isFirstRun = (hasAnyKey === false || hasAnyKey === '' || hasAnyKey === '0' || hasAnyKey === 0)
+            && !!(cfg.setup_providers && cfg.setup_providers.length);
+
         function esc(value) {
             return $('<div></div>').text(String(value == null ? '' : value)).html();
+        }
+
+        function providerChoiceHtml() {
+            var items = cfg.setup_providers.map(function (provider) {
+                return '<li><a href="' + esc(provider.url) + '" target="_blank" rel="noopener noreferrer">'
+                    + esc(provider.name) + '</a> &mdash; ' + esc(provider.note) + '</li>';
+            }).join('');
+            return '<ul class="ka-tr-choices">' + items + '</ul>';
         }
         
         var $overlay = $('<div class="king-addons-translator-overlay"></div>');
@@ -1268,9 +1298,11 @@
             <div class="ka-tr-panel">
                 <h4>What you need to do</h4>
                 <ol class="ka-tr-steps">
-                    <li>Get an API key from <a href="${esc(keysUrl)}" target="_blank" rel="noopener noreferrer">${esc(keysLabel)}</a> ${esc(billingNote)}</li>
-                    <li>Paste it into AI Settings</li>
-                    <li>Come back here and translate the page</li>
+                    ${isFirstRun
+                        ? `<li>Pick a provider and get an API key:${providerChoiceHtml()}</li>`
+                        : `<li>Get an API key from <a href="${esc(keysUrl)}" target="_blank" rel="noopener noreferrer">${esc(keysLabel)}</a> ${esc(billingNote)}</li>`}
+                    <li>Paste it into AI Settings${isFirstRun ? ', choosing the same provider there' : ''}</li>
+                    <li>Come back here and run it on your page</li>
                 </ol>
             </div>
 
@@ -1278,7 +1310,7 @@
 
             <div class="ka-tr-panel">
                 <h4>What it costs</h4>
-                <p>${esc(costNote)}</p>
+                <p>${esc(isFirstRun ? (cfg.setup_cost_note_neutral || costNote) : costNote)}</p>
             </div>
 
             <div class="king-addons-translator-actions">

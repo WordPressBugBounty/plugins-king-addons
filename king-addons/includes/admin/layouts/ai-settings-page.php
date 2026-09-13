@@ -16,7 +16,7 @@ $ka_ai_provider_label = \King_Addons\AI_Provider::getLabel($ka_ai_provider);
 $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $allowed_theme_modes = ['dark', 'light', 'auto'];
 if (!in_array($theme_mode, $allowed_theme_modes, true)) {
-    $theme_mode = 'dark';
+    $theme_mode = 'auto';
 }
 
 // Enqueue shared V3 styles

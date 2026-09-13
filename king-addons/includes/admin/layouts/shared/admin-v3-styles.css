@@ -71,10 +71,18 @@ html.ka-v3-dark body {
 /* ===== HEADER ===== */
 .ka-admin-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 48px;
     gap: 24px;
+}
+
+.ka-admin-header-left {
+    /* Keep the title readable instead of letting the action group squeeze it;
+       below this width the header wraps onto two rows. */
+    flex: 1 1 420px;
+    min-width: 0;
 }
 
 .ka-admin-header-left {
@@ -363,6 +371,36 @@ body.toplevel_page_king-addons.ka-v3-dark .error {
     border-color: rgba(255, 255, 255, 0.08) !important;
     background: rgba(28, 28, 30, 0.72) !important;
     box-shadow: 0 10px 36px rgba(0, 0, 0, 0.3) !important;
+    color: #f5f5f7 !important;
+}
+
+/*
+ * WordPress core colours the text inside a notice explicitly:
+ *
+ *     .notice p, .notice-title, div.error p, div.updated p { color: #1e1e1e; }
+ *
+ * Colouring only the .notice container above leaves that untouched, because an
+ * explicit rule always beats an inherited value - so the paragraph stayed dark
+ * on the dark background and the message was unreadable.
+ */
+body.ka-admin-v3.ka-v3-dark .notice p,
+body.ka-admin-v3.ka-v3-dark .notice li,
+body.ka-admin-v3.ka-v3-dark .notice .notice-title,
+body.ka-admin-v3.ka-v3-dark .updated p,
+body.ka-admin-v3.ka-v3-dark .error p,
+body.ka-admin-v3.ka-dark-theme .notice p,
+body.ka-admin-v3.ka-dark-theme .notice li,
+body.ka-admin-v3.ka-dark-theme .notice .notice-title,
+body.ka-admin-v3.ka-dark-theme .updated p,
+body.ka-admin-v3.ka-dark-theme .error p {
+    color: #f5f5f7;
+}
+
+body.toplevel_page_king-addons.ka-v3-dark .notice p,
+body.toplevel_page_king-addons.ka-v3-dark .notice li,
+body.toplevel_page_king-addons.ka-v3-dark .notice .notice-title,
+body.toplevel_page_king-addons.ka-v3-dark .updated p,
+body.toplevel_page_king-addons.ka-v3-dark .error p {
     color: #f5f5f7 !important;
 }
 
@@ -700,27 +738,99 @@ body.ka-admin-v3 .notice.notice-success,
     cursor: pointer;
 }
 
+.ka-admin-wrap .ka-radio-item:has(> span) {
+    align-items: flex-start;
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"],
 .ka-radio-item input[type="radio"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #0071e3;
-}
-
-/* WP Admin renders radio dots via ::before in some contexts; align it with our accent color */
-body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:checked::before,
-body.ka-admin-v3 .ka-admin-wrap .ka-radio-item input[type="radio"]:checked::before {
-    content: "";
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    margin: 0;
+    padding: 0 !important;
+    flex: 0 0 auto;
+    border: 2px solid #c7c7cc;
     border-radius: 50%;
-    width: 10px;
-    height: 10px;
-    margin: 4px;
-    background-color: #0071e3;
-    line-height: 1.14285714;
+    background-color: #fff;
+    background-image: none;
+    background-clip: padding-box;
+    box-shadow: none;
+    color: transparent;
+    cursor: pointer;
+    outline: none;
+    line-height: 0;
+    vertical-align: middle;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
-body.ka-admin-v3.ka-v3-dark .ka-admin-wrap input[type="radio"]:checked::before,
-body.ka-admin-v3.ka-v3-dark .ka-admin-wrap .ka-radio-item input[type="radio"]:checked::before {
-    background-color: #0a84ff;
+.ka-admin-wrap .ka-radio-item:has(> span) input[type="radio"] {
+    margin-top: 3px;
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]::before,
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:checked::before,
+.ka-radio-item input[type="radio"]::before,
+.ka-radio-item input[type="radio"]:checked::before {
+    content: none !important;
+    display: none !important;
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:hover:not(:checked):not(:disabled),
+.ka-radio-item input[type="radio"]:hover:not(:checked):not(:disabled) {
+    border-color: #8e8e93;
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:checked,
+.ka-radio-item input[type="radio"]:checked {
+    border-color: #0071e3;
+    background-color: #fff;
+    background-image: radial-gradient(circle, #0071e3 0 4px, transparent 4.5px);
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:focus,
+.ka-radio-item input[type="radio"]:focus {
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.22);
+    outline: none;
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:focus:not(:focus-visible),
+.ka-radio-item input[type="radio"]:focus:not(:focus-visible) {
+    box-shadow: none;
+}
+
+body.ka-admin-v3 .ka-admin-wrap input[type="radio"]:disabled,
+.ka-radio-item input[type="radio"]:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+body.ka-admin-v3.ka-v3-dark .ka-admin-wrap input[type="radio"],
+body.ka-v3-dark .ka-radio-item input[type="radio"] {
+    background-color: #1c1c1e;
+    border-color: #636366;
+}
+
+body.ka-admin-v3.ka-v3-dark .ka-admin-wrap input[type="radio"]:hover:not(:checked):not(:disabled),
+body.ka-v3-dark .ka-radio-item input[type="radio"]:hover:not(:checked):not(:disabled) {
+    border-color: #8e8e93;
+}
+
+body.ka-admin-v3.ka-v3-dark .ka-admin-wrap input[type="radio"]:checked,
+body.ka-v3-dark .ka-radio-item input[type="radio"]:checked {
+    border-color: #0a84ff;
+    background-color: #1c1c1e;
+    background-image: radial-gradient(circle, #0a84ff 0 4px, transparent 4.5px);
+}
+
+body.ka-admin-v3.ka-v3-dark .ka-admin-wrap input[type="radio"]:focus,
+body.ka-v3-dark .ka-radio-item input[type="radio"]:focus {
+    border-color: #0a84ff;
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.28);
 }
 
 /* ===== COLOR PICKER ===== */
@@ -1321,6 +1431,18 @@ body.ka-v3-dark .ka-upgrade-card li {
     color: #f5f5f7;
 }
 
+/*
+ * The card gets a dark background above, but WordPress core colours headings
+ * explicitly with `h2, h3 { color: #1d2327 }`, which beats inheritance - so the
+ * title stayed near-black on the dark card.
+ */
+body.ka-v3-dark .ka-pro-notice h2,
+body.ka-v3-dark .ka-pro-notice h3,
+body.ka-v3-dark .ka-upgrade-card h2,
+body.ka-v3-dark .ka-upgrade-card h3 {
+    color: #f5f5f7;
+}
+
 body.ka-v3-dark .ka-empty {
     color: #86868b;
 }
@@ -1438,4 +1560,193 @@ body.ka-v3-dark .wp-picker-container .wp-color-result-text {
 
 .wp-picker-container input.wp-color-picker {
     max-width: 100px !important;
+}
+
+/* ==========================================================================
+   Shared form pieces for extension screens (page-shell.php)
+   ========================================================================== */
+
+.ka-admin-wrap .ka-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    color: #1d1d1f;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.ka-admin-wrap .ka-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    accent-color: #0071e3;
+    flex: 0 0 auto;
+}
+
+.ka-admin-wrap .ka-check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* A radio with a bold title and a line of explanation under it. */
+
+.ka-admin-wrap .ka-radio-item > span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ka-admin-wrap .ka-radio-item em {
+    font-style: normal;
+    font-size: 13px;
+    color: #6e6e73;
+}
+
+.ka-admin-wrap .ka-inline-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 0;
+}
+
+.ka-admin-wrap .ka-inline-field label {
+    font-size: 13px;
+    color: #6e6e73;
+}
+
+.ka-admin-wrap .ka-color-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.ka-admin-wrap .ka-color-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #1d1d1f;
+    cursor: pointer;
+}
+
+.ka-admin-wrap .ka-color-wrap input[type="color"] {
+    width: 42px;
+    height: 30px;
+    padding: 2px;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.ka-admin-wrap .ka-submit {
+    margin: 24px 0 0;
+}
+
+/* Long single-line inputs should fill the field column rather than sit at
+   WordPress's default width. */
+.ka-admin-wrap .ka-row-field > input[type="text"],
+.ka-admin-wrap .ka-row-field > input[type="url"],
+.ka-admin-wrap .ka-row-field > input[type="email"],
+.ka-admin-wrap .ka-row-field > textarea {
+    width: 100%;
+    max-width: 520px;
+}
+
+.ka-admin-wrap .ka-code-editor {
+    width: 100%;
+    min-height: 260px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    tab-size: 2;
+}
+
+/* Dark theme */
+body.ka-v3-dark .ka-admin-wrap .ka-check,
+body.ka-v3-dark .ka-admin-wrap .ka-color-wrap,
+body.ka-v3-dark .ka-admin-wrap .ka-radio-item {
+    color: #f5f5f7;
+}
+
+body.ka-v3-dark .ka-admin-wrap .ka-radio-item em,
+body.ka-v3-dark .ka-admin-wrap .ka-inline-field label {
+    color: #a1a1a6;
+}
+
+body.ka-v3-dark .ka-admin-wrap .ka-color-wrap input[type="color"] {
+    border-color: #3a3a3c;
+    background: #1c1c1e;
+}
+
+/* --- My Account endpoint cards ------------------------------------------ */
+
+.ka-admin-wrap .ka-endpoint-card .ka-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ka-admin-wrap .ka-endpoint-slug {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #f5f5f7;
+    color: #6e6e73;
+}
+
+.ka-admin-wrap .ka-endpoint-toggle {
+    margin-left: auto;
+    font-size: 14px;
+}
+
+/* A hidden endpoint still needs to be readable and editable, so this is a
+   dimmed state rather than a greyed-out one. */
+.ka-admin-wrap .ka-endpoint-card.is-off .ka-card-header h2,
+.ka-admin-wrap .ka-endpoint-card.is-off .ka-endpoint-slug {
+    opacity: .55;
+}
+
+.ka-admin-wrap .ka-check-group--inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+}
+
+.ka-admin-wrap .ka-row--danger .ka-btn-secondary {
+    color: #c0392b;
+    border-color: #e6b8b2;
+}
+
+.ka-admin-wrap .ka-row--danger .ka-btn-secondary:hover {
+    background: #fdf1ef;
+    border-color: #c0392b;
+}
+
+body.ka-v3-dark .ka-admin-wrap .ka-endpoint-slug {
+    background: #2c2c2e;
+    color: #a1a1a6;
+}
+
+body.ka-v3-dark .ka-admin-wrap .ka-row--danger .ka-btn-secondary {
+    color: #ff6b5e;
+    border-color: #5a3a37;
+}
+
+body.ka-v3-dark .ka-admin-wrap .ka-row--danger .ka-btn-secondary:hover {
+    background: #3a2523;
+    border-color: #ff6b5e;
+}
+
+/* Right-align the button column of a shared table. */
+.ka-admin-wrap .ka-table .ka-table-actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ka-admin-wrap .ka-table .ka-table-actions .ka-btn + .ka-btn {
+    margin-left: 6px;
 }

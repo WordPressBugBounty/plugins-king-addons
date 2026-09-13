@@ -99,7 +99,7 @@ class Wishlist_Settings
             'wishlist_columns' => ['image', 'title', 'price', 'stock', 'notes', 'add_to_cart', 'remove'],
             'cache_enabled' => false,
             'cache_ttl' => 0,
-            'icon_choice' => 'eicon-heart',
+            'icon_choice' => 'fas fa-heart',
         ];
     }
 

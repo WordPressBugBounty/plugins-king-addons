@@ -48,7 +48,7 @@ class Woo_Checkout_Place_Order extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-button';
+        return 'king-addons-icon king-addons-woo-checkout-place-order';
     }
 
     /**
@@ -66,6 +66,16 @@ class Woo_Checkout_Place_Order extends Abstract_Checkout_Widget
      *
      * @return array<int, string>
      */
+    /**
+     * Script handles.
+     *
+     * @return array<int,string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-place-order-script'];
+    }
+
     public function get_style_depends(): array
     {
         return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-place-order-style'];
@@ -91,7 +101,8 @@ class Woo_Checkout_Place_Order extends Abstract_Checkout_Widget
             [
                 'label' => esc_html__('Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Place order', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Place order', 'king-addons'),
             ]
         );
 
@@ -211,7 +222,9 @@ class Woo_Checkout_Place_Order extends Abstract_Checkout_Widget
         }
 
         $settings = $this->get_settings_for_display();
-        $text = $settings['text'] ?? esc_html__('Place order', 'king-addons');
+        // ?: not ??: a cleared field is '' rather than null, which produced a
+        // submit button with no label at all.
+        $text = ($settings['text'] ?? null) ?: __('Place order', 'king-addons');
         $classes = ['ka-woo-checkout-place-order__btn', 'button', 'alt'];
         if (!empty($settings['full_width'])) {
             $classes[] = 'ka-woo-checkout-place-order__btn--full';

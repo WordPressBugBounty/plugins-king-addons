@@ -47,7 +47,7 @@ class Woo_My_Account_Logout extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-sign-out';
+        return 'king-addons-icon king-addons-woo-my-account-logout';
     }
 
     /**
@@ -105,7 +105,8 @@ class Woo_My_Account_Logout extends Widget_Base
             [
                 'label' => esc_html__('Button Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Log out', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Log out', 'king-addons'),
             ]
         );
 
@@ -139,10 +140,25 @@ class Woo_My_Account_Logout extends Widget_Base
         }
 
         $settings = $this->get_settings_for_display();
-        $label = $settings['label'] ?? esc_html__('Log out', 'king-addons');
+        // ?: not ??: a cleared field is '' rather than null, which produced a
+        // link with no text at all.
+        $label = ($settings['label'] ?? null) ?: __('Log out', 'king-addons');
         $logout_url = wc_logout_url();
         if (($settings['confirm'] ?? '') === 'yes') {
-            $logout_url = add_query_arg('ka_logout_confirm', '1', $logout_url);
+            // The confirmation screen is rendered on the account page, but
+            // wc_logout_url() is just wp_logout_url() in current WooCommerce -
+            // it points at wp-login.php, which never reaches that screen and
+            // signs the customer out immediately. Use the account endpoint so
+            // the interstitial can intercept it.
+            $confirm_url = '';
+            if (function_exists('wc_get_endpoint_url') && get_option('woocommerce_logout_endpoint')) {
+                $endpoint_url = wc_get_endpoint_url('customer-logout', '', wc_get_page_permalink('myaccount'));
+                if ($endpoint_url) {
+                    $confirm_url = wp_nonce_url(add_query_arg('ka_logout_confirm', '1', $endpoint_url), 'customer-logout');
+                }
+            }
+
+            $logout_url = $confirm_url ?: add_query_arg('ka_logout_confirm', '1', $logout_url);
         }
 
         $confirm_attr = ($settings['confirm'] ?? '') === 'yes' ? ' data-ka-logout-confirm="1"' : '';

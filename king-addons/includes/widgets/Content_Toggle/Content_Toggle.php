@@ -54,7 +54,7 @@ class Content_Toggle extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-toggle';
+        return 'king-addons-icon king-addons-content-toggle';
     }
 
     /**

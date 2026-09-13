@@ -30,7 +30,7 @@ class Woo_My_Account_Details extends Abstract_My_Account_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-user-circle-o';
+        return 'king-addons-icon king-addons-woo-my-account-details';
     }
 
     public function get_categories(): array
@@ -68,6 +68,10 @@ class Woo_My_Account_Details extends Abstract_My_Account_Widget
     {
         if (!$this->should_render()) {
             $this->render_missing_account_notice();
+            return;
+        }
+
+        if (!$this->is_current_endpoint('edit-account')) {
             return;
         }
 

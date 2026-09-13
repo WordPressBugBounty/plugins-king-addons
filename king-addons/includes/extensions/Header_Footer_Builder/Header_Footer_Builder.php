@@ -3361,7 +3361,7 @@ final class Header_Footer_Builder
         if (!current_theme_supports('king-addons-elementor-header-footer')) {
             $settings_tabs['king_addons_el_hf_settings'] = [
                 'name' => esc_html__('Display Settings', 'king-addons'),
-                'url' => admin_url('edit.php?post_type=king-addons-el-hf&page=king-addons-el-hf-settings'),
+                'url' => admin_url('admin.php?page=king-addons-el-hf&tab=settings'),
             ];
         }
         return $settings_tabs;

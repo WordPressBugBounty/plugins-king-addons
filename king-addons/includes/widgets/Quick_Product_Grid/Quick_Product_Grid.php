@@ -103,7 +103,7 @@ class Quick_Product_Grid extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -1567,7 +1567,7 @@ class Quick_Product_Grid extends Widget_Base
         $image_id = $product->get_image_id();
 
         if ($image_id) {
-            $image_html = Group_Control_Image_Size::get_attachment_image_html($settings, 'kng_image_size', $image_id);
+            $image_html = Core::getAttachmentImageHTML($settings, 'kng_image_size', (int) $image_id);
             if (!empty($image_html)) {
                 return $image_html;
             }

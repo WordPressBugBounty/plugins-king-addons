@@ -510,7 +510,7 @@
 
 /* ========== Animations ========== */
 
-/* Fade animation */
+/* Fade animation — keep layout transforms; only drop the enter-offset. */
 .king-addons-cookie-consent--anim-fade .king-addons-cookie-consent__banner {
     transform: none !important;
 }
@@ -518,6 +518,10 @@
 .king-addons-cookie-consent--anim-fade.king-addons-cookie-consent--bottom-bar .king-addons-cookie-consent__banner,
 .king-addons-cookie-consent--anim-fade.king-addons-cookie-consent--top-bar .king-addons-cookie-consent__banner {
     transform: translateX(-50%) !important;
+}
+
+.king-addons-cookie-consent--anim-fade.king-addons-cookie-consent--modal .king-addons-cookie-consent__banner {
+    transform: translate(-50%, -50%) !important;
 }
 
 /* Slide up animation */
@@ -534,6 +538,14 @@
     transform: translateX(-50%) translateY(0);
 }
 
+.king-addons-cookie-consent--anim-slide-up.king-addons-cookie-consent--modal .king-addons-cookie-consent__banner {
+    transform: translate(-50%, calc(-50% + 24px));
+}
+
+.king-addons-cookie-consent--anim-slide-up.king-addons-cookie-consent--modal .king-addons-cookie-consent__banner.is-visible {
+    transform: translate(-50%, -50%);
+}
+
 /* Slide down animation */
 .king-addons-cookie-consent--anim-slide-down .king-addons-cookie-consent__banner {
     transform: translateY(-100%);
@@ -546,6 +558,14 @@
 .king-addons-cookie-consent--anim-slide-down.king-addons-cookie-consent--bottom-bar .king-addons-cookie-consent__banner.is-visible,
 .king-addons-cookie-consent--anim-slide-down.king-addons-cookie-consent--top-bar .king-addons-cookie-consent__banner.is-visible {
     transform: translateX(-50%) translateY(0);
+}
+
+.king-addons-cookie-consent--anim-slide-down.king-addons-cookie-consent--modal .king-addons-cookie-consent__banner {
+    transform: translate(-50%, calc(-50% - 24px));
+}
+
+.king-addons-cookie-consent--anim-slide-down.king-addons-cookie-consent--modal .king-addons-cookie-consent__banner.is-visible {
+    transform: translate(-50%, -50%);
 }
 
 /* ========== Manage Button ========== */

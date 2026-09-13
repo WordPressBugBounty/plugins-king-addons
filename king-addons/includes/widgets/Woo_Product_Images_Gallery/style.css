@@ -132,6 +132,18 @@
 .ka-woo-gallery__arrow--prev { left: 8px; }
 .ka-woo-gallery__arrow--next { right: 8px; }
 
+/* The Navigation skin and Dots skin controls emitted these classes but nothing
+   styled them, so both settings did nothing at all. Dark is the default look
+   above; light is for arrows and dots sitting on a dark image. */
+.ka-woo-gallery--nav-light .ka-woo-gallery__arrow {
+    background: rgba(255, 255, 255, 0.85);
+    color: #111;
+}
+
+.ka-woo-gallery--nav-light .ka-woo-gallery__arrow:hover {
+    background: #fff;
+}
+
 .ka-woo-gallery__dots {
     display: inline-flex;
     gap: 6px;
@@ -152,6 +164,16 @@
 .ka-woo-gallery__dot.is-active {
     background: #111;
     border-color: #111;
+}
+
+.ka-woo-gallery--dots-light .ka-woo-gallery__dot {
+    border-color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+}
+
+.ka-woo-gallery--dots-light .ka-woo-gallery__dot.is-active {
+    background: #fff;
+    border-color: #fff;
 }
 
 .ka-woo-gallery__lightbox {
@@ -335,11 +357,37 @@
     pointer-events: none;
 }
 
-.ka-woo-gallery--zoom .ka-woo-gallery__slide:hover .ka-woo-gallery__zoom-lens {
+.ka-woo-gallery--zoom .ka-woo-gallery__slide:hover .ka-woo-gallery__zoom-lens,
+.ka-woo-gallery--zoom .ka-woo-gallery__zoom-lens.is-visible {
     display: block;
 }
 
 @media (max-width: 767px) {
+    /* The mobile layout control emitted these classes but nothing styled them,
+       so switching a slider to a grid on a phone only changed which slides the
+       script un-hid - they then lined up in the flex row and overflowed. */
+    .ka-woo-gallery--mobile-grid .ka-woo-gallery__slider {
+        display: grid;
+        grid-template-columns: repeat(var(--ka-gallery-grid-cols, 2), minmax(0, 1fr));
+        gap: var(--ka-gallery-gap, 12px);
+    }
+
+    .ka-woo-gallery--mobile-grid .ka-woo-gallery__slide {
+        min-width: 0;
+    }
+
+    .ka-woo-gallery--mobile-grid .ka-woo-gallery__arrow,
+    .ka-woo-gallery--mobile-grid .ka-woo-gallery__dots,
+    .ka-woo-gallery--mobile-grid .ka-woo-gallery__thumbs {
+        display: none;
+    }
+
+    .ka-woo-gallery--mobile-slider .ka-woo-gallery__slider {
+        display: flex;
+        column-count: auto;
+        grid-template-columns: none;
+    }
+
     .ka-woo-gallery--thumbs-left,
     .ka-woo-gallery--thumbs-right {
         grid-template-columns: 1fr;

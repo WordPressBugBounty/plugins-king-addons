@@ -91,7 +91,7 @@ class Compare_Table extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -148,6 +148,7 @@ class Compare_Table extends Widget_Base
     public function render(): void
     {
         if (!class_exists('\WooCommerce')) {
+            Core::renderEditorHint(esc_html__('Compare Table needs WooCommerce to be active.', 'king-addons'));
             return;
         }
 
@@ -155,6 +156,7 @@ class Compare_Table extends Widget_Base
         $products = $this->get_products($settings);
 
         if (empty($products)) {
+            Core::renderEditorHint(esc_html__('Choose products (or a category) in the Content tab to build the comparison.', 'king-addons'));
             return;
         }
 

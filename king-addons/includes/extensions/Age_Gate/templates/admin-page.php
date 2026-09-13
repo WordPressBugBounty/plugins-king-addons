@@ -49,9 +49,33 @@ $options['display'] = wp_parse_args($options['display'] ?? [], [
     'mode' => 'global',
     'cpt_scope' => [],
     'archives' => 0,
+    'woo' => [
+        'enabled' => 0,
+        'apply_to' => 'product',
+        'categories' => [],
+    ],
 ]);
 $options['display']['exclude_ids'] = array_map('intval', (array) $options['display']['exclude_ids']);
 $options['display']['cpt_scope'] = array_values(array_map('strval', (array) $options['display']['cpt_scope']));
+$options['display']['woo'] = wp_parse_args($options['display']['woo'] ?? [], [
+    'enabled' => 0,
+    'apply_to' => 'product',
+    'categories' => [],
+]);
+$options['display']['woo']['categories'] = array_map('intval', (array) $options['display']['woo']['categories']);
+
+$product_cats = [];
+if (taxonomy_exists('product_cat')) {
+    $woo_terms = get_terms([
+        'taxonomy' => 'product_cat',
+        'hide_empty' => false,
+    ]);
+    if (!is_wp_error($woo_terms)) {
+        foreach ($woo_terms as $woo_term) {
+            $product_cats[(int) $woo_term->term_id] = $woo_term->name;
+        }
+    }
+}
 
 $options['design'] = wp_parse_args($options['design'] ?? [], [
     'template' => 'center-card',
@@ -133,7 +157,7 @@ if (!is_array($options['geo']['map'])) {
 $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
 $allowed_theme_modes = ['dark', 'light', 'auto'];
 if (!in_array($theme_mode, $allowed_theme_modes, true)) {
-    $theme_mode = 'dark';
+    $theme_mode = 'auto';
 }
 ?>
 <script>
@@ -329,6 +353,31 @@ if (!in_array($theme_mode, $allowed_theme_modes, true)) {
                                 <span class="ka-toggle-slider"></span>
                                 <span class="ka-toggle-label"><?php esc_html_e('Show on archives', 'king-addons'); ?></span>
                             </label>
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('WooCommerce', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <label class="ka-toggle">
+                                <input type="checkbox" name="king_addons_age_gate_options[display][woo][enabled]" value="1" <?php checked(!empty($options['display']['woo']['enabled'])); ?>>
+                                <span class="ka-toggle-slider"></span>
+                                <span class="ka-toggle-label"><?php esc_html_e('Show on WooCommerce', 'king-addons'); ?></span>
+                            </label>
+                            <select name="king_addons_age_gate_options[display][woo][apply_to]" style="margin-top: 10px; max-width: 100%;">
+                                <option value="product" <?php selected($options['display']['woo']['apply_to'], 'product'); ?>><?php esc_html_e('Single products', 'king-addons'); ?></option>
+                                <option value="category" <?php selected($options['display']['woo']['apply_to'], 'category'); ?>><?php esc_html_e('Product categories', 'king-addons'); ?></option>
+                                <option value="shop" <?php selected($options['display']['woo']['apply_to'], 'shop'); ?>><?php esc_html_e('Shop page', 'king-addons'); ?></option>
+                            </select>
+                            <?php if ($product_cats): ?>
+                                <select name="king_addons_age_gate_options[display][woo][categories][]" multiple size="4" style="margin-top: 10px; max-width: 100%; min-height: 100px;">
+                                    <?php foreach ($product_cats as $cat_id => $cat_name): ?>
+                                        <option value="<?php echo esc_attr((string) $cat_id); ?>" <?php selected(in_array((int) $cat_id, $options['display']['woo']['categories'], true)); ?>>
+                                            <?php echo esc_html($cat_name); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <p class="ka-row-desc"><?php esc_html_e('Leave categories empty to match every product or every product category. The shop page ignores this list.', 'king-addons'); ?></p>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php endif; ?>

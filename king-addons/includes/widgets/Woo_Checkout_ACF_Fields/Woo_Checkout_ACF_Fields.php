@@ -10,6 +10,7 @@ namespace King_Addons;
 use Elementor\Controls_Manager;
 use Elementor\Widget_Base;
 use King_Addons\Core;
+use King_Addons\Woo_Builder\ACF_Fields;
 use King_Addons\Woo_Builder\Context as Woo_Context;
 
 if (!defined('ABSPATH')) {
@@ -60,7 +61,7 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-field-text';
+        return 'king-addons-icon king-addons-woo-checkout-acf-fields';
     }
 
     /**
@@ -70,7 +71,17 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
      */
     public function get_style_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-acf-fields-style'];
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-acf-fields-style'];
+    }
+
+    /**
+     * Scripts: moves the fields into the checkout form when it rendered first.
+     *
+     * @return array<int,string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-acf-fields-script'];
     }
 
     /**
@@ -108,6 +119,7 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
             [
                 'label' => esc_html__('Heading', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Extra Information', 'king-addons'),
             ]
         );
@@ -125,6 +137,7 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
             'placement',
             [
                 'label' => esc_html__('Placement', 'king-addons'),
+                'description' => esc_html__('Where the fields appear inside the checkout form. They have to be inside it to be saved with the order.', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
                 'options' => [
                     'before_billing' => esc_html__('Before billing', 'king-addons'),
@@ -144,6 +157,8 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
                 'label' => sprintf(__('Show required mark %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::SWITCHER,
                 'return_value' => 'yes',
+                // ACF always printed the mark; the switch now controls it.
+                'default' => 'yes',
             ]
         );
 
@@ -157,6 +172,9 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
             ]
         );
 
+        // The fields are printed inside the checkout form, outside this widget's
+        // wrapper, so {{WRAPPER}} cannot reach them there. The block carries a
+        // class with the widget id instead.
         $this->add_control(
             'gap',
             [
@@ -166,7 +184,7 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
                     'px' => ['min' => 0, 'max' => 40],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ka-woo-checkout-acf-fields' => 'gap: {{SIZE}}{{UNIT}};',
+                    '.ka-acf-block.ka-acf-block-{{ID}}' => '--ka-acf-gap: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -177,7 +195,7 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
                 'label' => esc_html__('Label color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ka-woo-checkout-acf-fields label' => 'color: {{VALUE}};',
+                    '.ka-acf-block.ka-acf-block-{{ID}} .acf-field .acf-label label, .ka-acf-block.ka-acf-block-{{ID}} .acf-field .acf-input label' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -188,7 +206,7 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
                 'label' => esc_html__('Required mark color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ka-woo-checkout-acf-fields .required' => 'color: {{VALUE}};',
+                    '.ka-acf-block.ka-acf-block-{{ID}} .acf-required' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -224,64 +242,13 @@ class Woo_Checkout_ACF_Fields extends Widget_Base
             return;
         }
 
-        $settings = $this->get_settings_for_display();
-        $placement = $settings['placement'] ?? 'after_order';
-        $required = !empty($settings['required_notice']);
-        $fields_raw = $settings['field_keys'] ?? '';
-        $fields = [];
-        if (!empty($fields_raw)) {
-            $parts = explode(',', $fields_raw);
-            $fields = array_filter(array_map('trim', $parts));
+        if (!class_exists('King_Addons\\Woo_Builder\\ACF_Fields')) {
+            require_once KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/ACF_Fields.php';
         }
 
-        $wrap = '<div class="ka-woo-checkout-acf-fields" data-ka-acf="1" data-placement="' . esc_attr($placement) . '" data-required="' . ($required ? '1' : '0') . '">';
-        if (!empty($settings['heading'])) {
-            $wrap .= '<h4 class="ka-woo-checkout-acf-fields__heading">' . esc_html($settings['heading']) . '</h4>';
-        }
-        /**
-         * Render ACF fields at checkout.
-         *
-         * Developers can hook into this action to output ACF forms/fields.
-         */
-        ob_start();
-        do_action('king_addons_checkout_acf_fields', $fields, $required, $placement);
-        $wrap .= ob_get_clean();
-        $wrap .= '</div>';
-
-        if ('before_billing' === $placement) {
-            add_action('woocommerce_before_checkout_billing_form', static function () use ($wrap): void {
-                echo $wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            });
-            return;
-        }
-        if ('after_billing' === $placement) {
-            add_action('woocommerce_after_checkout_billing_form', static function () use ($wrap): void {
-                echo $wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            });
-            return;
-        }
-        if ('before_shipping' === $placement) {
-            add_action('woocommerce_before_checkout_shipping_form', static function () use ($wrap): void {
-                echo $wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            });
-            return;
-        }
-        if ('after_shipping' === $placement) {
-            add_action('woocommerce_after_checkout_shipping_form', static function () use ($wrap): void {
-                echo $wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            });
-            return;
-        }
-        if ('before_order' === $placement) {
-            add_action('woocommerce_before_order_notes', static function () use ($wrap): void {
-                echo $wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            });
-            return;
-        }
-        // default after_order
-        add_action('woocommerce_after_order_notes', static function () use ($wrap): void {
-            echo $wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        });
+        // Printing, validation and saving to the order live in the helper: the
+        // order is created by a separate request in which no widget renders.
+        ACF_Fields::render_checkout($this->get_settings_for_display(), (string) $this->get_id());
     }
 }
 

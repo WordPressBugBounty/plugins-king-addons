@@ -531,6 +531,9 @@ body.ka-v3-dark {
     --ka-wb-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
+body.toplevel_page_king-addons-woo-builder #wpcontent,
+body.toplevel_page_king-addons-woo-builder #wpbody,
+body.toplevel_page_king-addons-woo-builder #wpbody-content,
 body.king-addons_page_king-addons-woo-builder #wpcontent,
 body.king-addons_page_king-addons-woo-builder #wpbody,
 body.king-addons_page_king-addons-woo-builder #wpbody-content {
@@ -1838,7 +1841,7 @@ if (document.body) {
                 <span class="ka-wb-quickstart-step-number" aria-hidden="true">2</span>
                 <div>
                     <p class="ka-wb-quickstart-step-title"><?php esc_html_e('Design in Elementor', 'king-addons'); ?></p>
-                    <p class="ka-wb-quickstart-step-desc"><?php esc_html_e('You’ll be taken straight into the Elementor editor. Build your layout visually using widgets from "King Addons Woo Builder" category or WooCommerce related widgets provided by other compatible plugins, then save.', 'king-addons'); ?></p>
+                    <p class="ka-wb-quickstart-step-desc"><?php esc_html_e('You’ll be taken straight into the Elementor editor. Build your layout visually using widgets from "King Addons WooCommerce Builder" category or WooCommerce related widgets provided by other compatible plugins, then save.', 'king-addons'); ?></p>
                 </div>
             </div>
             <div class="ka-wb-quickstart-step">

@@ -48,7 +48,7 @@ class Woo_Checkout_Order_Summary extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-order-review';
+        return 'king-addons-icon king-addons-woo-checkout-order-summary';
     }
 
     /**
@@ -232,7 +232,9 @@ class Woo_Checkout_Order_Summary extends Abstract_Checkout_Widget
         $show_meta = !empty($settings['show_meta']) && $can_pro;
 
         if (!empty($settings['sticky']) && $can_pro) {
-            $offset = isset($settings['sticky_offset']) ? (int) $settings['sticky_offset'] : 20;
+            // A cleared field is '' rather than unset, and pinned the block to
+            // the very top instead of using the default offset.
+            $offset = max(0, (int) (($settings['sticky_offset'] ?? null) ?: 20));
             $this->add_render_attribute('summary', 'class', 'ka-woo-checkout-summary--sticky');
             $this->add_render_attribute('summary', 'data-ka-sticky', 'true');
             $this->add_render_attribute('summary', 'data-ka-sticky-offset', (int) $offset);
@@ -241,8 +243,20 @@ class Woo_Checkout_Order_Summary extends Abstract_Checkout_Widget
             $this->add_render_attribute('summary', 'style', 'position: sticky; top: ' . $offset . 'px;');
         }
 
-        echo '<div ' . $this->get_render_attribute_string('summary') . '>';
         $cart = WC()->cart;
+
+        if (!$cart || $cart->is_empty()) {
+            // Without a cart the widget printed an empty box - in the editor,
+            // where there is never a cart, that looks like a broken widget.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The order summary lists what is in the cart at checkout.', 'king-addons')
+                    . '</div>';
+            }
+            return;
+        }
+
+        echo '<div ' . $this->get_render_attribute_string('summary') . '>';
         if ($cart) {
             echo '<div class="ka-woo-checkout-summary__items">';
             foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
@@ -281,7 +295,10 @@ class Woo_Checkout_Order_Summary extends Abstract_Checkout_Widget
             echo '<div class="ka-woo-checkout-summary__totals-row"><span>' . esc_html__('Subtotal', 'king-addons') . '</span><span>' . wp_kses_post($cart->get_cart_subtotal()) . '</span></div>';
 
             foreach ($cart->get_coupons() as $code => $coupon) {
-                $amount_html = '-' . wc_price($coupon->get_amount());
+                // get_amount() is the coupon's configured value - for a percent
+                // coupon that is the percentage, so a 10% coupon printed
+                // "-10,00 €" instead of the discount it actually gave.
+                $amount_html = '-' . wc_price($cart->get_coupon_discount_amount($code, $cart->display_cart_ex_tax));
                 echo '<div class="ka-woo-checkout-summary__totals-row"><span>' . esc_html__('Coupon', 'king-addons') . ' (' . esc_html($code) . ')</span><span>' . wp_kses_post($amount_html) . '</span></div>';
             }
 

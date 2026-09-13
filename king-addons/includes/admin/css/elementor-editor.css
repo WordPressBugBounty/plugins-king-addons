@@ -429,6 +429,10 @@
     display: none !important;
 }
 
+.elementor-tags-list .elementor-tags-list__inner .elementor-tags-list__teaser {
+    display: none;
+}
+
 .king-addons-icon.king-addons-image-hotspots {
     background-image: url(../img/image-hotspots.svg);
 }
@@ -755,6 +759,406 @@
 
 .king-addons-icon.king-addons-icon-steps-process-timeline {
     background-image: url(../img/timeline.svg);
+}
+
+.king-addons-icon.king-addons-values-circle-infographic {
+    background-image: url(../img/values-circle-infographic.svg);
+}
+
+.king-addons-icon.king-addons-tb-archive-description {
+    background-image: url(../img/tb-archive-description.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-breadcrumbs {
+    background-image: url(../img/woo-product-breadcrumbs.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-variations {
+    background-image: url(../img/woo-product-variations.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-badges {
+    background-image: url(../img/woo-product-badges.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-upsell {
+    background-image: url(../img/woo-product-upsell.svg);
+}
+
+.king-addons-icon.king-addons-woo-products-result-count {
+    background-image: url(../img/woo-products-result-count.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-order-summary {
+    background-image: url(../img/woo-checkout-order-summary.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-payment {
+    background-image: url(../img/woo-checkout-payment.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-coupon {
+    background-image: url(../img/woo-checkout-coupon.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-sticky-sidebar {
+    background-image: url(../img/woo-checkout-sticky-sidebar.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-acf-fields {
+    background-image: url(../img/woo-checkout-acf-fields.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-orders {
+    background-image: url(../img/woo-my-account-orders.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-address {
+    background-image: url(../img/woo-my-account-address.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-acf-fields {
+    background-image: url(../img/woo-my-account-acf-fields.svg);
+}
+
+.king-addons-icon.king-addons-comparison-matrix-cards {
+    background-image: url(../img/comparison-matrix-cards.svg);
+}
+
+.king-addons-icon.king-addons-content-toggle {
+    background-image: url(../img/content-toggle.svg);
+}
+
+.king-addons-icon.king-addons-facet-active-filters {
+    background-image: url(../img/facet-active-filters.svg);
+}
+
+.king-addons-icon.king-addons-facet-meta {
+    background-image: url(../img/facet-meta.svg);
+}
+
+.king-addons-icon.king-addons-facet-price {
+    background-image: url(../img/facet-price.svg);
+}
+
+.king-addons-icon.king-addons-facet-reset {
+    background-image: url(../img/facet-reset.svg);
+}
+
+.king-addons-icon.king-addons-facet-search {
+    background-image: url(../img/facet-search.svg);
+}
+
+.king-addons-icon.king-addons-facet-taxonomy {
+    background-image: url(../img/facet-taxonomy.svg);
+}
+
+.king-addons-icon.king-addons-floating-tags-marquee {
+    background-image: url(../img/floating-tags-marquee.svg);
+}
+
+.king-addons-icon.king-addons-interactive-steps-progress {
+    background-image: url(../img/interactive-steps-progress.svg);
+}
+
+.king-addons-icon.king-addons-liquid-glass-cards {
+    background-image: url(../img/liquid-glass-cards.svg);
+}
+
+.king-addons-icon.king-addons-loop-grid {
+    background-image: url(../img/loop-grid.svg);
+}
+
+.king-addons-icon.king-addons-pros-cons-box {
+    background-image: url(../img/pros-cons-box.svg);
+}
+
+.king-addons-icon.king-addons-reveal-swipe-cards {
+    background-image: url(../img/reveal-swipe-cards.svg);
+}
+
+.king-addons-icon.king-addons-scroll-story-sections {
+    background-image: url(../img/scroll-story-sections.svg);
+}
+
+.king-addons-icon.king-addons-tb-404-description {
+    background-image: url(../img/tb-404-description.svg);
+}
+
+.king-addons-icon.king-addons-tb-404-search-form {
+    background-image: url(../img/tb-404-search-form.svg);
+}
+
+.king-addons-icon.king-addons-tb-404-title {
+    background-image: url(../img/tb-404-title.svg);
+}
+
+.king-addons-icon.king-addons-tb-archive-pagination {
+    background-image: url(../img/tb-archive-pagination.svg);
+}
+
+.king-addons-icon.king-addons-tb-archive-posts {
+    background-image: url(../img/tb-archive-posts.svg);
+}
+
+.king-addons-icon.king-addons-tb-archive-result-count {
+    background-image: url(../img/tb-archive-result-count.svg);
+}
+
+.king-addons-icon.king-addons-tb-archive-title {
+    background-image: url(../img/tb-archive-title.svg);
+}
+
+.king-addons-icon.king-addons-tb-author-box {
+    background-image: url(../img/tb-author-box.svg);
+}
+
+.king-addons-icon.king-addons-tb-author-info {
+    background-image: url(../img/tb-author-info.svg);
+}
+
+.king-addons-icon.king-addons-tb-back-to-home {
+    background-image: url(../img/tb-back-to-home.svg);
+}
+
+.king-addons-icon.king-addons-tb-featured-image {
+    background-image: url(../img/tb-featured-image.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-comments {
+    background-image: url(../img/tb-post-comments.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-content {
+    background-image: url(../img/tb-post-content.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-excerpt {
+    background-image: url(../img/tb-post-excerpt.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-meta {
+    background-image: url(../img/tb-post-meta.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-navigation {
+    background-image: url(../img/tb-post-navigation.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-taxonomies {
+    background-image: url(../img/tb-post-taxonomies.svg);
+}
+
+.king-addons-icon.king-addons-tb-post-title {
+    background-image: url(../img/tb-post-title.svg);
+}
+
+.king-addons-icon.king-addons-tb-related-posts {
+    background-image: url(../img/tb-related-posts.svg);
+}
+
+.king-addons-icon.king-addons-tb-search-results {
+    background-image: url(../img/tb-search-results.svg);
+}
+
+.king-addons-icon.king-addons-woocommerce-floating-cart-icon {
+    background-image: url(../img/woocommerce-floating-cart-icon.svg);
+}
+
+.king-addons-icon.king-addons-woo-archive-banner {
+    background-image: url(../img/woo-archive-banner.svg);
+}
+
+.king-addons-icon.king-addons-woo-archive-description {
+    background-image: url(../img/woo-archive-description.svg);
+}
+
+.king-addons-icon.king-addons-woo-archive-title {
+    background-image: url(../img/woo-archive-title.svg);
+}
+
+.king-addons-icon.king-addons-woo-cart-coupon-form {
+    background-image: url(../img/woo-cart-coupon-form.svg);
+}
+
+.king-addons-icon.king-addons-woo-cart-cross-sells {
+    background-image: url(../img/woo-cart-cross-sells.svg);
+}
+
+.king-addons-icon.king-addons-woo-cart-empty {
+    background-image: url(../img/woo-cart-empty.svg);
+}
+
+.king-addons-icon.king-addons-woo-cart-table {
+    background-image: url(../img/woo-cart-table.svg);
+}
+
+.king-addons-icon.king-addons-woo-cart-totals {
+    background-image: url(../img/woo-cart-totals.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-form {
+    background-image: url(../img/woo-checkout-form.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-login {
+    background-image: url(../img/woo-checkout-login.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-place-order {
+    background-image: url(../img/woo-checkout-place-order.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-progress {
+    background-image: url(../img/woo-checkout-progress.svg);
+}
+
+.king-addons-icon.king-addons-woo-checkout-steps {
+    background-image: url(../img/woo-checkout-steps.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-content {
+    background-image: url(../img/woo-my-account-content.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-dashboard {
+    background-image: url(../img/woo-my-account-dashboard.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-details {
+    background-image: url(../img/woo-my-account-details.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-downloads {
+    background-image: url(../img/woo-my-account-downloads.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-logout {
+    background-image: url(../img/woo-my-account-logout.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-navigation {
+    background-image: url(../img/woo-my-account-navigation.svg);
+}
+
+.king-addons-icon.king-addons-woo-my-account-order-details {
+    background-image: url(../img/woo-my-account-order-details.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-acf-field {
+    background-image: url(../img/woo-product-acf-field.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-add-to-cart {
+    background-image: url(../img/woo-product-add-to-cart.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-countdown {
+    background-image: url(../img/woo-product-countdown.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-cross-sell {
+    background-image: url(../img/woo-product-cross-sell.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-custom-tabs {
+    background-image: url(../img/woo-product-custom-tabs.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-full-description {
+    background-image: url(../img/woo-product-full-description.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-images-gallery {
+    background-image: url(../img/woo-product-images-gallery.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-meta {
+    background-image: url(../img/woo-product-meta.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-price {
+    background-image: url(../img/woo-product-price.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-rating {
+    background-image: url(../img/woo-product-rating.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-related {
+    background-image: url(../img/woo-product-related.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-sku {
+    background-image: url(../img/woo-product-sku.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-short-description {
+    background-image: url(../img/woo-product-short-description.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-stock {
+    background-image: url(../img/woo-product-stock.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-tabs {
+    background-image: url(../img/woo-product-tabs.svg);
+}
+
+.king-addons-icon.king-addons-woo-product-title {
+    background-image: url(../img/woo-product-title.svg);
+}
+
+.king-addons-icon.king-addons-woo-products-grid {
+    background-image: url(../img/woo-products-grid.svg);
+}
+
+.king-addons-icon.king-addons-woo-products-pagination {
+    background-image: url(../img/woo-products-pagination.svg);
+}
+
+.king-addons-icon.king-addons-woo-products-sorting {
+    background-image: url(../img/woo-products-sorting.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-add-to-cart {
+    background-image: url(../img/woo-shortcode-add-to-cart.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-cart {
+    background-image: url(../img/woo-shortcode-cart.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-checkout {
+    background-image: url(../img/woo-shortcode-checkout.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-my-account {
+    background-image: url(../img/woo-shortcode-my-account.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-order-tracking {
+    background-image: url(../img/woo-shortcode-order-tracking.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-product-categories {
+    background-image: url(../img/woo-shortcode-product-categories.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-product-category {
+    background-image: url(../img/woo-shortcode-product-category.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-product-page {
+    background-image: url(../img/woo-shortcode-product-page.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-products {
+    background-image: url(../img/woo-shortcode-products.svg);
+}
+
+.king-addons-icon.king-addons-woo-shortcode-shop-messages {
+    background-image: url(../img/woo-shortcode-shop-messages.svg);
 }
 
 /* for elementor icons */

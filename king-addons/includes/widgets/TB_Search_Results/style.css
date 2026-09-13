@@ -1,0 +1,39 @@
+.king-addons-tb-search-results__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+}
+
+.king-addons-tb-search-results__item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.king-addons-tb-search-results__thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.king-addons-tb-search-results__title {
+    margin: 0;
+}
+
+.king-addons-tb-search-results__meta {
+    font-size: 0.85em;
+    opacity: 0.75;
+}
+
+.king-addons-tb-search-results__excerpt {
+    margin: 0;
+}
+
+.king-addons-tb-search-results__more {
+    align-self: start;
+}
+
+.king-addons-tb-search-results__empty {
+    margin: 0;
+}

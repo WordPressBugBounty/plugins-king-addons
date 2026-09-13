@@ -46,7 +46,7 @@ class Facet_Active_Filters extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-filter';
+        return 'king-addons-icon king-addons-facet-active-filters';
     }
 
     /**

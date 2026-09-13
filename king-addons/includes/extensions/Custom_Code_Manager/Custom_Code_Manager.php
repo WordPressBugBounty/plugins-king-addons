@@ -188,7 +188,7 @@ final class Custom_Code_Manager
         // Theme mode (shared across all views)
         $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
         if (!in_array($theme_mode, ['light', 'dark', 'auto'], true)) {
-            $theme_mode = 'dark';
+            $theme_mode = 'auto';
         }
         // Store for sub-renderers
         $this->theme_mode = $theme_mode;

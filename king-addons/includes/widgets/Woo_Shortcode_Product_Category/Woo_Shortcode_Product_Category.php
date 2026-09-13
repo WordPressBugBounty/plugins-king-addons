@@ -34,6 +34,16 @@ class Woo_Shortcode_Product_Category extends Widget_Base
     }
 
     /**
+     * Style dependencies.
+     *
+     * @return array<int, string>
+     */
+    public function get_style_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-loop-style'];
+    }
+
+    /**
      * Get widget title.
      *
      * @return string
@@ -50,7 +60,7 @@ class Woo_Shortcode_Product_Category extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-product-categories';
+        return 'king-addons-icon king-addons-woo-shortcode-product-category';
     }
 
     /**
@@ -60,7 +70,7 @@ class Woo_Shortcode_Product_Category extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**

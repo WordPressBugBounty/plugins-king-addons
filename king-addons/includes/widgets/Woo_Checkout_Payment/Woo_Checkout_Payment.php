@@ -49,7 +49,7 @@ class Woo_Checkout_Payment extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-credit-card';
+        return 'king-addons-icon king-addons-woo-checkout-payment';
     }
 
     /**
@@ -298,13 +298,23 @@ class Woo_Checkout_Payment extends Abstract_Checkout_Widget
         $attrs = [
             'class' => 'ka-woo-checkout-payment',
         ];
+        if (class_exists('King_Addons\\Woo_Builder\\Context') && \King_Addons\Woo_Builder\Context::template_has_widget('woo_checkout_place_order', 'checkout')) {
+            $attrs['class'] .= ' ka-woo-checkout-payment--external-place-order';
+        }
 
         if ($can_pro) {
             $accordion = (!empty($settings['enable_accordion']) && 'yes' === $settings['enable_accordion']) ? 'true' : 'false';
             $icons = [];
             foreach ($settings['gateway_icons'] ?? [] as $item) {
                 $gid = sanitize_key($item['gateway_id'] ?? '');
-                $url = isset($item['icon_url']) ? esc_url_raw($item['icon_url']) : '';
+                // Cast first: a settings value that is not a string (a URL
+                // control's array, say) made esc_url_raw() throw a TypeError
+                // and took the whole checkout page down with a 500.
+                $raw_url = $item['icon_url'] ?? '';
+                if (is_array($raw_url)) {
+                    $raw_url = $raw_url['url'] ?? '';
+                }
+                $url = is_scalar($raw_url) ? esc_url_raw((string) $raw_url) : '';
                 if ($gid && $url) {
                     $icons[$gid] = $url;
                 }
@@ -328,23 +338,33 @@ class Woo_Checkout_Payment extends Abstract_Checkout_Widget
 
             $attrs['data-ka-accordion'] = $accordion;
             if (!empty($icons)) {
-                $attrs['data-ka-icons'] = esc_attr(wp_json_encode($icons));
+                $attrs['data-ka-icons'] = wp_json_encode($icons);
             }
             if (!empty($buttons)) {
-                $attrs['data-ka-placeorder'] = esc_attr(wp_json_encode($buttons));
+                $attrs['data-ka-placeorder'] = wp_json_encode($buttons);
             }
             if (!empty($descs)) {
-                $attrs['data-ka-descriptions'] = esc_attr(wp_json_encode($descs));
+                $attrs['data-ka-descriptions'] = wp_json_encode($descs);
             }
         }
 
+        // Single escaping only: these values are escaped here, once.
         $attr_str = '';
         foreach ($attrs as $key => $val) {
-            $attr_str .= ' ' . $key . '="' . esc_attr($val) . '"';
+            $attr_str .= ' ' . esc_attr($key) . '="' . esc_attr((string) $val) . '"';
         }
 
         echo '<div' . $attr_str . '>';
-        wc_get_template('checkout/payment.php', ['checkout' => $checkout]);
+        // checkout/payment.php also expects $order_button_text; WooCommerce's own
+        // woocommerce_checkout_payment() passes it. Without it the template
+        // warned three times per render and printed a button with no label.
+        wc_get_template(
+            'checkout/payment.php',
+            [
+                'checkout' => $checkout,
+                'order_button_text' => apply_filters('woocommerce_order_button_text', __('Place order', 'woocommerce')),
+            ]
+        );
         echo '</div>';
     }
 }

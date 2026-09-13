@@ -49,7 +49,7 @@ class Woo_Shortcode_My_Account extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-user-circle-o';
+        return 'king-addons-icon king-addons-woo-shortcode-my-account';
     }
 
     /**
@@ -59,7 +59,7 @@ class Woo_Shortcode_My_Account extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**

@@ -35,7 +35,7 @@ class Scroll_Story_Sections extends Widget_Base
 
     public function get_icon(): string
     {
-        return 'eicon-scroll';
+        return 'king-addons-icon king-addons-scroll-story-sections';
     }
 
     public function get_style_depends(): array

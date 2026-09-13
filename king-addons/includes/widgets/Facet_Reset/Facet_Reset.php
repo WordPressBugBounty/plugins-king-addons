@@ -46,7 +46,7 @@ class Facet_Reset extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-close';
+        return 'king-addons-icon king-addons-facet-reset';
     }
 
     /**

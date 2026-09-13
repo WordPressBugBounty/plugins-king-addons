@@ -119,8 +119,17 @@
 
         const setActive = (index) => {
             activeIndex = index;
+            // The mobile layout overrides the desktop one in both directions:
+            // a slider can become a grid on a phone, and a grid can become a
+            // slider. Only the first half was handled.
+            const isMobile = window.matchMedia('(max-width: 767px)').matches;
+            let isGrid = layout === 'grid' || layout === 'masonry';
+            if (isMobile && 'grid' === mobileLayout) {
+                isGrid = true;
+            } else if (isMobile && 'slider' === mobileLayout) {
+                isGrid = false;
+            }
             slides.forEach((slide, i) => {
-                const isGrid = layout === 'grid' || layout === 'masonry' || (mobileLayout === 'grid' && window.matchMedia('(max-width: 767px)').matches);
                 slide.style.display = i === activeIndex || isGrid ? 'block' : 'none';
             });
             thumbs.forEach((thumb, i) => {

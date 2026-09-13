@@ -784,7 +784,7 @@ $this->end_controls_section();
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         switch ($settings['king_addons_creative_btn_style']) {
             case 'london':
@@ -885,11 +885,17 @@ $this->end_controls_section();
         }
         echo '>';
 
-        $btn_txt = esc_html($settings['king_addons_creative_btn_button_text']);
+        // The label is kept raw here and escaped once, where it goes into
+        // markup. Escaping it up front and again below turned "Tom & Jerry"
+        // into visible "Tom &amp; Jerry" in the apex effect, because splitText()
+        // cuts the entity apart and wp_kses can no longer recognise it.
+        $btn_txt = $settings['king_addons_creative_btn_button_text'];
         if ('serene' == $effect || 'zephyr' == $effect || 'brilliance' == $effect) {
             $btn_txt = '<span>' . esc_html($btn_txt) . '</span>';
         } elseif ('apex' == $effect) {
             $btn_txt = $this->splitText($btn_txt);
+        } else {
+            $btn_txt = esc_html($btn_txt);
         }
 
         // Define allowed tags and attributes
@@ -967,7 +973,15 @@ $this->end_controls_section();
     {
         $base = 0.045;
         $markup = '';
-        foreach (str_split($text) as $key => $value) {
+
+        // str_split() cuts bytes, not characters: a Cyrillic label came out as
+        // twice as many empty spans, because every half of a character was
+        // invalid UTF-8 and esc_html() dropped it. The button rendered blank.
+        $characters = function_exists('mb_str_split')
+            ? mb_str_split((string) $text)
+            : preg_split('//u', (string) $text, -1, PREG_SPLIT_NO_EMPTY);
+
+        foreach ((array) $characters as $key => $value) {
             $delay = $base * ($key + 1);
             $markup .= trim($value) ? '<span style="--king-addons-creative-btn-effect-apex-delay:' . esc_attr($delay) . 's">' . esc_html($value) . '</span>' : '<span>&nbsp;</span>';
         }

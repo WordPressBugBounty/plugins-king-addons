@@ -1207,14 +1207,6 @@ class Quick_Card_Slider extends Widget_Base
             ]
         );
 
-        $this->add_group_control(
-            Group_Control_Box_Shadow::get_type(),
-            [
-                'name' => 'kng_button_shadow_hover',
-                'selector' => '{{WRAPPER}} .king-addons-card-slider__button:hover',
-            ]
-        );
-
         $this->end_controls_tab();
 
         $this->end_controls_tabs();

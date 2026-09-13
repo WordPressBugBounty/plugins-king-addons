@@ -49,7 +49,7 @@ class TB_Back_To_Home extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-button';
+        return 'king-addons-icon king-addons-tb-back-to-home';
     }
 
     /**
@@ -79,7 +79,7 @@ class TB_Back_To_Home extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -142,6 +142,7 @@ class TB_Back_To_Home extends Widget_Base
             [
                 'label' => esc_html__('Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Back to Home', 'king-addons'),
             ]
         );
@@ -166,6 +167,7 @@ class TB_Back_To_Home extends Widget_Base
             [
                 'label' => esc_html__('Custom URL', 'king-addons'),
                 'type' => Controls_Manager::URL,
+                'dynamic' => ['active' => true],
                 'placeholder' => 'https://example.com',
                 'condition' => [
                     'kng_destination' => 'custom',

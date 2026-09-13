@@ -158,7 +158,7 @@ class AI_SEO_Tools
 
         $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
         if (!in_array($theme_mode, ['dark', 'light', 'auto'], true)) {
-            $theme_mode = 'dark';
+            $theme_mode = 'auto';
         }
 
         $alt_stats = Alt_Text_Generator::get_alt_text_stats();

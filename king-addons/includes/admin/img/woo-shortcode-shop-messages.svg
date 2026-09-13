@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+        <linearGradient id="wssm" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9B62FF"/>
+            <stop offset="100%" stop-color="#5B03FF"/>
+        </linearGradient>
+    </defs>
+    
+    <path d="M24 8l16 28H8z" fill="none" stroke="url(#wssm)" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="23" y="18" width="2" height="10" rx="1" fill="url(#wssm)"/>
+    <circle cx="24" cy="32" r="1.6" fill="url(#wssm)"/>
+
+</svg>

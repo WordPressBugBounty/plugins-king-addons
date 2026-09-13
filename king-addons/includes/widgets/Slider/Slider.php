@@ -3244,7 +3244,7 @@ $this->end_controls_section();
         $slider_options = [
             'rtl' => $slider_is_rtl,
             'infinite' => ($settings['slider_loop'] === 'yes'),
-            'speed' => absint($settings['slider_effect_duration'] * 1000),
+            'speed' => absint(Core::jsNumber($settings, 'slider_effect_duration', 0.7) * 1000),
             'arrows' => true,
             'dots' => true,
             'autoplay' => ($settings['slider_autoplay'] === 'yes'),

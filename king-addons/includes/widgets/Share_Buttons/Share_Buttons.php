@@ -707,7 +707,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
             $settings['share_custom_colors'] = '';

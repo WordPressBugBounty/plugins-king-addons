@@ -32,6 +32,13 @@
     if (data.totals_html !== undefined) {
       document.querySelectorAll('.ka-woo-cart-totals').forEach((totals) => {
         totals.innerHTML = data.totals_html || '';
+        // The listeners lived on the elements just replaced, while the
+        // "already bound" flag sits on the wrapper and survived - so the
+        // coupon form worked exactly once per page load.
+        if (totals.dataset) {
+          delete totals.dataset[FLAG];
+        }
+        bind(totals);
       });
     }
     if (data.cart_html && document.querySelector('.ka-cart-table')) {
@@ -48,6 +55,8 @@
         window.KACartCrossSells.init();
       }
     }
+
+    document.body.dispatchEvent(new Event('wc_fragments_refreshed'));
   };
 
   const sendCoupon = (wrap, mode, code) => {

@@ -25,6 +25,8 @@ class Send_Webhook
             return;
         }
 
+        Form_Builder_Security::guard_spam();
+
         $webhook_option_key = 'king_addons_webhook_url_' . $_POST['king_addons_form_id'];
         $webhook_url_raw = get_option($webhook_option_key);
         $webhook_url = $webhook_url_raw ? esc_url_raw(trim($webhook_url_raw)) : '';
@@ -56,7 +58,7 @@ class Send_Webhook
                     $message_body[trim($value[2])] = implode("\n", $value[1]);
                 }
             } else {
-                if (empty($value2)) {
+                if (empty($value[2])) {
                     $message_body[trim($key)] = $value[1];
                 } else {
                     $message_body[trim($value[2])] = $value[1];

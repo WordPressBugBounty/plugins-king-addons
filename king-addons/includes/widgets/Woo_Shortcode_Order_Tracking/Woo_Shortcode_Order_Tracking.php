@@ -49,7 +49,7 @@ class Woo_Shortcode_Order_Tracking extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-search';
+        return 'king-addons-icon king-addons-woo-shortcode-order-tracking';
     }
 
     /**
@@ -59,7 +59,7 @@ class Woo_Shortcode_Order_Tracking extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**

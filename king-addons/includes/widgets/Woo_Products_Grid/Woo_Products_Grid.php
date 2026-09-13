@@ -29,9 +29,23 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
     protected array $external_query_args = [];
 
     /**
+     * Archive term to scope the query to, when there is no queried object.
+     *
+     * @var \WP_Term|null
+     */
+    protected ?\WP_Term $archive_term = null;
+
+    /**
      * Wrapper render attribute handle shared with faceted filters feature.
      */
     private const FILTER_WRAPPER_HANDLE = 'ka-filters-wrapper';
+
+    /**
+     * Query stats keyed by Query ID (and __auto_{widget_id} for untitled grids).
+     *
+     * @var array<string,array<string,mixed>>
+     */
+    private static array $query_stats = [];
 
     /**
      * Widget slug.
@@ -60,7 +74,7 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-products';
+        return 'king-addons-icon king-addons-woo-products-grid';
     }
 
     /**
@@ -134,6 +148,26 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         ];
 
         return '<a ' . wc_implode_html_attributes($attributes) . '><span class="ka-woo-products-grid__add-to-cart-label">' . esc_html($product->add_to_cart_text()) . '</span></a>';
+    }
+
+    /**
+     * Add to cart plus archive extras (wishlist, etc.). Native
+     * woocommerce_after_shop_loop_item is not fired from this widget.
+     *
+     * @param \WC_Product $product Product instance.
+     *
+     * @return string
+     */
+    private function render_card_actions(\WC_Product $product): string
+    {
+        $html = '<div class="ka-woo-products-grid__actions">';
+        $html .= $this->render_add_to_cart_button($product);
+        ob_start();
+        do_action('king_addons/woo_products_grid/after_add_to_cart', $product);
+        $html .= (string) ob_get_clean();
+        $html .= '</div>';
+
+        return $html;
     }
 
     /**
@@ -393,7 +427,8 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             [
                 'label' => sprintf(__('Load More Text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Load more', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Load more', 'king-addons'),
                 'condition' => [
                     'pagination_type' => 'load_more',
                 ],
@@ -405,7 +440,8 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             [
                 'label' => sprintf(__('Infinite Loading Text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Loading…', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Loading…', 'king-addons'),
                 'condition' => [
                     'pagination_type' => 'infinite',
                 ],
@@ -474,7 +510,8 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             [
                 'label' => esc_html__('Custom badge text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Featured', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Featured', 'king-addons'),
                 'condition' => [
                     'show_custom_badge' => 'yes',
                 ],
@@ -560,9 +597,21 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         $per_page = max(1, (int) ($settings['per_page'] ?? 8));
         $orderby = $this->sanitize_orderby($settings['orderby'] ?? 'date');
         $order = $this->sanitize_order($settings['order'] ?? 'DESC');
-        $layout_type = $settings['layout_type'] ?? 'grid';
-        $card_layout = $settings['card_layout'] ?? 'classic';
-        $pagination_type = $settings['pagination_type'] ?? 'none';
+        // These three end up in class names and data attributes that the script
+        // switches on, so anything off the list has to fall back rather than be
+        // passed through.
+        $layout_type = (string) ($settings['layout_type'] ?? 'grid');
+        if (!in_array($layout_type, ['grid', 'masonry', 'slider'], true)) {
+            $layout_type = 'grid';
+        }
+        $card_layout = (string) ($settings['card_layout'] ?? 'classic');
+        if (!in_array($card_layout, ['classic', 'list'], true)) {
+            $card_layout = 'classic';
+        }
+        $pagination_type = (string) ($settings['pagination_type'] ?? 'none');
+        if (!in_array($pagination_type, ['none', 'numbers', 'load_more', 'infinite'], true)) {
+            $pagination_type = 'none';
+        }
         $can_pro = king_addons_can_use_pro();
         $wrapper_handle = self::FILTER_WRAPPER_HANDLE;
 
@@ -576,7 +625,17 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             $pagination_type = 'none';
         }
 
+        // Numbered pagination cannot ride on the archive's own /page/N/ URLs:
+        // the widget has its own page size, so a grid showing 2 per page links
+        // to /page/2/ of an archive whose main query has a single page, and
+        // WordPress answers 404. A per-widget query arg keeps the request on
+        // the current archive page and lets two grids paginate independently.
+        $page_arg = 'ka-page-' . $this->get_id();
         $paged = max(1, (int) get_query_var('paged', 1));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only paging.
+        if (isset($_GET[$page_arg])) {
+            $paged = max(1, (int) $_GET[$page_arg]); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        }
         if (!empty($this->external_query_args['paged'])) {
             $paged = max(1, (int) $this->external_query_args['paged']);
         }
@@ -592,7 +651,7 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         $query_id = $settings['query_id'] ?? '';
         $filters = [];
         if ($can_pro && !empty($query_id)) {
-            $filters = $this->get_filters_from_request($query_id);
+            $filters = self::get_filters_from_request($query_id);
         }
         $filters = self::sanitize_filters_array($filters);
         if (!empty($this->external_query_args['tax_query'])) {
@@ -619,35 +678,45 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         }
 
         $query = new \WP_Query($q_args);
+        self::remember_query_stats((string) $this->get_id(), (string) $query_id, $query, $paged, $per_page, $page_arg);
         if (!$query->have_posts()) {
             wp_reset_postdata();
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('No products match this query.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
+        // An untouched control comes back as null on the front end but as an
+        // empty string for a logged-in render, and a cleared field is 0. All
+        // three mean "use the default"; casting them straight to int gave a
+        // one-column grid, and only on the logged-in view.
         $columns = [
-            'desktop' => $settings['columns'] ?? 4,
-            'tablet' => $settings['columns_tablet'] ?? 3,
-            'mobile' => $settings['columns_mobile'] ?? 2,
+            'desktop' => max(1, (int) (($settings['columns'] ?? null) ?: 4)),
+            'tablet' => max(1, (int) (($settings['columns_tablet'] ?? null) ?: 3)),
+            'mobile' => max(1, (int) (($settings['columns_mobile'] ?? null) ?: 2)),
         ];
 
         $this->add_render_attribute('grid', 'class', 'ka-woo-products-grid');
         $this->add_render_attribute('grid', 'data-cols-desktop', (int) $columns['desktop']);
         $this->add_render_attribute('grid', 'data-cols-tablet', (int) $columns['tablet']);
         $this->add_render_attribute('grid', 'data-cols-mobile', (int) $columns['mobile']);
-        $this->add_render_attribute('grid', 'data-layout-type', esc_attr($layout_type));
-        $this->add_render_attribute('grid', 'data-card-layout', esc_attr($card_layout));
-        $this->add_render_attribute('grid', 'data-pagination-type', esc_attr($pagination_type));
+        $this->add_render_attribute('grid', 'data-layout-type', $layout_type);
+        $this->add_render_attribute('grid', 'data-card-layout', $card_layout);
+        $this->add_render_attribute('grid', 'data-pagination-type', $pagination_type);
         if ('slider' === $layout_type) {
             $this->add_render_attribute('grid', 'data-slider-loop', (!empty($settings['slider_loop']) && $can_pro) ? 'true' : 'false');
             $this->add_render_attribute('grid', 'data-slider-autoplay', (!empty($settings['slider_autoplay']) && $can_pro) ? 'true' : 'false');
             $this->add_render_attribute('grid', 'data-slider-autoplay-speed', (int) ($settings['slider_autoplay_speed'] ?? 5000));
-            $this->add_render_attribute('grid', 'data-slider-skin', esc_attr($settings['slider_skin'] ?? 'arrows'));
+            $this->add_render_attribute('grid', 'data-slider-skin', $settings['slider_skin'] ?? 'arrows');
         }
 
-        $show_rating = !empty($settings['show_rating']) && king_addons_can_use_pro();
-        $show_excerpt = !empty($settings['show_excerpt']) && king_addons_can_use_pro();
+        $show_rating = !empty($settings['show_rating']) && $can_pro;
+        $show_excerpt = !empty($settings['show_excerpt']) && $can_pro;
         $excerpt_len = max(5, (int) ($settings['excerpt_length'] ?? 15));
-        $show_badge = !empty($settings['show_badge']) && king_addons_can_use_pro();
+        $show_badge = !empty($settings['show_badge']) && $can_pro;
         $show_best_badge = !empty($settings['show_best_seller_badge']) && $can_pro;
         $show_custom_badge = !empty($settings['show_custom_badge']) && $can_pro;
         $custom_badge_text = !empty($settings['custom_badge_text']) ? $settings['custom_badge_text'] : '';
@@ -655,25 +724,32 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         $show_sku = !empty($settings['show_sku']) && $can_pro;
 
         $nonce = wp_create_nonce('ka_products_grid');
-        $this->add_render_attribute('grid', 'data-query-id', esc_attr($query_id));
+        $this->add_render_attribute('grid', 'data-query-id', $query_id);
         $this->add_render_attribute('grid', 'data-page', (int) $paged);
         $this->add_render_attribute('grid', 'data-max-pages', (int) $query->max_num_pages);
-        $this->add_render_attribute('grid', 'data-ajax-url', esc_url(admin_url('admin-ajax.php')));
-        $this->add_render_attribute('grid', 'data-nonce', esc_attr($nonce));
-        $this->add_render_attribute('grid', 'data-order', esc_attr($order));
-        $this->add_render_attribute('grid', 'data-orderby', esc_attr($orderby));
+        $this->add_render_attribute('grid', 'data-ajax-url', admin_url('admin-ajax.php'));
+        $this->add_render_attribute('grid', 'data-nonce', $nonce);
+        $this->add_render_attribute('grid', 'data-order', $order);
+        $this->add_render_attribute('grid', 'data-orderby', $orderby);
         $this->add_render_attribute('grid', 'data-per-page', (int) $per_page);
+        if (function_exists('is_product_taxonomy') && is_product_taxonomy()) {
+            $archive_term = get_queried_object();
+            if ($archive_term instanceof \WP_Term) {
+                $this->add_render_attribute('grid', 'data-archive-taxonomy', $archive_term->taxonomy);
+                $this->add_render_attribute('grid', 'data-archive-term', (int) $archive_term->term_id);
+            }
+        }
         $this->add_render_attribute('grid', 'data-show-rating', $show_rating ? 'true' : 'false');
         $this->add_render_attribute('grid', 'data-show-excerpt', $show_excerpt ? 'true' : 'false');
         $this->add_render_attribute('grid', 'data-excerpt-length', (int) $excerpt_len);
         $this->add_render_attribute('grid', 'data-show-badge', $show_badge ? 'true' : 'false');
         $this->add_render_attribute('grid', 'data-show-best-badge', $show_best_badge ? 'true' : 'false');
         $this->add_render_attribute('grid', 'data-show-custom-badge', $show_custom_badge ? 'true' : 'false');
-        $this->add_render_attribute('grid', 'data-custom-badge-text', esc_attr($custom_badge_text));
+        $this->add_render_attribute('grid', 'data-custom-badge-text', $custom_badge_text);
         $this->add_render_attribute('grid', 'data-show-brand', $show_brand ? 'true' : 'false');
         $this->add_render_attribute('grid', 'data-show-sku', $show_sku ? 'true' : 'false');
         if (!empty($filters)) {
-            $this->add_render_attribute('grid', 'data-filters', esc_attr(wp_json_encode($filters)));
+            $this->add_render_attribute('grid', 'data-filters', wp_json_encode($filters));
         }
 
         $this->add_render_attribute($wrapper_handle, 'class', 'ka-woo-products-grid__wrap');
@@ -724,6 +800,8 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
                 }
                 echo '<div class="' . esc_attr($class) . '">';
                 echo paginate_links([
+                    'base' => add_query_arg($page_arg, '%#%'),
+                    'format' => '',
                     'total' => $query->max_num_pages,
                     'current' => $paged,
                     'prev_text' => '&laquo;',
@@ -731,7 +809,12 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
                 ]);
                 echo '</div>';
             } elseif ('load_more' === $pagination_type || 'infinite' === $pagination_type) {
-                $btn_text = 'load_more' === $pagination_type ? ($settings['load_more_text'] ?? esc_html__('Load more', 'king-addons')) : ($settings['infinite_loading_text'] ?? esc_html__('Loading…', 'king-addons'));
+                // ?: not ??: an emptied text field is '' rather than null, and
+                // fell through to an unlabelled button.
+                $loading_text = $settings['infinite_loading_text'] ?: __('Loading…', 'king-addons');
+                $btn_text = 'load_more' === $pagination_type
+                    ? ($settings['load_more_text'] ?: __('Load more', 'king-addons'))
+                    : $loading_text;
                 $class = 'ka-woo-products-grid__pagination ka-woo-products-grid__pagination--ajax';
                 if (!empty($pagination_classes)) {
                     $class .= ' ' . implode(' ', $pagination_classes);
@@ -741,13 +824,180 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
                     $btn_classes[] = 'ka-woo-products-grid__load-more--skin-' . esc_attr($settings['pagination_skin']);
                 }
                 echo '<div class="' . esc_attr($class) . '">';
-                echo '<button type="button" class="' . esc_attr(implode(' ', $btn_classes)) . '" data-pagination="' . esc_attr($pagination_type) . '" data-loading-text="' . esc_attr($settings['infinite_loading_text'] ?? esc_html__('Loading…', 'king-addons')) . '" data-default-text="' . esc_attr($btn_text) . '"><span class="ka-woo-products-grid__load-more-label">' . esc_html($btn_text) . '</span><span class="ka-woo-products-grid__spinner" aria-hidden="true"></span></button>';
+                echo '<button type="button" class="' . esc_attr(implode(' ', $btn_classes)) . '" data-pagination="' . esc_attr($pagination_type) . '" data-loading-text="' . esc_attr($loading_text) . '" data-default-text="' . esc_attr($btn_text) . '"><span class="ka-woo-products-grid__load-more-label">' . esc_html($btn_text) . '</span><span class="ka-woo-products-grid__spinner" aria-hidden="true"></span></button>';
                 echo '</div>';
             }
         }
         echo '</div>';
 
         wp_reset_postdata();
+    }
+
+    /**
+     * Remember a rendered grid query so Result Count / Pagination can read it.
+     *
+     * @param string    $widget_id Widget id.
+     * @param string    $query_id  Shared Query ID.
+     * @param \WP_Query $query     Query.
+     * @param int       $paged     Current page.
+     * @param int       $per_page  Page size.
+     * @param string    $page_arg  GET arg used for this grid's pages.
+     *
+     * @return void
+     */
+    private static function remember_query_stats(string $widget_id, string $query_id, \WP_Query $query, int $paged, int $per_page, string $page_arg): void
+    {
+        $stats = [
+            'widget_id' => $widget_id,
+            'query_id' => $query_id,
+            'found_posts' => (int) $query->found_posts,
+            'post_count' => (int) $query->post_count,
+            'max_num_pages' => max(1, (int) $query->max_num_pages),
+            'paged' => max(1, $paged),
+            'per_page' => max(1, $per_page),
+            'page_arg' => $page_arg,
+        ];
+        self::$query_stats['__id__' . $widget_id] = $stats;
+        if ('' !== $query_id) {
+            if (!isset(self::$query_stats[$query_id])) {
+                self::$query_stats[$query_id] = $stats;
+            }
+        }
+    }
+
+    /**
+     * Query stats for Result Count / Pagination, matching a Products Grid.
+     *
+     * Empty Query ID uses the first Products Grid on the current archive
+     * template. Result Count renders above the grid, so this may run a
+     * count query from stored template settings when nothing is remembered yet.
+     *
+     * @param string $query_id Shared Query ID, or '' to auto-pick.
+     *
+     * @return array<string,mixed>|null
+     */
+    public static function query_stats(string $query_id = ''): ?array
+    {
+        $query_id = sanitize_title($query_id);
+        if ('' !== $query_id && isset(self::$query_stats[$query_id])) {
+            return self::$query_stats[$query_id];
+        }
+
+        $grids = [];
+        if (class_exists('\\King_Addons\\Woo_Builder\\Context')) {
+            $grids = \King_Addons\Woo_Builder\Context::find_template_widgets('woo_products_grid', 'product_archive');
+        }
+        if (empty($grids)) {
+            return null;
+        }
+
+        $picked = $grids[0];
+        if ('' !== $query_id) {
+            $matched = null;
+            foreach ($grids as $grid) {
+                if (sanitize_title($grid['settings']['query_id'] ?? '') === $query_id) {
+                    $matched = $grid;
+                    break;
+                }
+            }
+            if (!$matched) {
+                return null;
+            }
+            $picked = $matched;
+        }
+
+        $widget_id = (string) $picked['id'];
+        if (isset(self::$query_stats['__id__' . $widget_id])) {
+            return self::$query_stats['__id__' . $widget_id];
+        }
+
+        $computed = self::compute_query_stats($widget_id, is_array($picked['settings']) ? $picked['settings'] : []);
+        $key = '' !== $query_id ? $query_id : '__auto_' . $widget_id;
+        self::$query_stats[$key] = $computed;
+        self::$query_stats['__id__' . $widget_id] = $computed;
+        return $computed;
+    }
+
+    /**
+     * Run the same product query a grid would, without rendering cards.
+     *
+     * @param string               $widget_id Widget id (for ka-page-{id}).
+     * @param array<string,mixed>  $settings  Grid settings.
+     *
+     * @return array<string,mixed>
+     */
+    private static function compute_query_stats(string $widget_id, array $settings): array
+    {
+        $per_page = max(1, (int) ($settings['per_page'] ?? 8));
+        $orderby = self::sanitize_orderby_static((string) ($settings['orderby'] ?? 'date'));
+        $order = self::sanitize_order_static((string) ($settings['order'] ?? 'DESC'));
+        $page_arg = 'ka-page-' . $widget_id;
+        $paged = 1;
+        if (isset($_GET[$page_arg])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $paged = max(1, (int) $_GET[$page_arg]); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        }
+        $can_pro = function_exists('king_addons_can_use_pro') && king_addons_can_use_pro();
+        $query_id = sanitize_title((string) ($settings['query_id'] ?? ''));
+
+        $q_args = [
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => $per_page,
+            'orderby' => $orderby,
+            'order' => $order,
+            'paged' => $paged,
+            'fields' => 'ids',
+            'no_found_rows' => false,
+        ];
+
+        if ('popularity' === $orderby) {
+            $q_args['meta_key'] = 'total_sales';
+            $q_args['orderby'] = 'meta_value_num';
+        } elseif ('rating' === $orderby) {
+            $q_args['meta_key'] = '_wc_average_rating';
+            $q_args['orderby'] = 'meta_value_num';
+            $q_args['meta_query'][] = [
+                'key' => '_wc_average_rating',
+                'compare' => 'EXISTS',
+            ];
+        } elseif ('price' === $orderby) {
+            $q_args['meta_key'] = '_price';
+            $q_args['orderby'] = 'meta_value_num';
+        }
+
+        if (function_exists('is_product_taxonomy') && is_product_taxonomy()) {
+            $term = get_queried_object();
+            if ($term && !empty($term->taxonomy) && !empty($term->term_id)) {
+                $q_args['tax_query'][] = [
+                    'taxonomy' => $term->taxonomy,
+                    'field' => 'term_id',
+                    'terms' => [(int) $term->term_id],
+                ];
+            }
+        }
+
+        $filters = [];
+        if ($can_pro && '' !== $query_id) {
+            $filters = self::get_filters_from_request($query_id);
+            $filters = self::sanitize_filters_array($filters);
+            if (!empty($filters)) {
+                $q_args = self::apply_filters_to_query_args_static($q_args, $filters);
+            }
+        }
+
+        $query = new \WP_Query($q_args);
+        $stats = [
+            'widget_id' => $widget_id,
+            'query_id' => $query_id,
+            'found_posts' => (int) $query->found_posts,
+            'post_count' => (int) $query->post_count,
+            'max_num_pages' => max(1, (int) $query->max_num_pages),
+            'paged' => $paged,
+            'per_page' => $per_page,
+            'page_arg' => $page_arg,
+        ];
+        wp_reset_postdata();
+        return $stats;
     }
 
     /**
@@ -792,16 +1042,18 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             $q_args['orderby'] = 'meta_value_num';
         }
 
-        // Current archive context tax query.
-        if (is_product_taxonomy()) {
+        // Current archive context tax query. On admin-ajax there is no queried
+        // object, so the caller passes the term it captured at render time.
+        $term = $this->archive_term;
+        if (null === $term && is_product_taxonomy()) {
             $term = get_queried_object();
-            if ($term && !empty($term->taxonomy) && !empty($term->term_id)) {
-                $q_args['tax_query'][] = [
-                    'taxonomy' => $term->taxonomy,
-                    'field' => 'term_id',
-                    'terms' => [$term->term_id],
-                ];
-            }
+        }
+        if ($term && !empty($term->taxonomy) && !empty($term->term_id)) {
+            $q_args['tax_query'][] = [
+                'taxonomy' => $term->taxonomy,
+                'field' => 'term_id',
+                'terms' => [$term->term_id],
+            ];
         }
 
         if ($can_pro && !empty($filters)) {
@@ -824,26 +1076,30 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             wp_send_json_error(['message' => esc_html__('WooCommerce is not available.', 'king-addons')], 400);
         }
 
-        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+        $nonce = sanitize_text_field(wp_unslash($_POST['nonce'] ?? ''));
         if (!wp_verify_nonce($nonce, 'ka_products_grid')) {
             wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
         }
 
         $page = isset($_POST['page']) ? (int) $_POST['page'] : 1;
-        $per_page = isset($_POST['per_page']) ? (int) $_POST['per_page'] : 8;
-        $order = self::sanitize_order_static($_POST['order'] ?? 'DESC');
-        $orderby = self::sanitize_orderby_static($_POST['orderby'] ?? 'date');
+        // The browser is not the authority on how much work to ask for.
+        $per_page = isset($_POST['per_page']) ? min(100, max(1, (int) $_POST['per_page'])) : 8;
+        $order = self::sanitize_order_static(sanitize_text_field(wp_unslash($_POST['order'] ?? 'DESC')));
+        $orderby = self::sanitize_orderby_static(sanitize_text_field(wp_unslash($_POST['orderby'] ?? 'date')));
         $can_pro = king_addons_can_use_pro();
-        $show_rating = !empty($_POST['show_rating']);
-        $show_excerpt = !empty($_POST['show_excerpt']);
+        // Every flag below drives a Pro-only part of the card. They arrive from
+        // the browser, so the tier has to be checked here too - the check in
+        // render() only covers the first page.
+        $show_rating = !empty($_POST['show_rating']) && $can_pro;
+        $show_excerpt = !empty($_POST['show_excerpt']) && $can_pro;
         $excerpt_len = isset($_POST['excerpt_length']) ? max(5, (int) $_POST['excerpt_length']) : 15;
-        $show_badge = !empty($_POST['show_badge']);
-        $show_best_badge = !empty($_POST['show_best_badge']);
-        $show_custom_badge = !empty($_POST['show_custom_badge']);
-        $custom_badge_text = sanitize_text_field($_POST['custom_badge_text'] ?? '');
-        $show_brand = !empty($_POST['show_brand']);
-        $show_sku = !empty($_POST['show_sku']);
-        $card_layout = sanitize_key($_POST['card_layout'] ?? 'classic');
+        $show_badge = !empty($_POST['show_badge']) && $can_pro;
+        $show_best_badge = !empty($_POST['show_best_badge']) && $can_pro;
+        $show_custom_badge = !empty($_POST['show_custom_badge']) && $can_pro;
+        $custom_badge_text = sanitize_text_field(wp_unslash($_POST['custom_badge_text'] ?? ''));
+        $show_brand = !empty($_POST['show_brand']) && $can_pro;
+        $show_sku = !empty($_POST['show_sku']) && $can_pro;
+        $card_layout = sanitize_key(wp_unslash($_POST['card_layout'] ?? 'classic'));
         if ('list' === $card_layout && !$can_pro) {
             $card_layout = 'classic';
         }
@@ -864,6 +1120,16 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         ];
 
         $instance = new self();
+
+        $archive_taxonomy = sanitize_key(wp_unslash($_POST['archive_taxonomy'] ?? ''));
+        $archive_term_id = isset($_POST['archive_term']) ? (int) $_POST['archive_term'] : 0;
+        if ($archive_taxonomy && $archive_term_id > 0 && taxonomy_exists($archive_taxonomy)) {
+            $archive_term = get_term($archive_term_id, $archive_taxonomy);
+            if ($archive_term instanceof \WP_Term) {
+                $instance->archive_term = $archive_term;
+            }
+        }
+
         $q_args = $instance->build_query_args(
             $settings,
             max(1, $page),
@@ -964,7 +1230,7 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
      *
      * @return array<string,mixed>
      */
-    private function get_filters_from_request(string $query_id): array
+    private static function get_filters_from_request(string $query_id): array
     {
         if (empty($query_id)) {
             return [];
@@ -1266,7 +1532,7 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             if ($price_html) {
                 $html .= '<div class="ka-woo-products-grid__price">' . wp_kses_post($price_html) . '</div>';
             }
-            $html .= $this->render_add_to_cart_button($product);
+            $html .= $this->render_card_actions($product);
             $html .= '</div>';
         } else {
             $html .= '<div class="ka-woo-products-grid__thumb-wrap">';
@@ -1288,7 +1554,7 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
             if (!empty($meta_parts)) {
                 $html .= '<div class="ka-woo-products-grid__meta">' . implode('', $meta_parts) . '</div>';
             }
-            $html .= $this->render_add_to_cart_button($product);
+            $html .= $this->render_card_actions($product);
         }
         $html .= '</article>';
 
@@ -1323,8 +1589,9 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
     }
 }
 
-add_action('wp_ajax_ka_products_grid', [Woo_Products_Grid::class, 'ajax_render']);
-add_action('wp_ajax_nopriv_ka_products_grid', [Woo_Products_Grid::class, 'ajax_render']);
+// Registration lives in Woo_Builder: admin-ajax.php does not load Elementor
+// widget files, so hooking from here meant the action never existed and every
+// load-more request came back as "0".
 
 
 

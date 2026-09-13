@@ -28,7 +28,7 @@ function king_addons_get_extensions_list(): array {
             'description' => esc_html__('Create custom headers and footers with Elementor and display them anywhere on your site.', 'king-addons'),
             'icon' => 'dashicons-welcome-widgets-menus',
             'constant' => 'KING_ADDONS_EXT_HEADER_FOOTER_BUILDER',
-            'link' => admin_url('edit.php?post_type=king-addons-el-hf'),
+            'link' => admin_url('admin.php?page=king-addons-el-hf'),
         ],
         'popup-builder' => [
             'title' => esc_html__('Popup Builder', 'king-addons'),
@@ -36,6 +36,20 @@ function king_addons_get_extensions_list(): array {
             'icon' => 'dashicons-external',
             'constant' => 'KING_ADDONS_EXT_POPUP_BUILDER',
             'link' => admin_url('admin.php?page=king-addons-popup-builder'),
+        ],
+        'dynamic-tags' => [
+            'title' => esc_html__('Dynamic Tags', 'king-addons'),
+            'description' => esc_html__('Fill any Elementor control with live data: post fields, custom fields, ACF, WooCommerce product data, author, site and request values.', 'king-addons'),
+            'icon' => 'dashicons-database',
+            'constant' => 'KING_ADDONS_EXT_DYNAMIC_TAGS',
+            'link' => '',
+        ],
+        'loop-builder' => [
+            'title' => esc_html__('Loop Builder', 'king-addons'),
+            'description' => esc_html__('Design one card in Elementor and repeat it for every post, product or custom entry a query returns.', 'king-addons'),
+            'icon' => 'dashicons-screenoptions',
+            'constant' => 'KING_ADDONS_EXT_LOOP_BUILDER',
+            'link' => admin_url('admin.php?page=king-addons-loop-builder'),
         ],
         'woo-builder' => [
             'title' => esc_html__('WooCommerce Builder', 'king-addons'),
@@ -169,6 +183,34 @@ function king_addons_get_extensions_list(): array {
             'icon' => 'dashicons-format-image',
             'constant' => 'KING_ADDONS_EXT_IMAGE_OPTIMIZER',
             'link' => admin_url('admin.php?page=king-addons-image-optimizer'),
+        ],
+        'free-shipping-bar' => [
+            'title' => esc_html__('Free Shipping Bar', 'king-addons'),
+            'description' => esc_html__('Shows customers how much more they need to add to qualify for free shipping. Reads the threshold from your WooCommerce shipping zones.', 'king-addons'),
+            'icon' => 'dashicons-cart',
+            'constant' => 'KING_ADDONS_EXT_FREE_SHIPPING_BAR',
+            'link' => admin_url('admin.php?page=king-addons-free-shipping-bar'),
+            'requires' => [
+                'woocommerce' => [
+                    'name' => esc_html__('WooCommerce', 'king-addons'),
+                    'install_url' => admin_url('plugin-install.php?s=woocommerce&tab=search&type=term'),
+                    'message' => esc_html__('Requires WooCommerce to be installed and activated.', 'king-addons'),
+                ],
+            ],
+        ],
+        'sticky-add-to-cart' => [
+            'title' => esc_html__('Sticky Add To Cart', 'king-addons'),
+            'description' => esc_html__('Keeps the price and buy button in reach once the visitor scrolls past the product form. Part of King Addons Pro.', 'king-addons'),
+            'icon' => 'dashicons-cart',
+            'constant' => 'KING_ADDONS_EXT_STICKY_ADD_TO_CART',
+            'link' => admin_url('admin.php?page=king-addons-sticky-add-to-cart'),
+            'requires' => [
+                'woocommerce' => [
+                    'name' => esc_html__('WooCommerce', 'king-addons'),
+                    'install_url' => admin_url('plugin-install.php?s=woocommerce&tab=search&type=term'),
+                    'message' => esc_html__('Requires WooCommerce to be installed and activated.', 'king-addons'),
+                ],
+            ],
         ],
         'ai-seo-tools' => [
             'title' => esc_html__('AI SEO Tools', 'king-addons'),

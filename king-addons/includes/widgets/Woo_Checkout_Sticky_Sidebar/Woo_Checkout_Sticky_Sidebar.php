@@ -47,7 +47,7 @@ class Woo_Checkout_Sticky_Sidebar extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-sticky-note';
+        return 'king-addons-icon king-addons-woo-checkout-sticky-sidebar';
     }
 
     /**
@@ -85,6 +85,7 @@ class Woo_Checkout_Sticky_Sidebar extends Widget_Base
             [
                 'label' => esc_html__('Sidebar Title', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Order Summary', 'king-addons'),
             ]
         );
@@ -130,6 +131,19 @@ class Woo_Checkout_Sticky_Sidebar extends Widget_Base
             return;
         }
 
+        // woocommerce_order_review() reaches straight into WC()->cart. There is
+        // no cart in the Elementor editor, so the call died with
+        // "Call to a member function get_cart() on null" and took the whole
+        // editor preview of the checkout template down with it.
+        if (!function_exists('WC') || !WC()->cart) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The sticky sidebar shows the order review from the live cart.', 'king-addons')
+                    . '</div>';
+            }
+            return;
+        }
+
         if (!king_addons_can_use_pro()) {
             if (Woo_Context::is_editor()) {
                 echo '<div class="king-addons-woo-builder-notice">';
@@ -140,8 +154,10 @@ class Woo_Checkout_Sticky_Sidebar extends Widget_Base
         }
 
         $settings = $this->get_settings_for_display();
-        $offset = isset($settings['sticky_offset']) ? (int) $settings['sticky_offset'] : 20;
-        $disable_below = isset($settings['disable_below']) ? (int) $settings['disable_below'] : 768;
+        // A cleared field is '' rather than unset, and (int) '' is 0 - the
+        // sidebar then pinned to the very top and stayed sticky on phones.
+        $offset = max(0, (int) (($settings['sticky_offset'] ?? null) ?: 20));
+        $disable_below = max(0, (int) (($settings['disable_below'] ?? null) ?: 768));
 
         echo '<aside class="ka-woo-checkout-sticky" data-ka-sticky="true" data-ka-sticky-offset="' . esc_attr($offset) . '" data-ka-sticky-breakpoint="' . esc_attr($disable_below) . '">';
         if (!empty($settings['title_text'])) {

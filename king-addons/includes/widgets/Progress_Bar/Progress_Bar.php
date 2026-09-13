@@ -1314,7 +1314,10 @@ $this->end_controls_section();
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        $counter_percent = round(($settings['counter_value'] / $settings['max_value']) * 100);
+        // A cleared or zero Max Value would divide by zero and take the page down with it.
+        $counter_value = (float) Core::jsNumber($settings, 'counter_value', 70);
+        $max_value = (float) Core::jsNumber($settings, 'max_value', 100);
+        $counter_percent = $max_value > 0 ? round(($counter_value / $max_value) * 100) : 0;
 
         $this->add_render_attribute('king-addons-progress-bar', [
             'class' => 'king-addons-progress-bar',
@@ -1322,8 +1325,8 @@ $this->end_controls_section();
                 'counterValue' => $settings['counter_value'],
                 'counterValuePercent' => $counter_percent,
                 'counterSeparator' => $settings['counter_separator'],
-                'animDuration' => $settings['anim_duration'] * 1000,
-                'animDelay' => $settings['anim_delay'] * 1000,
+                'animDuration' => Core::jsNumber($settings, 'anim_duration', 1) * 1000,
+                'animDelay' => Core::jsNumber($settings, 'anim_delay', 0) * 1000,
                 'loop' => $settings['anim_loop'] ?? '',
                 'loopDelay' => $settings['anim_loop_delay'] ?? '',
             ]),

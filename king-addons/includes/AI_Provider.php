@@ -52,11 +52,38 @@ final class AI_Provider
     }
 
     /**
+     * Provider to use when none has been chosen yet.
+     *
+     * New installs start on OpenRouter, because its free models let someone try
+     * the AI features without paying anything first. An install that already had
+     * an OpenAI key before the provider selector existed keeps OpenAI, so an
+     * update never silently points working features at a provider with no key.
+     */
+    public static function getDefaultProvider(): string
+    {
+        $options = get_option(self::OPTION_NAME, []);
+
+        if (is_array($options) && !empty($options['openai_api_key'])) {
+            return self::OPENAI;
+        }
+
+        return self::OPENROUTER;
+    }
+
+    /**
      * Normalises an arbitrary value to a supported provider slug.
      */
     public static function normalizeProvider($provider): string
     {
-        return ($provider === self::OPENROUTER) ? self::OPENROUTER : self::OPENAI;
+        if ($provider === self::OPENROUTER) {
+            return self::OPENROUTER;
+        }
+
+        if ($provider === self::OPENAI) {
+            return self::OPENAI;
+        }
+
+        return self::getDefaultProvider();
     }
 
     /**
@@ -65,7 +92,13 @@ final class AI_Provider
     public static function getProvider(): string
     {
         $options = get_option(self::OPTION_NAME, []);
-        return self::normalizeProvider(is_array($options) ? ($options['ai_provider'] ?? self::OPENAI) : self::OPENAI);
+        $stored = is_array($options) ? ($options['ai_provider'] ?? '') : '';
+
+        if ($stored === self::OPENAI || $stored === self::OPENROUTER) {
+            return $stored;
+        }
+
+        return self::getDefaultProvider();
     }
 
     public static function isOpenRouter(): bool

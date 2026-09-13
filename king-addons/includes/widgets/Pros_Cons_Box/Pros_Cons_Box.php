@@ -53,7 +53,7 @@ class Pros_Cons_Box extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-editor-list-ul';
+        return 'king-addons-icon king-addons-pros-cons-box';
     }
 
     /**

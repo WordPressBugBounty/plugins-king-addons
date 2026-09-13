@@ -222,8 +222,7 @@ class Tabs extends Widget_Base
 
         $repeater->add_control('tab_content_type', $this->add_repeater_args_tab_content_type());
 
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'tabs', 'tab_content_type', ['pro-tmp']);
-        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'tabs', 'tab_content_type', ['pro-cf']);
+        Core::renderUpgradeProNotice($repeater, Controls_Manager::RAW_HTML, 'tabs', 'tab_content_type', ['pro-tmp', 'pro-cf']);
 
         if (king_addons_freemius()->can_use_premium_code__premium_only()) {
             $repeater->add_control(
@@ -1473,7 +1472,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         // Force fallback settings if premium code isn't available
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {

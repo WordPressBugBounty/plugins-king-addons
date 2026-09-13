@@ -30,7 +30,7 @@ class Woo_Product_Badges extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-price-badge';
+        return 'king-addons-icon king-addons-woo-product-badges';
     }
 
     public function get_categories(): array
@@ -106,6 +106,7 @@ class Woo_Product_Badges extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('Custom badge text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '',
             ]
         );
@@ -159,10 +160,14 @@ class Woo_Product_Badges extends Abstract_Single_Widget
         $can_pro = king_addons_can_use_pro();
 
         $badges = [];
-        $position = $settings['badge_position'] ?? 'top-left';
+        // The value goes into a class name, so an unknown one has to fall back.
+        $position = (string) ($settings['badge_position'] ?? 'top-left');
+        if (!in_array($position, ['top-left', 'top-right', 'bottom-left', 'bottom-right'], true)) {
+            $position = 'top-left';
+        }
 
         if (!empty($settings['show_sale']) && $product->is_on_sale()) {
-            $label = esc_html__('Sale', 'king-addons');
+            $label = __('Sale', 'king-addons');
             if (!empty($settings['show_percent']) && $can_pro) {
                 $regular = (float) $product->get_regular_price();
                 $sale = (float) $product->get_sale_price();
@@ -179,11 +184,16 @@ class Woo_Product_Badges extends Abstract_Single_Widget
         }
 
         if (!empty($settings['show_new'])) {
-            $days = isset($settings['new_days']) ? (int) $settings['new_days'] : 14;
-            $created = strtotime($product->get_date_created()->date('Y-m-d H:i:s'));
+            // A cleared field is '' rather than unset, and (int) '' is 0 - the
+            // "New" badge then never appeared at all.
+            $days = max(1, (int) (($settings['new_days'] ?? null) ?: 14));
+            // get_date_created() is null for a product with no creation date,
+            // and ->date() on null is fatal.
+            $created_obj = $product->get_date_created();
+            $created = $created_obj ? strtotime($created_obj->date('Y-m-d H:i:s')) : 0;
             if ($created && (time() - $created) <= $days * DAY_IN_SECONDS) {
                 $badges[] = [
-                    'text' => esc_html__('New', 'king-addons'),
+                    'text' => __('New', 'king-addons'),
                     'class' => 'ka-woo-badge--new',
                     'priority' => 8,
                 ];
@@ -194,7 +204,7 @@ class Woo_Product_Badges extends Abstract_Single_Widget
             $sales = (int) $product->get_total_sales();
             if ($sales > 0) {
                 $badges[] = [
-                    'text' => esc_html__('Best seller', 'king-addons'),
+                    'text' => __('Best seller', 'king-addons'),
                     'class' => 'ka-woo-badge--best',
                     'priority' => 7,
                 ];
@@ -221,6 +231,11 @@ class Woo_Product_Badges extends Abstract_Single_Widget
         }
 
         if (empty($badges)) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('No badge applies to this product right now.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 

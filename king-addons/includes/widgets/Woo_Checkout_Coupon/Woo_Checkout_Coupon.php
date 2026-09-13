@@ -46,7 +46,7 @@ class Woo_Checkout_Coupon extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-ticket';
+        return 'king-addons-icon king-addons-woo-checkout-coupon';
     }
 
     /**
@@ -98,7 +98,7 @@ class Woo_Checkout_Coupon extends Abstract_Checkout_Widget
                 'label' => esc_html__('Text Color', 'king-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ka-woo-checkout-coupon' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ka-woo-checkout-coupon, {{WRAPPER}} .ka-woo-checkout-coupon a, {{WRAPPER}} .ka-woo-checkout-coupon .woocommerce-form-coupon-toggle' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -118,9 +118,26 @@ class Woo_Checkout_Coupon extends Abstract_Checkout_Widget
             return;
         }
 
-        echo '<div class="ka-woo-checkout-coupon">';
+        // woocommerce_checkout_coupon_form() prints nothing when coupons are
+            // disabled in WooCommerce.
+        // An empty wrapper on the page - and a blank box in the editor -
+        // reads as a broken widget rather than a context that has nothing
+        // to show.
+        ob_start();
         woocommerce_checkout_coupon_form();
-        echo '</div>';
+        $output = trim((string) ob_get_clean());
+
+        if ('' === $output) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('The coupon form appears when coupons are enabled in WooCommerce.', 'king-addons')
+                    . '</div>';
+            }
+            return;
+        }
+
+        // WooCommerce's own markup, not user input.
+        echo '<div class="ka-woo-checkout-coupon">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 

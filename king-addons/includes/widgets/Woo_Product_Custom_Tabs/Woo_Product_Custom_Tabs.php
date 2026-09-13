@@ -58,7 +58,7 @@ class Woo_Product_Custom_Tabs extends Abstract_Single_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-tabs';
+        return 'king-addons-icon king-addons-woo-product-custom-tabs';
     }
 
     /**
@@ -284,37 +284,19 @@ class Woo_Product_Custom_Tabs extends Abstract_Single_Widget
     }
 
     /**
-     * Render widget output.
+     * Build tab payloads from widget settings for the given product.
      *
-     * @return void
+     * @param array<string, mixed> $settings Widget settings.
+     * @param \WC_Product          $product  Product.
+     * @return array<int, array{title: string, slug: string, content: string, priority: int}>
      */
-    protected function render(): void
+    public static function prepare_tabs_for_product(array $settings, $product): array
     {
-        $product = $this->get_product();
-        if (!$product) {
-            $this->render_missing_product_notice();
-            return;
-        }
-
-        $settings = $this->get_settings_for_display();
-        $can_pro = king_addons_can_use_pro();
-
-        $layout = $settings['layout'] ?? 'list';
-        if (!$can_pro && in_array($layout, ['tabs', 'accordion'], true)) {
-            $layout = 'list';
-        }
-
-        $integration_mode = $settings['integration_mode'] ?? 'standalone';
-        if (!$can_pro && 'merge_wc_tabs' === $integration_mode) {
-            $integration_mode = 'standalone';
-        }
-
+        $can_pro = function_exists('king_addons_can_use_pro') && king_addons_can_use_pro();
         $tabs = $settings['tabs'] ?? [];
-        if (empty($tabs)) {
-            return;
+        if (empty($tabs) || !is_array($tabs)) {
+            return [];
         }
-
-        // Free: only first tab.
         if (!$can_pro) {
             $tabs = [reset($tabs)];
         }
@@ -354,29 +336,134 @@ class Woo_Product_Custom_Tabs extends Abstract_Single_Widget
             ];
         }
 
+        return $prepared;
+    }
+
+    /**
+     * Merge Custom Tabs widgets into Woo's tab list before Product Tabs renders.
+     *
+     * Widget render() is too late when this widget sits below Product Tabs.
+     *
+     * @param array<string, array<string, mixed>> $wc_tabs Existing tabs.
+     * @return array<string, array<string, mixed>>
+     */
+    public static function inject_merged_tabs(array $wc_tabs): array
+    {
+        if (!function_exists('king_addons_can_use_pro') || !king_addons_can_use_pro()) {
+            return $wc_tabs;
+        }
+        $product = (isset($GLOBALS['product']) && $GLOBALS['product'] instanceof \WC_Product)
+            ? $GLOBALS['product']
+            : (function_exists('wc_get_product') ? wc_get_product(get_the_ID()) : null);
+        if (!$product) {
+            return $wc_tabs;
+        }
+
+        $template_ids = [];
+        $current = (int) apply_filters('king_addons/woo_builder/current_template_id', 0, 'single_product');
+        if ($current > 0) {
+            $template_ids[] = $current;
+        } else {
+            $found = get_posts(
+                [
+                    'post_type' => 'elementor_library',
+                    'post_status' => 'publish',
+                    'posts_per_page' => 20,
+                    'fields' => 'ids',
+                    'meta_key' => 'ka_woo_template_type',
+                    'meta_value' => 'single_product',
+                    'orderby' => 'date',
+                    'order' => 'DESC',
+                    'no_found_rows' => true,
+                    'suppress_filters' => true,
+                ]
+            );
+            foreach ($found as $id) {
+                $template_ids[] = (int) $id;
+            }
+        }
+
+        $settings_list = [];
+        $walk = static function ($els) use (&$walk, &$settings_list) {
+            foreach ($els as $el) {
+                if (($el['elType'] ?? '') === 'widget' && ($el['widgetType'] ?? '') === 'woo_product_custom_tabs') {
+                    $settings_list[] = $el['settings'] ?? [];
+                }
+                if (!empty($el['elements'])) {
+                    $walk($el['elements']);
+                }
+            }
+        };
+        foreach (array_unique($template_ids) as $template_id) {
+            $data = json_decode((string) get_post_meta($template_id, '_elementor_data', true), true);
+            if (is_array($data)) {
+                $walk($data);
+            }
+        }
+
+        foreach ($settings_list as $settings) {
+            if (($settings['integration_mode'] ?? 'standalone') !== 'merge_wc_tabs') {
+                continue;
+            }
+            foreach (self::prepare_tabs_for_product($settings, $product) as $tab) {
+                $key = $tab['slug'];
+                $wc_tabs[$key] = [
+                    'title' => $tab['title'],
+                    'priority' => $tab['priority'],
+                    'callback' => static function () use ($tab): void {
+                        echo '<div class="ka-woo-custom-tabs__content">' . wp_kses_post($tab['content']) . '</div>';
+                    },
+                ];
+            }
+        }
+
+        return $wc_tabs;
+    }
+
+    /**
+     * Render widget output.
+     *
+     * @return void
+     */
+    protected function render(): void
+    {
+        $product = $this->get_product();
+        if (!$product) {
+            $this->render_missing_product_notice();
+            return;
+        }
+
+        $settings = $this->get_settings_for_display();
+        $can_pro = king_addons_can_use_pro();
+
+        // Both values end up in class names and data attributes.
+        $layout = (string) ($settings['layout'] ?? 'list');
+        if (!in_array($layout, ['list', 'tabs', 'accordion'], true)) {
+            $layout = 'list';
+        }
+        if (!$can_pro && in_array($layout, ['tabs', 'accordion'], true)) {
+            $layout = 'list';
+        }
+
+        $integration_mode = (string) ($settings['integration_mode'] ?? 'standalone');
+        if (!in_array($integration_mode, ['standalone', 'merge_wc_tabs'], true)) {
+            $integration_mode = 'standalone';
+        }
+        if (!$can_pro && 'merge_wc_tabs' === $integration_mode) {
+            $integration_mode = 'standalone';
+        }
+
+        $prepared = self::prepare_tabs_for_product($settings, $product);
         if (empty($prepared)) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode() && empty($settings['tabs'])) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('Add at least one tab.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
         if ('merge_wc_tabs' === $integration_mode && $can_pro) {
-            add_filter(
-                'woocommerce_product_tabs',
-                static function (array $wc_tabs) use ($prepared): array {
-                    foreach ($prepared as $tab) {
-                        $key = $tab['slug'];
-                        $wc_tabs[$key] = [
-                            'title' => $tab['title'],
-                            'priority' => $tab['priority'],
-                            'callback' => static function () use ($tab): void {
-                                echo '<div class="ka-woo-custom-tabs__content">' . wp_kses_post($tab['content']) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                            },
-                        ];
-                    }
-                    return $wc_tabs;
-                },
-                50
-            );
-
             $is_editor = class_exists(Plugin::class) && Plugin::instance()->editor->is_edit_mode();
             if (!$is_editor) {
                 return;
@@ -430,6 +517,9 @@ class Woo_Product_Custom_Tabs extends Abstract_Single_Widget
         echo '<div class="ka-woo-custom-tabs">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
+
+add_filter('woocommerce_product_tabs', [Woo_Product_Custom_Tabs::class, 'inject_merged_tabs'], 50);
+
 
 
 

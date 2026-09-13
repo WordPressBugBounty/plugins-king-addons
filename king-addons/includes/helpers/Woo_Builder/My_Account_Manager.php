@@ -31,6 +31,13 @@ class My_Account_Manager
     private array $endpoints = [];
 
     /**
+     * Guards against re-entering get_endpoints() from our own menu filter.
+     *
+     * @var bool
+     */
+    private bool $resolving_endpoints = false;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -42,6 +49,7 @@ class My_Account_Manager
         // Use priority 15 to ensure the parent menu exists before adding this submenu
         add_action('admin_menu', [$this, 'register_admin_page'], 15);
         add_action('admin_init', [$this, 'register_settings']);
+        add_action('admin_post_king_addons_myaccount_endpoints_save', [$this, 'handle_admin_save']);
     }
 
     /**
@@ -68,6 +76,14 @@ class My_Account_Manager
     public function filter_menu_items(array $items): array
     {
         $endpoints = $this->get_endpoints();
+
+        // get_endpoints() is what triggered this filter in the first place, so
+        // on the way in it has nothing to offer yet. Returning its empty list
+        // here would hand WooCommerce an empty account menu.
+        if (empty($endpoints)) {
+            return $items;
+        }
+
         $output = [];
 
         foreach ($endpoints as $slug => $data) {
@@ -82,7 +98,7 @@ class My_Account_Manager
             $label = $data['label'] ?? ($items[$slug] ?? ucfirst(str_replace('-', ' ', $slug)));
             $position = isset($data['position']) ? (int) $data['position'] : 20;
 
-            $output[$position . ':' . $slug] = [$slug, $label];
+            $output[sprintf('%05d:%s', $position, $slug)] = [$slug, $label];
         }
 
         ksort($output, SORT_NATURAL);
@@ -170,19 +186,31 @@ class My_Account_Manager
             return $this->endpoints;
         }
 
+        // wc_get_account_menu_items() applies woocommerce_account_menu_items,
+        // and filter_menu_items() below asks for the endpoints again - without
+        // this guard the pair recurse until PHP runs out of memory.
+        if ($this->resolving_endpoints) {
+            return [];
+        }
+        $this->resolving_endpoints = true;
+
         $defaults = wc_get_account_menu_items();
         $config = get_option(self::OPTION_NAME, []);
 
         $endpoints = [];
+        $order = 10;
         foreach ($defaults as $slug => $label) {
             $endpoints[$slug] = [
                 'label' => $label,
                 'enabled' => true,
-                'position' => 20,
+                // Was a fixed 20 for every item, so sorting fell back to the
+                // slug and rearranged WooCommerce's menu alphabetically.
+                'position' => $order,
                 'template_id' => 0,
                 'is_custom' => false,
                 'confirm' => false,
             ];
+            $order += 10;
         }
 
         // Merge saved config.
@@ -200,6 +228,8 @@ class My_Account_Manager
         $endpoints = apply_filters('king_addons/my_account/endpoints', $endpoints);
 
         $this->endpoints = $endpoints;
+        $this->resolving_endpoints = false;
+
         return $this->endpoints;
     }
 
@@ -229,7 +259,7 @@ class My_Account_Manager
     public function register_admin_page(): void
     {
         add_submenu_page(
-            'king-addons',
+            king_addons_woo_admin_parent_slug(),
             esc_html__('My Account Endpoints', 'king-addons'),
             esc_html__('My Account Endpoints', 'king-addons'),
             'manage_options',
@@ -286,19 +316,158 @@ class My_Account_Manager
         if (!current_user_can('manage_options')) {
             return;
         }
-        $option = get_option(self::OPTION_NAME, []);
-        $json = wp_json_encode($option, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        ?>
-        <div class="wrap">
-            <h1><?php esc_html_e('My Account Endpoints', 'king-addons'); ?></h1>
-            <p><?php esc_html_e('Define endpoints as JSON: slug => {label, enabled, position, template_id, is_custom, confirm, roles:[...]}. Custom endpoints require Pro.', 'king-addons'); ?></p>
-            <form method="post" action="options.php">
-                <?php settings_fields('king_addons_myaccount_endpoints'); ?>
-                <textarea name="<?php echo esc_attr(self::OPTION_NAME); ?>" rows="16" style="width:100%;font-family:monospace;"><?php echo esc_textarea($json ?: ''); ?></textarea>
-                <?php submit_button(); ?>
-            </form>
-        </div>
-        <?php
+
+        $endpoints = $this->get_endpoints();
+        $is_pro = function_exists('king_addons_can_use_pro') && king_addons_can_use_pro();
+        $templates = $this->get_account_templates();
+        $roles = $this->get_editable_roles();
+
+        require KING_ADDONS_PATH . 'includes/helpers/Woo_Builder/templates/endpoints-admin-page.php';
+    }
+
+    /**
+     * Elementor templates that can stand in for an endpoint's content.
+     *
+     * @return array<int,string>
+     */
+    private function get_account_templates(): array
+    {
+        $templates = [];
+
+        $posts = get_posts([
+            'post_type' => 'elementor_library',
+            'post_status' => 'publish',
+            'posts_per_page' => 100,
+            'orderby' => 'title',
+            'order' => 'ASC',
+            'suppress_filters' => false,
+        ]);
+
+        foreach ($posts as $post) {
+            $templates[(int) $post->ID] = $post->post_title !== ''
+                ? $post->post_title
+                : sprintf('#%d', (int) $post->ID);
+        }
+
+        return $templates;
+    }
+
+    /**
+     * Roles an endpoint can be limited to.
+     *
+     * @return array<string,string>
+     */
+    private function get_editable_roles(): array
+    {
+        if (!function_exists('get_editable_roles')) {
+            require_once ABSPATH . 'wp-admin/includes/user.php';
+        }
+
+        $roles = [];
+
+        foreach (get_editable_roles() as $slug => $role) {
+            $roles[(string) $slug] = translate_user_role($role['name'] ?? $slug);
+        }
+
+        return $roles;
+    }
+
+    /**
+     * Save the endpoints screen.
+     *
+     * @return void
+     */
+    public function handle_admin_save(): void
+    {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You are not allowed to do this.', 'king-addons'));
+        }
+
+        check_admin_referer('king_addons_myaccount_endpoints_save');
+
+        $raw = isset($_POST['ka_endpoint']) && is_array($_POST['ka_endpoint'])
+            ? wp_unslash($_POST['ka_endpoint']) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            : [];
+
+        $is_pro = function_exists('king_addons_can_use_pro') && king_addons_can_use_pro();
+        $known_roles = array_keys($this->get_editable_roles());
+        $existing = get_option(self::OPTION_NAME, []);
+        $existing = is_array($existing) ? $existing : [];
+
+        $clean = [];
+
+        foreach ($raw as $slug => $data) {
+            $slug = sanitize_key((string) $slug);
+            if ('' === $slug || !is_array($data)) {
+                continue;
+            }
+
+            $was_custom = !empty($existing[$slug]['is_custom']);
+
+            $clean[$slug] = [
+                'label' => sanitize_text_field((string) ($data['label'] ?? '')),
+                'enabled' => !empty($data['enabled']),
+                'position' => max(0, min(9999, (int) ($data['position'] ?? 10))),
+                'template_id' => $is_pro ? absint($data['template_id'] ?? 0) : 0,
+                'is_custom' => $was_custom,
+                'confirm' => !empty($data['confirm']),
+                'roles' => array_values(array_intersect(
+                    array_map('sanitize_key', (array) ($data['roles'] ?? [])),
+                    $known_roles
+                )),
+            ];
+        }
+
+        // A new custom endpoint, if one was filled in.
+        $new_slug = isset($_POST['ka_new_endpoint_slug'])
+            ? sanitize_title(wp_unslash($_POST['ka_new_endpoint_slug'])) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            : '';
+        $new_label = isset($_POST['ka_new_endpoint_label'])
+            ? sanitize_text_field(wp_unslash($_POST['ka_new_endpoint_label'])) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            : '';
+
+        $notice = 'saved';
+
+        if ('' !== $new_slug) {
+            if (!$is_pro) {
+                $notice = 'pro';
+            } elseif (isset($clean[$new_slug])) {
+                $notice = 'exists';
+            } else {
+                $clean[$new_slug] = [
+                    'label' => '' !== $new_label ? $new_label : ucfirst(str_replace('-', ' ', $new_slug)),
+                    'enabled' => true,
+                    'position' => 100,
+                    'template_id' => 0,
+                    'is_custom' => true,
+                    'confirm' => false,
+                    'roles' => [],
+                ];
+                $notice = 'added';
+            }
+        }
+
+        // Removing a custom endpoint. Built-in ones are switched off, not deleted.
+        $remove = isset($_POST['ka_remove_endpoint'])
+            ? sanitize_key(wp_unslash($_POST['ka_remove_endpoint'])) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            : '';
+
+        if ('' !== $remove && !empty($clean[$remove]['is_custom'])) {
+            unset($clean[$remove]);
+            $notice = 'removed';
+        }
+
+        update_option(self::OPTION_NAME, $clean);
+
+        // Custom endpoints add rewrite rules, which only take effect once the
+        // rules are rebuilt.
+        flush_rewrite_rules(false);
+
+        wp_safe_redirect(add_query_arg(
+            ['page' => 'king-addons-myaccount-endpoints', 'ka-notice' => $notice],
+            admin_url('admin.php')
+        ));
+        exit;
     }
 
     /**

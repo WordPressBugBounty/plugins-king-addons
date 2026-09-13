@@ -58,7 +58,7 @@ class Reveal_Swipe_Cards extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-slides';
+        return 'king-addons-icon king-addons-reveal-swipe-cards';
     }
 
     /**

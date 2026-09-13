@@ -2103,7 +2103,7 @@ class Testimonial_Carousel extends Widget_Base
 
     protected function render(): void
     {
-        $settings_all = $this->get_settings();
+        $settings_all = Core::displaySettings($this);
         $this_ID = $this->get_id();
 
         // Define allowed tags and attributes
@@ -2300,27 +2300,27 @@ class Testimonial_Carousel extends Widget_Base
         $js_swiper = "new Swiper('.king-addons-testimonial-carousel-sw-items-" . esc_js($this_ID) . "', {";
         $js_swiper .= "direction: 'horizontal',";
 
-        $js_swiper .= "slidesPerView: " . esc_js($settings_all['king_addons_testimonial_carousel_sw_desktop_cards_per_view']) . ",";
-        $js_swiper .= "spaceBetween: " . esc_js($settings_all['king_addons_testimonial_carousel_sw_desktop_space_between_cards']) . ",";
+        $js_swiper .= "slidesPerView: " . Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_desktop_cards_per_view', 3) . ",";
+        $js_swiper .= "spaceBetween: " . Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_desktop_space_between_cards', 30) . ",";
 
         // Responsive breakpoints
         $js_swiper .= 'breakpoints: {0: {slidesPerView: ' .
-            esc_js($settings_all['king_addons_testimonial_carousel_sw_mobile_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings_all['king_addons_testimonial_carousel_sw_mobile_space_between_cards']) . '}, ';
+            Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_mobile_cards_per_view', 1) . ', spaceBetween: ' .
+            Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_mobile_space_between_cards', 30) . '}, ';
         $js_swiper .=
-            esc_js(($settings_all['king_addons_testimonial_carousel_sw_mobile_breakpoint'] + 1)) . ': {slidesPerView: ' .
-            esc_js($settings_all['king_addons_testimonial_carousel_sw_tablet_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings_all['king_addons_testimonial_carousel_sw_tablet_space_between_cards']) . '}, ';
+            (Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_mobile_breakpoint', 767) + 1) . ': {slidesPerView: ' .
+            Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_tablet_cards_per_view', 2) . ', spaceBetween: ' .
+            Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_tablet_space_between_cards', 30) . '}, ';
         $js_swiper .=
-            esc_js(($settings_all['king_addons_testimonial_carousel_sw_tablet_breakpoint'] + 1)) . ': {slidesPerView: ' .
-            esc_js($settings_all['king_addons_testimonial_carousel_sw_desktop_cards_per_view']) . ', spaceBetween: ' .
-            esc_js($settings_all['king_addons_testimonial_carousel_sw_desktop_space_between_cards']) . '}},';
+            (Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_tablet_breakpoint', 1024) + 1) . ': {slidesPerView: ' .
+            Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_desktop_cards_per_view', 3) . ', spaceBetween: ' .
+            Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_desktop_space_between_cards', 30) . '}},';
 
         // Scrolling speed
         if ('yes' !== $settings_all['king_addons_testimonial_carousel_sw_autoplay_like_ticker_switcher']) {
-            $js_swiper .= "speed: " . esc_js($settings_all['king_addons_testimonial_carousel_sw_scrolling_speed']) . ",";
+            $js_swiper .= "speed: " . Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_scrolling_speed', 600) . ",";
         } else {
-            $js_swiper .= "speed: " . esc_js($settings_all['king_addons_testimonial_carousel_sw_autoplay_like_ticker_autoplay_speed']) . ",";
+            $js_swiper .= "speed: " . Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_autoplay_like_ticker_autoplay_speed', 6000) . ",";
         }
 
         // Pagination
@@ -2330,7 +2330,7 @@ class Testimonial_Carousel extends Widget_Base
                 ('yes' === $settings_all['king_addons_testimonial_carousel_sw_pag_clickable_switcher'] ? 'clickable: true, ' : '');
             if ('yes' === $settings_all['king_addons_testimonial_carousel_sw_pag_dynamic_switcher']) {
                 $js_swiper .= 'dynamicBullets: true, ';
-                $js_swiper .= 'dynamicMainBullets: ' . esc_js($settings_all['king_addons_testimonial_carousel_sw_pag_dynamic_number'] . ', ');
+                $js_swiper .= 'dynamicMainBullets: ' . Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_pag_dynamic_number', 1) . ', ';
             }
             $js_swiper .= "type: '" . esc_js($settings_all['king_addons_testimonial_carousel_sw_pag_type']) . "'},";
         }
@@ -2356,7 +2356,7 @@ class Testimonial_Carousel extends Widget_Base
         if ('yes' === $settings_all['king_addons_testimonial_carousel_sw_autoplay_switcher']) {
             $js_swiper .= "autoplay: {";
             if ('yes' !== $settings_all['king_addons_testimonial_carousel_sw_autoplay_like_ticker_switcher']) {
-                $js_swiper .= "delay: " . esc_js($settings_all['king_addons_testimonial_carousel_sw_autoplay_delay']) . ",";
+                $js_swiper .= "delay: " . Core::jsNumber($settings_all, 'king_addons_testimonial_carousel_sw_autoplay_delay', 3000) . ",";
             } else {
                 $js_swiper .= "delay: 0,";
             }

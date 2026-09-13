@@ -51,7 +51,7 @@ class Woo_Shortcode_Product_Page extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-single-product';
+        return 'king-addons-icon king-addons-woo-shortcode-product-page';
     }
 
     /**
@@ -61,7 +61,7 @@ class Woo_Shortcode_Product_Page extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -93,7 +93,7 @@ class Woo_Shortcode_Product_Page extends Widget_Base
     public function get_style_depends(): array
     {
         // Ensure WooCommerce gallery styles are loaded
-        return ['photoswipe-default-skin', 'woocommerce-general', 'woocommerce-layout', 'woocommerce-smallscreen'];
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-loop-style', 'photoswipe-default-skin', 'woocommerce-general', 'woocommerce-layout', 'woocommerce-smallscreen'];
     }
 
     /**
@@ -906,7 +906,18 @@ class Woo_Shortcode_Product_Page extends Widget_Base
         } elseif ($product_source === 'id' && !empty($settings['product_id'])) {
             $shortcode .= ' id="' . absint($settings['product_id']) . '"';
         } elseif ($product_source === 'sku' && !empty($settings['product_sku'])) {
-            $shortcode .= ' sku="' . esc_attr($settings['product_sku']) . '"';
+            // Resolve SKU in PHP. Putting esc_attr() into the shortcode string
+            // encodes & as &amp;, so SKUs like "BAS & CO-001" never match.
+            $sku = wp_specialchars_decode(wc_clean((string) $settings['product_sku']), ENT_QUOTES);
+            $sku_id = wc_get_product_id_by_sku($sku);
+            if ($sku_id) {
+                $shortcode .= ' id="' . absint($sku_id) . '"';
+            } else {
+                if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                    echo '<div class="king-addons-woo-builder-notice">' . esc_html__('No product found for this SKU.', 'king-addons') . '</div>';
+                }
+                return;
+            }
         } else {
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
                 echo '<div class="king-addons-woo-builder-notice">' . esc_html__('Please select a product source or enter a product ID/SKU.', 'king-addons') . '</div>';

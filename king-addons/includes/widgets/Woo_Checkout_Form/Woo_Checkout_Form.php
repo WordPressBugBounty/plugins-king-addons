@@ -11,6 +11,7 @@ use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
+use King_Addons\Woo_Builder\Context as Woo_Context;
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -61,7 +62,7 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-checkout';
+        return 'king-addons-icon king-addons-woo-checkout-form';
     }
 
     /**
@@ -82,6 +83,16 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
     public function get_style_depends(): array
     {
         return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-form-style'];
+    }
+
+    /**
+     * Script dependencies.
+     *
+     * @return array<int, string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-form-script'];
     }
 
     /**
@@ -364,6 +375,7 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
 
         $settings = $this->get_settings_for_display();
         $can_pro = king_addons_can_use_pro();
+        self::$is_rendering = true;
 
         $show_login = !empty($settings['show_login']);
         $show_coupon = !empty($settings['show_coupon']);
@@ -378,6 +390,14 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
             $show_notes = true;
         }
 
+        // Dedicated widgets already print these blocks; keep one copy.
+        if (Woo_Context::template_has_widget('woo_checkout_login', 'checkout')) {
+            $show_login = false;
+        }
+        if (Woo_Context::template_has_widget('woo_checkout_coupon', 'checkout')) {
+            $show_coupon = false;
+        }
+
         if (!$show_login) {
             remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10);
             $removed[] = 'login';
@@ -386,6 +406,11 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
         if (!$show_coupon) {
             remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
             $removed[] = 'coupon';
+        }
+
+        $hide_native_payment = Woo_Context::template_has_widget('woo_checkout_payment', 'checkout');
+        if ($hide_native_payment) {
+            remove_action('woocommerce_checkout_order_review', 'woocommerce_checkout_payment', 20);
         }
 
         $notes_filter_added = false;
@@ -399,19 +424,49 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
             $fields_filter_added = true;
             self::$cached_config = $settings['fields_config'] ?? [];
             self::$cached_extra = $settings['extra_fields'] ?? [];
+            $this->add_render_attribute(
+                '_wrapper',
+                'data-ka-fields-config',
+                wp_json_encode(self::$cached_config)
+            );
             add_filter('woocommerce_checkout_fields', [self::class, 'filter_checkout_fields'], 9999);
             add_action('woocommerce_checkout_update_order_meta', [self::class, 'save_extra_fields'], 20, 2);
+            // The order is created by a separate ?wc-ajax=checkout request in
+            // which no Elementor widget renders, so hooks added here are gone
+            // by then - extra fields were shown, filled in and silently
+            // dropped. Stash the configuration for that request to pick up.
+            self::remember_config(self::$cached_config, self::$cached_extra);
+            self::$remembered_this_request = true;
+        } elseif (!self::$remembered_this_request) {
+            // Only drop a stored configuration when nothing on this page set
+            // one: a second, plainer checkout widget must not wipe what the
+            // customised one just saved for the submit request.
+            self::forget_config();
         }
 
-        if (function_exists('woocommerce_checkout')) {
+        // WooCommerce has no woocommerce_checkout() function - the guard was
+        // always false and the widget printed nothing at all. The checkout form
+        // comes from the shortcode handler, which also covers the pay-for-order
+        // and order-received states.
+        // Style selectors target {{WRAPPER}} .woocommerce form.checkout.
+        // WC_Shortcode_Checkout::output() prints the form without that wrap
+        // on the checkout page, so padding/color never applied.
+        echo '<div class="woocommerce">';
+        if (class_exists('WC_Shortcode_Checkout')) {
+            \WC_Shortcode_Checkout::output([]);
+        } elseif (function_exists('woocommerce_checkout')) {
             call_user_func('woocommerce_checkout');
         }
+        echo '</div>';
 
         if (in_array('login', $removed, true)) {
             add_action('woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10);
         }
         if (in_array('coupon', $removed, true)) {
             add_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
+        }
+        if ($hide_native_payment) {
+            add_action('woocommerce_checkout_order_review', 'woocommerce_checkout_payment', 20);
         }
         if ($notes_filter_added) {
             remove_filter('woocommerce_enable_order_notes_field', '__return_false', 9999);
@@ -422,6 +477,147 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
             self::$cached_config = [];
             self::$cached_extra = [];
         }
+
+        self::$is_rendering = false;
+    }
+
+    /**
+     * Session key holding the field configuration for the submit request.
+     */
+    private const SESSION_KEY = 'king_addons_checkout_fields';
+
+    /**
+     * True while a checkout form widget is rendering.
+     *
+     * @var bool
+     */
+    private static $is_rendering = false;
+
+    /**
+     * True once a widget in this request stored a field configuration.
+     *
+     * @var bool
+     */
+    private static $remembered_this_request = false;
+
+    /**
+     * Store the configuration for the request that actually creates the order.
+     *
+     * @param array<int,array<string,mixed>> $config Existing-field settings.
+     * @param array<int,array<string,mixed>> $extra  Extra field definitions.
+     *
+     * @return void
+     */
+    private static function remember_config(array $config, array $extra): void
+    {
+        if (!function_exists('WC') || !WC()->session) {
+            return;
+        }
+
+        WC()->session->set(self::SESSION_KEY, ['config' => $config, 'extra' => $extra]);
+    }
+
+    /**
+     * Drop a previously stored configuration.
+     *
+     * @return void
+     */
+    private static function forget_config(): void
+    {
+        if (!function_exists('WC') || !WC()->session) {
+            return;
+        }
+
+        if (WC()->session->get(self::SESSION_KEY)) {
+            WC()->session->set(self::SESSION_KEY, null);
+        }
+    }
+
+    /**
+     * Read the stored configuration.
+     *
+     * @return array{config: array<int,array<string,mixed>>, extra: array<int,array<string,mixed>>}|null
+     */
+    private static function stored_config(): ?array
+    {
+        if (!function_exists('WC') || !WC()->session) {
+            return null;
+        }
+
+        $stored = WC()->session->get(self::SESSION_KEY);
+        if (!is_array($stored)) {
+            return null;
+        }
+
+        return [
+            'config' => isset($stored['config']) && is_array($stored['config']) ? $stored['config'] : [],
+            'extra' => isset($stored['extra']) && is_array($stored['extra']) ? $stored['extra'] : [],
+        ];
+    }
+
+    /**
+     * Hook the checkout-field handling for requests that never render a widget.
+     *
+     * Registered once at plugin load; both callbacks do nothing unless the
+     * checkout form widget stored a configuration for this visitor.
+     *
+     * @return void
+     */
+    public static function register_persistent_hooks(): void
+    {
+        add_filter('woocommerce_checkout_fields', [self::class, 'filter_stored_checkout_fields'], 9998);
+        add_action('woocommerce_checkout_update_order_meta', [self::class, 'save_stored_extra_fields'], 20, 2);
+        add_action('woocommerce_admin_order_data_after_billing_address', [self::class, 'render_extra_fields_admin']);
+        add_action('woocommerce_order_details_after_order_table', [self::class, 'render_extra_fields_front']);
+        add_filter('woocommerce_email_order_meta_fields', [self::class, 'email_extra_fields'], 10, 3);
+    }
+
+    /**
+     * Apply the stored field configuration.
+     *
+     * @param array<string,array<string,array<string,mixed>>> $fields WC checkout fields.
+     *
+     * @return array<string,array<string,array<string,mixed>>>
+     */
+    public static function filter_stored_checkout_fields(array $fields): array
+    {
+        // A widget on the page owns its own settings - including the choice not
+        // to customise anything. Applying the stored copy during any render
+        // would leak one widget's field setup into its neighbours.
+        if (self::$is_rendering) {
+            return $fields;
+        }
+
+        $stored = self::stored_config();
+        if (null === $stored) {
+            return $fields;
+        }
+
+        return self::tune_checkout_fields($fields, $stored['config'], $stored['extra']);
+    }
+
+    /**
+     * Save extra fields using the stored configuration.
+     *
+     * @param int   $order_id Order ID.
+     * @param array $data     Posted data.
+     *
+     * @return void
+     */
+    public static function save_stored_extra_fields(int $order_id, array $data): void
+    {
+        if (self::$is_rendering || !empty(self::$cached_extra)) {
+            return;
+        }
+
+        $stored = self::stored_config();
+        if (null === $stored || empty($stored['extra'])) {
+            return;
+        }
+
+        self::$cached_extra = $stored['extra'];
+        self::save_extra_fields($order_id, $data);
+        self::$cached_extra = [];
     }
 
     /**
@@ -536,9 +732,11 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
         $posted = $_POST ?? []; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
         $types = [];
+        $labels = [];
         foreach (self::$cached_extra as $item) {
             if (!empty($item['field_key'])) {
                 $types[$item['field_key']] = $item['type'] ?? 'text';
+                $labels[$item['field_key']] = (string) ($item['label'] ?? $item['field_key']);
             }
         }
 
@@ -554,7 +752,115 @@ class Woo_Checkout_Form extends Abstract_Checkout_Widget
             }
             $order->update_meta_data('_ka_' . sanitize_key((string) $extra_key), $clean);
         }
+        if (!empty($labels)) {
+            $order->update_meta_data('_ka_extra_labels', $labels);
+        }
         $order->save();
+    }
+
+    /**
+     * Extra checkout fields saved on the order, as key => [label, value].
+     *
+     * @param \WC_Order $order Order.
+     *
+     * @return array<string,array{label:string,value:string}>
+     */
+    public static function extra_fields_from_order($order): array
+    {
+        if (!$order instanceof \WC_Order) {
+            return [];
+        }
+
+        $labels = $order->get_meta('_ka_extra_labels');
+        if (!is_array($labels) || empty($labels)) {
+            return [];
+        }
+
+        $out = [];
+        foreach ($labels as $key => $label) {
+            $value = $order->get_meta('_ka_' . sanitize_key((string) $key));
+            if ('' === (string) $value) {
+                continue;
+            }
+            $out[(string) $key] = [
+                'label' => sanitize_text_field((string) $label),
+                'value' => sanitize_text_field((string) $value),
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * Show extra fields in wp-admin order screen.
+     *
+     * @param \WC_Order $order Order.
+     *
+     * @return void
+     */
+    public static function render_extra_fields_admin($order): void
+    {
+        $fields = self::extra_fields_from_order($order);
+        if (empty($fields)) {
+            return;
+        }
+
+        echo '<div class="ka-order-extra-fields">';
+        echo '<h3>' . esc_html__('Extra fields', 'king-addons') . '</h3>';
+        foreach ($fields as $field) {
+            echo '<p><strong>' . esc_html($field['label']) . ':</strong> ' . esc_html($field['value']) . '</p>';
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Show extra fields on the thank-you / view-order screens.
+     *
+     * @param \WC_Order $order Order.
+     *
+     * @return void
+     */
+    public static function render_extra_fields_front($order): void
+    {
+        $fields = self::extra_fields_from_order($order);
+        if (empty($fields)) {
+            return;
+        }
+
+        echo '<section class="ka-order-extra-fields">';
+        echo '<h2>' . esc_html__('Extra fields', 'king-addons') . '</h2>';
+        echo '<table class="woocommerce-table shop_table"><tbody>';
+        foreach ($fields as $field) {
+            echo '<tr><th>' . esc_html($field['label']) . '</th><td>' . esc_html($field['value']) . '</td></tr>';
+        }
+        echo '</tbody></table></section>';
+    }
+
+    /**
+     * Extra fields in WooCommerce emails. Values are plain text on purpose:
+     * this filter is printed raw in both HTML and plain-text mail.
+     *
+     * @param array<string,array<string,string>> $fields  Existing meta fields.
+     * @param bool                               $sent_to_admin Unused.
+     * @param \WC_Order                          $order   Order.
+     *
+     * @return array<string,array<string,string>>
+     */
+    public static function email_extra_fields($fields, $sent_to_admin, $order): array
+    {
+        unset($sent_to_admin);
+        if (!is_array($fields)) {
+            $fields = [];
+        }
+
+        foreach (self::extra_fields_from_order($order) as $key => $field) {
+            $fields['ka_' . sanitize_key((string) $key)] = [
+                'label' => $field['label'],
+                'value' => $field['value'],
+            ];
+        }
+
+        return $fields;
     }
 }
 

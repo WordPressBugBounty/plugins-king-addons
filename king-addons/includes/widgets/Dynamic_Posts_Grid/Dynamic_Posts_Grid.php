@@ -512,6 +512,10 @@ class Dynamic_Posts_Grid extends Widget_Base
         // PRO: Meta Fields Control
         $this->add_control_meta_fields();
 
+        // Both controls above are Pro-only, so without this the free build shows
+        // a section header that expands onto an empty panel.
+        Core::renderUpgradeProSection($this, Controls_Manager::RAW_HTML, 'dynamic-posts-grid', 'kng_dynamic_posts_meta_fields_pro_notice_');
+
         $this->end_controls_section();
 
         // Category Colors Section
@@ -4265,7 +4269,7 @@ class Dynamic_Posts_Grid extends Widget_Base
             <?php endif; ?>
 
             <!-- Grid Container -->
-            <div class="king-addons-dpg-grid" data-columns="<?php echo esc_attr($settings['kng_dynamic_posts_columns']); ?>">
+            <div class="king-addons-dpg-grid" data-columns="<?php echo esc_attr($settings['kng_dynamic_posts_columns'] ?? '3'); ?>">
                 <?php $this->render_posts($posts_query, $settings); ?>
             </div>
 

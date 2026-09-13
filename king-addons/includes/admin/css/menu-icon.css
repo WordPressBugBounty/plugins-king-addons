@@ -22,10 +22,12 @@
 }
 
 #adminmenu #toplevel_page_king-addons.current div.wp-menu-name,
+#adminmenu #toplevel_page_king-addons-woo-builder.current div.wp-menu-name,
 #adminmenu #toplevel_page_king-addons-popup-builder.current div.wp-menu-name,
 #adminmenu #toplevel_page_edit-post_type-king-addons-el-hf.current div.wp-menu-name,
 #adminmenu #toplevel_page_king-addons-templates.current div.wp-menu-name,
 #adminmenu #toplevel_page_king-addons.wp-has-current-submenu a.wp-has-current-submenu,
+#adminmenu #toplevel_page_king-addons-woo-builder.wp-has-current-submenu a.wp-has-current-submenu,
 #adminmenu #toplevel_page_king-addons-popup-builder.wp-has-current-submenu a.wp-has-current-submenu,
 #adminmenu #toplevel_page_edit-post_type-king-addons-el-hf.wp-has-current-submenu a.wp-has-current-submenu,
 #adminmenu #toplevel_page_king-addons-templates.wp-has-current-submenu a.wp-has-current-submenu {
@@ -33,10 +35,12 @@
 }
 
 ul#adminmenu > li#toplevel_page_king-addons.current > a.current:after,
+ul#adminmenu > li#toplevel_page_king-addons-woo-builder.current > a.current:after,
 ul#adminmenu > li#toplevel_page_king-addons-popup-builder.current > a.current:after,
 ul#adminmenu > li#toplevel_page_edit-post_type-king-addons-el-hf.current > a.current:after,
 ul#adminmenu > li#toplevel_page_king-addons-templates.current > a.current:after,
 ul#adminmenu > #toplevel_page_king-addons > a.wp-has-current-submenu:after,
+ul#adminmenu > #toplevel_page_king-addons-woo-builder > a.wp-has-current-submenu:after,
 ul#adminmenu > #toplevel_page_king-addons-popup-builder > a.wp-has-current-submenu:after,
 ul#adminmenu > #toplevel_page_edit-post_type-king-addons-el-hf > a.wp-has-current-submenu:after,
 ul#adminmenu > #toplevel_page_king-addons-templates > a.wp-has-current-submenu:after {
@@ -44,6 +48,7 @@ ul#adminmenu > #toplevel_page_king-addons-templates > a.wp-has-current-submenu:a
 }
 
 #toplevel_page_king-addons,
+#toplevel_page_king-addons-woo-builder,
 #toplevel_page_king-addons-popup-builder,
 #toplevel_page_edit-post_type-king-addons-el-hf,
 #toplevel_page_king-addons-templates {

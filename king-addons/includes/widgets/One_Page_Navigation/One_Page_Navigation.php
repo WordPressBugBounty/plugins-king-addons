@@ -813,7 +813,7 @@ class One_Page_Navigation extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
 
         echo '<div class="king-addons-one-page-nav">';
 

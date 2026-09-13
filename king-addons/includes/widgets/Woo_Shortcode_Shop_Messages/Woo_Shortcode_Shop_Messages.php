@@ -49,7 +49,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-alert';
+        return 'king-addons-icon king-addons-woo-shortcode-shop-messages';
     }
 
     /**
@@ -59,7 +59,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -141,6 +141,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-message' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-success' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -152,6 +153,8 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-message' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-success' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-success .wc-block-components-notice-banner__content' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -163,6 +166,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-message' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-success' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -174,6 +178,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-message a' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-success a' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -226,6 +231,9 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
             Group_Control_Border::get_type(),
             [
                 'name' => 'success_border',
+                // Border Color is registered separately above as 'success_border_color';
+                // letting the group declare it too makes Elementor drop one of them.
+                'exclude' => ['color'],
                 'selector' => '{{WRAPPER}} .woocommerce-message',
             ]
         );
@@ -248,6 +256,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-error' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-error' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -260,6 +269,8 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-error' => 'color: {{VALUE}};',
                     '{{WRAPPER}} .woocommerce-error li' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-error' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-error .wc-block-components-notice-banner__content' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -271,6 +282,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-error' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-error' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -323,6 +335,9 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
             Group_Control_Border::get_type(),
             [
                 'name' => 'error_border',
+                // Border Color is registered separately above as 'error_border_color';
+                // letting the group declare it too makes Elementor drop one of them.
+                'exclude' => ['color'],
                 'selector' => '{{WRAPPER}} .woocommerce-error',
             ]
         );
@@ -345,6 +360,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-info' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-info' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -356,6 +372,8 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-info' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-info' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-info .wc-block-components-notice-banner__content' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -367,6 +385,7 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .woocommerce-info' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .wc-block-components-notice-banner.is-info' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -419,6 +438,9 @@ class Woo_Shortcode_Shop_Messages extends Widget_Base
             Group_Control_Border::get_type(),
             [
                 'name' => 'info_border',
+                // Border Color is registered separately above as 'info_border_color';
+                // letting the group declare it too makes Elementor drop one of them.
+                'exclude' => ['color'],
                 'selector' => '{{WRAPPER}} .woocommerce-info',
             ]
         );

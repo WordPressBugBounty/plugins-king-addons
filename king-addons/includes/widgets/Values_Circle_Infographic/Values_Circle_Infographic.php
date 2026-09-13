@@ -24,7 +24,7 @@ class Values_Circle_Infographic extends Widget_Base
 
     public function get_icon(): string
     {
-        return 'eicon-shape-circle';
+        return 'king-addons-icon king-addons-values-circle-infographic';
     }
 
     public function get_style_depends(): array

@@ -40,7 +40,7 @@ class Woo_Product_SKU extends Abstract_Single_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-product-meta';
+        return 'king-addons-icon king-addons-woo-product-sku';
     }
 
     /**
@@ -77,6 +77,7 @@ class Woo_Product_SKU extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('SKU:', 'king-addons'),
             ]
         );
@@ -108,6 +109,7 @@ class Woo_Product_SKU extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Empty fallback (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('N/A', 'king-addons'),
             ]
         );
@@ -209,6 +211,11 @@ class Woo_Product_SKU extends Abstract_Single_Widget
 
         if ('' === $sku || null === $sku) {
             if (!$can_pro || empty($settings['show_if_empty'])) {
+                if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                    echo '<div class="king-addons-woo-builder-notice">'
+                        . esc_html__('This product has no SKU set.', 'king-addons')
+                        . '</div>';
+                }
                 return;
             }
             $sku = $settings['empty_text'] ?? '';
@@ -225,7 +232,7 @@ class Woo_Product_SKU extends Abstract_Single_Widget
         }
 
         echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
-        echo '<span class="ka-woo-product-sku__label">' . esc_html($settings['label_text']) . '</span>';
+        echo '<span class="ka-woo-product-sku__label">' . esc_html((string) ($settings['label_text'] ?? '')) . '</span>';
         echo '<span class="ka-woo-product-sku__value">' . esc_html($sku) . '</span>';
         echo '</div>';
     }

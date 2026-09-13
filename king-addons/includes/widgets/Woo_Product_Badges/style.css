@@ -1,5 +1,8 @@
 .ka-woo-badges {
-    display: inline-flex;
+    /* inline-flex shrinks to the pills, so justify-content: flex-end
+       (top-right / bottom-right) had nothing to push against. */
+    display: flex;
+    width: 100%;
     gap: 6px;
     flex-wrap: wrap;
 }

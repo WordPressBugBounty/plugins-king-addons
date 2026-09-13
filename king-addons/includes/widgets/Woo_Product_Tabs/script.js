@@ -1,6 +1,13 @@
 (function () {
     'use strict';
 
+    const errorMarkup = (wrapper) => {
+        const text = wrapper.dataset.errorText || 'Could not load content.';
+        const node = document.createElement('div');
+        node.textContent = text;
+        return '<div class="ka-woo-tabs__error">' + node.innerHTML + '</div>';
+    };
+
     const loadTabContent = async (wrapper, key) => {
         const ajax = wrapper.dataset.ajax === 'yes';
         if (!ajax) {
@@ -11,6 +18,11 @@
         if (!panel || !panel.querySelector('.ka-woo-tabs__placeholder')) {
             return true;
         }
+
+        // In accordion layout the placeholder sits inside the body, below the
+        // header button - replacing the panel's own innerHTML would delete the
+        // header the visitor just clicked.
+        const target = panel.querySelector('.ka-woo-tabs__accordion-body') || panel;
 
         const ajaxUrl = wrapper.dataset.ajaxUrl;
         const nonce = wrapper.dataset.nonce;
@@ -37,13 +49,13 @@
 
             const result = await response.json();
             if (result && result.success && result.data && typeof result.data.html === 'string') {
-                panel.innerHTML = result.data.html;
+                target.innerHTML = result.data.html;
                 panel.dataset.loaded = 'yes';
             } else {
-                panel.innerHTML = '<div class="ka-woo-tabs__error">Could not load content.</div>';
+                target.innerHTML = errorMarkup(wrapper);
             }
         } catch (e) {
-            panel.innerHTML = '<div class="ka-woo-tabs__error">Could not load content.</div>';
+            target.innerHTML = errorMarkup(wrapper);
         }
 
         panel.classList.remove('is-loading');
@@ -56,13 +68,17 @@
         const accordions = wrapper.querySelectorAll('.ka-woo-tabs__accordion-toggle');
 
         const setActive = (key) => {
-            tabs.forEach((btn) => btn.classList.toggle('is-active', btn.dataset.tab === key));
+            tabs.forEach((btn) => {
+                const active = btn.dataset.tab === key;
+                btn.classList.toggle('is-active', active);
+                btn.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
             panels.forEach((panel) => {
                 const active = panel.dataset.tab === key;
                 panel.classList.toggle('is-active', active);
-                const body = panel.querySelector('.ka-woo-tabs__accordion-body');
-                if (body) {
-                    body.style.display = active ? 'block' : 'none';
+                const toggle = panel.querySelector('.ka-woo-tabs__accordion-toggle');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', active ? 'true' : 'false');
                 }
             });
         };

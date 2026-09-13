@@ -47,7 +47,7 @@ class TB_Archive_Description extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-archive-description';
+        return 'king-addons-icon king-addons-tb-archive-description';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Archive_Description extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -178,6 +178,7 @@ class TB_Archive_Description extends Widget_Base
             [
                 'label' => esc_html__('Placeholder Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('No description available.', 'king-addons'),
                 'condition' => [
                     'kng_empty_behavior' => 'placeholder',

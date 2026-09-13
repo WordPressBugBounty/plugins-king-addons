@@ -30,7 +30,7 @@ class Woo_My_Account_Downloads extends Abstract_My_Account_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-download-bold';
+        return 'king-addons-icon king-addons-woo-my-account-downloads';
     }
 
     public function get_categories(): array
@@ -71,7 +71,24 @@ class Woo_My_Account_Downloads extends Abstract_My_Account_Widget
             return;
         }
 
+        if (!$this->is_current_endpoint('downloads')) {
+            return;
+        }
+
         if ($this->maybe_render_login_form()) {
+            return;
+        }
+
+        // downloads.php reaches into WC()->customer, which does not exist in
+        // the Elementor editor - the call died with "Call to a member function
+        // get_downloadable_products() on null" and took the whole editor
+        // preview of the account template down with it.
+        if (!function_exists('WC') || !WC()->customer) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('Downloads are listed for the signed-in customer.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
@@ -83,6 +100,11 @@ class Woo_My_Account_Downloads extends Abstract_My_Account_Widget
             [
                 'downloads' => $downloads,
                 'has_downloads' => !empty($downloads),
+                // The template also reads $wp_button_class; without it every
+                // render warns once per download row.
+                'wp_button_class' => function_exists('wc_wp_theme_get_element_class_name') && wc_wp_theme_get_element_class_name('button')
+                    ? ' ' . wc_wp_theme_get_element_class_name('button')
+                    : '',
             ]
         );
         echo '</div>';

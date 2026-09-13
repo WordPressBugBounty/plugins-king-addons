@@ -1,7 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B62FF"/><stop offset="100%" stop-color="#5B03FF"/></linearGradient></defs>
-  <rect x="15" y="35" width="70" height="30" rx="4" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <text x="50" y="56" font-family="Arial" font-size="14" fill="url(#g)" text-anchor="middle">1-12 of 48</text>
-  <rect x="20" y="22" width="20" height="6" rx="2" fill="url(#g)" opacity="0.4"/>
-  <rect x="45" y="22" width="35" height="6" rx="2" fill="url(#g)" opacity="0.3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+        <linearGradient id="wprc" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9B62FF"/>
+            <stop offset="100%" stop-color="#5B03FF"/>
+        </linearGradient>
+    </defs>
+    <rect x="6" y="10" width="10" height="10" rx="2" fill="url(#wprc)" opacity="0.35"/>
+    <rect x="19" y="10" width="10" height="10" rx="2" fill="url(#wprc)" opacity="0.55"/>
+    <rect x="32" y="10" width="10" height="10" rx="2" fill="url(#wprc)" opacity="0.25"/>
+    <rect x="6" y="24" width="36" height="14" rx="4" fill="none" stroke="url(#wprc)" stroke-width="2"/>
+    <rect x="11" y="28.5" width="8" height="5" rx="1.5" fill="url(#wprc)"/>
+    <rect x="22" y="28.5" width="15" height="5" rx="1.5" fill="url(#wprc)" opacity="0.45"/>
 </svg>

@@ -136,7 +136,7 @@ $this->end_controls_section();
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $this_ID = $this->get_id();
 
         echo '<div class="king-addons-reading-progress-bar-container king-addons-reading-progress-bar-container-position-' . esc_attr($settings['kng_reading_progress_bar_position']) . '"><div class="king-addons-reading-progress-bar" id="king-addons-reading-progress-bar-' . esc_attr($this_ID) . '"></div></div>';

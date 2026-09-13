@@ -46,7 +46,7 @@ class Facet_Search extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-search';
+        return 'king-addons-icon king-addons-facet-search';
     }
 
     /**

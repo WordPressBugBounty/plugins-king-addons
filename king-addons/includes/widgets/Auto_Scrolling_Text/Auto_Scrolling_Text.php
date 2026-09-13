@@ -43,6 +43,11 @@ class Auto_Scrolling_Text extends Widget_Base
         return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-auto-scrolling-text-style'];
     }
 
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-auto-scrolling-text-script'];
+    }
+
     public function get_categories(): array
     {
         return ['king-addons'];
@@ -77,7 +82,6 @@ class Auto_Scrolling_Text extends Widget_Base
             [
                 'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Content', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
-                'frontend_available' => true,
             ]
         );
 
@@ -1023,12 +1027,13 @@ class Auto_Scrolling_Text extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $this_ID = $this->get_id();
         ?>
         <div class="king-addons-auto-scrolling-text-items-wrapper">
             <div class="king-addons-auto-scrolling-text-items king-addons-auto-scrolling-text-items-<?php echo esc_attr($this_ID); ?>">
                 <div class="king-addons-auto-scrolling-text-wrapper king-addons-auto-scrolling-text-wrapper-<?php echo esc_attr($this_ID); ?>">
+                    <div class="king-addons-auto-scrolling-text-group">
                     <?php
 
                     $item_count = 0;
@@ -1131,27 +1136,10 @@ class Auto_Scrolling_Text extends Widget_Base
 
                         $item_count++;
                     } ?>
+                    </div>
                 </div>
             </div>
         </div>
         <?php
-
-        // Security fix: Escape content before using innerHTML
-        $escaped_content = esc_js($settings['auto_scroll_text']);
-        $js_auto_scroll_text = "if (document.readyState === 'complete') {
-                const marquee = document.querySelector('.king-addons-auto-scrolling-text-wrapper-" . esc_attr($this_ID) . "');
-                const texts = '{$escaped_content}';
-                marquee.innerHTML += texts;
-                marquee.innerHTML += texts;
-            } else {
-                window.addEventListener('load', function () {
-                    const marquee = document.querySelector('.king-addons-auto-scrolling-text-wrapper-" . esc_attr($this_ID) . "');
-                    const texts = '{$escaped_content}';
-                    marquee.innerHTML += texts;
-                    marquee.innerHTML += texts;
-                });
-            }";
-
-        wp_print_inline_script_tag($js_auto_scroll_text);
     }
 }

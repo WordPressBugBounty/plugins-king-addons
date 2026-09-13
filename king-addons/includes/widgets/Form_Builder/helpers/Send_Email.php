@@ -28,6 +28,8 @@ class Send_Email
             return;
         }
 
+        Form_Builder_Security::guard_spam();
+
         $message_body = [];
 
         // Security fix: Validate and sanitize form_content array

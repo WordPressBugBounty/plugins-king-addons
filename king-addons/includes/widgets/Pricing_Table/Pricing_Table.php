@@ -2530,7 +2530,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         if (empty($settings['pricing_items'])) {
             return;
         }
@@ -2694,7 +2694,7 @@ $this->end_controls_section();
                                         $this->add_render_attribute($attr_name, 'id', esc_html($item['btn_id']));
                                     }
                                     ?>
-                                    <a class="king-addons-pricing-table-btn king-addons-button-effect <?php echo esc_html($this->get_settings()['btn_animation']); ?>"
+                                    <a class="king-addons-pricing-table-btn king-addons-button-effect <?php echo esc_attr(sanitize_html_class((string) (Core::displaySettings($this)['btn_animation'] ?? ''))); ?>"
                                         <?php echo $this->get_render_attribute_string($attr_name); ?>>
                                     <span>
                                         <?php

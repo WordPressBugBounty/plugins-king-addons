@@ -60,7 +60,7 @@ class Wishlist_Button extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons', 'king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**
@@ -167,7 +167,7 @@ class Wishlist_Button extends Widget_Base
             [
                 'label' => esc_html__('Icon class', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => Wishlist_Settings::get('icon_choice', 'eicon-heart'),
+                'default' => Wishlist_Settings::get('icon_choice', 'fas fa-heart'),
             ]
         );
 
@@ -232,16 +232,21 @@ class Wishlist_Button extends Widget_Base
             return;
         }
 
+        if (function_exists('wc_get_product') && !wc_get_product($product_id)) {
+            echo esc_html__('Select a product to show wishlist button.', 'king-addons');
+            return;
+        }
+
         $service = new Wishlist_Service();
         $renderer = new Wishlist_Renderer($service);
 
-        echo $renderer->render_button([
+        echo Wishlist_Renderer::kses($renderer->render_button([
             'product_id' => $product_id,
             'label_default' => $settings['kng_label_default'] ?? Wishlist_Settings::get('button_add_text'),
             'label_added' => $settings['kng_label_added'] ?? Wishlist_Settings::get('button_added_text'),
             'display_mode' => $settings['kng_display_mode'] ?? Wishlist_Settings::get('button_display_mode', 'icon_text'),
-            'icon_class' => $settings['kng_icon_class'] ?? Wishlist_Settings::get('icon_choice', 'eicon-heart'),
-        ]);
+            'icon_class' => $settings['kng_icon_class'] ?? Wishlist_Settings::get('icon_choice', 'fas fa-heart'),
+        ]));
     }
 }
 

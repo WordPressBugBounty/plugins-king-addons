@@ -55,20 +55,37 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .king-addons-wishlist-button__icon i {
     display: inline-block;
     font-size: 16px;
+    line-height: 1;
     transition: transform 0.2s ease;
 }
 
-.king-addons-wishlist-button:hover .king-addons-wishlist-button__icon i {
+.king-addons-wishlist-button__heart {
+    display: block;
+    width: 1em;
+    height: 1em;
+    min-width: 16px;
+    min-height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+.king-addons-wishlist-button:hover .king-addons-wishlist-button__icon i,
+.king-addons-wishlist-button:hover .king-addons-wishlist-button__heart {
     transform: scale(1.1);
 }
 
-.king-addons-wishlist-button--added .king-addons-wishlist-button__icon i::before {
-    content: "\e817"; /* Filled heart for Elementor icons */
+.king-addons-wishlist-button--added .king-addons-wishlist-button__heart {
+    fill: currentColor;
 }
 
 /* Button Label */
@@ -85,6 +102,10 @@
 .king-addons-wishlist-button--loop {
     padding: 6px 10px;
     font-size: 13px;
+}
+
+.ka-woo-products-grid__actions .king-addons-wishlist-button--loop {
+    margin: 0;
 }
 
 /* Table Remove Button */
@@ -128,8 +149,8 @@
     background: #ef4444;
 }
 
-.king-addons-wishlist-counter[data-count="0"] {
-    display: none;
+.king-addons-wishlist-fab .king-addons-wishlist-counter[data-count="0"] {
+    opacity: 0.55;
 }
 
 /* Floating Action Button (FAB) */
@@ -152,6 +173,15 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.king-addons-wishlist-fab .king-addons-wishlist-button__heart {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    fill: currentColor;
+    stroke: none;
+}
+
 .king-addons-wishlist-fab__link {
     text-decoration: none;
     color: inherit;
@@ -166,6 +196,7 @@
 
 .king-addons-wishlist-table {
     width: 100%;
+    min-width: 760px;
     border-collapse: collapse;
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -347,6 +378,11 @@
     color: #6b7280;
 }
 
+.king-addons-wishlist-mini-list--no-titles .king-addons-wishlist-table__heading--title,
+.king-addons-wishlist-mini-list--no-titles .king-addons-wishlist-table__cell--title {
+    display: none;
+}
+
 /* Notice */
 .king-addons-wishlist__notice {
     padding: 16px;
@@ -372,6 +408,36 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+}
+
+/* Multiple lists switcher */
+.king-addons-wishlist-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.king-addons-wishlist-switcher__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #111827;
+}
+
+.king-addons-wishlist-switcher__item.is-active {
+    border-color: #B45309;
+    background: #FDE68A;
+    color: #B45309;
+}
+
+.king-addons-wishlist-switcher__count {
+    min-width: 1.25em;
+    text-align: center;
+    font-weight: 600;
 }
 
 /* Notes (Pro) */

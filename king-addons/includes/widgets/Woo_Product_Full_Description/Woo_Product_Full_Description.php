@@ -31,7 +31,7 @@ class Woo_Product_Full_Description extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-text-align-left';
+        return 'king-addons-icon king-addons-woo-product-full-description';
     }
 
     public function get_categories(): array
@@ -110,6 +110,7 @@ class Woo_Product_Full_Description extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Read more text (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Read full description', 'king-addons'),
             ]
         );
@@ -119,6 +120,7 @@ class Woo_Product_Full_Description extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('Read less text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Show less', 'king-addons'),
             ]
         );
@@ -229,8 +231,11 @@ class Woo_Product_Full_Description extends Abstract_Single_Widget
             $trimmed = true;
             $trim_type = $settings['trim_type'] ?? 'words';
             if ('chars' === $trim_type) {
+                // The words branch below does not escape, and the output goes
+                // through wp_kses_post() either way - escaping only here turned
+                // "&" into "&amp;amp;" in the character-trimmed variant.
                 $content = wp_html_excerpt(wp_strip_all_tags($content), (int) $settings['trim_words'], '');
-                $content = wpautop(esc_html($content));
+                $content = wpautop($content);
             } else {
                 $content = wp_trim_words(wp_strip_all_tags($content), (int) $settings['trim_words'], '');
                 $content = wpautop($content);
@@ -238,6 +243,13 @@ class Woo_Product_Full_Description extends Abstract_Single_Widget
         }
 
         if ('' === trim($content)) {
+            // A product without a description is a normal state; a blank widget
+            // in the editor is not.
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('This product has no description.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
@@ -260,13 +272,19 @@ class Woo_Product_Full_Description extends Abstract_Single_Widget
         echo '<div class="ka-woo-product-full-description__content is-trimmed">';
         echo wp_kses_post($content);
         echo '</div>';
-        echo '<div class="ka-woo-product-full-description__content is-full" hidden>';
-        echo wp_kses_post($full_output);
-        echo '</div>';
+        // The second copy is only ever revealed by the toggle. Printing it
+        // otherwise put the whole description on the page twice - dead markup
+        // for the reader and duplicated text for a crawler.
+        $has_toggle = $trimmed && $can_pro && !empty($read_more) && 'toggle' === $behavior;
+        if ($has_toggle) {
+            echo '<div class="ka-woo-product-full-description__content is-full" hidden>';
+            echo wp_kses_post($full_output);
+            echo '</div>';
+        }
 
         if ($trimmed && $can_pro && !empty($read_more)) {
             if ('toggle' === $behavior) {
-                $less_label = $read_less ?: esc_html__('Show less', 'king-addons');
+                $less_label = $read_less ?: __('Show less', 'king-addons');
                 echo '<button type="button" class="ka-woo-product-full-description__toggle" data-less="' . esc_attr($less_label) . '" data-more="' . esc_attr($read_more) . '">' . esc_html($read_more) . '</button>';
             } else {
                 echo '<a class="ka-woo-product-full-description__readmore" href="' . esc_url($target) . '">' . esc_html($read_more) . '</a>';

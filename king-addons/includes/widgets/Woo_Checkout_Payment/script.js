@@ -18,8 +18,22 @@
     }
   };
 
+  const relocateIntoCheckoutForm = (root) => {
+    if (!root) return;
+    if (window.elementorFrontend && elementorFrontend.isEditMode && elementorFrontend.isEditMode()) {
+      return;
+    }
+    const form = document.querySelector("form.woocommerce-checkout, form.checkout");
+    if (!form) return;
+    const widget = root.closest(".elementor-widget-woo_checkout_payment") || root;
+    if (form.contains(widget)) return;
+    const review = form.querySelector("#order_review") || form;
+    review.appendChild(widget);
+  };
+
   const initAccordion = (root) => {
     if (!root || !root.dataset) return;
+    relocateIntoCheckoutForm(root);
     if (root.dataset[INIT_FLAG] === "1") return;
     root.dataset[INIT_FLAG] = "1";
 
@@ -29,7 +43,14 @@
     const descMap = safeParseJson(root.dataset.kaDescriptions);
 
     const methods = root.querySelectorAll('.wc_payment_method');
-    const placeOrder = document.querySelector('#place_order');
+    // Scope to this widget first: the payment template renders its own
+    // #place_order, so a document-wide lookup renamed the button belonging to
+    // another payment widget on the page instead of this one.
+    const placeOrder = root.querySelector('#place_order, button[name="woocommerce_checkout_place_order"]')
+      || document.querySelector('#place_order');
+    // Remember the stock label so switching to a gateway without a custom one
+    // puts it back - otherwise the first custom text stuck for every gateway.
+    const placeOrderDefault = placeOrder ? placeOrder.textContent : '';
 
     methods.forEach((method) => {
       const input = method.querySelector('input.input-radio');
@@ -68,8 +89,10 @@
         });
         desc.style.display = 'block';
         method.classList.add('is-active');
-        if (placeOrder && buttonMap && buttonMap[input.value]) {
-          placeOrder.textContent = buttonMap[input.value];
+        if (placeOrder) {
+          placeOrder.textContent = (buttonMap && buttonMap[input.value])
+            ? buttonMap[input.value]
+            : placeOrderDefault;
         }
       };
 

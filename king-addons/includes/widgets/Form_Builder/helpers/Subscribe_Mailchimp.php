@@ -28,6 +28,8 @@ class Subscribe_Mailchimp
             return;
         }
 
+        Form_Builder_Security::guard_spam();
+
 
         $api_key = get_option('king_addons_mailchimp_api_key') ? get_option('king_addons_mailchimp_api_key') : '';
 

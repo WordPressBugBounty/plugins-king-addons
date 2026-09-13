@@ -25,6 +25,7 @@ final class Admin
 
             // Reorder submenu items after ALL entries are registered.
             add_action('admin_menu', [$this, 'reorderKingAddonsSubmenu'], 1000000000);
+            add_action('admin_menu', [$this, 'reorderWooBuilderSubmenu'], 1000000000);
 
             add_action('admin_init', [$this, 'createSettings']);
             add_action('admin_init', [$this, 'createAiSettings']);
@@ -90,29 +91,6 @@ final class Admin
 
         // Get options for extension toggle checks (before any extension checks)
         $options = get_option('king_addons_options', []);
-
-        // Check Wishlist extension toggle
-        $wishlist_enabled = (!isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled')
-            && (defined('KING_ADDONS_EXT_WISHLIST') ? KING_ADDONS_EXT_WISHLIST : true);
-        if ($wishlist_enabled) {
-            add_submenu_page(
-                'king-addons',
-                esc_html__('Wishlist', 'king-addons'),
-                esc_html__('Wishlist', 'king-addons'),
-                'manage_options',
-                'king-addons-wishlist',
-                [$this, 'renderWishlistPage']
-            );
-
-            add_submenu_page(
-                'king-addons',
-                esc_html__('Wishlist Analytics', 'king-addons'),
-                esc_html__('Wishlist Analytics', 'king-addons'),
-                'manage_options',
-                'king-addons-wishlist-analytics',
-                [$this, 'renderWishlistAnalyticsPage']
-            );
-        }
 
         // Check Cookie / Consent Bar extension toggle
         $cookie_consent_enabled = !isset($options['ext_cookie-consent']) || $options['ext_cookie-consent'] === 'enabled';
@@ -217,15 +195,34 @@ final class Admin
             self::showPopupBuilder();
         }
 
-        // Check WooCommerce Builder extension toggle
-        $woo_builder_enabled = !isset($options['ext_woo-builder']) || $options['ext_woo-builder'] === 'enabled';
-        if (
-            $woo_builder_enabled
-            && (defined('KING_ADDONS_EXT_WOO_BUILDER') ? KING_ADDONS_EXT_WOO_BUILDER : true)
-            && class_exists('WooCommerce')
-            && function_exists('WC')
-        ) {
+        // WooCommerce Builder is a top-level menu. Store screens hang off it
+        // when it exists; otherwise they stay under King Addons. Page slugs
+        // do not change.
+        if (king_addons_woo_builder_menu_is_active()) {
             $this->showWooBuilder();
+        }
+
+        $wishlist_enabled = (!isset($options['ext_wishlist']) || $options['ext_wishlist'] === 'enabled')
+            && (defined('KING_ADDONS_EXT_WISHLIST') ? KING_ADDONS_EXT_WISHLIST : true);
+        if ($wishlist_enabled) {
+            $woo_parent = king_addons_woo_admin_parent_slug();
+            add_submenu_page(
+                $woo_parent,
+                esc_html__('Wishlist', 'king-addons'),
+                esc_html__('Wishlist', 'king-addons'),
+                'manage_options',
+                'king-addons-wishlist',
+                [$this, 'renderWishlistPage']
+            );
+
+            add_submenu_page(
+                $woo_parent,
+                esc_html__('Wishlist Analytics', 'king-addons'),
+                esc_html__('Wishlist Analytics', 'king-addons'),
+                'manage_options',
+                'king-addons-wishlist-analytics',
+                [$this, 'renderWishlistAnalyticsPage']
+            );
         }
 
         $menu['54.8'] = array( '', 'read', 'separator-king-addons-bottom', '', 'wp-menu-separator elementor' );
@@ -288,6 +285,59 @@ final class Admin
         $submenu['king-addons'] = $items;
     }
 
+    /**
+     * WooCommerce Builder submenu:
+     * 1) Dashboard (same slug as the top-level page)
+     * 2) Wishlist
+     * 3) Wishlist Analytics
+     * 4) Free Shipping Bar
+     * 5) Sticky Add To Cart
+     * 6) My Account Endpoints
+     */
+    public function reorderWooBuilderSubmenu(): void
+    {
+        global $submenu;
+
+        if (!is_array($submenu) || empty($submenu['king-addons-woo-builder']) || !is_array($submenu['king-addons-woo-builder'])) {
+            return;
+        }
+
+        $priorityBySlug = [
+            'king-addons-woo-builder' => 0,
+            'king-addons-wishlist' => 1,
+            'king-addons-wishlist-analytics' => 2,
+            'king-addons-free-shipping-bar' => 3,
+            'king-addons-sticky-add-to-cart' => 4,
+            'king-addons-myaccount-endpoints' => 5,
+        ];
+
+        $items = $submenu['king-addons-woo-builder'];
+
+        usort($items, static function ($a, $b) use ($priorityBySlug): int {
+            $aSlug = isset($a[2]) ? (string) $a[2] : '';
+            $bSlug = isset($b[2]) ? (string) $b[2] : '';
+
+            $aPriority = array_key_exists($aSlug, $priorityBySlug) ? $priorityBySlug[$aSlug] : 9999;
+            $bPriority = array_key_exists($bSlug, $priorityBySlug) ? $priorityBySlug[$bSlug] : 9999;
+
+            if ($aPriority !== $bPriority) {
+                return $aPriority <=> $bPriority;
+            }
+
+            $aLabel = isset($a[0]) ? wp_strip_all_tags((string) $a[0]) : '';
+            $bLabel = isset($b[0]) ? wp_strip_all_tags((string) $b[0]) : '';
+
+            $cmp = strcasecmp($aLabel, $bLabel);
+            if ($cmp !== 0) {
+                return $cmp;
+            }
+
+            return strcasecmp($aSlug, $bSlug);
+        });
+
+        $submenu['king-addons-woo-builder'] = $items;
+    }
+
     function addUpgradeMenu(): void
     {
         // Don't add menu if Freemius is showing opt-in/activation
@@ -343,6 +393,17 @@ final class Admin
             [$this, 'renderWooBuilderPage'],
             'dashicons-cart',
             54.5
+        );
+
+        // Same slug as the parent so the first submenu item is "Dashboard"
+        // instead of repeating "WooCommerce Builder".
+        add_submenu_page(
+            'king-addons-woo-builder',
+            esc_html__('WooCommerce Builder', 'king-addons'),
+            esc_html__('Dashboard', 'king-addons'),
+            'manage_options',
+            'king-addons-woo-builder',
+            [$this, 'renderWooBuilderPage']
         );
     }
 
@@ -994,7 +1055,8 @@ final class Admin
     {
         $sanitized = [];
 
-        $sanitized['ai_provider'] = AI_Provider::normalizeProvider($input['ai_provider'] ?? AI_Provider::OPENAI);
+        // An absent value resolves to the default rather than being pinned to OpenAI.
+        $sanitized['ai_provider'] = AI_Provider::normalizeProvider($input['ai_provider'] ?? '');
 
         $sanitized['openai_api_key'] = isset($input['openai_api_key'])
             ? sanitize_text_field($input['openai_api_key'])

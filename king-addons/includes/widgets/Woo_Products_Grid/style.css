@@ -4,14 +4,37 @@
     grid-template-columns: repeat(var(--ka-grid-desktop, 4), minmax(0, 1fr));
 }
 
+/* Masonry spans are counted in 8px rows, and a row gap applies between every
+   one of them - an 82-row card picked up 81 gaps and grew to 1952px. The gap
+   is folded into the span instead, and align-self keeps the item at its
+   content height so measuring it does not feed back into its own span. */
 .ka-woo-products-grid[data-layout-type="masonry"] {
     grid-auto-rows: var(--ka-masonry-row, 8px);
-    grid-row-gap: 16px;
+    grid-row-gap: 0;
+}
+
+.ka-woo-products-grid[data-layout-type="masonry"] .ka-woo-products-grid__item {
+    align-self: start;
+    margin-bottom: var(--ka-masonry-gap, 16px);
 }
 
 .ka-woo-products-grid--slider {
     overflow: hidden;
     position: relative;
+}
+
+/* The track is the container's only child, so leaving the container on its
+   column count parked the whole slider in the first column - a 1120px grid
+   showed a 268px slider. */
+.ka-woo-products-grid[data-layout-type="slider"] {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* A list card puts the image beside the text and needs a full row. On the
+   normal column count a 180px thumbnail was crammed into a 268px cell, leaving
+   80px for the title, price and button. */
+.ka-woo-products-grid[data-card-layout="list"] {
+    grid-template-columns: minmax(0, 1fr);
 }
 
 .ka-woo-products-grid__track {
@@ -73,6 +96,13 @@
 .ka-woo-products-grid__list-body {
     display: grid;
     gap: 6px;
+}
+
+.ka-woo-products-grid__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
 }
 
 .ka-woo-products-grid__badges {
@@ -148,6 +178,18 @@
 .ka-woo-products-grid__pagination {
     margin-top: 16px;
     text-align: center;
+}
+
+.ka-woo-products-grid__pagination.ka-woo-products-grid__pagination--align-left {
+    text-align: left;
+}
+
+.ka-woo-products-grid__pagination.ka-woo-products-grid__pagination--align-center {
+    text-align: center;
+}
+
+.ka-woo-products-grid__pagination.ka-woo-products-grid__pagination--align-right {
+    text-align: right;
 }
 
 .ka-woo-products-grid__load-more {

@@ -242,7 +242,15 @@ class Wishlist_Service
             $lists = $wpdb->get_results("SELECT * FROM {$lists_table} WHERE {$where} ORDER BY created_at DESC");
         }
 
-        return $lists ?: [];
+        $unique = [];
+        foreach ($lists ?: [] as $list) {
+            $key = (string) ($list->slug ?: $list->id);
+            if (!isset($unique[$key])) {
+                $unique[$key] = $list;
+            }
+        }
+
+        return array_values($unique);
     }
 
     /**
@@ -610,14 +618,23 @@ class Wishlist_Service
 
         $lists_table = Wishlist_DB::get_lists_table();
 
-        $existing_row = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT id FROM {$lists_table} WHERE (user_id = %d OR session_key = %s) AND slug = %s LIMIT 1",
-                $this->user_id,
-                $this->session_key,
-                $wishlist_id
-            )
-        );
+        if ($this->user_id > 0) {
+            $existing_row = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM {$lists_table} WHERE user_id = %d AND slug = %s LIMIT 1",
+                    $this->user_id,
+                    $wishlist_id
+                )
+            );
+        } else {
+            $existing_row = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM {$lists_table} WHERE user_id = 0 AND session_key = %s AND slug = %s LIMIT 1",
+                    $this->session_key,
+                    $wishlist_id
+                )
+            );
+        }
 
         if ($existing_row) {
             return;

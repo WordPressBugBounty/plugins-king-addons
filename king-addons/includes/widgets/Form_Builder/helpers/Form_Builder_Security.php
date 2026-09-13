@@ -42,6 +42,43 @@ class Form_Builder_Security
     }
 
     /**
+     * Stops a submission that failed the form's spam challenge.
+     *
+     * Every submit action is its own public AJAX endpoint, so each one calls
+     * this: checking the challenge only in the browser would leave them open.
+     *
+     * @return void Sends a JSON error and exits when the check fails.
+     */
+    public static function guard_spam(): void
+    {
+        if (!class_exists('King_Addons\\Form_Spam_Protection')) {
+            return;
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- the caller checked the nonce.
+        $form_id = isset($_POST['king_addons_form_id'])
+            ? sanitize_text_field(wp_unslash($_POST['king_addons_form_id']))
+            : '';
+
+        if ('' === $form_id) {
+            return;
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- the caller checked the nonce.
+        $result = Form_Spam_Protection::verify($form_id, $_POST);
+
+        if (true === $result) {
+            return;
+        }
+
+        wp_send_json_error([
+            'message' => esc_html__('Your submission was rejected by the spam check.', 'king-addons'),
+            'status' => 'error',
+            'reason' => $result,
+        ]);
+    }
+
+    /**
      * Validates a page ID for public form submissions.
      *
      * Accepts a published page that contains Form Builder. Also accepts a

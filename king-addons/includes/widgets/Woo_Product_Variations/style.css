@@ -63,6 +63,11 @@
     color: #555;
 }
 
+/* Add To Cart widget already prints qty + ATC-OK on the same template. */
+.ka-woo-variations.ka-woo-variations--atc-external .variations_button {
+    display: none;
+}
+
 
 
 

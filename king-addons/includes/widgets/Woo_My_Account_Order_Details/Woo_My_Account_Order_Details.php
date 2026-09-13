@@ -47,7 +47,7 @@ class Woo_My_Account_Order_Details extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-woocommerce';
+        return 'king-addons-icon king-addons-woo-my-account-order-details';
     }
 
     /**
@@ -135,10 +135,30 @@ class Woo_My_Account_Order_Details extends Widget_Base
             return;
         }
 
+        if (!$in_builder && function_exists('is_wc_endpoint_url') && !is_wc_endpoint_url('view-order')) {
+            return;
+        }
+
         $order_id = absint(get_query_var('view-order'));
         if ($order_id) {
             $settings = $this->get_settings_for_display();
             $order = wc_get_order($order_id);
+
+            // WooCommerce guards this endpoint with current_user_can('view_order').
+            // Without the same check any signed-in customer could read someone
+            // else's order - items, totals and both addresses - just by
+            // changing the number in the URL.
+            if (!$order || !current_user_can('view_order', $order_id)) {
+                echo '<div class="ka-woo-my-account-order-details">';
+                wc_print_notice(
+                    esc_html__('Invalid order.', 'king-addons')
+                    . ' <a href="' . esc_url(wc_get_page_permalink('myaccount')) . '" class="wc-forward">'
+                    . esc_html__('My account', 'king-addons') . '</a>',
+                    'error'
+                );
+                echo '</div>';
+                return;
+            }
 
             echo '<div class="ka-woo-my-account-order-details">';
 
@@ -155,14 +175,43 @@ class Woo_My_Account_Order_Details extends Widget_Base
                 echo '</div>';
             }
 
-            wc_get_template('myaccount/view-order.php', ['order_id' => $order_id]);
-
-            if ('yes' === ($settings['show_totals'] ?? 'yes')) {
-                wc_get_template('order/order-details.php', ['order_id' => $order_id]);
+            // view-order.php ends with do_action('woocommerce_view_order'),
+            // which already prints the order table and the customer addresses.
+            // Rendering those templates again below put the whole order on the
+            // page twice by default. Suppress the built-in call and print the
+            // pieces the settings actually ask for.
+            $had_table = has_action('woocommerce_view_order', 'woocommerce_order_details_table');
+            if ($had_table) {
+                remove_action('woocommerce_view_order', 'woocommerce_order_details_table', 10);
             }
 
-            if ('yes' === ($settings['show_addresses'] ?? 'yes')) {
-                wc_get_template('order/order-details-customer.php', ['order_id' => $order_id]);
+            // view-order.php reads $order directly ($order->get_customer_order_notes()),
+            // so passing only order_id made it fatal with "Call to a member
+            // function get_customer_order_notes() on null" and took the whole
+            // page down with a 500. WooCommerce passes both.
+            wc_get_template(
+                'myaccount/view-order.php',
+                [
+                    'status' => null,
+                    'order' => $order,
+                    'order_id' => $order_id,
+                ]
+            );
+
+            if ('yes' === ($settings['show_totals'] ?? 'yes')) {
+                // Use WooCommerce's own function rather than the template
+                // directly: it picks the right template and supplies
+                // $show_downloads, which the raw call left undefined and which
+                // warned on every render.
+                woocommerce_order_details_table($order_id);
+            } elseif ('yes' === ($settings['show_addresses'] ?? 'yes')) {
+                // order-details.php is what pulls in the customer block, so when
+                // the totals are hidden the addresses need printing directly.
+                wc_get_template('order/order-details-customer.php', ['order' => $order]);
+            }
+
+            if ($had_table) {
+                add_action('woocommerce_view_order', 'woocommerce_order_details_table', 10);
             }
 
             /**

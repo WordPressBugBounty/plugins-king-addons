@@ -470,10 +470,25 @@ class Age_Gate
         }
 
         if ($scope === 'pages') {
-            return is_page();
+            return $this->is_pages_scope_match();
         }
 
         return true;
+    }
+
+    /**
+     * Pages scope includes WordPress pages and the WooCommerce shop archive.
+     *
+     * WooCommerce shop is a product archive, so is_page() is false there even
+     * when the Shop page ID is selected as a page.
+     */
+    protected function is_pages_scope_match(): bool
+    {
+        if (is_page()) {
+            return true;
+        }
+
+        return function_exists('is_shop') && is_shop();
     }
 
     /**
@@ -483,11 +498,19 @@ class Age_Gate
      */
     protected function is_excluded_page(): bool
     {
+        $exclude_ids = array_map('absint', $this->options['display']['exclude_ids']);
+
+        if (function_exists('is_shop') && is_shop() && function_exists('wc_get_page_id')) {
+            $shop_id = (int) wc_get_page_id('shop');
+            if ($shop_id && in_array($shop_id, $exclude_ids, true)) {
+                return true;
+            }
+        }
+
         if (!is_singular()) {
             return false;
         }
 
-        $exclude_ids = array_map('absint', $this->options['display']['exclude_ids']);
         $current_id = get_the_ID();
 
         if (in_array($current_id, $exclude_ids, true)) {
@@ -563,7 +586,7 @@ class Age_Gate
                 'denyRedirectUrl' => $deny_redirect_url,
                 'blockMessage' => $behaviour['block_message'],
                 'consentCheckbox' => (bool) $behaviour['consent_checkbox'],
-                'consentLabel' => esc_html__('I agree to the policy.', 'king-addons'),
+                'consentLabel' => __('I agree to the policy.', 'king-addons'),
                 'repeatMode' => $behaviour['repeat_mode'] ?? 'days',
                 'repeatDays' => (int) ($behaviour['repeat_days'] ?? 30),
             ],
@@ -641,6 +664,10 @@ class Age_Gate
      */
     public function get_options(): array
     {
+        if (class_exists('King_Addons\\Text_Entities_Migration')) {
+            Text_Entities_Migration::maybe_run();
+        }
+
         $saved = get_option(self::OPTION_NAME, []);
         $defaults = $this->get_default_options();
 
@@ -681,10 +708,10 @@ class Age_Gate
                 'card_background' => '#ffffff',
                 'card_width' => 520,
                 'card_align' => 'center',
-                'title' => esc_html__('Age verification required', 'king-addons'),
-                'subtitle' => esc_html__('This content is restricted to visitors over the specified age.', 'king-addons'),
-                'button_yes' => esc_html__('Yes, continue', 'king-addons'),
-                'button_no' => esc_html__('No, leave', 'king-addons'),
+                'title' => __('Age verification required', 'king-addons'),
+                'subtitle' => __('This content is restricted to visitors over the specified age.', 'king-addons'),
+                'button_yes' => __('Yes, continue', 'king-addons'),
+                'button_no' => __('No, leave', 'king-addons'),
                 'text_color' => '#111827',
                 'title_size' => 24,
                 'body_size' => 16,
@@ -707,7 +734,7 @@ class Age_Gate
                 'deny_action' => 'redirect_url',
                 'deny_redirect_page' => 0,
                 'deny_redirect_url' => 'https://google.com',
-                'block_message' => esc_html__('Access denied. You do not meet the minimum age requirement.', 'king-addons'),
+                'block_message' => __('Access denied. You do not meet the minimum age requirement.', 'king-addons'),
                 'consent_checkbox' => false,
                 'reset_on_rule_change' => true,
                 'repeat_mode' => 'days',
@@ -724,8 +751,8 @@ class Age_Gate
             'dob' => [
                 'format' => 'dmy',
                 'max_age' => 120,
-                'error_invalid' => esc_html__('Enter a valid date of birth.', 'king-addons'),
-                'error_denied' => esc_html__('You do not meet the minimum age requirement.', 'king-addons'),
+                'error_invalid' => __('Enter a valid date of birth.', 'king-addons'),
+                'error_denied' => __('You do not meet the minimum age requirement.', 'king-addons'),
             ],
         ];
     }

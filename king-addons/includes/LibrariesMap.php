@@ -36,6 +36,14 @@ final class LibrariesMap
                     'css' => ['general'],
                     'js' => []
                 ],
+                'woo-loop' => [
+                    'css' => ['style'],
+                    'js' => []
+                ],
+                'woo-acf-fields' => [
+                    'css' => ['style'],
+                    'js' => []
+                ],
                 'grid' => [
                     'css' => ['grid'],
                     'js' => [

@@ -47,7 +47,7 @@ class TB_404_Search_Form extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-search';
+        return 'king-addons-icon king-addons-tb-404-search-form';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_404_Search_Form extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -140,6 +140,7 @@ class TB_404_Search_Form extends Widget_Base
             [
                 'label' => esc_html__('Placeholder', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Search…', 'king-addons'),
             ]
         );
@@ -149,6 +150,7 @@ class TB_404_Search_Form extends Widget_Base
             [
                 'label' => esc_html__('Button Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Search', 'king-addons'),
             ]
         );

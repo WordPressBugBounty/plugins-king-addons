@@ -35,6 +35,46 @@
         const updateCallbacks = [];
         const runAll = () => updateCallbacks.forEach((cb) => cb());
 
+        // Woo leaves out-of-stock options enabled in the native select when
+        // "hide out of stock" is off. Hide/disable would then be a no-op,
+        // so also read the variation JSON Woo already prints on the form.
+        let productVariations = [];
+        try {
+            const raw = form.getAttribute('data-product_variations');
+            productVariations = raw && raw !== 'false' ? JSON.parse(raw) : [];
+        } catch (e) {
+            productVariations = [];
+        }
+
+        const attributeMatches = (variationAttr, selected) => {
+            if (!variationAttr) {
+                return true;
+            }
+            return variationAttr === selected;
+        };
+
+        const valueIsAvailable = (attrName, val) => {
+            if (!Array.isArray(productVariations) || !productVariations.length) {
+                const opt = form.querySelector(`select[name="${attrName}"] option[value="${val}"]`);
+                return !(opt && opt.disabled);
+            }
+            return productVariations.some((variation) => {
+                if (!variation || variation.is_in_stock === false) {
+                    return false;
+                }
+                const attrs = variation.attributes || {};
+                if (!attributeMatches(attrs[attrName], val)) {
+                    return false;
+                }
+                return Array.from(selects).every((other) => {
+                    if (other.name === attrName || !other.value) {
+                        return true;
+                    }
+                    return attributeMatches(attrs[other.name], other.value);
+                });
+            });
+        };
+
         selects.forEach((select) => {
             const attrName = select.name;
             const swatchesInfo = attrMap[attrName];
@@ -84,6 +124,9 @@
                 }
 
                 btn.addEventListener('click', () => {
+                    if (!valueIsAvailable(attrName, opt.value)) {
+                        return;
+                    }
                     select.value = opt.value;
                     select.dispatchEvent(new Event('change', { bubbles: true }));
                     if (window.jQuery) {
@@ -106,10 +149,10 @@
                 Array.from(container.children).forEach((btn) => {
                     const val = btn.dataset.value;
                     const opt = select.querySelector(`option[value="${val}"]`);
-                    const disabled = opt && opt.disabled;
+                    const unavailable = !valueIsAvailable(attrName, val) || !!(opt && opt.disabled);
                     btn.classList.toggle('is-active', current === val);
-                    btn.classList.toggle('is-disabled', !!disabled);
-                    if (disabled && unavailableBehavior === 'hide') {
+                    btn.classList.toggle('is-disabled', unavailable);
+                    if (unavailable && unavailableBehavior === 'hide') {
                         btn.style.display = 'none';
                     } else {
                         btn.style.display = '';

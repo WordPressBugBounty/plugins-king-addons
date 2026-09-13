@@ -59,7 +59,7 @@ class Woo_Checkout_Steps extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-editor-list-ol';
+        return 'king-addons-icon king-addons-woo-checkout-steps';
     }
 
     /**
@@ -172,6 +172,7 @@ class Woo_Checkout_Steps extends Widget_Base
             [
                 'label' => esc_html__('Previous text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Previous', 'king-addons'),
                 'condition' => [
                     'show_nav' => 'yes',
@@ -184,6 +185,7 @@ class Woo_Checkout_Steps extends Widget_Base
             [
                 'label' => esc_html__('Next text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Next', 'king-addons'),
                 'condition' => [
                     'show_nav' => 'yes',
@@ -225,14 +227,22 @@ class Woo_Checkout_Steps extends Widget_Base
         $settings = $this->get_settings_for_display();
         $steps = $settings['steps'] ?? [];
         if (empty($steps)) {
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('Add at least one step, each pointing at a section of the checkout.', 'king-addons')
+                    . '</div>';
+            }
             return;
         }
 
         $scroll = (!empty($settings['scroll_to_section']) && 'yes' === $settings['scroll_to_section']) ? 'yes' : 'no';
         $auto_scroll = (!empty($settings['auto_scroll']) && 'yes' === $settings['auto_scroll']) ? 'yes' : 'no';
         $show_nav = (!empty($settings['show_nav']) && 'yes' === $settings['show_nav']);
-        $prev_text = $settings['prev_text'] ?? esc_html__('Previous', 'king-addons');
-        $next_text = $settings['next_text'] ?? esc_html__('Next', 'king-addons');
+        // ?: not ??: a cleared field is '' rather than null, which left the
+        // navigation buttons unlabelled. The values are escaped at output, so
+        // the fallbacks must not be pre-escaped.
+        $prev_text = ($settings['prev_text'] ?? null) ?: __('Previous', 'king-addons');
+        $next_text = ($settings['next_text'] ?? null) ?: __('Next', 'king-addons');
 
         echo '<div class="ka-woo-checkout-steps-wrapper" data-enable-nav="' . ($show_nav ? 'true' : 'false') . '" data-auto-scroll="' . esc_attr($auto_scroll) . '">';
         echo '<ol class="ka-woo-checkout-steps ka-woo-checkout-steps--pro" role="list" data-scroll-top="' . esc_attr($scroll) . '" data-prev-text="' . esc_attr($prev_text) . '" data-next-text="' . esc_attr($next_text) . '">';

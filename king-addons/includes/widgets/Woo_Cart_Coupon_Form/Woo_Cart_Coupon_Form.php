@@ -47,7 +47,7 @@ class Woo_Cart_Coupon_Form extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-cart';
+        return 'king-addons-icon king-addons-woo-cart-coupon-form';
     }
 
     /**
@@ -119,7 +119,8 @@ class Woo_Cart_Coupon_Form extends Widget_Base
             [
                 'label' => esc_html__('Heading Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Have a coupon?', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Have a coupon?', 'king-addons'),
                 'condition' => [
                     'show_heading' => 'yes',
                 ],
@@ -131,7 +132,8 @@ class Woo_Cart_Coupon_Form extends Widget_Base
             [
                 'label' => esc_html__('Input Placeholder', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Coupon code', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Coupon code', 'king-addons'),
             ]
         );
 
@@ -140,7 +142,8 @@ class Woo_Cart_Coupon_Form extends Widget_Base
             [
                 'label' => esc_html__('Button Text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Apply coupon', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Apply coupon', 'king-addons'),
             ]
         );
 
@@ -173,8 +176,11 @@ class Woo_Cart_Coupon_Form extends Widget_Base
 
         $settings = $this->get_settings_for_display();
         $ajax_nonce = wp_create_nonce('ka_cart');
-        $heading_text = !empty($settings['heading_text']) ? $settings['heading_text'] : esc_html__('Have a coupon?', 'king-addons');
-        $button_text = !empty($settings['button_text']) ? $settings['button_text'] : esc_html__('Apply coupon', 'king-addons');
+        $heading_text = !empty($settings['heading_text']) ? $settings['heading_text'] : __('Have a coupon?', 'king-addons');
+        $button_text = !empty($settings['button_text']) ? $settings['button_text'] : __('Apply coupon', 'king-addons');
+        // The input id was a fixed string, so two coupon widgets on one page
+        // produced duplicate ids and both labels pointed at the first input.
+        $input_id = 'ka_coupon_code_' . $this->get_id();
         ?>
         <div
             class="ka-woo-cart-coupon-widget"
@@ -190,13 +196,13 @@ class Woo_Cart_Coupon_Form extends Widget_Base
             </div>
             <div class="ka-woo-cart-coupon__body" <?php echo !empty($settings['show_heading']) ? 'hidden' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
                 <div class="ka-woo-cart-coupon__row">
-                    <label class="screen-reader-text" for="ka_coupon_code"><?php esc_html_e('Coupon code', 'king-addons'); ?></label>
+                    <label class="screen-reader-text" for="<?php echo esc_attr($input_id); ?>"><?php esc_html_e('Coupon code', 'king-addons'); ?></label>
                     <input
                         type="text"
-                        id="ka_coupon_code"
+                        id="<?php echo esc_attr($input_id); ?>"
                         class="ka-woo-cart-coupon__input"
                         name="coupon_code"
-                        placeholder="<?php echo esc_attr($settings['placeholder']); ?>"
+                        placeholder="<?php echo esc_attr($settings['placeholder'] ?? ''); ?>"
                         autocomplete="off"
                     />
                     <button type="button" class="ka-woo-cart-coupon__apply button" data-mode="apply">

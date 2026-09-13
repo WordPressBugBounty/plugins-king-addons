@@ -42,7 +42,7 @@ class Woo_Product_Title extends Abstract_Single_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-t-letter';
+        return 'king-addons-icon king-addons-woo-product-title';
     }
 
     /**
@@ -117,7 +117,10 @@ class Woo_Product_Title extends Abstract_Single_Widget
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ka-woo-product-title' => 'text-align: {{VALUE}};',
+                    // On the wrapper, not the title: with an inline tag such as
+                    // span, text-align on the element itself does nothing and the
+                    // control silently has no effect.
+                    '{{WRAPPER}}' => 'text-align: {{VALUE}};',
                 ],
             ]
         );
@@ -227,7 +230,15 @@ class Woo_Product_Title extends Abstract_Single_Widget
         }
 
         $settings = $this->get_settings_for_display();
-        $tag = $settings['html_tag'] ?? 'h2';
+
+        // Saved data can carry anything the panel no longer offers - an imported
+        // template or a hand-edited layout - so keep the tag on the allowlist
+        // instead of printing whatever arrives.
+        $tag = strtolower((string) ($settings['html_tag'] ?? 'h2'));
+        if (!in_array($tag, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span'], true)) {
+            $tag = 'h2';
+        }
+
         $title = $product->get_name();
 
         if (!empty($settings['trim_length']) && king_addons_can_use_pro()) {

@@ -40,7 +40,7 @@ class Woo_Product_Price extends Abstract_Single_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-product-price';
+        return 'king-addons-icon king-addons-woo-product-price';
     }
 
     /**
@@ -222,7 +222,9 @@ class Woo_Product_Price extends Abstract_Single_Widget
 
         $regular_raw = $product->get_regular_price();
         $sale_raw = $product->get_sale_price();
-        // For variable products Woo returns min price; ensure float casting.
+        // A variable product has no price of its own - both getters return an
+        // empty string, and the display modes below fall back to WooCommerce's
+        // own range. The discount block reads the variation prices instead.
         $regular = $regular_raw !== '' ? (float) $regular_raw : null;
         $sale = $sale_raw !== '' ? (float) $sale_raw : null;
 

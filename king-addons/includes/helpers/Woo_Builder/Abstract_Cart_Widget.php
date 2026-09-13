@@ -27,6 +27,10 @@ abstract class Abstract_Cart_Widget extends Widget_Base
      */
     protected function should_render(): bool
     {
+        if (!$this->can_use_builder_widgets()) {
+            return false;
+        }
+
         // In editor mode editing cart template
         if (class_exists('King_Addons\\Woo_Builder\\Context') && Woo_Context::is_editing_template_type('cart')) {
             return true;
@@ -41,6 +45,16 @@ abstract class Abstract_Cart_Widget extends Widget_Base
     }
 
     /**
+     * Cart / checkout / account builder widgets are a Pro feature.
+     *
+     * @return bool
+     */
+    protected function can_use_builder_widgets(): bool
+    {
+        return function_exists('king_addons_can_use_pro') && king_addons_can_use_pro();
+    }
+
+    /**
      * Render placeholder when cart context is missing.
      *
      * @return void
@@ -51,6 +65,11 @@ abstract class Abstract_Cart_Widget extends Widget_Base
             return;
         }
 
+        if (!$this->can_use_builder_widgets()) {
+            $this->render_pro_required_notice();
+            return;
+        }
+
         // Check if we're editing a Cart template
         if (class_exists('King_Addons\\Woo_Builder\\Context') && Woo_Context::is_editing_template_type('cart')) {
             // Don't show notice - we're in the right template type
@@ -58,6 +77,21 @@ abstract class Abstract_Cart_Widget extends Widget_Base
         }
 
         echo '<div class="king-addons-woo-builder-notice">' . esc_html__('This widget works only on the WooCommerce cart page.', 'king-addons') . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Editor-only upsell when the site cannot use Pro.
+     *
+     * @return void
+     */
+    protected function render_pro_required_notice(): void
+    {
+        if (class_exists('King_Addons\\Core')) {
+            Core::renderEditorHint(esc_html__('Available in King Addons Pro.', 'king-addons'));
+            return;
+        }
+
+        echo '<div class="king-addons-woo-builder-notice">' . esc_html__('Available in King Addons Pro.', 'king-addons') . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 

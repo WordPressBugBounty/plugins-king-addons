@@ -31,7 +31,7 @@ class Woo_Product_Breadcrumbs extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-breadcrumbs';
+        return 'king-addons-icon king-addons-woo-product-breadcrumbs';
     }
 
     public function get_categories(): array
@@ -59,6 +59,7 @@ class Woo_Product_Breadcrumbs extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Separator', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '/',
             ]
         );
@@ -170,16 +171,15 @@ class Woo_Product_Breadcrumbs extends Abstract_Single_Widget
             'wrap_after' => '</nav>',
             'before' => '',
             'after' => '',
-            'home' => !empty($settings['show_home_icon']) && $can_pro ? '<span class="ka-woo-breadcrumbs__home" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" role="presentation" focusable="false"><path fill="currentColor" d="M12 4.6 4.5 11H7v7h3.5v-4h3v4H17v-7h2.5z"/></svg></span>' : esc_html__('Home', 'king-addons'),
+            // Always a plain label here: WC_Breadcrumb::add_crumb() runs the
+            // name through wp_strip_all_tags(), so an SVG passed as "home"
+            // stripped down to an empty string and the Home link came out
+            // blank. The icon is injected into the finished markup below.
+            'home' => esc_html__('Home', 'king-addons'),
         ];
 
-        add_filter(
-            'woocommerce_breadcrumb_home_url',
-            static function ($url) {
-                return $url;
-            }
-        );
-
+        // A filter that returns its argument unchanged did nothing except pile
+        // up another closure on the hook with every render.
         ob_start();
         woocommerce_breadcrumb($args);
         $html = ob_get_clean();
@@ -188,13 +188,33 @@ class Woo_Product_Breadcrumbs extends Abstract_Single_Widget
             $html = preg_replace_callback(
                 '/>([^<]+)</',
                 static function ($m) use ($trim) {
-                    $text = $m[1];
+                    // The captured text is already escaped markup. Running
+                    // esc_html() over it again turned "&amp;" into "&amp;amp;",
+                    // so a shop with "Home & Garden" in the trail showed the
+                    // entity. Decode, cut, escape once.
+                    $text = html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
                     if (mb_strlen($text) > $trim) {
                         $text = mb_substr($text, 0, $trim) . '…';
                     }
                     return '>' . esc_html($text) . '<';
                 },
                 $html
+            );
+        }
+
+        if (!empty($settings['show_home_icon']) && $can_pro) {
+            $icon = '<span class="ka-woo-breadcrumbs__home" aria-hidden="true">'
+                . '<svg width="14" height="14" viewBox="0 0 24 24" role="presentation" focusable="false">'
+                . '<path fill="currentColor" d="M12 4.6 4.5 11H7v7h3.5v-4h3v4H17v-7h2.5z"/></svg></span>'
+                . '<span class="screen-reader-text">' . esc_html__('Home', 'king-addons') . '</span>';
+
+            // Replace the first crumb's text only - after trimming, so the
+            // trimmer never runs over the SVG.
+            $html = preg_replace(
+                '/(<a\b[^>]*>)([^<]*)(<\/a>)/',
+                '$1' . str_replace('$', '\$', $icon) . '$3',
+                $html,
+                1
             );
         }
 

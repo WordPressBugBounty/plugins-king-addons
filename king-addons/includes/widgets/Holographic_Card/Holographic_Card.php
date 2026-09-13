@@ -504,7 +504,7 @@ class Holographic_Card extends Widget_Base
                     'size' => 420,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-holo-card-stage' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .king-addons-holo-card-stage' => 'width: {{SIZE}}{{UNIT}}; max-width: 100%;',
                 ],
             ]
         );

@@ -60,18 +60,33 @@ class Wishlist_Frontend
             return;
         }
 
+        $style_path = KING_ADDONS_PATH . 'includes/wishlist/assets/style.css';
+        $script_path = KING_ADDONS_PATH . 'includes/wishlist/assets/script.js';
+        $style_ver = file_exists($style_path) ? (string) filemtime($style_path) : KING_ADDONS_VERSION;
+        $script_ver = file_exists($script_path) ? (string) filemtime($script_path) : KING_ADDONS_VERSION;
+
+        $style_deps = [];
+        if (wp_style_is('font-awesome-5-all', 'registered')) {
+            wp_enqueue_style('font-awesome-5-all');
+            $style_deps[] = 'font-awesome-5-all';
+        }
+        if (wp_style_is('elementor-icons', 'registered')) {
+            wp_enqueue_style('elementor-icons');
+            $style_deps[] = 'elementor-icons';
+        }
+
         wp_enqueue_style(
             'king-addons-wishlist',
             KING_ADDONS_URL . 'includes/wishlist/assets/style.css',
-            [],
-            KING_ADDONS_VERSION
+            $style_deps,
+            $style_ver
         );
 
         wp_enqueue_script(
             'king-addons-wishlist',
             KING_ADDONS_URL . 'includes/wishlist/assets/script.js',
             ['jquery'],
-            KING_ADDONS_VERSION,
+            $script_ver,
             true
         );
 
@@ -85,6 +100,7 @@ class Wishlist_Frontend
                     'added' => Wishlist_Settings::get('button_added_text'),
                     'add' => Wishlist_Settings::get('button_add_text'),
                     'error' => esc_html__('Unable to update wishlist. Please try again.', 'king-addons'),
+                    'empty' => esc_html__('No products in wishlist yet.', 'king-addons'),
                 ],
             ]
         );
@@ -107,6 +123,10 @@ class Wishlist_Frontend
         $wishlist_id = isset($_POST['wishlist_id']) ? sanitize_title(wp_unslash($_POST['wishlist_id'])) : null;
 
         if (!$product_id) {
+            wp_send_json_error(['message' => esc_html__('Product id is required.', 'king-addons')], 400);
+        }
+
+        if (!function_exists('wc_get_product') || !wc_get_product($product_id)) {
             wp_send_json_error(['message' => esc_html__('Product id is required.', 'king-addons')], 400);
         }
 
@@ -374,7 +394,8 @@ class Wishlist_Frontend
             case 'add_to_cart':
                 return $this->render_add_to_cart_button($product);
             case 'remove':
-                return '<button type="button" class="king-addons-wishlist-button king-addons-wishlist-button--table-remove" data-product-id="' . esc_attr($item->product_id) . '" data-variation-id="' . esc_attr($item->variation_id) . '" data-wishlist-id="' . esc_attr($item->wishlist_id) . '"><span class="king-addons-wishlist-button__label">' . esc_html__('Remove', 'king-addons') . '</span></button>';
+                $remove_label = esc_html__('Remove', 'king-addons');
+                return '<button type="button" class="king-addons-wishlist-button king-addons-wishlist-button--table-remove" data-product-id="' . esc_attr($item->product_id) . '" data-variation-id="' . esc_attr($item->variation_id) . '" data-wishlist-id="' . esc_attr($item->wishlist_id) . '" data-label-default="' . esc_attr($remove_label) . '" data-label-added="' . esc_attr($remove_label) . '"><span class="king-addons-wishlist-button__label">' . $remove_label . '</span></button>';
             default:
                 return '';
         }

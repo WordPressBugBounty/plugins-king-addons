@@ -1155,7 +1155,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         echo '<div class="' . esc_attr($this->get_countdown_class($settings)) . '"'
             . $this->get_countdown_attributes($settings) . '>';
         $this->render_countdown_items($settings);

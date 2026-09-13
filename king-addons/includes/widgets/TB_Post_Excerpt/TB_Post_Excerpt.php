@@ -47,7 +47,7 @@ class TB_Post_Excerpt extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-editor-quote';
+        return 'king-addons-icon king-addons-tb-post-excerpt';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Post_Excerpt extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -163,6 +163,7 @@ class TB_Post_Excerpt extends Widget_Base
             [
                 'label' => esc_html__('Suffix', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => '…',
             ]
         );

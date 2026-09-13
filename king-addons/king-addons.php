@@ -5,7 +5,7 @@
  * Description: Elementor addons, 4,000+ Templates & Sections, 80+ Widgets, AI Tools, Mega Menu, Popup Builder, WooCommerce, Templates & Sections. Lightweight & fast Elementor toolkit.
  * Author URI: https://kingaddons.com/
  * Author: KingAddons.com
- * Version: 51.1.79
+ * Version: 51.1.81
  * Text Domain: king-addons
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 load_plugin_textdomain('king-addons');
 
 /** PLUGIN VERSION */
-const KING_ADDONS_VERSION = '51.1.79';
+const KING_ADDONS_VERSION = '51.1.81';
 
 /** DEFINES */
 define('KING_ADDONS_PATH', plugin_dir_path(__FILE__));
@@ -104,6 +104,80 @@ if (!function_exists('king_addons_can_use_pro')) {
         }
 
         return (bool) $fs->can_use_premium_code();
+    }
+}
+
+/**
+ * Whether the WooCommerce Builder top-level menu is registered.
+ *
+ * Wishlist and other store screens hang off that menu when it exists,
+ * and fall back to King Addons when it does not.
+ *
+ * @return bool
+ */
+if (!function_exists('king_addons_woo_builder_menu_is_active')) {
+    function king_addons_woo_builder_menu_is_active(): bool
+    {
+        $options = get_option('king_addons_options', []);
+        $enabled = !isset($options['ext_woo-builder']) || $options['ext_woo-builder'] === 'enabled';
+
+        return $enabled
+            && (defined('KING_ADDONS_EXT_WOO_BUILDER') ? (bool) KING_ADDONS_EXT_WOO_BUILDER : true)
+            && class_exists('WooCommerce')
+            && function_exists('WC');
+    }
+}
+
+/**
+ * Parent slug for WooCommerce-related admin screens.
+ *
+ * Page slugs stay the same; only the WP menu parent changes.
+ *
+ * @return string
+ */
+if (!function_exists('king_addons_woo_admin_parent_slug')) {
+    function king_addons_woo_admin_parent_slug(): string
+    {
+        return king_addons_woo_builder_menu_is_active() ? 'king-addons-woo-builder' : 'king-addons';
+    }
+}
+
+/**
+ * Whether the current admin screen belongs to King Addons.
+ *
+ * Screen IDs follow the WP parent menu title, so Woo screens under
+ * WooCommerce Builder become `woocommerce-builder_page_*`. Page slugs
+ * still start with `king-addons`.
+ *
+ * @param string|null $current_screen Optional screen id; current screen if omitted.
+ * @return bool
+ */
+if (!function_exists('king_addons_is_plugin_admin_screen')) {
+    function king_addons_is_plugin_admin_screen(?string $current_screen = null): bool
+    {
+        $page = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : '';
+        if ($page !== '' && strpos($page, 'king-addons') === 0) {
+            return true;
+        }
+
+        if ($current_screen === null) {
+            $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+            if (!$screen || empty($screen->id)) {
+                return false;
+            }
+            $current_screen = (string) $screen->id;
+        }
+
+        $legacy_screens = [
+            'edit-king-addons-el-hf',
+            'edit-king-addons-fb-sub',
+            'header-footer_page_king-addons-el-hf-settings',
+        ];
+
+        return (strpos($current_screen, 'king-addons_') === 0)
+            || (strpos($current_screen, 'toplevel_page_king-addons') === 0)
+            || (strpos($current_screen, 'woocommerce-builder_page_') === 0)
+            || in_array($current_screen, $legacy_screens, true);
     }
 }
 
@@ -231,25 +305,7 @@ if (!function_exists('king_addons_hideAnotherNotices')) {
             return;
         }
 
-        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
-        if (!$screen || empty($screen->id)) {
-            return;
-        }
-
-        $current_screen = (string) $screen->id;
-
-        // Legacy explicit screens that do not follow the generic prefixes.
-        $legacy_screens = [
-            'edit-king-addons-el-hf',
-            'edit-king-addons-fb-sub',
-            'header-footer_page_king-addons-el-hf-settings',
-        ];
-
-        $is_king_addons_screen = (strpos($current_screen, 'king-addons_') === 0)
-            || (strpos($current_screen, 'toplevel_page_king-addons') === 0)
-            || in_array($current_screen, $legacy_screens, true);
-
-        if ($is_king_addons_screen) {
+        if (king_addons_is_plugin_admin_screen()) {
             // Remove all notices
             remove_all_actions('user_admin_notices');
             remove_all_actions('admin_notices');
@@ -274,25 +330,7 @@ if (!function_exists('king_addons_admin_footer_text')) {
             return $footer_text;
         }
 
-        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
-        if (!$screen || empty($screen->id)) {
-            return $footer_text;
-        }
-
-        $current_screen = (string) $screen->id;
-
-        // Check if we're on a King Addons admin page
-        $legacy_screens = [
-            'edit-king-addons-el-hf',
-            'edit-king-addons-fb-sub',
-            'header-footer_page_king-addons-el-hf-settings',
-        ];
-
-        $is_king_addons_screen = (strpos($current_screen, 'king-addons_') === 0)
-            || (strpos($current_screen, 'toplevel_page_king-addons') === 0)
-            || in_array($current_screen, $legacy_screens, true);
-
-        if (!$is_king_addons_screen) {
+        if (!king_addons_is_plugin_admin_screen()) {
             return $footer_text;
         }
 
@@ -328,24 +366,7 @@ if (!function_exists('king_addons_rating_script')) {
         }
 
         // Only on King Addons pages and only if not already rated
-        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
-        if (!$screen || empty($screen->id)) {
-            return;
-        }
-
-        $current_screen = (string) $screen->id;
-
-        $legacy_screens = [
-            'edit-king-addons-el-hf',
-            'edit-king-addons-fb-sub',
-            'header-footer_page_king-addons-el-hf-settings',
-        ];
-
-        $is_king_addons_screen = (strpos($current_screen, 'king-addons_') === 0)
-            || (strpos($current_screen, 'toplevel_page_king-addons') === 0)
-            || in_array($current_screen, $legacy_screens, true);
-
-        if (!$is_king_addons_screen || get_option('king_addons_admin_footer_text_rated')) {
+        if (!king_addons_is_plugin_admin_screen() || get_option('king_addons_admin_footer_text_rated')) {
             return;
         }
 
@@ -425,7 +446,7 @@ if (!function_exists('king_addons_account_page_theme_script')) {
         $theme_mode = get_user_meta(get_current_user_id(), 'king_addons_theme_mode', true);
         $allowed_theme_modes = ['dark', 'light', 'auto'];
         if (!in_array($theme_mode, $allowed_theme_modes, true)) {
-            $theme_mode = 'dark'; // Default to dark theme
+            $theme_mode = 'auto';
         }
         ?>
         <script>

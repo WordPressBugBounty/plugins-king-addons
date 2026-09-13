@@ -42,8 +42,12 @@ class Wishlist_WooCommerce
         $hook = $position === 'before_add_to_cart' ? 'woocommerce_before_add_to_cart_button' : 'woocommerce_after_add_to_cart_button';
         add_action($hook, [$this, 'render_single_button']);
 
+        $atc_hook = $position === 'before_add_to_cart' ? 'king_addons/woo_product_atc/before_buttons' : 'king_addons/woo_product_atc/after_buttons';
+        add_action($atc_hook, [$this, 'render_single_button']);
+
         if (Wishlist_Settings::get('show_in_archives', true)) {
             add_action('woocommerce_after_shop_loop_item', [$this, 'render_loop_button'], 12);
+            add_action('king_addons/woo_products_grid/after_add_to_cart', [$this, 'render_grid_button']);
         }
 
         // Track conversions when order is completed
@@ -124,20 +128,21 @@ class Wishlist_WooCommerce
     /**
      * Render wishlist button on single product pages.
      *
+     * @param mixed $product Optional product from King Addons ATC widget.
      * @return void
      */
-    public function render_single_button(): void
+    public function render_single_button($passed = null): void
     {
         if (!Wishlist_Settings::is_enabled()) {
             return;
         }
 
-        global $product;
+        $product = $passed instanceof WC_Product ? $passed : $GLOBALS['product'] ?? null;
         if (!$product instanceof WC_Product) {
             return;
         }
 
-        echo wp_kses_post(
+        echo Wishlist_Renderer::kses(
             $this->renderer->render_button([
                 'product_id' => $product->get_id(),
                 'variation_id' => 0,
@@ -162,7 +167,27 @@ class Wishlist_WooCommerce
             return;
         }
 
-        echo wp_kses_post(
+        echo Wishlist_Renderer::kses(
+            $this->renderer->render_button([
+                'product_id' => $product->get_id(),
+                'class' => 'king-addons-wishlist-button--loop',
+            ])
+        );
+    }
+
+    /**
+     * Render wishlist button on King Addons Products Grid cards.
+     *
+     * @param mixed $product Product from the grid card.
+     * @return void
+     */
+    public function render_grid_button($product): void
+    {
+        if (!Wishlist_Settings::is_enabled() || !$product instanceof WC_Product) {
+            return;
+        }
+
+        echo Wishlist_Renderer::kses(
             $this->renderer->render_button([
                 'product_id' => $product->get_id(),
                 'class' => 'king-addons-wishlist-button--loop',

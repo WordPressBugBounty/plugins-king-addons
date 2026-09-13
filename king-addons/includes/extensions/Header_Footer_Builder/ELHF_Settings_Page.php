@@ -35,7 +35,7 @@ final class ELHF_Settings_Page
     public function registerSettingsPage()
     {
         add_submenu_page(
-            'edit.php?post_type=king-addons-el-hf',
+            'king-addons-el-hf',
             esc_html__('Display Settings', 'king-addons'),
             esc_html__('Display Settings', 'king-addons'),
             'manage_options',
@@ -76,7 +76,7 @@ final class ELHF_Settings_Page
         if (!isset(self::$settings_tabs)) {
             self::$settings_tabs['king_addons_el_hf_templates'] = [
                 'name' => esc_html__('All Templates', 'king-addons'),
-                'url' => admin_url('edit.php?post_type=king-addons-el-hf'),
+                'url' => admin_url('admin.php?page=king-addons-el-hf'),
             ];
         }
 

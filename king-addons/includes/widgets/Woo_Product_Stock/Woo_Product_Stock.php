@@ -31,7 +31,7 @@ class Woo_Product_Stock extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-check-circle';
+        return 'king-addons-icon king-addons-woo-product-stock';
     }
 
     public function get_categories(): array
@@ -59,6 +59,7 @@ class Woo_Product_Stock extends Abstract_Single_Widget
             [
                 'label' => esc_html__('In stock text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('In stock', 'king-addons'),
             ]
         );
@@ -68,6 +69,7 @@ class Woo_Product_Stock extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Out of stock text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Out of stock', 'king-addons'),
             ]
         );
@@ -77,6 +79,7 @@ class Woo_Product_Stock extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('On backorder text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Available on backorder', 'king-addons'),
             ]
         );
@@ -115,6 +118,7 @@ class Woo_Product_Stock extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Low stock text (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Only {qty} left', 'king-addons'),
             ]
         );
@@ -216,12 +220,8 @@ class Woo_Product_Stock extends Abstract_Single_Widget
         $settings = $this->get_settings_for_display();
         $can_pro = king_addons_can_use_pro();
 
-        $availability = $product->get_availability();
-        $stock_status = $availability['class'] ?? '';
-
         $is_in_stock = $product->is_in_stock();
         $qty = $product->get_stock_quantity();
-        $backorders = $product->get_backorders();
 
         if (!empty($settings['hide_if_in_stock']) && $can_pro && $is_in_stock && empty($settings['low_stock_threshold'])) {
             return;
@@ -244,8 +244,10 @@ class Woo_Product_Stock extends Abstract_Single_Widget
 
         if ($is_in_stock && $can_pro && !empty($settings['low_stock_threshold']) && is_numeric($qty)) {
             $threshold = (int) $settings['low_stock_threshold'];
-            if ($threshold > 0 && $qty <= $threshold) {
-                $low_text = $settings['text_low_stock'] ?: 'Only {qty} left';
+            // A backorder item sits at qty 0 while still being "in stock";
+            // announcing "0 left" there reads as a mistake.
+            if ($threshold > 0 && $qty > 0 && $qty <= $threshold) {
+                $low_text = $settings['text_low_stock'] ?: esc_html__('Only {qty} left', 'king-addons');
                 $low_text = str_replace('{qty}', (string) $qty, $low_text);
                 $text = $low_text;
                 $class = 'ka-woo-product-stock ka-woo-product-stock--low';

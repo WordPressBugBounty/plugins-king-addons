@@ -47,7 +47,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
          */
     public function get_icon(): string
     {
-        return 'eicon-product-variations';
+        return 'king-addons-icon king-addons-woo-product-variations';
     }
 
         /**
@@ -93,7 +93,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_control(
             'swatches',
             [
-                'label' => sprintf(__('Enable swatches %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Enable swatches', 'king-addons'),
                 'type' => Controls_Manager::SWITCHER,
                 'return_value' => 'yes',
             ]
@@ -102,7 +102,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_control(
             'swatch_source',
             [
-                'label' => sprintf(__('Swatch source %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Swatch source', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
                 'options' => [
                     'auto' => esc_html__('Term meta (color/image) fallback to text', 'king-addons'),
@@ -118,7 +118,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_control(
             'show_selected',
             [
-                'label' => sprintf(__('Show selected value %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Show selected value', 'king-addons'),
                 'type' => Controls_Manager::SWITCHER,
                 'return_value' => 'yes',
                 'default' => 'yes',
@@ -128,7 +128,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_control(
             'unavailable_behavior',
             [
-                'label' => sprintf(__('Unavailable behavior %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Unavailable behavior', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
                 'options' => [
                     'disable' => esc_html__('Disable', 'king-addons'),
@@ -141,7 +141,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_control(
             'swatch_shape',
             [
-                'label' => sprintf(__('Swatch shape %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Swatch shape', 'king-addons'),
                 'type' => Controls_Manager::SELECT,
                 'options' => [
                     'square' => esc_html__('Square', 'king-addons'),
@@ -157,7 +157,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_responsive_control(
             'swatch_size',
             [
-                'label' => sprintf(__('Swatch size (px) %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Swatch size (px)', 'king-addons'),
                 'type' => Controls_Manager::SLIDER,
                 'range' => [
                     'px' => ['min' => 16, 'max' => 80],
@@ -174,7 +174,7 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         $this->add_responsive_control(
             'swatch_spacing',
             [
-                'label' => sprintf(__('Swatch spacing (px) %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                'label' => esc_html__('Swatch spacing (px)', 'king-addons'),
                 'type' => Controls_Manager::SLIDER,
                 'range' => [
                     'px' => ['min' => 0, 'max' => 24],
@@ -189,6 +189,30 @@ class Woo_Product_Variations extends Abstract_Single_Widget
         );
 
         $this->end_controls_section();
+    }
+
+    /**
+     * Find any published variable product, for editor preview only.
+     *
+     * @return WC_Product_Variable|null
+     */
+    protected function find_variable_product_for_preview(): ?WC_Product_Variable
+    {
+        if (!function_exists('wc_get_products')) {
+            return null;
+        }
+
+        $found = wc_get_products([
+            'status' => 'publish',
+            'type' => 'variable',
+            'limit' => 1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
+
+        $candidate = $found[0] ?? null;
+
+        return $candidate instanceof WC_Product_Variable ? $candidate : null;
     }
 
     protected function render(): void
@@ -209,30 +233,47 @@ class Woo_Product_Variations extends Abstract_Single_Widget
             return;
         }
 
+        $is_editor = class_exists(Woo_Context::class) && Woo_Context::is_editor();
+
+        if (!$product instanceof WC_Product_Variable && $is_editor) {
+            // The builder picks the preview product on its own and the author
+            // cannot choose it, so a store whose newest product is simple would
+            // show this widget as broken. Borrow a variable product to preview.
+            $preview = $this->find_variable_product_for_preview();
+            if ($preview instanceof WC_Product_Variable) {
+                $GLOBALS['product'] = $preview;
+                $product = $preview;
+            }
+        }
+
         if (!$product instanceof WC_Product_Variable) {
-            if (class_exists(Woo_Context::class) && Woo_Context::is_editor()) {
-                echo '<div class="king-addons-woo-builder-notice">' . esc_html__('Variations widget works only for variable products.', 'king-addons') . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            if ($is_editor) {
+                echo '<div class="king-addons-woo-builder-notice">' . esc_html__('This widget needs a variable product. Add one to preview it here.', 'king-addons') . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             }
             return;
         }
 
         $settings = $this->get_settings_for_display();
-        $can_pro = king_addons_can_use_pro();
 
-        $use_swatches = !empty($settings['swatches']) && $can_pro;
+        // Swatches ship in the free tier: both freemium competitors give them away,
+        // and it is the first thing compared side by side.
+        $use_swatches = !empty($settings['swatches']);
         $unavailable_behavior = $settings['unavailable_behavior'] ?? 'disable';
         $unavailable_behavior = in_array($unavailable_behavior, ['disable', 'hide'], true) ? $unavailable_behavior : 'disable';
         $show_selected = !empty($settings['show_selected']);
         $shape = $settings['swatch_shape'] ?? 'square';
 
-        // Build swatch map from attributes/terms for Pro swatches.
+        // Build the swatch map from the product's attributes and terms.
         $swatch_map = [];
         if ($use_swatches) {
             $attributes = $product->get_variation_attributes();
             foreach ($attributes as $attr_name => $options) {
-                $taxonomy = wc_attribute_taxonomy_name(str_replace('attribute_', '', $attr_name));
+                // get_variation_attributes() hands back the taxonomy name as-is
+                // for global attributes (pa_color) and the plain label for custom
+                // ones (Size). Only the first kind has terms to read colours from.
+                $taxonomy = taxonomy_exists($attr_name) ? $attr_name : '';
                 $swatches = [];
-                if (taxonomy_exists($taxonomy)) {
+                if ('' !== $taxonomy) {
                     $terms = wc_get_product_terms($product->get_id(), $taxonomy, ['fields' => 'all']);
                     foreach ($terms as $term) {
                         $color_raw = get_term_meta($term->term_id, 'color', true);
@@ -252,13 +293,19 @@ class Woo_Product_Variations extends Abstract_Single_Widget
                 } else {
                     foreach ($options as $opt) {
                         $swatches[$opt] = [
-                            'label' => sanitize_text_field(wc_attribute_label($attr_name) . ' ' . $opt),
+                            // The attribute name already labels the row; repeating
+                            // it inside every swatch reads as "Size Small".
+                            'label' => sanitize_text_field($opt),
                             'color' => '',
                             'image' => '',
                         ];
                     }
                 }
-                $swatch_map[$attr_name] = $swatches;
+                // Key the map the way WooCommerce names the select it belongs to
+                // (wc_dropdown_variation_attribute_options uses
+                // "attribute_" . sanitize_title($name)); the script looks the
+                // swatches up by that name.
+                $swatch_map['attribute_' . sanitize_title($attr_name)] = $swatches;
             }
         }
 
@@ -271,7 +318,12 @@ class Woo_Product_Variations extends Abstract_Single_Widget
             'source' => in_array(($settings['swatch_source'] ?? 'auto'), ['auto', 'text'], true) ? ($settings['swatch_source'] ?? 'auto') : 'auto',
         ];
 
-        echo '<div class="ka-woo-variations" data-swatches="' . ($use_swatches ? 'yes' : 'no') . '" data-unavailable="' . esc_attr($unavailable_behavior) . '" data-swatches-map="' . esc_attr(wp_json_encode($data)) . '">';
+        $classes = 'ka-woo-variations';
+        if (Woo_Context::template_has_widget('woo_product_add_to_cart', 'single_product')) {
+            $classes .= ' ka-woo-variations--atc-external';
+        }
+
+        echo '<div class="' . esc_attr($classes) . '" id="ka-satc-form-anchor" data-swatches="' . ($use_swatches ? 'yes' : 'no') . '" data-unavailable="' . esc_attr($unavailable_behavior) . '" data-swatches-map="' . esc_attr(wp_json_encode($data)) . '">';
         wc_get_template('single-product/add-to-cart/variable.php', [
             'available_variations' => $product->get_available_variations(),
             'attributes' => $product->get_variation_attributes(),

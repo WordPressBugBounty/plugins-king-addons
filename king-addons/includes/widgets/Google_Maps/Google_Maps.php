@@ -672,7 +672,7 @@ $this->end_controls_section();
     }
 
     protected function render() {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $locations = $settings['google_map_locations'] ?? [];
 
         // Sanitize the first location's title (if it exists)

@@ -31,7 +31,7 @@ class Woo_My_Account_Orders extends Abstract_My_Account_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-woo-orders';
+        return 'king-addons-icon king-addons-woo-my-account-orders';
     }
 
     public function get_categories(): array
@@ -106,20 +106,39 @@ class Woo_My_Account_Orders extends Abstract_My_Account_Widget
             return;
         }
 
+        if (!$this->is_current_endpoint('orders')) {
+            return;
+        }
+
         if ($this->maybe_render_login_form()) {
             return;
         }
 
+        $settings = $this->get_settings_for_display();
         $user_id = get_current_user_id();
-        $per_page = max(1, (int) ($this->get_settings_for_display()['order_count'] ?? 10));
-        $paged = max(1, (int) get_query_var('paged', 1));
-        $layout = $this->get_settings_for_display()['layout'] ?? 'table';
+        // ?: not ??: a cleared field is '' rather than null, and (int) '' is 0.
+        $per_page = max(1, (int) (($settings['order_count'] ?? null) ?: 10));
+
+        // The orders list paginates through its own endpoint value
+        // (/my-account/orders/2/), not the global "paged" query var - reading
+        // paged meant page two of the list always showed page one again.
+        $endpoint_page = get_query_var('orders');
+        $paged = $endpoint_page ? absint($endpoint_page) : max(1, (int) get_query_var('paged', 1));
+        $paged = max(1, $paged);
+
+        $layout = (string) ($settings['layout'] ?? 'table');
+        if (!in_array($layout, ['table', 'cards'], true)) {
+            $layout = 'table';
+        }
 
         $customer_orders = wc_get_orders(apply_filters('woocommerce_my_account_my_orders_query', [
             'customer' => $user_id,
             'page' => $paged,
             'paginate' => true,
-            'posts_per_page' => $per_page,
+            // wc_get_orders() reads "limit"; posts_per_page was ignored, so the
+            // "orders per page" setting did nothing and the list always used
+            // WordPress's default.
+            'limit' => $per_page,
         ]));
 
         $has_orders = $customer_orders && $customer_orders->total > 0;
@@ -172,6 +191,12 @@ class Woo_My_Account_Orders extends Abstract_My_Account_Widget
                     'current_page' => $paged,
                     'customer_orders' => $customer_orders,
                     'has_orders' => $has_orders,
+                    // The template also reads $wp_button_class; without it every
+                    // render logged "Undefined variable $wp_button_class" once
+                    // per order row.
+                    'wp_button_class' => function_exists('wc_wp_theme_get_element_class_name') && wc_wp_theme_get_element_class_name('button')
+                        ? ' ' . wc_wp_theme_get_element_class_name('button')
+                        : '',
                 ]
             );
         }

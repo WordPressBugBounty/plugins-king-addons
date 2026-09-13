@@ -48,7 +48,7 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
      */
     public function get_icon(): string
     {
-        return 'eicon-cart';
+        return 'king-addons-icon king-addons-woo-cart-table';
     }
 
     /**
@@ -112,7 +112,8 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
             [
                 'label' => esc_html__('Empty title', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Your cart is empty', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Your cart is empty', 'king-addons'),
             ]
         );
 
@@ -121,7 +122,8 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
             [
                 'label' => esc_html__('Empty message', 'king-addons'),
                 'type' => Controls_Manager::TEXTAREA,
-                'default' => esc_html__('Looks like you have not added anything to your cart yet.', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Looks like you have not added anything to your cart yet.', 'king-addons'),
             ]
         );
 
@@ -130,7 +132,8 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
             [
                 'label' => esc_html__('Primary button text', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('Return to shop', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('Return to shop', 'king-addons'),
             ]
         );
 
@@ -139,6 +142,7 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
             [
                 'label' => esc_html__('Primary button URL', 'king-addons'),
                 'type' => Controls_Manager::URL,
+                'dynamic' => ['active' => true],
                 'placeholder' => 'https://',
             ]
         );
@@ -148,7 +152,8 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
             [
                 'label' => sprintf(__('Secondary button text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__('View offers', 'king-addons'),
+                'dynamic' => ['active' => true],
+                'default' => __('View offers', 'king-addons'),
             ]
         );
 
@@ -157,6 +162,7 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
             [
                 'label' => sprintf(__('Secondary button URL %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::URL,
+                'dynamic' => ['active' => true],
                 'placeholder' => 'https://',
             ]
         );
@@ -248,7 +254,19 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
 
         $ajax_nonce = wp_create_nonce('ka_cart');
 
-        echo '<div class="ka-cart-table" data-ka-cart="1" data-ajax-url="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($ajax_nonce) . '">';
+        // The empty-cart block after an AJAX removal used to be a hardcoded
+        // minimal version, so emptying the cart in place looked nothing like
+        // loading an empty cart. Hand the configured copy to the script.
+        $shop_id = wc_get_page_id('shop');
+        $shop_url = $shop_id > 0 ? get_permalink($shop_id) : home_url('/');
+        $empty_attrs = ' data-empty-title="' . esc_attr((string) ($settings['heading_empty'] ?? '')) . '"'
+            . ' data-empty-message="' . esc_attr((string) ($settings['message_empty'] ?? '')) . '"'
+            . ' data-empty-primary-text="' . esc_attr((string) ($settings['primary_btn_text'] ?? '')) . '"'
+            . ' data-empty-primary-url="' . esc_url(!empty($settings['primary_btn_url']['url']) ? $settings['primary_btn_url']['url'] : $shop_url) . '"'
+            . ' data-empty-secondary-text="' . esc_attr($can_pro ? (string) ($settings['secondary_btn_text'] ?? '') : '') . '"'
+            . ' data-empty-secondary-url="' . esc_url(($can_pro && !empty($settings['secondary_btn_url']['url'])) ? $settings['secondary_btn_url']['url'] : '') . '"';
+
+        echo '<div class="ka-cart-table" data-ka-cart="1" data-ajax-url="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($ajax_nonce) . '"' . $empty_attrs . '>';
         woocommerce_output_all_notices();
         wc_get_template('cart/cart.php');
         echo '</div>';
@@ -281,9 +299,9 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
         $shop_url = $shop_id > 0 ? get_permalink($shop_id) : home_url('/');
         $can_pro = king_addons_can_use_pro();
 
-        $heading = $settings['heading_empty'] ?? esc_html__('Your cart is empty', 'king-addons');
-        $message = $settings['message_empty'] ?? esc_html__('Looks like you have not added anything to your cart yet.', 'king-addons');
-        $primary_text = $settings['primary_btn_text'] ?? esc_html__('Return to shop', 'king-addons');
+        $heading = $settings['heading_empty'] ?? __('Your cart is empty', 'king-addons');
+        $message = $settings['message_empty'] ?? __('Looks like you have not added anything to your cart yet.', 'king-addons');
+        $primary_text = $settings['primary_btn_text'] ?? __('Return to shop', 'king-addons');
         $primary_url = !empty($settings['primary_btn_url']['url']) ? $settings['primary_btn_url']['url'] : $shop_url;
         $secondary_text = (!empty($settings['secondary_btn_text']) && $can_pro) ? $settings['secondary_btn_text'] : '';
         $secondary_url = (!empty($settings['secondary_btn_url']['url']) && $can_pro) ? $settings['secondary_btn_url']['url'] : '';
@@ -458,22 +476,47 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
         $shop_id = wc_get_page_id('shop');
         $shop_url = $shop_id > 0 ? get_permalink($shop_id) : home_url('/');
 
+        // The copy comes from the widget, passed along by the script, so the
+        // markup matches what a full page load of an empty cart produces.
+        // phpcs:disable WordPress.Security.NonceVerification.Missing -- verified by the caller.
+        $heading = isset($_POST['empty_title']) ? sanitize_text_field(wp_unslash($_POST['empty_title'])) : __('Your cart is empty', 'king-addons');
+        $message = isset($_POST['empty_message']) ? sanitize_text_field(wp_unslash($_POST['empty_message'])) : '';
+        $primary_text = isset($_POST['empty_primary_text']) ? sanitize_text_field(wp_unslash($_POST['empty_primary_text'])) : __('Return to shop', 'king-addons');
+        $primary_url = isset($_POST['empty_primary_url']) ? esc_url_raw(wp_unslash($_POST['empty_primary_url'])) : '';
+        $secondary_text = isset($_POST['empty_secondary_text']) ? sanitize_text_field(wp_unslash($_POST['empty_secondary_text'])) : '';
+        $secondary_url = isset($_POST['empty_secondary_url']) ? esc_url_raw(wp_unslash($_POST['empty_secondary_url'])) : '';
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
+
+        if ('' === $primary_url) {
+            $primary_url = $shop_url;
+        }
+
         ob_start();
         echo '<div class="ka-cart-empty">';
-        echo '<p class="ka-cart-empty__text">' . esc_html__('Your cart is empty.', 'king-addons') . '</p>';
-        echo '<a class="ka-cart-empty__link" href="' . esc_url($shop_url) . '">' . esc_html__('Return to shop', 'king-addons') . '</a>';
+        echo '<div class="ka-cart-empty__icon" aria-hidden="true">🛒</div>';
+        if ($heading) {
+            echo '<h3 class="ka-cart-empty__title">' . esc_html($heading) . '</h3>';
+        }
+        if ($message) {
+            echo '<p class="ka-cart-empty__text">' . esc_html($message) . '</p>';
+        }
+        echo '<div class="ka-cart-empty__actions">';
+        if ($primary_text && $primary_url) {
+            echo '<a class="ka-cart-empty__btn ka-cart-empty__btn--primary" href="' . esc_url($primary_url) . '">' . esc_html($primary_text) . '</a>';
+        }
+        if ($secondary_text && $secondary_url) {
+            echo '<a class="ka-cart-empty__btn ka-cart-empty__btn--ghost" href="' . esc_url($secondary_url) . '">' . esc_html($secondary_text) . '</a>';
+        }
+        echo '</div>';
+        do_action('king_addons/cart/empty_after');
         echo '</div>';
         return (string) ob_get_clean();
     }
 }
 
-// Register AJAX handlers only if WooCommerce is active
-if (class_exists('WooCommerce')) {
-    add_action('wp_ajax_ka_cart_update', [Woo_Cart_Table::class, 'ajax_update']);
-    add_action('wp_ajax_nopriv_ka_cart_update', [Woo_Cart_Table::class, 'ajax_update']);
-    add_action('wp_ajax_ka_cart_coupon', [Woo_Cart_Table::class, 'ajax_coupon']);
-    add_action('wp_ajax_nopriv_ka_cart_coupon', [Woo_Cart_Table::class, 'ajax_coupon']);
-}
+// Registration lives in Woo_Builder: admin-ajax.php never loads Elementor
+// widget files, so hooking from here meant the quantity, remove and coupon
+// requests all came back as "0".
 
 
 

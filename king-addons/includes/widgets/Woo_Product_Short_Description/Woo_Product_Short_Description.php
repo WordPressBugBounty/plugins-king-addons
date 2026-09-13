@@ -31,7 +31,7 @@ class Woo_Product_Short_Description extends Abstract_Single_Widget
 
     public function get_icon(): string
     {
-        return 'eicon-editor-list-ul';
+        return 'king-addons-icon king-addons-woo-product-short-description';
     }
 
     public function get_categories(): array
@@ -101,6 +101,7 @@ class Woo_Product_Short_Description extends Abstract_Single_Widget
             [
                 'label' => esc_html__('Read more text (Pro)', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Read more', 'king-addons'),
             ]
         );
@@ -110,6 +111,7 @@ class Woo_Product_Short_Description extends Abstract_Single_Widget
             [
                 'label' => sprintf(__('Read less text %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Show less', 'king-addons'),
             ]
         );
@@ -245,9 +247,16 @@ class Woo_Product_Short_Description extends Abstract_Single_Widget
         echo '<div class="ka-woo-product-short-description__content is-trimmed">';
         echo wp_kses_post($description);
         echo '</div>';
-        echo '<div class="ka-woo-product-short-description__content is-full" hidden>';
-        echo wp_kses_post($full_output);
-        echo '</div>';
+
+        // The second copy is only ever revealed by the toggle button. Printing it
+        // otherwise put the whole description on the page twice - dead markup for
+        // the reader and duplicated text for a crawler.
+        $has_toggle = $trimmed && $can_pro && !empty($read_more) && 'toggle' === $behavior;
+        if ($has_toggle) {
+            echo '<div class="ka-woo-product-short-description__content is-full" hidden>';
+            echo wp_kses_post($full_output);
+            echo '</div>';
+        }
 
         if ($trimmed && $can_pro && !empty($read_more)) {
             if ('toggle' === $behavior) {

@@ -4,6 +4,12 @@
     margin: 0;
 }
 
+/* Form Builder does not enqueue general.css, so icon-only submit
+   must hide this span itself. */
+.king-addons-hidden-element {
+    display: none !important;
+}
+
 .king-addons-field-group .king-addons-submit-error {
     position: absolute;
     top: 100%;
@@ -219,12 +225,20 @@
     flex-basis: 100%;
     margin: 0 0 5px 0;
     padding: 5px 0;
-    list-style-type: none;
     color: red;
 }
 
-.king-addons-file-type-error li {
-    display: inline;
+.king-addons-file-type-error-list {
+    font-size: 13px;
+    flex-basis: 100%;
+    margin: 0 0 8px 0;
+    padding: 0 0 8px 1.2em;
+    list-style-type: disc;
+    color: #000;
+}
+
+.king-addons-file-type-error-list li {
+    display: list-item;
     color: #000;
 }
 
@@ -353,6 +367,10 @@
     display: none;
 }
 
+.king-addons-form-field-type-recaptcha-v3:has(.king-addons-form-captcha-notice) {
+    display: block;
+}
+
 .king-addons-step-buttons-wrap {
     display: flex;
     justify-content: space-between;
@@ -414,4 +432,146 @@
     0% {
         opacity: 1;
     }
+}
+/* --- Range slider ------------------------------------------------------- */
+.king-addons-form-range {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.king-addons-form-range input[type="range"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+}
+
+.king-addons-form-range__value {
+    min-width: 3ch;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Rating ------------------------------------------------------------- */
+.king-addons-form-rating {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    /* The field group is a flex row, so without this the icons sit next to the
+       label instead of under it, unlike every other field. */
+    width: 100%;
+}
+
+.king-addons-form-rating__item {
+    background: none;
+    border: 0;
+    padding: 0 2px;
+    margin: 0;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    color: #c9c9c9;
+    transition: color .15s ease;
+}
+
+.king-addons-form-rating__item.is-on {
+    color: #f5a623;
+}
+
+.king-addons-form-rating__item:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* --- Signature ---------------------------------------------------------- */
+.king-addons-form-signature {
+    width: 100%;
+}
+
+.king-addons-form-signature__pad {
+    display: block;
+    width: 100%;
+    border: 1px solid #d5d8dc;
+    border-radius: 3px;
+    background: #fff;
+    touch-action: none;
+    cursor: crosshair;
+    color: #1f2124;
+}
+
+.king-addons-form-signature__clear {
+    margin-top: 6px;
+    padding: 4px 12px;
+    font: inherit;
+    font-size: 13px;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* --- Acceptance --------------------------------------------------------- */
+.king-addons-form-acceptance {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+}
+
+.king-addons-form-acceptance input[type="checkbox"] {
+    margin-top: .25em;
+    flex: 0 0 auto;
+}
+
+.king-addons-form-acceptance__text {
+    margin: 0;
+    cursor: pointer;
+}
+
+.king-addons-form-acceptance__text p:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Conditional logic -------------------------------------------------- */
+.king-addons-field-group.king-addons-cond-hidden {
+    display: none !important;
+}
+
+/* --- Calculation -------------------------------------------------------- */
+.king-addons-form-calculation {
+    width: 100%;
+}
+
+.king-addons-form-calculation input[readonly] {
+    background: #f3f4f5;
+    cursor: default;
+}
+
+/* --- Spam protection ---------------------------------------------------- */
+/* Hidden from people and assistive tech, but a normal input to a bot. */
+.king-addons-form-honeypot {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.king-addons-form-captcha {
+    margin-bottom: 16px;
+}
+
+.king-addons-form-captcha-notice {
+    margin: 0 0 16px;
+    padding: 8px 12px;
+    border-left: 3px solid #d63638;
+    background: #fcf0f1;
+    color: #8a2424;
+    font-size: 13px;
+}
+
+.king-addons-submit-warning {
+    margin: 8px 0 0;
+    color: #8a2424;
 }

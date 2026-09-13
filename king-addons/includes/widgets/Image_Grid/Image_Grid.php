@@ -346,7 +346,7 @@ class Image_Grid extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $this_ID = $this->get_id();
 
         // Define allowed tags and attributes

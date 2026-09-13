@@ -140,7 +140,7 @@ final class Cookie_Consent
         );
 
         wp_localize_script('king-addons-cookie-consent-admin', 'kingAddonsCookieAdmin', [
-            'saveText' => esc_html__('Save Settings', 'king-addons'),
+            'saveText' => __('Save Settings', 'king-addons'),
         ]);
     }
 
@@ -300,7 +300,7 @@ final class Cookie_Consent
             'king-addons-cookie-consent',
             KING_ADDONS_URL . 'includes/extensions/Cookie_Consent/assets/style.css',
             [],
-            KING_ADDONS_VERSION
+            (string) filemtime(KING_ADDONS_PATH . 'includes/extensions/Cookie_Consent/assets/style.css')
         );
         wp_register_script(
             'king-addons-cookie-consent',
@@ -452,7 +452,7 @@ final class Cookie_Consent
     {
         $atts = shortcode_atts(
             [
-                'label' => esc_html__('Cookie settings', 'king-addons'),
+                'label' => __('Cookie settings', 'king-addons'),
                 'class' => '',
             ],
             $atts
@@ -470,6 +470,10 @@ final class Cookie_Consent
      */
     private function get_options(): array
     {
+        if (class_exists('King_Addons\\Text_Entities_Migration')) {
+            Text_Entities_Migration::maybe_run();
+        }
+
         $stored = get_option(self::OPTION_NAME, []);
         $defaults = $this->get_default_options();
 
@@ -496,46 +500,46 @@ final class Cookie_Consent
             'policy_version' => '1',
             'template' => 'gdpr_minimal',
             'content' => [
-                'title' => esc_html__('We value your privacy', 'king-addons'),
-                'message' => esc_html__('We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept all", you consent to our use of cookies.', 'king-addons'),
-                'privacy_label' => esc_html__('Privacy Policy', 'king-addons'),
+                'title' => __('We value your privacy', 'king-addons'),
+                'message' => __('We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept all", you consent to our use of cookies.', 'king-addons'),
+                'privacy_label' => __('Privacy Policy', 'king-addons'),
                 'privacy_url' => '',
-                'cookie_label' => esc_html__('Cookie Policy', 'king-addons'),
+                'cookie_label' => __('Cookie Policy', 'king-addons'),
                 'cookie_url' => '',
                 'cookie_url_custom' => '',
             ],
             'buttons' => [
-                'accept' => esc_html__('Accept all', 'king-addons'),
-                'reject' => esc_html__('Reject all', 'king-addons'),
-                'settings' => esc_html__('Cookie settings', 'king-addons'),
-                'save' => esc_html__('Save preferences', 'king-addons'),
+                'accept' => __('Accept all', 'king-addons'),
+                'reject' => __('Reject all', 'king-addons'),
+                'settings' => __('Cookie settings', 'king-addons'),
+                'save' => __('Save preferences', 'king-addons'),
             ],
             'categories' => [
                 [
                     'key' => 'necessary',
-                    'label' => esc_html__('Strictly necessary', 'king-addons'),
-                    'description' => esc_html__('Required for the site to function correctly. These cookies cannot be disabled.', 'king-addons'),
+                    'label' => __('Strictly necessary', 'king-addons'),
+                    'description' => __('Required for the site to function correctly. These cookies cannot be disabled.', 'king-addons'),
                     'state' => 'required',
                     'display' => true,
                 ],
                 [
                     'key' => 'analytics',
-                    'label' => esc_html__('Analytics', 'king-addons'),
-                    'description' => esc_html__('Helps us improve the site by collecting anonymous usage data about how you interact with it.', 'king-addons'),
+                    'label' => __('Analytics', 'king-addons'),
+                    'description' => __('Helps us improve the site by collecting anonymous usage data about how you interact with it.', 'king-addons'),
                     'state' => 'off',
                     'display' => true,
                 ],
                 [
                     'key' => 'marketing',
-                    'label' => esc_html__('Marketing', 'king-addons'),
-                    'description' => esc_html__('Used to deliver personalized advertisements and measure their performance.', 'king-addons'),
+                    'label' => __('Marketing', 'king-addons'),
+                    'description' => __('Used to deliver personalized advertisements and measure their performance.', 'king-addons'),
                     'state' => 'off',
                     'display' => true,
                 ],
                 [
                     'key' => 'other',
-                    'label' => esc_html__('Other', 'king-addons'),
-                    'description' => esc_html__('Additional cookies that do not fit into other categories.', 'king-addons'),
+                    'label' => __('Other', 'king-addons'),
+                    'description' => __('Additional cookies that do not fit into other categories.', 'king-addons'),
                     'state' => 'off',
                     'display' => true,
                 ],
@@ -858,15 +862,39 @@ final class Cookie_Consent
 
         if ($behavior['show_on'] === 'include') {
             $ids = array_filter(array_map('absint', explode(',', $behavior['include_pages'])));
-            return is_page($ids);
+            return $this->current_page_matches_ids($ids);
         }
 
         if ($behavior['show_on'] === 'exclude') {
             $ids = array_filter(array_map('absint', explode(',', $behavior['exclude_pages'])));
-            return !is_page($ids);
+            return !$this->current_page_matches_ids($ids);
         }
 
         return true;
+    }
+
+    /**
+     * True when the current request is one of the given page IDs.
+     * WooCommerce's shop is a product archive, so is_page() is false there.
+     *
+     * @param array<int, int> $ids Page IDs.
+     */
+    private function current_page_matches_ids(array $ids): bool
+    {
+        $ids = array_values(array_filter(array_map('absint', $ids)));
+        if ($ids === []) {
+            return false;
+        }
+
+        if (is_page($ids)) {
+            return true;
+        }
+
+        if (function_exists('is_shop') && is_shop() && function_exists('wc_get_page_id')) {
+            return in_array((int) wc_get_page_id('shop'), $ids, true);
+        }
+
+        return false;
     }
 
     /**

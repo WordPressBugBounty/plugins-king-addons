@@ -50,7 +50,7 @@ class TB_Featured_Image extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-post';
+        return 'king-addons-icon king-addons-tb-featured-image';
     }
 
     /**
@@ -80,7 +80,7 @@ class TB_Featured_Image extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -167,6 +167,7 @@ class TB_Featured_Image extends Widget_Base
                     esc_html__('Fallback Image', 'king-addons') :
                     sprintf(__('Fallback Image %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
                 'type' => Controls_Manager::MEDIA,
+                'dynamic' => ['active' => true],
                 'default' => [],
                 'classes' => $is_pro ? '' : 'king-addons-pro-control',
             ]
@@ -345,7 +346,7 @@ class TB_Featured_Image extends Widget_Base
             return;
         }
 
-        $image_html = Group_Control_Image_Size::get_attachment_image_html($settings, 'kng_image_size', $image_id);
+        $image_html = Core::getAttachmentImageHTML($settings, 'kng_image_size', (int) $image_id);
         if (!$image_html) {
             return;
         }

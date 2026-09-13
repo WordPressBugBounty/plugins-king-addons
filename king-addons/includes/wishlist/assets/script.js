@@ -21,14 +21,15 @@
     };
 
     const updateButtonState = ($button, state) => {
-        const labelDefault = settings.labels?.add || '';
-        const labelAdded = settings.labels?.added || '';
+        const labelDefault = $button.attr('data-label-default') || settings.labels?.add || '';
+        const labelAdded = $button.attr('data-label-added') || settings.labels?.added || '';
         const isAdded = state === 'added';
 
         $button.attr('data-state', isAdded ? 'added' : 'default');
         $button.attr('aria-pressed', isAdded ? 'true' : 'false');
         $button.toggleClass('king-addons-wishlist-button--added', isAdded);
         $button.toggleClass('king-addons-wishlist-button--default', !isAdded);
+        $button.attr('aria-label', isAdded ? labelAdded : labelDefault);
 
         const $label = $button.find('.king-addons-wishlist-button__label');
         if ($label.length) {
@@ -42,6 +43,45 @@
             $counter.attr('data-count', count);
             $counter.text(count);
         });
+    };
+
+    const restoreEmptyRows = () => {
+        $('.king-addons-wishlist-table tbody').each(function () {
+            const $tbody = $(this);
+            if ($tbody.find('.king-addons-wishlist-table__row').length) {
+                return;
+            }
+            if ($tbody.find('.king-addons-wishlist-table__empty').length) {
+                return;
+            }
+            const cols = $tbody.closest('table').find('thead th').length || 1;
+            $tbody.append(
+                '<tr><td colspan="' + cols + '" class="king-addons-wishlist-table__empty">' +
+                (settings.labels?.empty || 'No products in wishlist yet.') +
+                '</td></tr>'
+            );
+        });
+    };
+
+    const syncButtons = (productId, variationId, state) => {
+        $('.king-addons-wishlist-button').each(function () {
+            const $btn = $(this);
+            const pid = parseInt($btn.attr('data-product-id'), 10);
+            const vid = parseInt($btn.attr('data-variation-id'), 10) || 0;
+            if (pid !== productId || vid !== variationId) {
+                return;
+            }
+            if ($btn.hasClass('king-addons-wishlist-button--table-remove')) {
+                if (state === 'default') {
+                    $btn.closest('tr').remove();
+                }
+                return;
+            }
+            updateButtonState($btn, state);
+        });
+        if (state === 'default') {
+            restoreEmptyRows();
+        }
     };
 
     const handleToggle = ($button) => {
@@ -64,13 +104,9 @@
         })
             .done((response) => {
                 if (response.success && response.data) {
-                    updateButtonState($button, response.data.state);
+                    syncButtons(productId, variationId, response.data.state);
                     if (response.data.count !== undefined) {
                         updateCounters(response.data.count);
-                    }
-
-                    if (response.data.state === 'default' && $button.hasClass('king-addons-wishlist-button--table-remove')) {
-                        $button.closest('tr').remove();
                     }
                 } else if (response?.data?.message) {
                     alert(response.data.message);

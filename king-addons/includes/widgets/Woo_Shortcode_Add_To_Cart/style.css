@@ -1,0 +1,29 @@
+/**
+ * WC Add To Cart Button (Shortcode).
+ *
+ * WooCommerce's [add_to_cart] shortcode outputs an inline <p> that assumes the
+ * classic theme's float-based layout. Inside an Elementor flex container the box
+ * collapses to its padding and the button overprints the price, so the widget
+ * lays the shortcode's own markup out explicitly.
+ */
+.king-addons-woo-shortcode-add-to-cart .add_to_cart_inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    width: auto;
+    margin: 0;
+}
+
+.king-addons-woo-shortcode-add-to-cart .add_to_cart_inline > .price,
+.king-addons-woo-shortcode-add-to-cart .add_to_cart_inline > del,
+.king-addons-woo-shortcode-add-to-cart .add_to_cart_inline > ins {
+    flex: 0 0 auto;
+    margin: 0;
+    text-decoration-thickness: from-font;
+}
+
+.king-addons-woo-shortcode-add-to-cart .add_to_cart_inline > a.button {
+    flex: 0 0 auto;
+    margin: 0;
+}

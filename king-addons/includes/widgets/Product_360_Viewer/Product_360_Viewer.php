@@ -92,7 +92,7 @@ class Product_360_Viewer extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-woo'];
     }
 
     /**

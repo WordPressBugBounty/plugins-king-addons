@@ -7168,7 +7168,8 @@ $this->end_controls_section();
         $s = $this->get_settings_for_display();
         $author = !empty($s['query_author']) ? implode(',', $s['query_author']) : '';
         $paged = get_query_var('paged') ? get_query_var('paged') : (get_query_var('page') ? get_query_var('page') : 1);
-        $offset = ($paged - 1) * $s['query_posts_per_page'] + (empty($s['query_offset']) ? 0 : $s['query_offset']);
+        $offset = ($paged - 1) * Core::jsNumber($s, 'query_posts_per_page', 10)
+            + (empty($s['query_offset']) ? 0 : Core::jsNumber($s, 'query_offset', 0));
 
         // Remove premium-only randomize if not available
         if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
@@ -7890,7 +7891,7 @@ $this->end_controls_section();
                 'iframeMaxWidth' => '60%',
                 'hash' => false,
                 'autoplay' => $s['lightbox_popup_autoplay'],
-                'pause' => $s['lightbox_popup_pause'] * 1000,
+                'pause' => Core::jsNumber($s, 'lightbox_popup_pause', 5) * 1000,
                 'progressBar' => $s['lightbox_popup_progressbar'],
                 'counter' => $s['lightbox_popup_counter'],
                 'controls' => $s['lightbox_popup_arrows'],

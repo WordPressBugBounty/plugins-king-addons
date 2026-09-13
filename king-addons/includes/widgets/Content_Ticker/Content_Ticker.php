@@ -1859,7 +1859,7 @@ $this->end_controls_section();
 
     public function get_main_query_args()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $author = !empty($settings['query_author'])
             ? implode(',', (array)$settings['query_author'])
             : '';
@@ -1950,7 +1950,7 @@ $this->end_controls_section();
 
     public function get_tax_query_args()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $tax_query = [];
 
         // Related query uses a special approach
@@ -1983,7 +1983,7 @@ $this->end_controls_section();
 
     public function king_addons_content_ticker_dynamic()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $posts = new WP_Query($this->get_main_query_args());
 
         if ($posts->have_posts()) :
@@ -2045,7 +2045,7 @@ $this->end_controls_section();
 
     public function king_addons_content_ticker_heading()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $heading_element = 'div';
         $heading_link = $settings['heading_link']['url'] ?? '';
         $this->add_render_attribute('heading_attribute', 'class', 'king-addons-ticker-heading');
@@ -2085,7 +2085,7 @@ $this->end_controls_section();
 
     public function king_addons_content_ticker_slider()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $slider_is_rtl = is_rtl();
         $slider_direction = $slider_is_rtl ? 'rtl' : 'ltr';
 
@@ -2098,14 +2098,14 @@ $this->end_controls_section();
         $slider_options = [
             'arrows' => false,
             'autoplay' => ($settings['slider_autoplay'] === 'yes'),
-            'autoplaySpeed' => absint($settings['slider_autoplay_duration'] * 1000),
+            'autoplaySpeed' => absint(Core::jsNumber($settings, 'slider_autoplay_duration', 3) * 1000),
             'infinite' => ($settings['slider_loop'] === 'yes'),
             'pauseOnHover' => ($settings['slider_pause_on_hover'] === 'yes'),
             // Prevent Slick from pausing when slide links get focus.
             'pauseOnFocus' => false,
             'pauseOnDotsHover' => false,
             'rtl' => $slider_is_rtl,
-            'speed' => absint($settings['slider_effect_duration'] * 1000),
+            'speed' => absint(Core::jsNumber($settings, 'slider_effect_duration', 1) * 1000),
         ];
 
         if ($settings['slider_effect'] === 'vr-slide') {
@@ -2156,7 +2156,7 @@ $this->end_controls_section();
 
     protected function render()
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         ?>
         <div class="king-addons-content-ticker">
             <?php

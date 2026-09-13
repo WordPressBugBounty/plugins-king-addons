@@ -47,7 +47,7 @@ class TB_Archive_Pagination extends Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-pagination';
+        return 'king-addons-icon king-addons-tb-archive-pagination';
     }
 
     /**
@@ -77,7 +77,7 @@ class TB_Archive_Pagination extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons'];
+        return ['king-addons-theme-builder'];
     }
 
     /**
@@ -154,6 +154,7 @@ class TB_Archive_Pagination extends Widget_Base
             [
                 'label' => esc_html__('Previous Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Previous', 'king-addons'),
             ]
         );
@@ -163,6 +164,7 @@ class TB_Archive_Pagination extends Widget_Base
             [
                 'label' => esc_html__('Next Label', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
+                'dynamic' => ['active' => true],
                 'default' => esc_html__('Next', 'king-addons'),
             ]
         );
@@ -249,8 +251,14 @@ class TB_Archive_Pagination extends Widget_Base
                         'icon' => 'eicon-text-align-right',
                     ],
                 ],
+                'selectors_dictionary' => [
+                    'left' => 'justify-content: flex-start; text-align: left;',
+                    'center' => 'justify-content: center; text-align: center;',
+                    'right' => 'justify-content: flex-end; text-align: right;',
+                ],
                 'selectors' => [
-                    '{{WRAPPER}} .king-addons-tb-archive-pagination' => 'text-align: {{VALUE}};',
+                    // The list is display:flex; text-align alone leaves pills on the left.
+                    '{{WRAPPER}} .king-addons-tb-archive-pagination' => '{{VALUE}}',
                 ],
             ]
         );
@@ -309,6 +317,12 @@ class TB_Archive_Pagination extends Widget_Base
 
         if (empty($links)) {
             return;
+        }
+
+        if ('prev_next' === $type) {
+            $links = array_values(array_filter($links, static function ($link) {
+                return is_string($link) && (bool) preg_match('/class="[^"]*\b(prev|next)\b/', $link);
+            }));
         }
 
         $show_first_last = $is_pro && ('yes' === ($settings['kng_show_first_last'] ?? ''));

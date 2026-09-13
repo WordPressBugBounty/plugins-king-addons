@@ -381,14 +381,14 @@ $this->end_controls_section();
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         $id = $this->get_id();
 
         if ($settings['king_addons_flip_countdown_type'] == 'evergreen') {
-            $days = $settings['king_addons_flip_countdown_evergreen_days'];
-            $hours = $settings['king_addons_flip_countdown_evergreen_hours'];
-            $minutes = $settings['king_addons_flip_countdown_evergreen_minutes'];
-            $seconds = $settings['king_addons_flip_countdown_evergreen_seconds'];
+            $days = (int) Core::jsNumber($settings, 'king_addons_flip_countdown_evergreen_days', 0);
+            $hours = (int) Core::jsNumber($settings, 'king_addons_flip_countdown_evergreen_hours', 1);
+            $minutes = (int) Core::jsNumber($settings, 'king_addons_flip_countdown_evergreen_minutes', 1);
+            $seconds = (int) Core::jsNumber($settings, 'king_addons_flip_countdown_evergreen_seconds', 0);
             $time = $seconds + $minutes * 60 + $hours * 60 * 60 + $days * 24 * 60 * 60;
         } else {
             $time = strtotime($settings['king_addons_flip_countdown_date_time']) - current_time('timestamp');

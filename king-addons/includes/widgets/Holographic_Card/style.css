@@ -339,3 +339,19 @@ img.king-addons-holo-card__layer {
         font-size: 20px;
     }
 }
+
+/**
+ * Narrow screens.
+ *
+ * Card Width defaults to a fixed 420px. A flex item does not shrink below its
+ * content, so on a phone the widget pushed the whole page sideways. Let the
+ * wrapper shrink and cap the card at the column it sits in; the px value still
+ * applies wherever there is room for it.
+ */
+.elementor-widget-king-addons-holographic-card {
+    min-width: 0;
+}
+
+.elementor-widget-king-addons-holographic-card > .elementor-widget-container {
+    max-width: 100%;
+}

@@ -86,7 +86,9 @@ class Form_Builder extends Widget_Base
             'redirect' => 'Redirect',
             'pro-sb' => 'Submission (Pro)',
             'pro-mch' => 'Mailchimp (Pro)',
-            'pro-wh' => 'Webhook (Pro)'
+            'pro-wh' => 'Webhook (Pro)',
+            'integrations' => 'Integrations (Pro)',
+            'payment' => 'Payment (Pro)'
         ];
     }
 
@@ -150,6 +152,233 @@ class Form_Builder extends Widget_Base
                 'separator' => 'before',
                 'description' => esc_html__('Enter the webhook URL (e.g. Zapier) that will receive the submitted data.', 'king-addons'),
                 'render_type' => 'none',
+            ]
+        );
+
+        $widget->end_controls_section();
+    }
+
+    /**
+     * Settings for the Integrations action.
+     *
+     * Everything here is stored per form and read back on the server when a
+     * submission arrives; nothing travels through the browser.
+     *
+     * @param \Elementor\Widget_Base $widget Widget the controls belong to.
+     *
+     * @return void
+     */
+    public function register_settings_section_integrations($widget)
+    {
+        if (!class_exists('King_Addons\\Form_Integrations')) {
+            return;
+        }
+
+        $widget->start_controls_section(
+            $this->get_control_id('section_integrations'),
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Integrations', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'submit_actions' => 'integrations',
+                ],
+            ]
+        );
+
+        $widget->add_control(
+            'integration_services',
+            [
+                'label' => esc_html__('Send to', 'king-addons'),
+                'type' => Controls_Manager::SELECT2,
+                'multiple' => true,
+                'label_block' => true,
+                'options' => Form_Integrations::services(),
+                'render_type' => 'none',
+            ]
+        );
+
+        $widget->add_control(
+            'integration_email_field',
+            [
+                'label' => esc_html__('Email field ID', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'description' => esc_html__('Which field holds the address. Left empty, the first value that looks like an email is used.', 'king-addons'),
+                'render_type' => 'none',
+            ]
+        );
+
+        $widget->add_control(
+            'integration_name_field',
+            [
+                'label' => esc_html__('Name field ID', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'render_type' => 'none',
+            ]
+        );
+
+        $text_controls = [
+            ['slack_webhook_url', esc_html__('Slack webhook URL', 'king-addons'), 'slack', 'https://hooks.slack.com/services/…'],
+            ['slack_title', esc_html__('Slack message title', 'king-addons'), 'slack', ''],
+            ['telegram_bot_token', esc_html__('Telegram bot token', 'king-addons'), 'telegram', ''],
+            ['telegram_chat_id', esc_html__('Telegram chat ID', 'king-addons'), 'telegram', ''],
+            ['brevo_api_key', esc_html__('Brevo API key', 'king-addons'), 'brevo', ''],
+            ['brevo_list_id', esc_html__('Brevo list ID', 'king-addons'), 'brevo', ''],
+            ['convertkit_api_key', esc_html__('ConvertKit API key', 'king-addons'), 'convertkit', ''],
+            ['convertkit_form_id', esc_html__('ConvertKit form ID', 'king-addons'), 'convertkit', ''],
+            ['activecampaign_url', esc_html__('ActiveCampaign API URL', 'king-addons'), 'activecampaign', 'https://your-account.api-us1.com'],
+            ['activecampaign_api_key', esc_html__('ActiveCampaign API key', 'king-addons'), 'activecampaign', ''],
+            ['activecampaign_list_id', esc_html__('ActiveCampaign list ID', 'king-addons'), 'activecampaign', ''],
+            ['hubspot_token', esc_html__('HubSpot private app token', 'king-addons'), 'hubspot', ''],
+            ['klaviyo_api_key', esc_html__('Klaviyo private API key', 'king-addons'), 'klaviyo', ''],
+            ['klaviyo_list_id', esc_html__('Klaviyo list ID', 'king-addons'), 'klaviyo', ''],
+            ['google_sheets_url', esc_html__('Apps Script web app URL', 'king-addons'), 'google_sheets', 'https://script.google.com/macros/s/…/exec'],
+            ['google_sheets_secret', esc_html__('Shared secret', 'king-addons'), 'google_sheets', ''],
+        ];
+
+        foreach ($text_controls as $control) {
+            list($name, $label, $service, $placeholder) = $control;
+
+            $widget->add_control(
+                $name,
+                [
+                    'label' => $label,
+                    'type' => Controls_Manager::TEXT,
+                    'label_block' => true,
+                    'placeholder' => $placeholder,
+                    'render_type' => 'none',
+                    'ai' => ['active' => false],
+                    'condition' => ['integration_services' => $service],
+                ]
+            );
+        }
+
+        $widget->add_control(
+            'google_sheets_notice',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'raw' => esc_html__('Google Sheets is reached through a Google Apps Script web app bound to your sheet: Google\'s own API needs an OAuth flow a form widget cannot run.', 'king-addons'),
+                'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+                'condition' => ['integration_services' => 'google_sheets'],
+            ]
+        );
+
+        $widget->end_controls_section();
+    }
+
+    /**
+     * Settings for the Payment action.
+     *
+     * @param \Elementor\Widget_Base $widget Widget the controls belong to.
+     *
+     * @return void
+     */
+    public function register_settings_section_payment($widget)
+    {
+        if (!class_exists('King_Addons\\Form_Payments')) {
+            return;
+        }
+
+        $widget->start_controls_section(
+            $this->get_control_id('section_payment'),
+            [
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Payment', 'king-addons'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+                'condition' => [
+                    'submit_actions' => 'payment',
+                ],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_provider',
+            [
+                'label' => esc_html__('Provider', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'options' => Form_Payments::providers(),
+                'default' => 'none',
+                'render_type' => 'none',
+                'description' => esc_html__('Keys live in King Addons settings. The visitor pays on the provider\'s own page, so no card details reach this site.', 'king-addons'),
+            ]
+        );
+
+        $widget->add_control(
+            'payment_currency',
+            [
+                'label' => esc_html__('Currency', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'default' => 'USD',
+                'render_type' => 'none',
+                'condition' => ['payment_provider!' => 'none'],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_fixed_amount',
+            [
+                'label' => esc_html__('Fixed amount', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'min' => 0,
+                'step' => 0.01,
+                'render_type' => 'none',
+                'condition' => ['payment_provider!' => 'none'],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_amount_field',
+            [
+                'label' => esc_html__('Or a calculation field ID', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'render_type' => 'none',
+                'description' => esc_html__('The server works the total out again from that field\'s formula; the number the browser shows is never trusted.', 'king-addons'),
+                'condition' => ['payment_provider!' => 'none'],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_max_amount',
+            [
+                'label' => esc_html__('Refuse above', 'king-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'min' => 0,
+                'step' => 0.01,
+                'render_type' => 'none',
+                'description' => esc_html__('A ceiling for calculated totals. 0 means no ceiling.', 'king-addons'),
+                'condition' => ['payment_provider!' => 'none'],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_description',
+            [
+                'label' => esc_html__('What is being paid for', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'label_block' => true,
+                'render_type' => 'none',
+                'condition' => ['payment_provider!' => 'none'],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_success_url',
+            [
+                'label' => esc_html__('After paying', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'label_block' => true,
+                'render_type' => 'none',
+                'description' => esc_html__('A page on this site. Anything else is ignored.', 'king-addons'),
+                'condition' => ['payment_provider!' => 'none'],
+            ]
+        );
+
+        $widget->add_control(
+            'payment_cancel_url',
+            [
+                'label' => esc_html__('If they cancel', 'king-addons'),
+                'type' => Controls_Manager::TEXT,
+                'label_block' => true,
+                'render_type' => 'none',
+                'condition' => ['payment_provider!' => 'none'],
             ]
         );
 
@@ -516,6 +745,8 @@ $this->end_controls_section();
 
     public $last_prev_btn_text;
 
+    public $last_next_btn_text;
+
     protected function register_controls()
     {
 
@@ -549,6 +780,12 @@ $this->end_controls_section();
             'king-addons-fb-step' => esc_html__('Step', 'king-addons'),
         ];
 
+        // Range, rating, signature and acceptance: controls and markup live in
+        // helpers/Extra_Fields.php.
+        if (class_exists('King_Addons\\Form_Extra_Fields')) {
+            $field_types = array_merge($field_types, Form_Extra_Fields::field_types());
+        }
+
         $repeater->add_control(
             'field_type',
             [
@@ -570,6 +807,14 @@ $this->end_controls_section();
                 ]
             ]
         );
+
+        if (class_exists('King_Addons\\Form_Extra_Fields')) {
+            Form_Extra_Fields::register_controls($repeater);
+        }
+
+        if (class_exists('King_Addons\\Form_Conditional_Logic')) {
+            Form_Conditional_Logic::register_controls($repeater);
+        }
 
         if ('' == get_option('king_addons_recaptcha_v3_site_key')) {
             $repeater->add_control(
@@ -1409,6 +1654,33 @@ $this->end_controls_section();
             );
         }
 
+        if (class_exists('King_Addons\\Form_Partial_Entries')) {
+            $this->add_control(
+                'partial_entries',
+                [
+                    'label' => esc_html__('Save partial entries', 'king-addons'),
+                    'type' => Controls_Manager::SWITCHER,
+                    'return_value' => 'yes',
+                    'separator' => 'before',
+                    'description' => esc_html__('Keeps what a visitor typed even if they never press submit. Drafts appear alongside submissions and are removed after 30 days.', 'king-addons'),
+                ]
+            );
+        }
+
+        if (class_exists('King_Addons\\Form_Spam_Protection')) {
+            $this->add_control(
+                'spam_protection',
+                [
+                    'label' => esc_html__('Spam protection', 'king-addons'),
+                    'type' => Controls_Manager::SELECT,
+                    'options' => Form_Spam_Protection::modes(),
+                    'default' => 'none',
+                    'separator' => 'before',
+                    'description' => esc_html__('Honeypot needs no account. Turnstile and hCaptcha need their keys in King Addons settings.', 'king-addons'),
+                ]
+            );
+        }
+
         $this->end_controls_section();
 
         $this->register_settings_section_submissions($this);
@@ -1416,6 +1688,10 @@ $this->end_controls_section();
         $this->register_settings_section_email($this);
 
         $this->register_settings_section_webhook($this);
+
+        $this->register_settings_section_integrations($this);
+
+        $this->register_settings_section_payment($this);
 
         $this->register_settings_section_redirect($this);
 
@@ -3278,14 +3554,37 @@ $this->end_controls_section();
 
     public function get_attribute_name($item)
     {
-        return "form_fields[{$item['field_id']}]";
+        return 'form_fields[' . self::resolve_field_key($item) . ']';
     }
 
     public function get_attribute_id($item)
     {
+        return 'form-field-' . self::resolve_field_key($item);
+    }
 
-        $id_suffix = !empty($item['field_id']) ? $item['field_id'] : $item['_id'];
-        return 'form-field-' . $id_suffix;
+    /**
+     * Field ID used as the submitted name/key.
+     *
+     * An empty Field ID used to produce name="form_fields[]", which PHP cannot
+     * map back onto the field. Fall back to Elementor's repeater _id so imported
+     * and programmatic forms still keep their values.
+     *
+     * @param array<string,mixed> $item Repeater row.
+     *
+     * @return string
+     */
+    public static function resolve_field_key($item): string
+    {
+        if (!is_array($item)) {
+            return '';
+        }
+
+        $id = isset($item['field_id']) ? trim((string) $item['field_id']) : '';
+        if ('' !== $id) {
+            return $id;
+        }
+
+        return isset($item['_id']) ? trim((string) $item['_id']) : '';
     }
 
     protected function make_textarea_field($item, $item_index)
@@ -3367,7 +3666,8 @@ $this->end_controls_section();
             <select <?php $this->print_render_attribute_string('select' . $i); ?>>
                 <?php
                 foreach ($options as $key => $option) :
-                    $option_id = $item['field_id'] . $key;
+                    $field_key = self::resolve_field_key($item);
+                    $option_id = $field_key . $key;
                     $option_value = esc_attr($option);
                     $option_label = esc_html($option);
 
@@ -3405,7 +3705,8 @@ $this->end_controls_section();
         if ($options) {
             $html .= '<div class="king-addons-field-sub-group ' . esc_attr($item['css_classes']) . ' ' . esc_attr($item['inline_list']) . '">';
             foreach ($options as $key => $option) {
-                $element_id = ($item['field_id'] ? esc_attr($item['field_id']) : $item['field_type']) . $key;
+                $field_key = self::resolve_field_key($item);
+                $element_id = ($field_key ? esc_attr($field_key) : $item['field_type']) . $key;
                 $html_id = $this->get_attribute_id($item) . '-' . $key;
                 $option_label = $option;
                 $option_value = $option;
@@ -3432,7 +3733,7 @@ $this->end_controls_section();
                     $this->add_required_attribute($element_id);
                 }
 
-                $html .= '<span class="king-addons-form-field-option" data-key="form-field-' . esc_attr($item['field_id']) . '"><input ' . $this->get_render_attribute_string($element_id) . '> <label for="' . esc_attr($html_id) . '">' . esc_html($option_label) . '</label></span>';
+                $html .= '<span class="king-addons-form-field-option" data-key="form-field-' . esc_attr(self::resolve_field_key($item)) . '"><input ' . $this->get_render_attribute_string($element_id) . '> <label for="' . esc_attr($html_id) . '">' . esc_html($option_label) . '</label></span>';
             }
             $html .= '</div>';
         }
@@ -3449,7 +3750,7 @@ $this->end_controls_section();
                         'king-addons-form-field-type-' . $item['field_type'],
                         'king-addons-field-group',
                         'king-addons-column',
-                        'king-addons-field-group-' . esc_attr($item['field_id']),
+                        'king-addons-field-group-' . esc_attr(self::resolve_field_key($item)),
                     ],
                 ],
                 'input' . $i => [
@@ -3480,6 +3781,15 @@ $this->end_controls_section();
 
         $this->add_render_attribute('field-group' . $i, 'class', 'elementor-repeater-item-' . esc_attr($item['_id']));
 
+        // Conditional logic travels to the browser as one data attribute; the
+        // script evaluates it on every change in the form.
+        if (class_exists('King_Addons\\Form_Conditional_Logic')) {
+            $condition = Form_Conditional_Logic::build($item);
+            if (null !== $condition) {
+                $this->add_render_attribute('field-group' . $i, 'data-ka-cond', wp_json_encode($condition));
+            }
+        }
+
 
         if ('true' == $instance['show_placeholders'] && !Utils::is_empty($item['placeholder'])) {
             $this->add_render_attribute('input' . $i, 'placeholder', $item['placeholder']);
@@ -3506,8 +3816,8 @@ $this->end_controls_section();
     private function render_form_icon($settings)
     { ?>
         <span <?php echo $this->get_render_attribute_string('icon-align'); ?>>
-			<?php Icons_Manager::render_icon($settings['selected_button_icon'], ['aria-hidden' => 'true']); ?>
-            <?php if (empty($instance['button_text'])) : ?>
+            <?php Icons_Manager::render_icon($settings['selected_button_icon'], ['aria-hidden' => 'true']); ?>
+            <?php if (empty($settings['button_text'])) : ?>
                 <span class="king-addons-hidden-element"><?php echo esc_html__('Submit', 'king-addons'); ?></span>
             <?php endif; ?>
 		</span>
@@ -3558,6 +3868,39 @@ $this->end_controls_section();
         update_option('king_addons_referrer_title_' . $this->get_id(), get_the_title($post->ID));
         update_option('king_addons_webhook_url_' . $this->get_id(), $instance['webhook_url']);
 
+        if (class_exists('King_Addons\\Form_Integrations')) {
+            Form_Integrations::save_settings($this->get_id(), $instance);
+        }
+
+        if (class_exists('King_Addons\\Form_Payments')) {
+            Form_Payments::save_settings(
+                $this->get_id(),
+                $instance,
+                isset($post->ID) ? (int) $post->ID : (int) get_the_ID()
+            );
+        }
+
+        $partial_entries = false;
+        if (class_exists('King_Addons\\Form_Partial_Entries')) {
+            $partial_entries = 'yes' === ($instance['partial_entries'] ?? '')
+                && king_addons_freemius()->can_use_premium_code__premium_only();
+            Form_Partial_Entries::save_setting($this->get_id(), $partial_entries);
+        }
+
+        // The submit actions are separate AJAX endpoints, so the challenge has
+        // to be checked there; they read it back by form id.
+        $spam_mode = 'none';
+        if (class_exists('King_Addons\\Form_Spam_Protection')) {
+            $spam_mode = (string) ($instance['spam_protection'] ?? 'none');
+            Form_Spam_Protection::save_mode($this->get_id(), $spam_mode);
+            $spam_mode = Form_Spam_Protection::get_mode($this->get_id());
+
+            $spam_script = Form_Spam_Protection::script($spam_mode);
+            if (null !== $spam_script) {
+                wp_enqueue_script($spam_script['handle'], $spam_script['src'], [], null, true);
+            }
+        }
+
         $emailField = isset($instance['email_field']) ? $instance['email_field'] : '';
         $firstNameField = isset($instance['first_name_field']) ? $instance['first_name_field'] : '';
         $lastNameField = isset($instance['last_name_field']) ? $instance['last_name_field'] : '';
@@ -3576,8 +3919,16 @@ $this->end_controls_section();
             'group_id' => $groupId
         ];
 
-        $submit_actions = array_filter($instance['submit_actions'], function ($value) {
-            return $value !== 'pro-sb' && $value !== 'pro-mch' && $value !== 'pro-wh';
+        // The three original Pro actions are placeholders in the free build;
+        // Integrations is a real action, so it is only dropped when Pro is off.
+        $stripped_actions = ['pro-sb', 'pro-mch', 'pro-wh'];
+        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
+            $stripped_actions[] = 'integrations';
+            $stripped_actions[] = 'payment';
+        }
+
+        $submit_actions = array_filter($instance['submit_actions'], function ($value) use ($stripped_actions) {
+            return !in_array($value, $stripped_actions, true);
         });
         $submit_actions = array_values($submit_actions);
 
@@ -3601,6 +3952,9 @@ $this->end_controls_section();
                     ],
                     'data-redirect-url' => [
                         in_array('redirect', $submit_actions) ? esc_url($instance['redirect_to']) : ''
+                    ],
+                    'data-partial-entries' => [
+                        $partial_entries ? '1' : ''
                     ],
                     'data-mailchimp-fields' => [
                         json_encode($fieldsArray)
@@ -3739,20 +4093,22 @@ $this->end_controls_section();
                     $print_label = !in_array($item['field_type'], ['hidden', 'html', 'king-addons-fb-step'], true);
 
                     if ('king-addons-fb-step' === $item['field_type']) {
-                        if (isset($item['previous_button_text'])) {
-                            $this->last_prev_btn_text = $item['previous_button_text'];
-                        }
-
                         if (0 === $step_count) {
                             echo '<div class="king-addons-fb-step-tab king-addons-fb-step-tab-hidden">';
                         } else {
                             echo '<div class="king-addons-step-buttons-wrap">';
-                            echo '<button type="button" class="king-addons-fb-step-prev">' . esc_html($item['previous_button_text']) . '</button>';
-                            echo '<button type="button" class="king-addons-fb-step-next">' . esc_html($item['next_button_text']) . '</button>';
+                            echo '<button type="button" class="king-addons-fb-step-prev">' . esc_html((string) $this->last_prev_btn_text) . '</button>';
+                            echo '<button type="button" class="king-addons-fb-step-next">' . esc_html((string) $this->last_next_btn_text) . '</button>';
                             echo '</div>';
                             echo '</div>';
                             echo '<div class="king-addons-fb-step-tab king-addons-fb-step-tab-hidden">';
                         }
+                        $this->last_next_btn_text = (isset($item['next_button_text']) && '' !== $item['next_button_text'])
+                            ? $item['next_button_text']
+                            : esc_html__('Next', 'king-addons');
+                        $this->last_prev_btn_text = (isset($item['previous_button_text']) && '' !== $item['previous_button_text'])
+                            ? $item['previous_button_text']
+                            : esc_html__('Previous', 'king-addons');
                         $step_count++;
                     }
 
@@ -3788,7 +4144,21 @@ $this->end_controls_section();
                                 echo $this->make_radio_checkbox_field($item, $item_index, $item['field_type']);
                                 break;
                             case 'recaptcha-v3':
-                                echo '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" data-site-key="' . esc_attr(get_option('king_addons_recaptcha_v3_site_key')) . '" />';
+                                $recaptcha_v3_site_key = (string) get_option('king_addons_recaptcha_v3_site_key', '');
+                                if ('' === $recaptcha_v3_site_key) {
+                                    if (current_user_can('manage_options')) {
+                                        echo '<p class="king-addons-form-captcha-notice">' . sprintf(
+                                            /* translators: 1: provider name, 2: settings URL. */
+                                            esc_html__('%1$s is selected but its keys are missing. Add them under %2$s.', 'king-addons'),
+                                            esc_html__('reCAPTCHA v3', 'king-addons'),
+                                            '<a href="' . esc_url(admin_url('admin.php?page=king-addons-settings')) . '">'
+                                                . esc_html__('King Addons settings', 'king-addons') . '</a>'
+                                        ) . '</p>';
+                                    }
+                                } else {
+                                    echo '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" data-site-key="' . esc_attr($recaptcha_v3_site_key) . '" />';
+                                }
+                                break;
                             case 'text':
                             case 'email':
                             case 'url':
@@ -3828,12 +4198,11 @@ $this->end_controls_section();
                                     if (!empty($non_whitelisted)) {
                                         $item['file_types'] = 'jpg,jpeg,png,gif,pdf,doc,docx,ppt,pptx,odt,avi,ogg,m4a,mov,mp3,mp4,mpg,wav,wmv,txt';
                                         if (is_admin()) {
-                                            echo '<br>';
-                                            echo '<ul class="king-addons-file-type-error">';
-                                            echo esc_html__('Please remove unsupported file type(s):', 'king-addons');
+                                            echo '<p class="king-addons-file-type-error">' . esc_html__('Please remove unsupported file type(s):', 'king-addons') . '</p>';
+                                            echo '<ul class="king-addons-file-type-error-list">';
                                             foreach ($non_whitelisted as $type) {
                                                 if (!empty($type)) {
-                                                    echo '<li>' . esc_html($type) . ' <li/>';
+                                                    echo '<li>' . esc_html($type) . '</li>';
                                                 }
                                             }
                                             echo '</ul>';
@@ -3850,8 +4219,34 @@ $this->end_controls_section();
 
                                 echo '<input size="1 "' . $this->get_render_attribute_string('input' . $item_index) . '>';
                                 break;
+                            case 'range':
+                                $this->add_render_attribute('input' . $item_index, [
+                                    'class' => 'king-addons-form-field-range',
+                                    'min' => isset($item['range_min']) && '' !== $item['range_min'] ? (string) (float) $item['range_min'] : '0',
+                                    'max' => isset($item['range_max']) && '' !== $item['range_max'] ? (string) (float) $item['range_max'] : '100',
+                                    'step' => isset($item['range_step']) && '' !== $item['range_step'] && (float) $item['range_step'] > 0 ? (string) (float) $item['range_step'] : '1',
+                                ]);
+                                echo '<div class="king-addons-form-range">';
+                                echo '<input ' . $this->get_render_attribute_string('input' . $item_index) . '>';
+                                if ('yes' === ($item['range_show_value'] ?? 'yes')) {
+                                    echo '<output class="king-addons-form-range__value"></output>';
+                                }
+                                echo '</div>';
+                                break;
+                            case 'rating':
+                            case 'signature':
+                            case 'acceptance':
+                            case 'calculation':
+                                if (class_exists('King_Addons\\Form_Extra_Fields')) {
+                                    echo Form_Extra_Fields::render(
+                                        $item,
+                                        $this->get_attribute_name($item),
+                                        $this->get_attribute_id($item)
+                                    );
+                                }
+                                break;
                             case 'king-addons-fb-step':
-                                echo '<input type="hidden" class="king-addons-fb-step-input" id="form-field-' . esc_attr($item['field_id']) . '" value="' . esc_attr($item['field_label']) . '">';
+                                echo '<input type="hidden" class="king-addons-fb-step-input" id="form-field-' . esc_attr(self::resolve_field_key($item)) . '" value="' . esc_attr($item['field_label']) . '">';
                                 break;
                             default:
                                 $field_type = $item['field_type'];
@@ -3861,10 +4256,14 @@ $this->end_controls_section();
                 <?php
                 endforeach;
 
+                if ('none' !== $spam_mode && class_exists('King_Addons\\Form_Spam_Protection')) {
+                    echo Form_Spam_Protection::render($spam_mode); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                }
+
                 echo '<div ' . $this->get_render_attribute_string('submit-group') . '>';
                 if ('exists' === $step_exists) {
                     if (2 <= $step_count) {
-                        echo '<button type="button" class="king-addons-fb-step-prev">' . $this->last_prev_btn_text . '</button>';
+                        echo '<button type="button" class="king-addons-fb-step-prev">' . esc_html((string) $this->last_prev_btn_text) . '</button>';
                     }
 
                     $this->render_submit_button($instance);

@@ -365,7 +365,7 @@ class Business_Hours extends Widget_Base
 
     protected function render(): void
     {
-        $settings = $this->get_settings();
+        $settings = Core::displaySettings($this);
         echo '<div class="king-addons-business-hours-items">';
         foreach ($settings['kng_business_hours_content_items'] as $item) {
             echo '<div class="king-addons-business-hours-item elementor-repeater-item-' . esc_attr($item['_id']) . '">';

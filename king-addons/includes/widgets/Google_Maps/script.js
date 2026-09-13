@@ -7,6 +7,13 @@
                 elementorFrontend.elementsHandler.addHandler(
                     elementorModules.frontend.handlers.Base.extend({
                         onInit() {
+                            // No API key means the Maps script was never enqueued.
+                            // The widget already prints a notice for editors; bailing
+                            // out here keeps it from throwing on every page view.
+                            if (typeof google === "undefined" || !google.maps) {
+                                return;
+                            }
+
                             const $element = this.$element;
                             const googleMap = $element.find(".king-addons-google-map");
                             const settings = googleMap.data("settings");

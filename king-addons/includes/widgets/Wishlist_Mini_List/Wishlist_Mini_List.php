@@ -56,7 +56,7 @@ class Wishlist_Mini_List extends Widget_Base
      */
     public function get_categories(): array
     {
-        return ['king-addons', 'king-addons-woo-builder'];
+        return ['king-addons-woo'];
     }
 
     /**

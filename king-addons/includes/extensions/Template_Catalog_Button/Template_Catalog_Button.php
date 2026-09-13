@@ -71,6 +71,14 @@ class Template_Catalog_Button
     }
 
     /**
+     * Require permission to edit the specific page being overwritten.
+     */
+    private function user_can_edit_target_page(int $page_id): bool
+    {
+        return $page_id > 0 && current_user_can('edit_post', $page_id);
+    }
+
+    /**
      * Enqueue scripts for Elementor editor
      */
     public function enqueue_editor_scripts(): void
@@ -399,6 +407,11 @@ class Template_Catalog_Button
             return;
         }
 
+        if (!$this->user_can_edit_target_page($page_id)) {
+            wp_send_json_error('Insufficient permissions');
+            return;
+        }
+
         // Get current page Elementor data
         $current_data = get_post_meta($page_id, '_elementor_data', true);
         $current_elements = json_decode($current_data, true);
@@ -664,6 +677,11 @@ class Template_Catalog_Button
         
         if (!$page_id) {
             wp_send_json_error('Invalid page ID');
+            return;
+        }
+
+        if (!$this->user_can_edit_target_page($page_id)) {
+            wp_send_json_error('Insufficient permissions');
             return;
         }
 
