@@ -11,6 +11,17 @@ if (!defined('ABSPATH')) {
  */
 class Create_Submission
 {
+    /**
+     * HMAC of the one-time access secret for this submission.
+     */
+    public const META_ACCESS_SECRET = 'king_addons_fb_access_secret';
+
+    /**
+     * Plain secrets issued in this request, keyed by submission ID.
+     *
+     * @var array<int,string>
+     */
+    private static array $issued_secrets = [];
 
     /**
      * Registers submission AJAX hooks and admin meta updates.
@@ -67,9 +78,9 @@ class Create_Submission
             wp_send_json_success(array(
                 'action' => 'king_addons_form_builder_submissions',
                 'post_id' => $post_id,
+                'access_secret' => self::issued_access_secret($post_id),
                 'message' => esc_html__('Submission created successfully', 'king-addons'),
                 'status' => 'success'
-                // Security fix: Removed unsanitized form_content from response to prevent XSS
             ));
         } else {
             wp_send_json_success(array(
@@ -140,8 +151,78 @@ class Create_Submission
         $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_textarea_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
         update_post_meta($post_id, 'king_addons_user_agent', $user_agent);
         update_post_meta($post_id, 'king_addons_user_ip', Core::getClientIP());
+        self::issue_access_secret($post_id);
 
         return $post_id;
+    }
+
+    /**
+     * Create a secret that later public requests must present to touch this submission.
+     *
+     * Only the HMAC is stored. The plaintext is kept for this request so the
+     * creator can send it with the payment call.
+     *
+     * @param int $submission_id Submission post ID.
+     * @return string Plaintext secret.
+     */
+    public static function issue_access_secret(int $submission_id): string
+    {
+        if ($submission_id < 1) {
+            return '';
+        }
+
+        try {
+            $secret = bin2hex(random_bytes(32));
+        } catch (\Exception $e) {
+            $secret = wp_generate_password(64, false, false);
+        }
+
+        update_post_meta($submission_id, self::META_ACCESS_SECRET, hash_hmac('sha256', $secret, self::access_secret_key()));
+        self::$issued_secrets[$submission_id] = $secret;
+
+        return $secret;
+    }
+
+    /**
+     * Plaintext secret issued for this submission in the current request.
+     *
+     * @param int $submission_id Submission post ID.
+     * @return string
+     */
+    public static function issued_access_secret(int $submission_id): string
+    {
+        return self::$issued_secrets[$submission_id] ?? '';
+    }
+
+    /**
+     * Whether the posted secret matches the one stored for this submission.
+     *
+     * @param int    $submission_id Submission post ID.
+     * @param string $secret        Plaintext from the request.
+     * @return bool
+     */
+    public static function verify_access_secret(int $submission_id, string $secret): bool
+    {
+        if ($submission_id < 1 || '' === $secret) {
+            return false;
+        }
+
+        $stored = (string) get_post_meta($submission_id, self::META_ACCESS_SECRET, true);
+        if ('' === $stored) {
+            return false;
+        }
+
+        return hash_equals($stored, hash_hmac('sha256', $secret, self::access_secret_key()));
+    }
+
+    /**
+     * Key used to HMAC submission access secrets.
+     *
+     * @return string
+     */
+    private static function access_secret_key(): string
+    {
+        return 'king-addons-fb-sub|' . wp_salt('auth');
     }
 
     /**

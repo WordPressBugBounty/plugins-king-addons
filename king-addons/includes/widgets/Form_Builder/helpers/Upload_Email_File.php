@@ -257,6 +257,10 @@ class Upload_Email_File
     /**
      * AJAX handler for generating a fresh form nonce.
      *
+     * This nonce is a CSRF token for Form Builder AJAX. It is not authorization
+     * to read or change a submission: payment reuse requires the per-submission
+     * access secret issued when that submission was created.
+     *
      * Requires a published page that actually contains the Form Builder widget.
      * A bare form_public flag is not accepted.
      *

@@ -221,7 +221,8 @@
                                             return response && response.data && response.data.action === 'king_addons_form_builder_submissions';
                                         });
                                         var submissionId = created && created.data ? created.data.post_id : 0;
-                                        return startPayment(submissionId).then(function (payResponse) {
+                                        var accessSecret = created && created.data ? created.data.access_secret : '';
+                                        return startPayment(submissionId, accessSecret).then(function (payResponse) {
                                             return responses.concat([payResponse]);
                                         });
                                     })
@@ -450,9 +451,11 @@
                          * Ask the server to open a payment and note where to
                          * send the visitor once everything else has run.
                          *
+                         * @param {number|string} submissionId Submission created by this submit, if any.
+                         * @param {string} accessSecret Secret issued with that submission.
                          * @return {jqXHR} The request.
                          */
-                        function startPayment(submissionId) {
+                        function startPayment(submissionId, accessSecret) {
                             return $.ajax({
                                 type: 'POST',
                                 url: KingAddonsFormBuilderData.ajaxurl,
@@ -466,7 +469,8 @@
                                     form_name: $scope.find('form').attr('name'),
                                     form_page: $scope.find('form').attr('page'),
                                     form_page_id: $scope.find('form').attr('page_id'),
-                                    submission_id: submissionId || 0
+                                    submission_id: submissionId || 0,
+                                    access_secret: accessSecret || ''
                                 },
                                 success: function (response) {
                                     if (response && response.success && response.data && response.data.redirect) {

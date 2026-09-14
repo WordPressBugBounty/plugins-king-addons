@@ -67,19 +67,42 @@ class Form_Payment_Confirm
     /**
      * Create or reuse a submission and mark the payment pending.
      *
+     * An existing submission is reused only when the request presents the
+     * secret issued at create time. The form id on that submission must match
+     * the form being charged.
+     *
      * @param array<string,mixed> $config  Payment settings.
      * @param float               $amount  Amount to charge.
      * @param string              $provider stripe|paypal.
      * @param array<string,mixed> $request Posted form bits.
      *
-     * @return int Submission ID.
+     * @return int Submission ID, or 0 when the named id must not be touched.
      */
     public static function ensure_pending_submission(array $config, float $amount, string $provider, array $request): int
     {
         $submission_id = absint($request['submission_id'] ?? 0);
-        if ($submission_id && 'king-addons-fb-sub' === get_post_type($submission_id)) {
-            self::stamp_pending($submission_id, $config, $amount, $provider);
-            return $submission_id;
+        if ($submission_id) {
+            if ('king-addons-fb-sub' !== get_post_type($submission_id)) {
+                $submission_id = 0;
+            } else {
+                $secret = (string) ($request['access_secret'] ?? '');
+                if (!class_exists('King_Addons\\Create_Submission') || !Create_Submission::verify_access_secret($submission_id, $secret)) {
+                    return 0;
+                }
+
+                $stored_form_id = sanitize_key((string) get_post_meta($submission_id, 'king_addons_form_id', true));
+                $request_form_id = sanitize_key((string) ($request['form_id'] ?? ''));
+                if ('' === $stored_form_id || $stored_form_id !== $request_form_id) {
+                    return 0;
+                }
+
+                if ('paid' === (string) get_post_meta($submission_id, self::META_STATUS, true)) {
+                    return 0;
+                }
+
+                self::stamp_pending($submission_id, $config, $amount, $provider);
+                return $submission_id;
+            }
         }
 
         $page_id = absint($request['form_page_id'] ?? 0);
@@ -231,11 +254,19 @@ class Form_Payment_Confirm
         switch ($type) {
             case 'checkout.session.completed':
                 if ('paid' === ($session['payment_status'] ?? '')) {
-                    self::apply_status($submission_id, 'paid', $txn, $event_id);
+                    if (self::stripe_charge_matches($submission_id, $session)) {
+                        self::apply_status($submission_id, 'paid', $txn, $event_id);
+                    } else {
+                        self::apply_status($submission_id, 'failed', $txn, $event_id . '-mismatch');
+                    }
                 }
                 break;
             case 'checkout.session.async_payment_succeeded':
-                self::apply_status($submission_id, 'paid', $txn, $event_id);
+                if (self::stripe_charge_matches($submission_id, $session)) {
+                    self::apply_status($submission_id, 'paid', $txn, $event_id);
+                } else {
+                    self::apply_status($submission_id, 'failed', $txn, $event_id . '-mismatch');
+                }
                 break;
             case 'checkout.session.async_payment_failed':
                 self::apply_status($submission_id, 'failed', $txn, $event_id);
@@ -434,6 +465,10 @@ class Form_Payment_Confirm
         $event_id = 'session-' . (string) ($session['id'] ?? $session_id);
 
         if ('paid' === ($session['payment_status'] ?? '')) {
+            if (!self::stripe_charge_matches($submission_id, $session)) {
+                self::apply_status($submission_id, 'failed', $txn, $event_id . '-mismatch');
+                return false;
+            }
             self::apply_status($submission_id, 'paid', $txn, $event_id);
             return true;
         }
@@ -467,5 +502,37 @@ class Form_Payment_Confirm
         $session_id = (string) ($session['id'] ?? '');
 
         return self::find_by_meta(self::META_STRIPE_SESSION, $session_id);
+    }
+
+    /**
+     * Stripe charged amount and currency must match what the form stored.
+     *
+     * @param int                 $submission_id Submission.
+     * @param array<string,mixed> $session       Stripe Checkout session.
+     *
+     * @return bool
+     */
+    public static function stripe_charge_matches(int $submission_id, array $session): bool
+    {
+        $expected_amount = (float) get_post_meta($submission_id, self::META_EXPECTED_AMOUNT, true);
+        $expected_currency = strtoupper((string) get_post_meta($submission_id, self::META_EXPECTED_CURRENCY, true));
+        if ($expected_amount <= 0 || 3 !== strlen($expected_currency)) {
+            return false;
+        }
+
+        if (!isset($session['amount_total']) || !is_numeric($session['amount_total'])) {
+            return false;
+        }
+
+        $paid_currency = strtoupper((string) ($session['currency'] ?? ''));
+        if ('' === $paid_currency) {
+            return false;
+        }
+
+        $expected_minor = class_exists('King_Addons\\Form_Payments')
+            ? Form_Payments::to_provider_minor_units($expected_amount, $expected_currency)
+            : (int) round($expected_amount * 100);
+
+        return ((int) $session['amount_total'] === $expected_minor) && ($paid_currency === $expected_currency);
     }
 }

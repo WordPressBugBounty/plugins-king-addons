@@ -162,6 +162,11 @@ class Form_Payments
     /**
      * Create the payment and return where to send the visitor.
      *
+     * The site nonce is a CSRF check only. An existing submission is charged
+     * only when the request presents the secret issued when it was created,
+     * and the price is taken from that submission's stored form — never from
+     * a form id the caller names independently.
+     *
      * @return void
      */
     public static function handle(): void
@@ -175,14 +180,57 @@ class Form_Payments
             Form_Builder_Security::guard_spam();
         }
 
-        $form_id = isset($_POST['king_addons_form_id'])
-            ? sanitize_text_field(wp_unslash($_POST['king_addons_form_id']))
+        $requested_form_id = isset($_POST['king_addons_form_id'])
+            ? sanitize_key(wp_unslash($_POST['king_addons_form_id']))
             : '';
-        if ('' === $form_id && isset($_POST['form_id'])) {
-            $form_id = sanitize_text_field(wp_unslash($_POST['form_id']));
+        if ('' === $requested_form_id && isset($_POST['form_id'])) {
+            $requested_form_id = sanitize_key(wp_unslash($_POST['form_id']));
         }
 
         $post_id = absint($_POST['form_page_id'] ?? 0);
+        $named_id = absint($_POST['submission_id'] ?? 0);
+        $access_secret = isset($_POST['access_secret'])
+            ? sanitize_text_field(wp_unslash($_POST['access_secret']))
+            : '';
+        $form_id = $requested_form_id;
+
+        if ($named_id) {
+            if ('king-addons-fb-sub' !== get_post_type($named_id)) {
+                $named_id = 0;
+            } else {
+                if (!class_exists('King_Addons\\Create_Submission') || !Create_Submission::verify_access_secret($named_id, $access_secret)) {
+                    wp_send_json_error([
+                        'action' => 'king_addons_form_builder_payment',
+                        'status' => 'error',
+                        'message' => esc_html__('This payment could not be authorised.', 'king-addons'),
+                    ]);
+                }
+
+                $stored_form_id = sanitize_key((string) get_post_meta($named_id, 'king_addons_form_id', true));
+                $stored_page_id = absint(get_post_meta($named_id, 'king_addons_form_page_id', true));
+                if ('' === $stored_form_id) {
+                    wp_send_json_error([
+                        'action' => 'king_addons_form_builder_payment',
+                        'status' => 'error',
+                        'message' => esc_html__('This payment could not be authorised.', 'king-addons'),
+                    ]);
+                }
+
+                if ('' !== $requested_form_id && $requested_form_id !== $stored_form_id) {
+                    wp_send_json_error([
+                        'action' => 'king_addons_form_builder_payment',
+                        'status' => 'error',
+                        'message' => esc_html__('This payment does not match the original form.', 'king-addons'),
+                    ]);
+                }
+
+                $form_id = $stored_form_id;
+                if ($stored_page_id > 0) {
+                    $post_id = $stored_page_id;
+                }
+            }
+        }
+
         $config = '' === $form_id ? [] : self::get_settings($form_id, $post_id);
         $provider = (string) ($config['provider'] ?? 'none');
 
@@ -233,12 +281,21 @@ class Form_Payments
         $submission_id = 0;
         if (class_exists('King_Addons\\Form_Payment_Confirm')) {
             $submission_id = Form_Payment_Confirm::ensure_pending_submission($config, $amount, $provider, [
-                'submission_id' => absint($_POST['submission_id'] ?? 0),
-                'form_id' => $form_id !== '' ? $form_id : sanitize_text_field(wp_unslash($_POST['form_id'] ?? '')),
+                'submission_id' => $named_id,
+                'access_secret' => $access_secret,
+                'form_id' => $form_id,
                 'form_name' => sanitize_text_field(wp_unslash($_POST['form_name'] ?? '')),
                 'form_page' => sanitize_text_field(wp_unslash($_POST['form_page'] ?? '')),
-                'form_page_id' => absint($_POST['form_page_id'] ?? 0),
+                'form_page_id' => $post_id,
                 'form_content' => $raw,
+            ]);
+        }
+
+        if ($named_id && !$submission_id) {
+            wp_send_json_error([
+                'action' => 'king_addons_form_builder_payment',
+                'status' => 'error',
+                'message' => esc_html__('This payment could not be authorised.', 'king-addons'),
             ]);
         }
 
@@ -324,6 +381,19 @@ class Form_Payments
             : null;
 
         return null === $amount ? null : (float) $amount;
+    }
+
+    /**
+     * Turn an amount into the units the provider expects.
+     *
+     * @param float  $amount   Amount.
+     * @param string $currency Currency code.
+     *
+     * @return int
+     */
+    public static function to_provider_minor_units(float $amount, string $currency): int
+    {
+        return self::to_minor_units($amount, $currency);
     }
 
     /**
@@ -580,6 +650,10 @@ class Form_Payments
         $existing = self::paypal_get_order($base, $token, $order_id);
         if (is_array($existing) && 'COMPLETED' === ($existing['status'] ?? '')) {
             $txn = self::paypal_capture_id($existing) ?: $order_id;
+            if ($submission_id && !self::paypal_amount_matches($submission_id, $existing)) {
+                Form_Payment_Confirm::apply_status($submission_id, 'failed', $txn, 'paypal-mismatch-' . $order_id);
+                return 'amount-mismatch';
+            }
             if ($submission_id) {
                 Form_Payment_Confirm::apply_status($submission_id, 'paid', $txn, 'paypal-completed-' . $order_id);
             }

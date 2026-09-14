@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.81
+Stable tag: 51.1.82
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.82 - September 14, 2026 =
+* **Security:** Form Builder payments no longer accept another visitor's submission id. Reuse requires a secret issued when that submission was created. The charged amount is taken from the submission's own form, and Stripe confirmation compares the paid amount and currency with the stored expected values.
 
 = King Addons for Elementor version 51.1.81 - September 11, 2026 =
 * **Security:** Template Catalog import into an existing page now requires permission to edit that specific page.
