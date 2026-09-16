@@ -722,6 +722,7 @@ final class Admin
             'button_display_mode' => in_array($settings['button_display_mode'] ?? 'icon_text', ['icon', 'icon_text'], true) ? $settings['button_display_mode'] : $defaults['button_display_mode'],
             'button_position' => in_array($settings['button_position'] ?? 'after_add_to_cart', ['before_add_to_cart', 'after_add_to_cart'], true) ? $settings['button_position'] : $defaults['button_position'],
             'show_in_archives' => !empty($settings['show_in_archives']),
+            'show_on_single' => !empty($settings['show_on_single']),
             'wishlist_columns' => array_values(
                 array_intersect(
                     (array) ($settings['wishlist_columns'] ?? []),

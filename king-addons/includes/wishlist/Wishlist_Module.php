@@ -35,6 +35,7 @@ class Wishlist_Module
     public function boot(): void
     {
         Wishlist_DB::maybe_create_tables();
+        Wishlist_Settings::maybe_disable_archive_buttons();
         $this->service = new Wishlist_Service();
         $this->renderer = new Wishlist_Renderer($this->service);
         $this->woocommerce = new Wishlist_WooCommerce($this->service, $this->renderer);

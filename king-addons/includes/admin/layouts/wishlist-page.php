@@ -198,13 +198,25 @@ document.body.classList.add('ka-admin-v3');
                         </div>
                     </div>
                     <div class="ka-row">
-                        <div class="ka-row-label"><?php esc_html_e('Show in Archives', 'king-addons'); ?></div>
+                        <div class="ka-row-label"><?php esc_html_e('Show on Single Product', 'king-addons'); ?></div>
+                        <div class="ka-row-field">
+                            <label class="ka-toggle">
+                                <input type="checkbox" name="king_addons_wishlist_settings[show_on_single]" value="1" <?php checked(!empty($settings['show_on_single'])); ?> />
+                                <span class="ka-toggle-slider"></span>
+                                <span class="ka-toggle-label"><?php esc_html_e('Add the button next to Add to Cart / Buy Now', 'king-addons'); ?></span>
+                            </label>
+                            <p class="ka-row-desc"><?php esc_html_e('Off by default. Covers the product page and the King Addons Add to Cart widget. Use the Wishlist Button widget if you want it in a specific place instead.', 'king-addons'); ?></p>
+                        </div>
+                    </div>
+                    <div class="ka-row">
+                        <div class="ka-row-label"><?php esc_html_e('Show on Product Cards', 'king-addons'); ?></div>
                         <div class="ka-row-field">
                             <label class="ka-toggle">
                                 <input type="checkbox" name="king_addons_wishlist_settings[show_in_archives]" value="1" <?php checked(!empty($settings['show_in_archives'])); ?> />
                                 <span class="ka-toggle-slider"></span>
-                                <span class="ka-toggle-label"><?php esc_html_e('Display in product loops', 'king-addons'); ?></span>
+                                <span class="ka-toggle-label"><?php esc_html_e('Add the button to shop, category, and product grid cards', 'king-addons'); ?></span>
                             </label>
+                            <p class="ka-row-desc"><?php esc_html_e('Off by default. Enable this if you want the wishlist button on product cards. The wishlist module and Elementor widgets stay available either way.', 'king-addons'); ?></p>
                         </div>
                     </div>
                 </div>

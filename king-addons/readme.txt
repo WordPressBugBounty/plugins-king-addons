@@ -1,7 +1,7 @@
 === King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.82
+Stable tag: 51.1.83
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -260,6 +260,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 10. Settings
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.83 - September 16, 2026 =
+* **Fix:** Automatic wishlist buttons are off by default on product cards and next to Add to Cart / Buy Now. After update they stay hidden until you enable them in King Addons → Wishlist → Buttons. The wishlist module and Elementor widgets are unchanged.
 
 = King Addons for Elementor version 51.1.82 - September 14, 2026 =
 * **Security:** Form Builder payments no longer accept another visitor's submission id. Reuse requires a secret issued when that submission was created. The charged amount is taken from the submission's own form, and Stripe confirmation compares the paid amount and currency with the stored expected values.

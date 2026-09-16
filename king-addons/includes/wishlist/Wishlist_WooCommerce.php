@@ -38,14 +38,16 @@ class Wishlist_WooCommerce
             return;
         }
 
-        $position = Wishlist_Settings::get('button_position', 'after_add_to_cart');
-        $hook = $position === 'before_add_to_cart' ? 'woocommerce_before_add_to_cart_button' : 'woocommerce_after_add_to_cart_button';
-        add_action($hook, [$this, 'render_single_button']);
+        if (Wishlist_Settings::get('show_on_single', false)) {
+            $position = Wishlist_Settings::get('button_position', 'after_add_to_cart');
+            $hook = $position === 'before_add_to_cart' ? 'woocommerce_before_add_to_cart_button' : 'woocommerce_after_add_to_cart_button';
+            add_action($hook, [$this, 'render_single_button']);
 
-        $atc_hook = $position === 'before_add_to_cart' ? 'king_addons/woo_product_atc/before_buttons' : 'king_addons/woo_product_atc/after_buttons';
-        add_action($atc_hook, [$this, 'render_single_button']);
+            $atc_hook = $position === 'before_add_to_cart' ? 'king_addons/woo_product_atc/before_buttons' : 'king_addons/woo_product_atc/after_buttons';
+            add_action($atc_hook, [$this, 'render_single_button']);
+        }
 
-        if (Wishlist_Settings::get('show_in_archives', true)) {
+        if (Wishlist_Settings::get('show_in_archives', false)) {
             add_action('woocommerce_after_shop_loop_item', [$this, 'render_loop_button'], 12);
             add_action('king_addons/woo_products_grid/after_add_to_cart', [$this, 'render_grid_button']);
         }
@@ -133,7 +135,7 @@ class Wishlist_WooCommerce
      */
     public function render_single_button($passed = null): void
     {
-        if (!Wishlist_Settings::is_enabled()) {
+        if (!Wishlist_Settings::is_enabled() || !Wishlist_Settings::get('show_on_single', false)) {
             return;
         }
 
@@ -158,7 +160,7 @@ class Wishlist_WooCommerce
      */
     public function render_loop_button(): void
     {
-        if (!Wishlist_Settings::is_enabled()) {
+        if (!Wishlist_Settings::is_enabled() || !Wishlist_Settings::get('show_in_archives', false)) {
             return;
         }
 
@@ -183,7 +185,7 @@ class Wishlist_WooCommerce
      */
     public function render_grid_button($product): void
     {
-        if (!Wishlist_Settings::is_enabled() || !$product instanceof WC_Product) {
+        if (!Wishlist_Settings::is_enabled() || !Wishlist_Settings::get('show_in_archives', false) || !$product instanceof WC_Product) {
             return;
         }
 

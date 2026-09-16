@@ -14,6 +14,16 @@ class Wishlist_Settings
     private const OPTION_KEY = 'king_addons_wishlist_settings';
 
     /**
+     * One-time flag: archive product-card buttons used to default on.
+     */
+    private const ARCHIVE_BUTTON_OPT_IN_FLAG = 'king_addons_wishlist_archive_button_opt_in';
+
+    /**
+     * One-time flag: single-product auto buttons used to always inject.
+     */
+    private const SINGLE_BUTTON_OPT_IN_FLAG = 'king_addons_wishlist_single_button_opt_in';
+
+    /**
      * Get merged wishlist settings with defaults.
      *
      * @return array<string, mixed> Settings.
@@ -21,7 +31,56 @@ class Wishlist_Settings
     public static function get_settings(): array
     {
         $saved = get_option(self::OPTION_KEY, []);
-        return wp_parse_args($saved, self::defaults());
+        return wp_parse_args(is_array($saved) ? $saved : [], self::defaults());
+    }
+
+    /**
+     * Turn off auto-injected product-card buttons unless the site opts in.
+     *
+     * Older versions defaulted this on, so a plugin update put a wishlist
+     * button on every shop card. Sites that want it can enable “Show on
+     * Product Cards” in King Addons → Wishlist → Buttons.
+     *
+     * @return void
+     */
+    public static function maybe_disable_archive_buttons(): void
+    {
+        if ('1' !== (string) get_option(self::ARCHIVE_BUTTON_OPT_IN_FLAG, '')) {
+            $saved = get_option(self::OPTION_KEY, []);
+            if (is_array($saved) && array_key_exists('show_in_archives', $saved)) {
+                $saved['show_in_archives'] = false;
+                update_option(self::OPTION_KEY, $saved, false);
+            }
+
+            update_option(self::ARCHIVE_BUTTON_OPT_IN_FLAG, '1', false);
+        }
+
+        self::maybe_disable_single_buttons();
+    }
+
+    /**
+     * Turn off auto-injected single-product buttons unless the site opts in.
+     *
+     * Older versions always hooked next to Add to Cart / Buy Now, including
+     * the King Addons Add to Cart widget. Sites that want that can enable
+     * “Show on Single Product” in King Addons → Wishlist → Buttons.
+     *
+     * @return void
+     */
+    public static function maybe_disable_single_buttons(): void
+    {
+        if ('1' === (string) get_option(self::SINGLE_BUTTON_OPT_IN_FLAG, '')) {
+            return;
+        }
+
+        $saved = get_option(self::OPTION_KEY, []);
+        if (!is_array($saved)) {
+            $saved = [];
+        }
+
+        $saved['show_on_single'] = false;
+        update_option(self::OPTION_KEY, $saved, false);
+        update_option(self::SINGLE_BUTTON_OPT_IN_FLAG, '1', false);
     }
 
     /**
@@ -95,7 +154,8 @@ class Wishlist_Settings
             'button_added_text' => esc_html__('In wishlist', 'king-addons'),
             'button_display_mode' => 'icon_text', // icon, icon_text
             'button_position' => 'after_add_to_cart', // before_add_to_cart|after_add_to_cart
-            'show_in_archives' => true,
+            'show_in_archives' => false,
+            'show_on_single' => false,
             'wishlist_columns' => ['image', 'title', 'price', 'stock', 'notes', 'add_to_cart', 'remove'],
             'cache_enabled' => false,
             'cache_ttl' => 0,
