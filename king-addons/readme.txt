@@ -1,18 +1,18 @@
-=== King Addons for Elementor - 80+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce, Mega Menu, Popup Builder ===
+=== King Addons for Elementor - 100+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce Builder, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.83
+Stable tag: 51.1.85
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Elementor addons: Elementor widgets, Elementor templates, 80+ widgets, 4 000+ templates and sections, Mega Menu, Popup Builder, WooCommerce, AI tools.
+Elementor addons: Elementor widgets, Elementor templates, 100+ widgets, 4 000+ templates, Mega Menu, Popup Builder, WooCommerce Builder, AI tools.
 
 == Description ==
 
-King Addons for Elementor is an Elementor addons toolkit with Elementor widgets, Elementor templates, and Elementor extensions. Get 80+ Elementor widgets and 4,000+ templates and sections, plus Mega Menu, Popup Builder, WooCommerce widgets, and AI tools.
+King Addons for Elementor is an Elementor addons toolkit with Elementor widgets, Elementor templates, and Elementor extensions. Get 100+ Elementor widgets and 4,000+ templates and sections, plus Mega Menu, Popup Builder, WooCommerce Builder, and AI tools.
 
 [**CHECK THE DEMOS**](https://kingaddons.com/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**ELEMENTOR WIDGETS**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**TEMPLATES CATALOG**](https://kingaddons.com/templates/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) | [**PRO VERSION**](https://kingaddons.com/pricing/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng)
 
@@ -44,7 +44,7 @@ https://youtu.be/9aYsLn9065k
 
 - **Popup Builder** - Eye-catching popups for announcements, promos, and subscriptions. Style, animation, and trigger controls.
 - **Header & Footer Builder** - Custom headers and footers with display conditions. Sticky/transparent headers and per page/role/device targeting.
-- **Theme Builder** - Create custom templates (Single, Archive, Search, 404 and more) with display conditions and priority.
+- **Theme Builder** - Create custom templates (Single, Archive, Search, 404 and more) with display conditions and priority. 20+ widgets for post content, archives, and 404 pages.
 - **Custom Cursor** - Create premium cursor styles (Dot, Ring, Image and more) with hover states, click ripple, and targeting controls.
 - **Cookie Consent** - Cookie banner and consent controls to help meet GDPR/CCPA requirements.
 - **Activity Log** - Track key actions and changes on your site for easier troubleshooting.
@@ -54,7 +54,7 @@ https://youtu.be/9aYsLn9065k
 - **AI SEO Tools** - Comprehensive AI-powered SEO toolkit: Bulk Alt Text Generator, Auto Tagging for blog posts, and AI Post Generator. Generate complete blog posts with titles, content, excerpts, tags, categories, and featured images via OpenAI — all from one dashboard.
 - **Custom Code Manager** - Add custom CSS, JavaScript, and HTML snippets anywhere on your site. Manage all snippets from a single dashboard with code editor, activation toggle, and placement controls.
 - **Unlimited Image Optimizer** - Optimize images in your Media Library to reduce file sizes, improve website performance, and boost SEO.
-- **WooCommerce Builder** - Build custom WooCommerce pages with Elementor. 10 widgets for products, cart, checkout, my account, and more with full styling controls.
+- **WooCommerce Builder** - Rebuild shop, product, cart, checkout, and My Account pages in Elementor. 50+ widgets with full styling for galleries, variations, cart table, multi-step checkout, account endpoints, and more. Not just a product grid.
 
 ### **Elementor YouTube Guides**
 
@@ -71,30 +71,12 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 - **AI Alt Text Generation** – Automatically and manually generate alternative text for images using AI. Great for SEO and accessibility.
 - **AI SEO Tools** – A dedicated AI SEO toolkit with powerful modules: Bulk Alt Text Generator (batch-generate alt text for all Media Library images), Auto Tagging (automatically generate and assign relevant tags to blog posts), and AI Post Generator (create complete, SEO-optimized blog posts with titles, content, excerpts, tags, categories, and featured images — all powered by OpenAI).
 
-### **Elementor WooCommerce Builder & Widgets**
-
-1. [**WooCommerce Grid & Slider / Carousel**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - WooCommerce product grids/sliders/carousels with styling controls.
-2. [**Compare Products Table**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Side-by-side product comparison tables.
-3. [**Quick Product Slider**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Fast WooCommerce product sliders.
-4. [**Quick Product Grid**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Clean WooCommerce product grids.
-5. [**Ajax Add to Cart**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - AJAX WooCommerce add-to-cart button with inline notice and styling.
-6. [**WC Products**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display WooCommerce products with query options and full styling controls.
-7. [**WC Cart**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Full WooCommerce cart page with customizable styling.
-8. [**WC Checkout**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - WooCommerce checkout page with complete style customization.
-9. [**WC My Account**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Customer account dashboard with navigation and form styling.
-10. [**WC Product Page**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Single product page with gallery, tabs, and button styling.
-11. [**WC Order Tracking**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Order tracking form with customizable fields and button.
-12. [**WC Product Category**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Products from a specific category with styling controls.
-13. [**WC Product Categories**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Display product categories grid with image and title styling.
-14. [**WC Add To Cart Button**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Standalone add to cart button for any product.
-15. [**WC Shop Messages**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - WooCommerce notification messages with success, error, and info styling.
-
 ### **Elementor Marketing & Lead Gen**
 
 1. [**Popup & Lightbox Modal**](https://kingaddons.com/elementor/popup-lightbox-modal/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Popups/modals for content, promotions, and media with customizable effects.
-2. [**Form Builder**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Custom forms for contact, surveys, and lead capture.
+2. **Form Builder** - Custom forms for contact, surveys, and lead capture.
 3. [**MailChimp**](https://kingaddons.com/elementor/mailchimp/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - MailChimp forms with responsive layout and styling.
-4. [**Login | Register Form**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - AJAX login/registration forms with validation.
+4. **Login | Register Form** - AJAX login/registration forms with validation.
 5. [**Pricing Table**](https://kingaddons.com/elementor/pricing-table/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Pricing tables with layout and feature comparison controls.
 6. [**Pricing Slider**](https://kingaddons.com/elementor/pricing-slider-for-elementor/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Interactive pricing sliders with dynamic parameters and results.
 7. [**Pricing Calculator**](https://kingaddons.com/elementor/pricing-calculator-for-elementor/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Pricing calculators for quotes and service estimates.
@@ -131,57 +113,102 @@ Enjoy all AI features at OpenAI cost, with no additional fees from us.
 19. [**Advanced Border Radius**](https://kingaddons.com/elementor/advanced-border-radius/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Custom rounded corners for modern shapes.
 20. [**Floating Animation**](https://kingaddons.com/elementor/floating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - CSS floating animations.
 21. [**Rotating Animation**](https://kingaddons.com/elementor/rotating-animation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - CSS rotating effects.
-22. [**Values Circle Infographic**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Circular infographic with 6 text blocks around a central image or Lottie animation, connected by animated dotted arc connectors. Includes per-block positioning, per-connector curvature and attachment controls, and full typography settings.
+22. **Values Circle Infographic** - Circular infographic with 6 text blocks around a central image or Lottie animation, connected by animated dotted arc connectors. Includes per-block positioning, per-connector curvature and attachment controls, and full typography settings.
 
 ### **Elementor Content & Layout**
 
-1. [**Mega Menu**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Advanced navigation menus with dropdowns, custom layouts, and responsive design.
+1. **Mega Menu** - Advanced navigation menus with dropdowns, custom layouts, and responsive design.
 2. [**One Page Navigation**](https://kingaddons.com/elementor/one-page-navigation/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Single-page navigation with anchor links for smooth scrolling. Uses only CSS for performance.
 3. [**Off-Canvas Content**](https://kingaddons.com/elementor/off-canvas-content/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Slide-in panels for menus, widgets, or hidden content.
-4. [**Breadcrumbs**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Breadcrumb navigation trails with styling controls.
+4. **Breadcrumbs** - Breadcrumb navigation trails with styling controls.
 5. [**Search (AJAX, instant live results and filters)**](https://kingaddons.com/elementor/ajax-search/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - AJAX search with instant results and filters.
-6. [**Dynamic Posts Grid**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Filterable post grids with AJAX search and Load More.
+6. **Dynamic Posts Grid** - Filterable post grids with AJAX search and Load More.
 7. [**Posts Grid & Slider / Carousel**](https://kingaddons.com/elementor/posts-grid-slider-carousel/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Post grids/sliders/carousels with flexible layouts and styles.
 8. [**Blog Posts Carousel**](https://kingaddons.com/elementor/blog-posts-carousel/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Blog post carousel with flexible layout and styling.
 9. [**Magazine Grid & Slider / Carousel**](https://kingaddons.com/elementor/magazine-grid-slider-for-elementor/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Magazine-style post layouts in grids or sliders.
-10. [**Image Grid & Slider / Carousel/Gallery**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Media grids, sliders, and galleries for images/videos.
+10. **Image Grid & Slider / Carousel/Gallery** - Media grids, sliders, and galleries for images/videos.
 11. [**Image Grid**](https://kingaddons.com/elementor/image-grid/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Masonry or fit-row image grids, responsive for mobile and desktop.
 12. [**Slider**](https://kingaddons.com/elementor/slider/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Responsive sliders for images, text, or multimedia.
 13. [**Card Carousel**](https://kingaddons.com/elementor/card-carousel/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Responsive carousel of cards with images, text, and buttons.
-14. [**Quick Card Grid**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Fast, responsive card grids.
-15. [**Quick Card Slider**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Lightweight, responsive card sliders.
+14. **Quick Card Grid** - Fast, responsive card grids.
+15. **Quick Card Slider** - Lightweight, responsive card sliders.
 16. [**3D Holographic Card**](https://kingaddons.com/elementor/3d-holographic-card/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Interactive 3D card with holographic film overlay, rim glow, and parallax effects.
-17. [**Quick Post Grid**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - A lightweight grid for WordPress posts with responsive columns and safe spacing defaults.
-18. [**Quick Post Slider**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - A responsive slider for WordPress posts with easy defaults, navigation, and pagination spacing that avoids overlap.
+17. **Quick Post Grid** - A lightweight grid for WordPress posts with responsive columns and safe spacing defaults.
+18. **Quick Post Slider** - A responsive slider for WordPress posts with easy defaults, navigation, and pagination spacing that avoids overlap.
 19. [**Team Member**](https://kingaddons.com/elementor/team-member/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Team profiles with name/role/photo/social links and responsive layouts.
-20. [**Team Members Slider**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Team carousel slider with photos, roles, bios, and social links.
+20. **Team Members Slider** - Team carousel slider with photos, roles, bios, and social links.
 21. [**Accordion**](https://kingaddons.com/elementor/accordion/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Collapsible sections for FAQs and structured content.
 22. [**Tabs**](https://kingaddons.com/elementor/tabs/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Tabbed content blocks for clean navigation.
 23. [**Timeline**](https://kingaddons.com/elementor/timeline/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Timelines for posts, events, and milestones.
-24. [**Steps Process Timeline**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Visual step-by-step process timelines with numbered markers, icons, and cards. Perfect for how-it-works sections, workflows, and tutorials.
+24. **Steps Process Timeline** - Visual step-by-step process timelines with numbered markers, icons, and cards. Perfect for how-it-works sections, workflows, and tutorials.
 25. [**Content Ticker**](https://kingaddons.com/elementor/content-ticker/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Scrolling text/tickers for news and announcements.
 26. [**Data Table**](https://kingaddons.com/elementor/data-table/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Data tables with customization options.
 27. [**Charts**](https://kingaddons.com/elementor/charts/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Bar/line/pie/radar charts with customizable styles.
-28. [**KPI Tiles with Microcharts**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - KPI tiles with deltas, trend arrows, and sparklines.
+28. **KPI Tiles with Microcharts** - KPI tiles with deltas, trend arrows, and sparklines.
 29. [**Progress Bar**](https://kingaddons.com/elementor/progress-bar/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Progress/goal bars with styling controls.
 30. [**Reading Progress Bar**](https://kingaddons.com/elementor/reading-progress-bar/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Reading progress indicator for long-form content.
 31. [**Smooth Counter**](https://kingaddons.com/elementor/smooth-counter/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Animated counters for stats and milestones.
-32. [**Advanced Callout Box**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Styled callouts (note/tip/warning) with icons, accents, and optional button.
+32. **Advanced Callout Box** - Styled callouts (note/tip/warning) with icons, accents, and optional button.
 33. [**Feature List**](https://kingaddons.com/elementor/feature-list/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Styled lists for product/service benefits.
 34. [**Taxonomy List**](https://kingaddons.com/elementor/taxonomy-list/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Category/tag lists in a navigable layout.
 35. [**Page List**](https://kingaddons.com/elementor/page-list/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Structured lists of website pages.
 36. [**Global Section & Container**](https://kingaddons.com/elementor/global-section-container/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Reusable sections and containers for consistent design. No extra CSS/JS.
-37. [**Google Maps**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Maps for locations and directions with marker and style controls.
-38. [**Collapse & Expand Text**](https://kingaddons.com/elements/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Controls to collapse and expand long text.
+37. **Google Maps** - Maps for locations and directions with marker and style controls.
+38. **Collapse & Expand Text** - Controls to collapse and expand long text.
 39. [**Wrapper Link**](https://kingaddons.com/elementor/wrapper-link/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Clickable wrapper links for sections/elements.
 40. [**Duplicator**](https://kingaddons.com/elementor/duplicator/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Duplicates posts, pages, and templates.
 41. [**Custom CSS**](https://kingaddons.com/elementor/custom-css/?utm_source=kng-wp-org&utm_medium=wp-org&utm_campaign=kng) - Custom CSS controls for precise styling.
+42. **Loop Grid** - Repeats a Loop Builder item template for every entry a query returns.
+
+### **Elementor Theme Builder Widgets**
+
+Build Single, Archive, Search, 404, and author templates in Elementor. 20+ Theme Builder widgets with display conditions.
+
+**Single Post**
+
+Post Title, Post Content, Post Excerpt, Featured Image, Post Meta, Post Taxonomies, Author Box, Post Navigation, Post Comments, and Related Posts.
+
+**Archive, Search & 404**
+
+Archive Title, Archive Description, Archive Posts, Archive Pagination, Archive Result Count, Search Results, Author Info, 404 Title, 404 Description, 404 Search Form, and Back to Home.
+
+### **Elementor WooCommerce Builder & Widgets**
+
+Rebuild the store in Elementor: shop and category archives, single product, cart, checkout, and My Account. 50+ dedicated builder widgets with full styling, plus catalog grids, wishlist, compare, and WooCommerce shortcode widgets.
+
+**Single Product**
+
+Product Images Gallery, Product Title, Product Price, Product Short Description, Product Full Description, Product Variations, Add To Cart, Product Stock, Product Tabs, Product Custom Tabs, Product Rating, Product SKU, Product Meta, Product Breadcrumbs, Product Badges, Product Sale Countdown, Related Products, Upsell Products, Cross-sell Products, and Product ACF / Attribute Field.
+
+**Shop & Archive**
+
+Products Grid, Products Sorting, Products Result Count, Products Pagination, Archive Title, Archive Description, and Archive Banner.
+
+**Cart**
+
+Cart Table, Cart Totals, Cart Coupon Form, Cart Cross-sells, and Cart Empty Message.
+
+**Checkout**
+
+Checkout Form, Checkout Order Summary, Checkout Payment, Checkout Place Order Button, Checkout Coupon, Checkout Login, Checkout Progress, Checkout Steps, Checkout Sticky Sidebar, and Checkout ACF Extra Fields.
+
+**My Account**
+
+Navigation, Content, Dashboard, Orders, Order Details, Address, My Account Details, Downloads, Logout, and My Account ACF Extra Fields.
+
+**Shop catalogs & extras**
+
+WooCommerce Grid & Slider / Carousel, Quick Product Slider, Quick Product Grid, Compare Products Table, Ajax Add to Cart, Wishlist Button, Wishlist Counter, Wishlist Page, Wishlist Icon, Wishlist Mini List, Wishlist Lists Switcher, Wishlist Share Buttons, WC Products, WC Cart, WC Checkout, WC My Account, WC Product Page, WC Order Tracking, WC Product Category, WC Product Categories, WC Add To Cart Button, and WC Shop Messages.
+
+**Shop Filters**
+
+Taxonomy Filter, Price Filter, Search Filter, Custom Field Filter, Active Filters, and Reset Filters.
 
 ### Happy User of King Addons for Elementor?
 
 - If you have any more questions, visit our support on the [Plugin's Forum](https://wordpress.org/support/plugin/king-addons).
 - You can also ask us any question through [support@kingaddons.com](mailto:support@kingaddons.com)
-- Rate us on [WordPress](https://wordpress.org/support/plugin/king-addons/reviews/?rate=5#new-post) :)
+- Rate us on [WordPress](https://wordpress.org/support/plugin/king-addons/reviews/?rate=5#new-post) 🙂
 
 ### Keywords
 
@@ -200,7 +227,7 @@ Note: This plugin works with Elementor. Make sure you have [Elementor](https://w
 
 = What is King Addons for Elementor? =
 
-King Addons is a powerful Elementor toolkit and WordPress addon that provides **80+ widgets**, **4,000+ templates and sections** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
+King Addons is a powerful Elementor toolkit and WordPress addon that provides **100+ widgets**, **4,000+ templates and sections** to help you build stunning, responsive websites. It is designed to enhance Elementor's functionality with advanced tools, lightweight design, and user-friendly customization options.
 
 = How does King Addons improve WordPress website speed? =
 
@@ -238,6 +265,10 @@ King Addons works perfectly with the free version of Elementor, so you do not ne
 
 Absolutely! It will work with any theme where Elementor works.
 
+= Can I rebuild WooCommerce pages with Elementor? =
+
+Yes. WooCommerce Builder includes 50+ widgets to design shop and category archives, single product, cart, checkout, and My Account pages in Elementor. Catalog widgets (grids, sliders, compare, wishlist) still work on any page.
+
 = Does it have great performance? =
 
 Yes! We developed King Addons with a performance-first philosophy in mind.
@@ -248,18 +279,23 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Screenshots ==
 
-1. Dashboard
-2. Elementor Widgets
-3. Features 
-4. Extensions
-5. Templates Catalog
-6. Sections Catalog
-7. Collections of Templates
-8. AI Settings
-9. Login Security
-10. Settings
+1. King Addons for Elementor dashboard with Smart Loading and controls for managing Elementor widgets and features.
+2. Elementor Widgets Manager — enable or disable individual King Addons widgets to load only the elements you need.
+3. Advanced Elementor features including Shop Filters, background effects, border radius controls, animations, and other design tools.
+4. King Addons extensions including Elementor Template Library, Header & Footer Builder, Popup Builder, Loop Builder, Theme Builder, and WooCommerce Builder.
+5. Elementor Template Library with ready-to-import website templates for building complete WordPress websites.
+6. Elementor Sections Library with pre-designed sections for landing pages, business websites, portfolios, shops, and more.
+7. Elementor template collections organized by website type and industry for faster website creation.
+8. WooCommerce Builder for Elementor — create custom product pages, shop pages, cart, checkout, and My Account templates.
+9. Elementor Theme Builder for creating custom Single Post, Archive, Author, Search Results, and 404 templates.
+10. Elementor Header & Footer Builder with display conditions for creating custom headers and footers across your WordPress website.
+11. WordPress Image Optimizer for compressing and optimizing images to improve website performance and page speed.
+12. AI SEO tools for WordPress, including automatic AI-generated image alt text for better image accessibility and SEO.
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.85 - September 21, 2026 =
+* **New:** Shop Filters — six Elementor widgets (Taxonomy Filter, Price Filter, Search Filter, Custom Field Filter, Active Filters, Reset Filters) that filter product grids without reloading the page. Bind filters and a grid with a Shop Filters ID. Variable products can match any variation in the range or the price shown on the card. Color and image swatches, keeping filters in the URL, and Custom Field Filter require Pro. Child categories, the mobile filter drawer, and the Apply button are Pro. Swatches use the color saved on the WooCommerce attribute.
 
 = King Addons for Elementor version 51.1.83 - September 16, 2026 =
 * **Fix:** Automatic wishlist buttons are off by default on product cards and next to Add to Cart / Buy Now. After update they stay hidden until you enable them in King Addons → Wishlist → Buttons. The wishlist module and Elementor widgets are unchanged.

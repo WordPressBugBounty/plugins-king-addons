@@ -36,7 +36,17 @@ class Facet_Price extends Widget_Base
      */
     public function get_title(): string
     {
-        return esc_html__('Facet Price', 'king-addons');
+        return esc_html__('Price Filter', 'king-addons');
+    }
+
+    /**
+     * Keywords.
+     *
+     * @return array<int, string>
+     */
+    public function get_keywords(): array
+    {
+        return ['shop', 'product', 'filter', 'filters', 'ajax', 'woocommerce', 'price', 'range', 'faceted', 'smart filters'];
     }
 
     /**
@@ -98,7 +108,7 @@ class Facet_Price extends Widget_Base
         $this->start_controls_section(
             'kng_facet_price_section',
             [
-                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Facet Price', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Price Filter', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -106,9 +116,10 @@ class Facet_Price extends Widget_Base
         $this->add_control(
             'kng_filters_query_id',
             [
-                'label' => esc_html__('Filter Query ID', 'king-addons'),
+                'label' => esc_html__('Shop Filters ID', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
                 'placeholder' => esc_html__('shop_grid_1', 'king-addons'),
+                'description' => esc_html__('Must match the Shop Filters ID on the product grid.', 'king-addons'),
             ]
         );
 
@@ -140,7 +151,25 @@ class Facet_Price extends Widget_Base
             ]
         );
 
+        $this->add_control(
+            'kng_variable_price',
+            [
+                'label' => esc_html__('Variable products', 'king-addons'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'any',
+                'options' => [
+                    'any' => esc_html__('Match if any variation is in range', 'king-addons'),
+                    'displayed' => esc_html__('Match by the price shown on the card', 'king-addons'),
+                ],
+                'description' => esc_html__('A variable product may show “from €150” while other variations cost more. “Any variation” keeps it in the results when a shopper filters from €250 and a €260 option exists. “Card price” uses only the number on the card, usually the minimum.', 'king-addons'),
+            ]
+        );
+
         $this->end_controls_section();
+
+        require_once KING_ADDONS_PATH . 'includes/helpers/Faceted/Style_Controls.php';
+        Facet_Style_Controls::fields($this, '{{WRAPPER}} .king-addons-facet--price .king-addons-facet__input');
+        Facet_Style_Controls::buckets($this);
     }
 
     /**
@@ -160,10 +189,11 @@ class Facet_Price extends Widget_Base
         $min = isset($settings['kng_min_value']) ? (float) $settings['kng_min_value'] : 0;
         $max = isset($settings['kng_max_value']) ? (float) $settings['kng_max_value'] : 0;
         $step = isset($settings['kng_step']) ? (float) $settings['kng_step'] : 1;
+        $variable_price = (($settings['kng_variable_price'] ?? 'any') === 'displayed') ? 'displayed' : 'any';
         $show_buckets = true;
 
         ?>
-        <div class="king-addons-facet king-addons-facet--price" data-ka-filters-query-id="<?php echo esc_attr($query_id); ?>">
+        <div class="king-addons-facet king-addons-facet--price" data-ka-filters-query-id="<?php echo esc_attr($query_id); ?>" data-ka-variable-price="<?php echo esc_attr($variable_price); ?>">
             <div class="king-addons-facet__row">
                 <label class="king-addons-facet__label">
                     <?php echo esc_html__('Min', 'king-addons'); ?>
@@ -204,8 +234,15 @@ class Facet_Price extends Widget_Base
                         ],
                         'woo_products_grid'
                     );
-                    foreach ($buckets as $idx => $bucket) :
-                        $label = sprintf('%s - %s', wc_price($bucket['min']), wc_price($bucket['max']));
+                    foreach ($buckets as $bucket) :
+                        $bucket_min = isset($bucket['min']) ? (float) $bucket['min'] : 0;
+                        $bucket_max = isset($bucket['max']) ? (float) $bucket['max'] : 999999;
+                        $bucket_key = $bucket_min . '-' . $bucket_max;
+                        if ($bucket_max >= 999999) {
+                            $label = sprintf('%s+', wc_price($bucket_min));
+                        } else {
+                            $label = sprintf('%s - %s', wc_price($bucket_min), wc_price($bucket_max));
+                        }
                         ?>
                         <li class="king-addons-facet__bucket">
                             <button
@@ -213,13 +250,13 @@ class Facet_Price extends Widget_Base
                                 class="king-addons-facet__bucket-btn"
                                 data-ka-filter-type="price-bucket"
                                 data-ka-filters-query-id="<?php echo esc_attr($query_id); ?>"
-                                data-ka-price-bucket="<?php echo esc_attr((string) $idx); ?>"
-                                data-ka-price-min="<?php echo esc_attr($bucket['min']); ?>"
-                                data-ka-price-max="<?php echo esc_attr($bucket['max']); ?>"
+                                data-ka-price-bucket="<?php echo esc_attr($bucket_key); ?>"
+                                data-ka-price-min="<?php echo esc_attr((string) $bucket_min); ?>"
+                                data-ka-price-max="<?php echo esc_attr((string) $bucket_max); ?>"
                                 data-ka-price-label="<?php echo esc_attr(wp_strip_all_tags($label)); ?>"
                             >
                                 <span class="king-addons-facet__bucket-label"><?php echo wp_kses_post($label); ?></span>
-                                <span class="king-addons-facet__bucket-count" data-ka-price-bucket="<?php echo esc_attr((string) $idx); ?>"></span>
+                                <span class="king-addons-facet__bucket-count" data-ka-price-bucket="<?php echo esc_attr($bucket_key); ?>"></span>
                             </button>
                         </li>
                     <?php endforeach; ?>

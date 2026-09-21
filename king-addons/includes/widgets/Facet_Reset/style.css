@@ -1,9 +1,25 @@
 .king-addons-facet--reset .king-addons-facet__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+  margin: 0;
+  padding: 10px 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-
-
-
-
-
+.king-addons-facet--reset .king-addons-facet__button:hover {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}

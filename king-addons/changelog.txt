@@ -2,6 +2,9 @@ King Addons - Full Changelog
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.84 - September 21, 2026 =
+* **New:** Shop Filters — six Elementor widgets (Taxonomy Filter, Price Filter, Search Filter, Custom Field Filter, Active Filters, Reset Filters) that filter product grids without reloading the page. Bind filters and a grid with a Shop Filters ID. Variable products can match any variation in the range or the price shown on the card. Color and image swatches, keeping filters in the URL, and Custom Field Filter require Pro. Child categories, the mobile filter drawer, and the Apply button are Pro. Swatches use the color saved on the WooCommerce attribute.
+
 = King Addons for Elementor version 51.1.83 - September 16, 2026 =
 * **Fix:** Automatic wishlist buttons are off by default on product cards and next to Add to Cart / Buy Now. After update they stay hidden until you enable them in King Addons → Wishlist → Buttons. The wishlist module and Elementor widgets are unchanged.
 

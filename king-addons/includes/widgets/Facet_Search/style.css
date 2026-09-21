@@ -1,9 +1,25 @@
 .king-addons-facet--search .king-addons-facet__input {
+  display: block;
   width: 100%;
+  box-sizing: border-box;
+  height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.2;
 }
 
+.king-addons-facet--search .king-addons-facet__input::placeholder {
+  color: #9ca3af;
+}
 
-
-
-
-
+.king-addons-facet--search .king-addons-facet__input:focus {
+  outline: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}

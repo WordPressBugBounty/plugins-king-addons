@@ -49,6 +49,7 @@ class Faceted_Query_Builder
         $this->grid_settings = $grid_settings;
         $this->filter_state = $filter_state;
         $this->base_args = $base_args;
+        add_filter('posts_clauses', [$this, 'apply_price_clauses'], 20, 2);
     }
 
     /**
@@ -98,15 +99,19 @@ class Faceted_Query_Builder
 
         $args['meta_query'] = $args['meta_query'] ?? [];
 
-        if (!empty($this->filter_state['filters']['meta']) && is_array($this->filter_state['filters']['meta'])) {
+        if (
+            !empty($this->filter_state['filters']['meta'])
+            && is_array($this->filter_state['filters']['meta'])
+            && function_exists('king_addons_can_use_pro')
+            && king_addons_can_use_pro()
+        ) {
             foreach ($this->filter_state['filters']['meta'] as $meta_key => $meta_value) {
-                if (is_array($meta_value) && array_key_exists('min', $meta_value) && array_key_exists('max', $meta_value)) {
+                if (is_array($meta_value) && (array_key_exists('min', $meta_value) || array_key_exists('max', $meta_value))) {
+                    $min = (isset($meta_value['min']) && $meta_value['min'] !== '') ? (float) $meta_value['min'] : 0;
+                    $max = (isset($meta_value['max']) && $meta_value['max'] !== '') ? (float) $meta_value['max'] : 999999;
                     $args['meta_query'][] = [
                         'key' => sanitize_key((string) $meta_key),
-                        'value' => [
-                            (float) $meta_value['min'],
-                            (float) $meta_value['max'],
-                        ],
+                        'value' => [$min, $max],
                         'type' => 'NUMERIC',
                         'compare' => 'BETWEEN',
                     ];
@@ -128,13 +133,10 @@ class Faceted_Query_Builder
         if (!empty($this->filter_state['filters']['price']) && is_array($this->filter_state['filters']['price'])) {
             $price = $this->filter_state['filters']['price'];
             if (isset($price['min']) || isset($price['max'])) {
-                $min = isset($price['min']) ? (float) $price['min'] : 0;
-                $max = isset($price['max']) ? (float) $price['max'] : 999999;
-                $args['meta_query'][] = [
-                    'key' => '_price',
-                    'value' => [$min, $max],
-                    'type' => 'NUMERIC',
-                    'compare' => 'BETWEEN',
+                $args['ka_ff_price'] = [
+                    'min' => isset($price['min']) && $price['min'] !== '' ? (float) $price['min'] : 0,
+                    'max' => isset($price['max']) && $price['max'] !== '' ? (float) $price['max'] : 999999,
+                    'mode' => $this->variable_price_mode(),
                 ];
             }
         }
@@ -178,7 +180,7 @@ class Faceted_Query_Builder
 
         $counts = [];
         foreach ($taxonomies as $taxonomy) {
-            $terms = wp_get_object_terms($ids, $taxonomy);
+            $terms = wp_get_object_terms($ids, $taxonomy, ['fields' => 'all_with_object_id']);
             if (is_wp_error($terms) || empty($terms)) {
                 continue;
             }
@@ -209,14 +211,7 @@ class Faceted_Query_Builder
             return [];
         }
 
-        $prices = [];
-        foreach ($ids as $id) {
-            $price = get_post_meta($id, '_price', true);
-            if ('' === $price) {
-                continue;
-            }
-            $prices[] = (float) $price;
-        }
+        $ranges = $this->get_price_ranges($ids);
 
         $results = [];
         foreach ($buckets as $bucket) {
@@ -224,8 +219,13 @@ class Faceted_Query_Builder
             $max = isset($bucket['max']) ? (float) $bucket['max'] : 999999;
             $key = $min . '-' . $max;
             $results[$key] = 0;
-            foreach ($prices as $price) {
-                if ($price >= $min && $price <= $max) {
+            $mode = $this->variable_price_mode();
+            foreach ($ranges as $range) {
+                if ('displayed' === $mode) {
+                    if ($range['min'] >= $min && $range['min'] <= $max) {
+                        $results[$key]++;
+                    }
+                } elseif ($range['min'] <= $max && $range['max'] >= $min) {
                     $results[$key]++;
                 }
             }
@@ -294,6 +294,162 @@ class Faceted_Query_Builder
         }
 
         return array_map('intval', $query->posts);
+    }
+
+    /**
+     * Restrict product queries to the selected price range, including variable max/min.
+     *
+     * @param array<string, string> $clauses Query clauses.
+     * @param \WP_Query             $query   Query.
+     *
+     * @return array<string, string>
+     */
+    public function apply_price_clauses(array $clauses, \WP_Query $query): array
+    {
+        $price = $query->get('ka_ff_price');
+        if (!is_array($price) || (!isset($price['min']) && !isset($price['max']))) {
+            return $clauses;
+        }
+
+        global $wpdb;
+        $min = isset($price['min']) ? (float) $price['min'] : 0;
+        $max = isset($price['max']) ? (float) $price['max'] : 999999;
+        $table = $this->product_lookup_table();
+
+        if (!$this->product_lookup_table_exists()) {
+            $clauses['where'] .= $wpdb->prepare(
+                " AND EXISTS (
+                    SELECT 1 FROM {$wpdb->postmeta} AS ka_ff_price_meta
+                    WHERE ka_ff_price_meta.post_id = {$wpdb->posts}.ID
+                    AND ka_ff_price_meta.meta_key = '_price'
+                    AND CAST(ka_ff_price_meta.meta_value AS DECIMAL(20,6)) BETWEEN %f AND %f
+                ) ",
+                $min,
+                $max
+            );
+
+            return $clauses;
+        }
+
+        if (false === strpos((string) $clauses['join'], 'ka_ff_price_lookup')) {
+            $clauses['join'] .= " INNER JOIN {$table} AS ka_ff_price_lookup ON {$wpdb->posts}.ID = ka_ff_price_lookup.product_id ";
+        }
+
+        if (($price['mode'] ?? 'any') === 'displayed') {
+            $clauses['where'] .= $wpdb->prepare(
+                ' AND ka_ff_price_lookup.min_price >= %f AND ka_ff_price_lookup.min_price <= %f ',
+                $min,
+                $max
+            );
+        } else {
+            $clauses['where'] .= $wpdb->prepare(
+                ' AND ka_ff_price_lookup.min_price <= %f AND ka_ff_price_lookup.max_price >= %f ',
+                $max,
+                $min
+            );
+        }
+
+        return $clauses;
+    }
+
+    /**
+     * How variable products match a price filter.
+     *
+     * @return string any|displayed
+     */
+    private function variable_price_mode(): string
+    {
+        $raw = $this->filter_state['variable_price'] ?? '';
+        if (!is_string($raw) || '' === $raw) {
+            $price = $this->filter_state['filters']['price'] ?? [];
+            $raw = is_array($price) ? ($price['variable_price'] ?? 'any') : 'any';
+        }
+
+        return 'displayed' === $raw ? 'displayed' : 'any';
+    }
+
+    /**
+     * WooCommerce product lookup table name.
+     *
+     * @return string
+     */
+    private function product_lookup_table(): string
+    {
+        global $wpdb;
+        if (isset($wpdb->wc_product_meta_lookup) && is_string($wpdb->wc_product_meta_lookup) && $wpdb->wc_product_meta_lookup !== '') {
+            return $wpdb->wc_product_meta_lookup;
+        }
+
+        return $wpdb->prefix . 'wc_product_meta_lookup';
+    }
+
+    /**
+     * Whether the WooCommerce product lookup table exists.
+     *
+     * @return bool
+     */
+    private function product_lookup_table_exists(): bool
+    {
+        global $wpdb;
+        static $exists = null;
+        if (null !== $exists) {
+            return $exists;
+        }
+
+        $table = $this->product_lookup_table();
+        $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($table)));
+        $exists = ($found === $table);
+
+        return $exists;
+    }
+
+    /**
+     * Min/max prices for product IDs (variable products use lookup max/min).
+     *
+     * @param array<int, int> $ids Product ids.
+     *
+     * @return array<int, array{min: float, max: float}>
+     */
+    private function get_price_ranges(array $ids): array
+    {
+        global $wpdb;
+
+        $ids = array_values(array_filter(array_map('intval', $ids)));
+        if (empty($ids)) {
+            return [];
+        }
+
+        $table = $this->product_lookup_table();
+        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+        $sql = "SELECT product_id, min_price, max_price FROM {$table} WHERE product_id IN ({$placeholders})";
+        $prepared = $wpdb->prepare($sql, ...$ids);
+        $rows = $prepared ? $wpdb->get_results($prepared) : [];
+
+        $ranges = [];
+        if (is_array($rows)) {
+            foreach ($rows as $row) {
+                $ranges[(int) $row->product_id] = [
+                    'min' => (float) $row->min_price,
+                    'max' => (float) $row->max_price,
+                ];
+            }
+        }
+
+        foreach ($ids as $id) {
+            if (isset($ranges[$id])) {
+                continue;
+            }
+            $price = get_post_meta($id, '_price', true);
+            if ('' === $price) {
+                continue;
+            }
+            $ranges[$id] = [
+                'min' => (float) $price,
+                'max' => (float) $price,
+            ];
+        }
+
+        return $ranges;
     }
 }
 

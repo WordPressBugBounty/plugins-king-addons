@@ -183,6 +183,20 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
     }
 
     /**
+     * Allow AJAX filter refreshes outside shop/archive requests.
+     *
+     * @return bool
+     */
+    protected function should_render(): bool
+    {
+        if (!empty($this->external_query_args)) {
+            return true;
+        }
+
+        return parent::should_render();
+    }
+
+    /**
      * Register widget controls.
      *
      * @return void
@@ -679,15 +693,6 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
 
         $query = new \WP_Query($q_args);
         self::remember_query_stats((string) $this->get_id(), (string) $query_id, $query, $paged, $per_page, $page_arg);
-        if (!$query->have_posts()) {
-            wp_reset_postdata();
-            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-                echo '<div class="king-addons-woo-builder-notice">'
-                    . esc_html__('No products match this query.', 'king-addons')
-                    . '</div>';
-            }
-            return;
-        }
 
         // An untouched control comes back as null on the front end but as an
         // empty string for a logged-in render, and a cleared field is 0. All
@@ -755,6 +760,18 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         $this->add_render_attribute($wrapper_handle, 'class', 'ka-woo-products-grid__wrap');
 
         echo '<div ' . $this->get_render_attribute_string($wrapper_handle) . '>';
+        if (!$query->have_posts()) {
+            wp_reset_postdata();
+            if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+                echo '<div class="king-addons-woo-builder-notice">'
+                    . esc_html__('No products match this query.', 'king-addons')
+                    . '</div>';
+            } else {
+                echo '<p class="ka-woo-products-grid__empty">' . esc_html__('No products found.', 'king-addons') . '</p>';
+            }
+            echo '</div>';
+            return;
+        }
         echo '<div ' . $this->get_render_attribute_string('grid') . '>';
         $is_slider_layout = ('slider' === $layout_type);
         if ($is_slider_layout) {
@@ -1399,6 +1416,13 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         }
         if (!empty($args['s'])) {
             $clean['s'] = sanitize_text_field((string) $args['s']);
+        }
+        if (!empty($args['ka_ff_price']) && is_array($args['ka_ff_price'])) {
+            $clean['ka_ff_price'] = [
+                'min' => isset($args['ka_ff_price']['min']) ? (float) $args['ka_ff_price']['min'] : 0,
+                'max' => isset($args['ka_ff_price']['max']) ? (float) $args['ka_ff_price']['max'] : 999999,
+                'mode' => (($args['ka_ff_price']['mode'] ?? 'any') === 'displayed') ? 'displayed' : 'any',
+            ];
         }
 
         return $clean;

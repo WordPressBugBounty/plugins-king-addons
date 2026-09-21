@@ -36,6 +36,88 @@ const KAFacetedFilters = (() => {
     debounceTimers[key] = setTimeout(fn, delay);
   };
 
+  const i18n = (KingAddonsFacetedFilters && KingAddonsFacetedFilters.i18n) || {};
+
+  const cssEscape = (value) => {
+    const str = String(value ?? '');
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+      return window.CSS.escape(str);
+    }
+    return str.replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+  };
+
+  const titleCase = (value) =>
+    String(value || '')
+      .replace(/^[_-]+/, '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\b\w/g, (ch) => ch.toUpperCase())
+      .trim();
+
+  const formatChip = (label, value) => {
+    const left = String(label || '').trim();
+    const right = String(value ?? '').trim();
+    if (left && right) {
+      return `${left}: ${right}`;
+    }
+    return right || left;
+  };
+
+  const taxonomyFallbackLabel = (taxonomy) => {
+    if (taxonomy === 'product_cat') {
+      return i18n.category || 'Category';
+    }
+    if (taxonomy === 'product_tag') {
+      return i18n.tag || 'Tag';
+    }
+    if (String(taxonomy).indexOf('pa_') === 0) {
+      return titleCase(String(taxonomy).slice(3));
+    }
+    return titleCase(taxonomy) || taxonomy;
+  };
+
+  const metaFallbackLabel = (metaKey) => {
+    if (metaKey === '_sku') {
+      return i18n.sku || 'SKU';
+    }
+    return titleCase(String(metaKey || '').replace(/^ka_/, '')) || metaKey;
+  };
+
+  const findFilterControl = (queryId, extraSelector) =>
+    document.querySelector(
+      `[data-ka-filters-query-id="${cssEscape(queryId)}"]${extraSelector}`
+    );
+
+  const taxonomyChipText = (queryId, taxonomy, term) => {
+    const input = findFilterControl(
+      queryId,
+      `[data-ka-filter-type="taxonomy"][data-ka-taxonomy="${cssEscape(
+        taxonomy
+      )}"][data-ka-term="${cssEscape(term)}"]`
+    );
+    const taxLabel =
+      (input && (input.dataset.kaTaxonomyLabel || '').trim()) ||
+      taxonomyFallbackLabel(taxonomy);
+    let termLabel = (input && (input.dataset.kaTermLabel || '').trim()) || '';
+    if (!termLabel && input) {
+      const textEl = input.closest('label')?.querySelector('.king-addons-facet__text');
+      termLabel = (textEl && textEl.textContent ? textEl.textContent : '').trim();
+    }
+    if (!termLabel) {
+      termLabel = titleCase(term) || term;
+    }
+    return formatChip(taxLabel, termLabel);
+  };
+
+  const metaChipText = (queryId, metaKey, value) => {
+    const input = findFilterControl(
+      queryId,
+      `[data-ka-filter-type="meta"][data-ka-meta-key="${cssEscape(metaKey)}"]`
+    );
+    const metaLabel =
+      (input && (input.dataset.kaMetaLabel || '').trim()) || metaFallbackLabel(metaKey);
+    return formatChip(metaLabel, value);
+  };
+
   const ensureContext = (element) => {
     const dataset = element.dataset;
     const queryId = dataset.kaQueryId || '';
@@ -53,10 +135,18 @@ const KAFacetedFilters = (() => {
           widgetId: dataset.kaWidgetId || '',
           postId: dataset.kaPostId || '',
           persistUrl: dataset.kaPersistUrl === '1',
+          ajax: dataset.kaAjax !== '0',
+          applyMode: dataset.kaApply === 'button',
+          drawer: dataset.kaDrawer === '1',
+          pending: false,
         },
         loading: false,
+        requestId: 0,
+        abortController: null,
       };
-      hydrateStateFromUrl(contexts[queryId]);
+      if (contexts[queryId].state.persistUrl || contexts[queryId].state.ajax === false) {
+        hydrateStateFromUrl(contexts[queryId]);
+      }
       syncFiltersUI(contexts[queryId]);
     } else {
       contexts[queryId].element = element;
@@ -65,13 +155,37 @@ const KAFacetedFilters = (() => {
     return contexts[queryId];
   };
 
-  const buildPayload = (context) => ({
-    query_id: context.state.queryId,
-    widget_id: context.state.widgetId,
-    post_id: context.state.postId,
-    page: context.state.page,
-    filters: context.state.filters,
-  });
+  const variablePriceMode = (queryId) => {
+    const node = document.querySelector(
+      `[data-ka-filters-query-id="${cssEscape(queryId)}"][data-ka-variable-price]`
+    );
+    return node && node.dataset.kaVariablePrice === 'displayed' ? 'displayed' : 'any';
+  };
+
+  const archiveFromGrid = (element) => {
+    const taxonomy = (element && element.dataset && element.dataset.kaArchiveTaxonomy) || '';
+    const termId = (element && element.dataset && element.dataset.kaArchiveTerm) || '';
+    if (!taxonomy || !termId) {
+      return null;
+    }
+    return { taxonomy, term_id: termId };
+  };
+
+  const buildPayload = (context) => {
+    const payload = {
+      query_id: context.state.queryId,
+      widget_id: context.state.widgetId,
+      post_id: context.state.postId,
+      page: context.state.page,
+      filters: context.state.filters,
+      variable_price: variablePriceMode(context.state.queryId),
+    };
+    const archive = archiveFromGrid(context.element);
+    if (archive) {
+      payload.archive = archive;
+    }
+    return payload;
+  };
 
   const updateUrl = (context) => {
     if (!context.state.persistUrl) {
@@ -199,17 +313,8 @@ const KAFacetedFilters = (() => {
       params.set('ka_filters', encoded);
     }
 
-    const prettySegments = buildPrettySegments();
-    const basePath = window.location.pathname.replace(/\/filters\/[^/]+(\/.*)?$/, '');
-    const prettyPath =
-      prettySegments.length > 0
-        ? `${basePath.replace(/\/$/, '')}/filters/${context.state.queryId}/${prettySegments.join(
-            '/'
-          )}`
-        : basePath;
-
     const newUrl =
-      prettyPath +
+      window.location.pathname +
       (params.toString() ? `?${params.toString()}` : '') +
       window.location.hash;
     window.history.replaceState({}, '', newUrl);
@@ -356,12 +461,8 @@ const KAFacetedFilters = (() => {
 
       if (type === 'price') {
         const role = element.dataset.kaPriceRole;
-        if (role === 'min' && context.state.filters.price.min !== undefined) {
-          element.value = context.state.filters.price.min;
-        }
-        if (role === 'max' && context.state.filters.price.max !== undefined) {
-          element.value = context.state.filters.price.max;
-        }
+        const current = context.state.filters.price ? context.state.filters.price[role] : undefined;
+        element.value = current !== undefined && current !== '' ? current : '';
       }
 
       if (type === 'price-bucket') {
@@ -376,12 +477,26 @@ const KAFacetedFilters = (() => {
         }
       }
 
-      if (type === 'meta' && element.classList.contains('ka-facet-meta__select')) {
-        element.classList.toggle('is-active', !!element.value);
+      if (type === 'meta') {
+        const metaKey = element.dataset.kaMetaKey;
+        const role = element.dataset.kaMetaRole || '';
+        const metaVal = context.state.filters.meta ? context.state.filters.meta[metaKey] : undefined;
+        if (role === 'min' || role === 'max') {
+          element.value = metaVal && metaVal[role] !== undefined && metaVal[role] !== '' ? metaVal[role] : '';
+        } else if (role === 'equals') {
+          if (Array.isArray(metaVal)) {
+            element.value = metaVal[0] || '';
+          } else {
+            element.value = metaVal || '';
+          }
+        }
+        if (element.classList.contains('ka-facet-meta__select')) {
+          element.classList.toggle('is-active', !!element.value);
+        }
       }
 
-      if (type === 'search' && context.state.filters.search) {
-        element.value = context.state.filters.search;
+      if (type === 'search') {
+        element.value = context.state.filters.search || '';
       }
     });
 
@@ -441,6 +556,7 @@ const KAFacetedFilters = (() => {
     );
 
     containers.forEach((container) => {
+      const body = container.querySelector('.king-addons-active-filters__body') || container;
       const list = document.createElement('ul');
       list.className = 'king-addons-active-filters__list';
 
@@ -449,7 +565,7 @@ const KAFacetedFilters = (() => {
           terms.forEach((term) => {
             const item = document.createElement('li');
             item.className = 'king-addons-active-filters__item';
-            item.textContent = `${taxonomy}: ${term}`;
+            item.textContent = taxonomyChipText(context.state.queryId, taxonomy, term);
             item.dataset.kaFilterType = 'active-filters';
             item.dataset.kaFiltersQueryId = context.state.queryId;
             item.dataset.kaFilterRemoveType = 'taxonomy';
@@ -465,7 +581,7 @@ const KAFacetedFilters = (() => {
           metaVal.forEach((val) => {
             const item = document.createElement('li');
             item.className = 'king-addons-active-filters__item';
-            item.textContent = `${metaKey}: ${val}`;
+            item.textContent = metaChipText(context.state.queryId, metaKey, val);
             item.dataset.kaFilterType = 'active-filters';
             item.dataset.kaFiltersQueryId = context.state.queryId;
             item.dataset.kaFilterRemoveType = 'meta';
@@ -476,7 +592,11 @@ const KAFacetedFilters = (() => {
         } else if (metaVal && (metaVal.min || metaVal.max)) {
           const item = document.createElement('li');
           item.className = 'king-addons-active-filters__item';
-          item.textContent = `${metaKey}: ${metaVal.min || ''}-${metaVal.max || ''}`;
+          item.textContent = metaChipText(
+            context.state.queryId,
+            metaKey,
+            `${metaVal.min || ''}-${metaVal.max || ''}`
+          );
           item.dataset.kaFilterType = 'active-filters';
           item.dataset.kaFiltersQueryId = context.state.queryId;
           item.dataset.kaFilterRemoveType = 'meta-range';
@@ -485,36 +605,35 @@ const KAFacetedFilters = (() => {
         }
       });
 
-      if (
+      if (context.state.filters.price && context.state.filters.price.bucket) {
+        const item = document.createElement('li');
+        item.className = 'king-addons-active-filters__item';
+        const label = context.state.filters.price.label || context.state.filters.price.bucket;
+        item.textContent = formatChip(i18n.price || 'Price', label);
+        item.dataset.kaFilterType = 'active-filters';
+        item.dataset.kaFiltersQueryId = context.state.queryId;
+        item.dataset.kaFilterRemoveType = 'price-bucket';
+        list.appendChild(item);
+      } else if (
         context.state.filters.price &&
         (context.state.filters.price.min || context.state.filters.price.max)
       ) {
         const item = document.createElement('li');
         item.className = 'king-addons-active-filters__item';
-        item.textContent = `price: ${context.state.filters.price.min || ''} - ${
-          context.state.filters.price.max || ''
-        }`;
+        item.textContent = formatChip(
+          i18n.price || 'Price',
+          `${context.state.filters.price.min || ''} - ${context.state.filters.price.max || ''}`
+        );
         item.dataset.kaFilterType = 'active-filters';
         item.dataset.kaFiltersQueryId = context.state.queryId;
         item.dataset.kaFilterRemoveType = 'price';
         list.appendChild(item);
       }
 
-      if (context.state.filters.price && context.state.filters.price.bucket !== undefined) {
-        const item = document.createElement('li');
-        item.className = 'king-addons-active-filters__item';
-        const label = context.state.filters.price.label || context.state.filters.price.bucket;
-        item.textContent = `price: ${label}`;
-        item.dataset.kaFilterType = 'active-filters';
-        item.dataset.kaFiltersQueryId = context.state.queryId;
-        item.dataset.kaFilterRemoveType = 'price-bucket';
-        list.appendChild(item);
-      }
-
       if (context.state.filters.search) {
         const item = document.createElement('li');
         item.className = 'king-addons-active-filters__item';
-        item.textContent = `search: ${context.state.filters.search}`;
+        item.textContent = formatChip(i18n.search || 'Search', context.state.filters.search);
         item.dataset.kaFilterType = 'active-filters';
         item.dataset.kaFiltersQueryId = context.state.queryId;
         item.dataset.kaFilterRemoveType = 'search';
@@ -524,7 +643,10 @@ const KAFacetedFilters = (() => {
       if (context.state.filters.orderby) {
         const item = document.createElement('li');
         item.className = 'king-addons-active-filters__item';
-        item.textContent = `sort: ${context.state.filters.orderby} ${context.state.filters.order || ''}`.trim();
+        item.textContent = formatChip(
+          i18n.sort || 'Sort',
+          `${context.state.filters.orderby} ${context.state.filters.order || ''}`.trim()
+        );
         item.dataset.kaFilterType = 'active-filters';
         item.dataset.kaFiltersQueryId = context.state.queryId;
         item.dataset.kaFilterRemoveType = 'sort';
@@ -534,17 +656,19 @@ const KAFacetedFilters = (() => {
       if (context.state.page && context.state.page > 1) {
         const item = document.createElement('li');
         item.className = 'king-addons-active-filters__item';
-        item.textContent = `page: ${context.state.page}`;
+        item.textContent = formatChip(i18n.page || 'Page', context.state.page);
         item.dataset.kaFilterType = 'active-filters';
         item.dataset.kaFiltersQueryId = context.state.queryId;
         item.dataset.kaFilterRemoveType = 'page';
         list.appendChild(item);
       }
 
-      if (container.firstChild) {
-        container.innerHTML = '';
+      const existing = body.querySelector('.king-addons-active-filters__list');
+      if (existing) {
+        existing.replaceWith(list);
+      } else {
+        body.appendChild(list);
       }
-      container.appendChild(list);
     });
   };
 
@@ -675,7 +799,8 @@ const KAFacetedFilters = (() => {
 
     const wrap = document.createElement('div');
     wrap.innerHTML = html;
-    const newElement = wrap.firstElementChild;
+    const newElement =
+      wrap.querySelector('[data-ka-filters="1"]') || wrap.firstElementChild;
     if (!newElement) {
       return;
     }
@@ -693,8 +818,12 @@ const KAFacetedFilters = (() => {
     if (!context.paginationEl) {
       context.paginationEl = document.createElement('div');
       context.paginationEl.className = 'ka-filters-pagination';
+      context.paginationEl.dataset.kaPagination = '1';
+      context.paginationEl.dataset.kaFiltersQueryId = context.state.queryId;
       context.element?.after(context.paginationEl);
     }
+
+    context.paginationEl.dataset.kaFiltersQueryId = context.state.queryId;
 
     if (meta && meta.pagination) {
       context.paginationEl.innerHTML = meta.pagination;
@@ -705,28 +834,55 @@ const KAFacetedFilters = (() => {
 
   const requestUpdate = (context) =>
     new Promise((resolve) => {
-      if (!context || context.loading) {
+      if (!context) {
         resolve(null);
         return;
       }
 
+      if (context.state.ajax === false) {
+        context.state.persistUrl = true;
+        updateUrl(context);
+        window.location.reload();
+        resolve(null);
+        return;
+      }
+
+      if (context.abortController && typeof context.abortController.abort === 'function') {
+        context.abortController.abort();
+      }
+
+      const abortController =
+        typeof AbortController === 'function' ? new AbortController() : null;
+      context.abortController = abortController;
+      const requestId = (context.requestId || 0) + 1;
+      context.requestId = requestId;
       context.loading = true;
+
       const payload = buildPayload(context);
       const body = new URLSearchParams();
       body.append('action', KingAddonsFacetedFilters.action);
       body.append('nonce', KingAddonsFacetedFilters.nonce);
       body.append('payload', JSON.stringify(payload));
 
-      fetch(KingAddonsFacetedFilters.ajaxUrl, {
+      const fetchOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         body: body.toString(),
         credentials: 'same-origin',
-      })
+      };
+      if (abortController) {
+        fetchOptions.signal = abortController.signal;
+      }
+
+      fetch(KingAddonsFacetedFilters.ajaxUrl, fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+          if (requestId !== context.requestId) {
+            resolve(null);
+            return;
+          }
           if (response && response.success && response.data) {
             if (response.data.html) {
               replaceGridHtml(context, response.data.html);
@@ -740,19 +896,52 @@ const KAFacetedFilters = (() => {
             if (response.data.counts) {
               context.state.counts = response.data.counts;
               renderCounts(context);
+              applyMetaSelectOptions(context, response.data.counts);
             }
           }
           resolve(response);
         })
-        .catch(() => resolve(null))
+        .catch((error) => {
+          if (error && error.name === 'AbortError') {
+            resolve(null);
+            return;
+          }
+          resolve(null);
+        })
         .finally(() => {
+          if (requestId !== context.requestId) {
+            return;
+          }
           context.loading = false;
+          context.abortController = null;
           renderActiveFilters(context);
         });
     });
 
+  const publish = (context, immediate) => {
+    renderActiveFilters(context);
+    if (context.state.applyMode && !immediate) {
+      context.state.pending = true;
+      document
+        .querySelectorAll(`[data-ka-apply-for="${cssEscape(context.state.queryId)}"]`)
+        .forEach((button) => button.classList.add('is-pending'));
+      return;
+    }
+    context.state.pending = false;
+    document
+      .querySelectorAll(`[data-ka-apply-for="${cssEscape(context.state.queryId)}"]`)
+      .forEach((button) => button.classList.remove('is-pending'));
+    updateUrl(context);
+    requestUpdate(context);
+  };
+
   const handleFilterEvent = (element) => {
-    const queryId = element.dataset.kaFiltersQueryId || '';
+    let queryId = element.dataset.kaFiltersQueryId || '';
+    if (!queryId) {
+      const scoped = element.closest('[data-ka-filters-query-id], [data-ka-query-id]');
+      queryId =
+        (scoped && (scoped.dataset.kaFiltersQueryId || scoped.dataset.kaQueryId)) || '';
+    }
     const context = contexts[queryId];
     if (!context) {
       return;
@@ -765,18 +954,14 @@ const KAFacetedFilters = (() => {
       const term = element.dataset.kaTerm;
       applyTaxonomy(context, taxonomy, term, element.checked);
       context.state.page = 1;
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      publish(context, false);
     }
 
     if (type === 'price') {
       const role = element.dataset.kaPriceRole;
       applyPrice(context, role, element.value);
       context.state.page = 1;
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      publish(context, false);
     }
 
     if (type === 'meta') {
@@ -804,9 +989,7 @@ const KAFacetedFilters = (() => {
         }
       }
       context.state.page = 1;
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      publish(context, false);
     }
 
     if (type === 'price-bucket') {
@@ -831,26 +1014,21 @@ const KAFacetedFilters = (() => {
       }
       context.state.page = 1;
       syncFiltersUI(context);
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      context.state.page = 1;
+      publish(context, false);
     }
 
     if (type === 'search') {
       debounce(`search-${queryId}`, () => {
         applySearch(context, element.value);
         context.state.page = 1;
-        updateUrl(context);
-        renderActiveFilters(context);
-        requestUpdate(context);
+        publish(context, false);
       }, 400);
     }
 
     if (type === 'reset') {
       clearFilters(context);
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      publish(context, true);
     }
 
     if (type === 'active-filters' && element.dataset.kaFilterRemoveType) {
@@ -896,9 +1074,7 @@ const KAFacetedFilters = (() => {
       }
       context.state.page = 1;
       syncFiltersUI(context);
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      publish(context, false);
     }
 
     if (type === 'sort') {
@@ -906,9 +1082,7 @@ const KAFacetedFilters = (() => {
       const order = element.dataset.kaOrder || '';
       applySort(context, orderby, order);
       context.state.page = 1;
-      updateUrl(context);
-      renderActiveFilters(context);
-      requestUpdate(context);
+      publish(context, true);
     }
 
     if (type === 'pagination') {
@@ -921,7 +1095,10 @@ const KAFacetedFilters = (() => {
 
   const bindFilterEvents = () => {
     document.addEventListener('click', (event) => {
-      const target = event.target;
+      const target =
+        event.target instanceof HTMLElement
+          ? event.target.closest('[data-ka-filter-type]')
+          : null;
       if (!(target instanceof HTMLElement)) {
         return;
       }
@@ -932,7 +1109,7 @@ const KAFacetedFilters = (() => {
       }
 
       if (
-        ['taxonomy', 'reset', 'active-filters', 'sort', 'pagination', 'meta', 'price-bucket'].includes(
+        ['reset', 'active-filters', 'sort', 'pagination', 'price-bucket'].includes(
           filterType
         )
       ) {
@@ -969,11 +1146,154 @@ const KAFacetedFilters = (() => {
     });
   };
 
+    const labelText = (key, fallback) =>
+    (typeof KingAddonsFacetedFilters !== 'undefined' &&
+      KingAddonsFacetedFilters.i18n &&
+      KingAddonsFacetedFilters.i18n[key]) ||
+    fallback;
+
+  const filterWidgets = (context) => {
+    const seen = new Set();
+    const nodes = [];
+    document
+      .querySelectorAll(`[data-ka-filters-query-id="${cssEscape(context.state.queryId)}"]`)
+      .forEach((node) => {
+        if (context.element.contains(node)) {
+          return;
+        }
+        const widget =
+          node.closest('.elementor-widget') ||
+          node.closest('.king-addons-facet, .ka-facet-meta, .king-addons-active-filters') ||
+          node;
+        if (seen.has(widget) || context.element.contains(widget)) {
+          return;
+        }
+        seen.add(widget);
+        nodes.push(widget);
+      });
+    return nodes;
+  };
+
+  const setupChrome = (context) => {
+    if (context.chrome) {
+      return;
+    }
+    context.chrome = true;
+    const id = context.state.queryId;
+
+    const apply = document.createElement('button');
+    apply.type = 'button';
+    apply.className = 'ka-filters-apply';
+    apply.dataset.kaApplyFor = id;
+    apply.textContent = labelText('apply', 'Apply');
+    apply.hidden = !context.state.applyMode;
+    if (context.state.drawer) {
+      apply.classList.add('ka-filters-apply--desktop');
+    }
+    context.element.before(apply);
+    apply.addEventListener('click', () => publish(context, true));
+
+    const open = document.createElement('button');
+    open.type = 'button';
+    open.className = 'ka-filters-drawer-open';
+    open.textContent = labelText('filters', 'Filters');
+    open.hidden = !context.state.drawer;
+    context.element.before(open);
+    if (context.state.drawer) {
+      context.element.classList.add('ka-filters-has-drawer');
+    }
+
+    const drawer = document.createElement('div');
+    drawer.className = 'ka-filters-drawer';
+    drawer.hidden = true;
+    drawer.innerHTML =
+      '<div class="ka-filters-drawer__backdrop" data-ka-drawer-close="1"></div>' +
+      '<div class="ka-filters-drawer__panel" role="dialog" aria-modal="true">' +
+      '<div class="ka-filters-drawer__bar"><strong></strong><button type="button" data-ka-drawer-close="1"></button></div>' +
+      '<div class="ka-filters-drawer__body"></div>' +
+      '<div class="ka-filters-drawer__footer"><button type="button" class="ka-filters-drawer__apply"></button></div>' +
+      '</div>';
+    drawer.querySelector('strong').textContent = labelText('filters', 'Filters');
+    drawer.querySelector('.ka-filters-drawer__bar button').textContent = labelText('close', 'Close');
+    const footerBtn = drawer.querySelector('.ka-filters-drawer__apply');
+    footerBtn.dataset.kaApplyFor = id;
+    footerBtn.textContent = context.state.applyMode
+      ? labelText('apply', 'Apply')
+      : labelText('showResults', 'Show results');
+    document.body.appendChild(drawer);
+
+    const slots = [];
+    const park = (intoDrawer) => {
+      if (!intoDrawer) {
+        slots.forEach(({ node, placeholder }) => {
+          if (placeholder.parentNode) {
+            placeholder.parentNode.insertBefore(node, placeholder);
+          }
+        });
+        drawer.hidden = true;
+        document.body.classList.remove('ka-filters-drawer-open');
+        return;
+      }
+      if (!slots.length) {
+        filterWidgets(context).forEach((node) => {
+          const placeholder = document.createComment('ka-filters-slot');
+          if (!node.parentNode) {
+            return;
+          }
+          node.parentNode.insertBefore(placeholder, node);
+          slots.push({ node, placeholder });
+        });
+      }
+      const body = drawer.querySelector('.ka-filters-drawer__body');
+      slots.forEach(({ node }) => body.appendChild(node));
+    };
+
+    const mq = window.matchMedia('(max-width: 767px)');
+    const syncPlacement = () => park(!!context.state.drawer && mq.matches);
+    syncPlacement();
+    if (typeof mq.addEventListener === 'function') {
+      mq.addEventListener('change', syncPlacement);
+    }
+
+    const closeDrawer = () => {
+      drawer.hidden = true;
+      document.body.classList.remove('ka-filters-drawer-open');
+    };
+
+    open.addEventListener('click', () => {
+      if (!context.state.drawer || !mq.matches) {
+        return;
+      }
+      park(true);
+      drawer.hidden = false;
+      document.body.classList.add('ka-filters-drawer-open');
+    });
+
+    drawer.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+      if (target.closest('.ka-filters-drawer__apply')) {
+        publish(context, true);
+        closeDrawer();
+        return;
+      }
+      if (target.closest('[data-ka-drawer-close]')) {
+        closeDrawer();
+      }
+    });
+  };
+
   const init = () => {
     const grids = findGrids();
     grids.forEach((grid) => ensureContext(grid));
     bindFilterEvents();
-    Object.values(contexts).forEach((context) => syncFiltersUI(context));
+    Object.values(contexts).forEach((context) => {
+      setupChrome(context);
+      syncFiltersUI(context);
+      requestUpdate(context);
+    });
   };
 
   return {

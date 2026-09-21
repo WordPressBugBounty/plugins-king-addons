@@ -453,7 +453,7 @@
                 const promoBlock = document.createElement('div');
                 promoBlock.className = 'king-addons-promo-block';
                 promoBlock.innerHTML = `
-                    <div class="king-addons-promo-title">Get <span class="king-addons-promo-highlight">4,000+</span> premium templates and sections, <span class="king-addons-promo-highlight">80+</span> widgets, <span class="king-addons-promo-highlight">200+</span> advanced features, and AI tools for Elementor. From <span class="king-addons-promo-highlight">$4</span>/mo, billed annually.</div>
+                    <div class="king-addons-promo-title">Get <span class="king-addons-promo-highlight">4,000+</span> premium templates and sections, <span class="king-addons-promo-highlight">100+</span> widgets, <span class="king-addons-promo-highlight">200+</span> advanced features, and AI tools for Elementor. From <span class="king-addons-promo-highlight">$4</span>/mo, billed annually.</div>
                     <div class="king-addons-promo-text">Upgrade now and boost your website's performance!</div>
                     <div class="king-addons-promo-small">Trusted by 20,000+ users</div>
                     <div class="king-addons-promo-buttons">

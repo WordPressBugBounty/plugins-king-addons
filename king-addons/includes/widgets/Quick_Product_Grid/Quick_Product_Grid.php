@@ -190,12 +190,6 @@ class Quick_Product_Grid extends Widget_Base
 
         $settings = $this->get_settings_for_display();
         $query = $this->build_query($settings);
-
-        if (!$query->have_posts()) {
-            wp_reset_postdata();
-            return;
-        }
-
         $wrapper_classes = $this->get_wrapper_classes($settings);
         $wrapper_style = $this->get_wrapper_style($settings);
         $wrapper_handle = self::FILTER_WRAPPER_HANDLE;
@@ -206,8 +200,14 @@ class Quick_Product_Grid extends Widget_Base
             $this->add_render_attribute($wrapper_handle, 'style', $wrapper_style);
         }
 
+        echo '<div ' . $this->get_render_attribute_string($wrapper_handle) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        if (!$query->have_posts()) {
+            echo '<p class="king-addons-quick-product-grid__empty">' . esc_html__('No products found.', 'king-addons') . '</p>';
+            echo '</div>';
+            wp_reset_postdata();
+            return;
+        }
         ?>
-        <div <?php echo $this->get_render_attribute_string($wrapper_handle); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
             <div class="king-addons-quick-product-grid__grid">
                 <?php
                 while ($query->have_posts()) :

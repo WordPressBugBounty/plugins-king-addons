@@ -36,7 +36,17 @@ class Facet_Search extends Widget_Base
      */
     public function get_title(): string
     {
-        return esc_html__('Facet Search', 'king-addons');
+        return esc_html__('Search Filter', 'king-addons');
+    }
+
+    /**
+     * Keywords.
+     *
+     * @return array<int, string>
+     */
+    public function get_keywords(): array
+    {
+        return ['shop', 'product', 'filter', 'filters', 'ajax', 'woocommerce', 'search', 'faceted', 'smart filters'];
     }
 
     /**
@@ -98,7 +108,7 @@ class Facet_Search extends Widget_Base
         $this->start_controls_section(
             'kng_facet_search_section',
             [
-                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Facet Search', 'king-addons'),
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Search Filter', 'king-addons'),
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -106,9 +116,10 @@ class Facet_Search extends Widget_Base
         $this->add_control(
             'kng_filters_query_id',
             [
-                'label' => esc_html__('Filter Query ID', 'king-addons'),
+                'label' => esc_html__('Shop Filters ID', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
                 'placeholder' => esc_html__('shop_grid_1', 'king-addons'),
+                'description' => esc_html__('Must match the Shop Filters ID on the product grid.', 'king-addons'),
             ]
         );
 
@@ -122,6 +133,9 @@ class Facet_Search extends Widget_Base
         );
 
         $this->end_controls_section();
+
+        require_once KING_ADDONS_PATH . 'includes/helpers/Faceted/Style_Controls.php';
+        Facet_Style_Controls::fields($this, '{{WRAPPER}} .king-addons-facet--search .king-addons-facet__input');
     }
 
     /**

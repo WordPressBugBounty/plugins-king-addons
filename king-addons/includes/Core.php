@@ -591,10 +591,10 @@ final class Core
             <p style="font-size: 15px; margin:0; display: flex; align-items: center;">
                <span>
   Get <strong style="font-weight: 700;">4,000+</strong> premium templates and sections,
-  <strong style="font-weight: 700;">80+</strong> widgets,
+  <strong style="font-weight: 700;">100+</strong> widgets,
   <strong style="font-weight: 700;">200+</strong> advanced features,
   and AI tools for Elementor.
-  From $<strong style="font-weight: 700;">4</strong>/mo, billed annually.
+  From $<strong style="font-weight: 700;">6.99</strong>/mo.
 </span>
             </p>
             <p style="font-size: 14px; opacity: 0.6;">Trusted by 20,000+ users</p>

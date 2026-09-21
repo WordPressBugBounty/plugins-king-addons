@@ -64,7 +64,7 @@ const KING_ADDONS_FEAT_ANIMATED_GRADIENT_MESH_BACKGROUND = false; // Need fixes
 
 // Features - Others
 const KING_ADDONS_FEAT_COOKIE_PREFERENCES_BUTTON = false;
-const KING_ADDONS_FEAT_FACETED_FILTERS = false;
+const KING_ADDONS_FEAT_FACETED_FILTERS = true; /** IN QA */
 const KING_ADDONS_FEAT_PRICING_TABLE_EXT = false;
 const KING_ADDONS_FEAT_STICKY_VIDEO = false;
 const KING_ADDONS_FEAT_WISHLIST_BUTTON = false;
@@ -140,12 +140,12 @@ const KING_ADDONS_WGT_WOOCOMMERCE_FLOATING_CART_ICON = false; // Moved from Modu
 const KING_ADDONS_WGT_PRICING_TABLE_EXT = false; // Moved from ModulesMap features -> widgets (disabled for QA rollout)
 
 // Widgets - Faceted Filters (NEW) - the numbers of new widgets added: 6
-const KING_ADDONS_WGT_FACET_ACTIVE_FILTERS = false;
-const KING_ADDONS_WGT_FACET_META = false;
-const KING_ADDONS_WGT_FACET_PRICE = false;
-const KING_ADDONS_WGT_FACET_RESET = false;
-const KING_ADDONS_WGT_FACET_SEARCH = false;
-const KING_ADDONS_WGT_FACET_TAXONOMY = false;
+const KING_ADDONS_WGT_FACET_ACTIVE_FILTERS = true; /** IN QA */
+const KING_ADDONS_WGT_FACET_META = true; /** IN QA */
+const KING_ADDONS_WGT_FACET_PRICE = true; /** IN QA */
+const KING_ADDONS_WGT_FACET_RESET = true; /** IN QA */
+const KING_ADDONS_WGT_FACET_SEARCH = true; /** IN QA */
+const KING_ADDONS_WGT_FACET_TAXONOMY = true; /** IN QA */
 
 // Widgets - Theme Builder (NEW) - the numbers of new widgets added: 19
 const KING_ADDONS_WGT_TB_404_DESCRIPTION = true;

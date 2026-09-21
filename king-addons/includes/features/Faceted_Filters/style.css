@@ -2,6 +2,141 @@
   display: block;
 }
 
+.ka-filters-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ka-filters-pagination button {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ka-filters-pagination button.is-active {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+.king-addons-quick-product-grid__empty,
+.ka-woo-products-grid__empty {
+  margin: 0;
+  padding: 16px 0;
+}
+
+.ka-filters-apply,
+.ka-filters-drawer-open,
+.ka-filters-drawer__apply {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: 0 0 12px;
+  padding: 8px 16px;
+  border: 1px solid #111827;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.ka-filters-apply.is-pending,
+.ka-filters-drawer__apply.is-pending {
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.15);
+}
+
+.ka-filters-drawer-open {
+  display: none;
+  background: #fff;
+  color: #111827;
+}
+
+.ka-filters-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+}
+
+.ka-filters-drawer[hidden] {
+  display: none;
+}
+
+.ka-filters-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.45);
+}
+
+.ka-filters-drawer__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 100%);
+  height: 100%;
+  background: #fff;
+  box-shadow: -12px 0 40px rgba(16, 24, 40, 0.16);
+}
+
+.ka-filters-drawer__bar,
+.ka-filters-drawer__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.ka-filters-drawer__footer {
+  border-bottom: 0;
+  border-top: 1px solid #eaecf0;
+}
+
+.ka-filters-drawer__bar button {
+  border: 0;
+  background: transparent;
+  color: #475467;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ka-filters-drawer__body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 8px 16px 24px;
+}
+
+.ka-filters-drawer__apply {
+  width: 100%;
+  margin: 0;
+}
+
+body.ka-filters-drawer-open {
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .ka-filters-apply--desktop {
+    display: none;
+  }
+
+  button.ka-filters-drawer-open:not([hidden]) {
+    display: inline-flex;
+  }
+}
+
 
 
 
