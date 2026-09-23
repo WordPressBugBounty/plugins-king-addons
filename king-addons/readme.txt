@@ -1,7 +1,7 @@
 === King Addons for Elementor - 100+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce Builder, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.85
+Stable tag: 51.1.86
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -293,6 +293,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 12. AI SEO tools for WordPress, including automatic AI-generated image alt text for better image accessibility and SEO.
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.86 - September 23, 2026 =
+* **Security:** Media Grid and Image Accordion overlay animation values (`overlay_animation`, `overlay_animation_size`, `overlay_animation_timing`) are allowlisted and escaped before they are printed in the overlay `class` attribute.
+* **Fix:** The shared animation allowlist keeps both free and Pro slugs. Pro slide, skew, scale, and roll values such as `slide-top` were previously dropped.
+* **Fix:** Accordion content no longer jumps at the end of the close animation. The panel height transitions together with its padding and border.
 
 = King Addons for Elementor version 51.1.85 - September 21, 2026 =
 * **New:** Shop Filters — six Elementor widgets (Taxonomy Filter, Price Filter, Search Filter, Custom Field Filter, Active Filters, Reset Filters) that filter product grids without reloading the page. Bind filters and a grid with a Shop Filters ID. Variable products can match any variation in the range or the price shown on the card. Color and image swatches, keeping filters in the URL, and Custom Field Filter require Pro. Child categories, the mobile filter drawer, and the Apply button are Pro. Swatches use the color saved on the WooCommerce attribute.

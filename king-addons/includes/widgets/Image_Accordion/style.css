@@ -34,7 +34,12 @@
 .king-addons-image-accordion-wrap .king-addons-image-accordion-item {
     position: relative;
     overflow: hidden;
-    flex: 1;
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 0;
+    /* Duration comes from the widget control. Only flex-grow should move;
+       transitioning every property makes width snap when the transition ends. */
+    transition-property: flex-grow;
 }
 
 .king-addons-image-accordion-wrap .king-addons-image-accordion-item .king-addons-accordion-background {
@@ -76,6 +81,25 @@
     overflow: hidden;
     width: 100%;
     height: 100%;
+}
+
+.king-addons-image-accordion-row .king-addons-img-accordion-media-hover {
+    width: var(--king-acc-open-size, 100%);
+    height: 100%;
+}
+
+.king-addons-image-accordion-column .king-addons-img-accordion-media-hover {
+    width: 100%;
+    height: var(--king-acc-open-size, 100%);
+}
+
+.king-addons-img-accordion-item-title,
+.king-addons-img-accordion-item-description,
+.king-addons-img-accordion-item-button,
+.king-addons-img-accordion-item-separator,
+.king-addons-img-accordion-item-lightbox,
+.king-addons-img-accordion-hover-bg {
+    transition-property: opacity, transform, filter;
 }
 
 .king-addons-img-accordion-media-hover-top {

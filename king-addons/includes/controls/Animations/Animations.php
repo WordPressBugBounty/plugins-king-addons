@@ -93,8 +93,12 @@ class Animations extends Base_Data_Control
     {
         $slugs = ['none'];
 
-        foreach (array_merge(self::$free_animations, self::$pro_animations) as $group) {
-            $slugs = array_merge($slugs, array_keys($group));
+        // Do not array_merge the two maps first: they share group keys (Slide, Skew, …),
+        // so the Pro map would replace the free slugs and drop values such as slide-top.
+        foreach ([self::$free_animations, self::$pro_animations] as $animations) {
+            foreach ($animations as $group) {
+                $slugs = array_merge($slugs, array_keys($group));
+            }
         }
 
         return array_values(array_unique($slugs));

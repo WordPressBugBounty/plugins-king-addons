@@ -14,6 +14,86 @@
                             const accordionTrigger = $accordion.data("accordion-trigger");
                             const interactionSpeed = +$accordion.data("interaction-speed") * 1000;
                             let   activeIndex      = +$accordion.data("active-index") - 1;
+                            $accordion.css("--king-acc-speed", (interactionSpeed || 400) + "ms");
+
+                            // Padding and border on the panel cannot shrink with the grid
+                            // row, so they jump off at the end. Move them inside the clip.
+                            const preparePanel = ($panel) => {
+                                if (!$panel.length || $panel.data("kaBoxReady")) {
+                                    return;
+                                }
+                                let $clip = $panel.children(".king-addons-acc-panel-clip");
+                                if (!$clip.length) {
+                                    $panel.children().wrapAll('<div class="king-addons-acc-panel-clip"></div>');
+                                    $clip = $panel.children(".king-addons-acc-panel-clip");
+                                }
+                                let $content = $clip.children(".king-addons-acc-panel-content");
+                                if (!$content.length) {
+                                    $clip.children().wrapAll('<div class="king-addons-acc-panel-content"></div>');
+                                    $content = $clip.children(".king-addons-acc-panel-content");
+                                }
+                                const styles = window.getComputedStyle($panel[0]);
+                                $content.css({
+                                    paddingTop: styles.paddingTop,
+                                    paddingRight: styles.paddingRight,
+                                    paddingBottom: styles.paddingBottom,
+                                    paddingLeft: styles.paddingLeft,
+                                    borderTopWidth: styles.borderTopWidth,
+                                    borderRightWidth: styles.borderRightWidth,
+                                    borderBottomWidth: styles.borderBottomWidth,
+                                    borderLeftWidth: styles.borderLeftWidth,
+                                    borderTopStyle: styles.borderTopStyle,
+                                    borderRightStyle: styles.borderRightStyle,
+                                    borderBottomStyle: styles.borderBottomStyle,
+                                    borderLeftStyle: styles.borderLeftStyle,
+                                    borderTopColor: styles.borderTopColor,
+                                    borderRightColor: styles.borderRightColor,
+                                    borderBottomColor: styles.borderBottomColor,
+                                    borderLeftColor: styles.borderLeftColor,
+                                    borderRadius: styles.borderRadius,
+                                    backgroundColor: styles.backgroundColor,
+                                    boxShadow: styles.boxShadow,
+                                });
+                                $panel.css({
+                                    padding: 0,
+                                    borderWidth: 0,
+                                    backgroundColor: "transparent",
+                                    boxShadow: "none",
+                                    height: "",
+                                    overflow: "",
+                                    display: "",
+                                });
+                                $panel.data("kaBoxReady", 1);
+                            };
+
+                            $scope.find(".king-addons-acc-panel").each((_, panel) => {
+                                preparePanel($(panel));
+                            });
+
+                            const openPanel = ($btn) => {
+                                const $panel = $btn.next(".king-addons-acc-panel");
+                                if (!$panel.length) {
+                                    return;
+                                }
+                                preparePanel($panel);
+                                $btn.addClass("king-addons-acc-active");
+                                $panel.addClass("king-addons-acc-panel-active");
+                            };
+
+                            const closePanel = ($btn) => {
+                                const $panel = $btn.next(".king-addons-acc-panel");
+                                $btn.removeClass("king-addons-acc-active");
+                                $panel.removeClass("king-addons-acc-panel-active");
+                            };
+
+                            const togglePanel = ($btn) => {
+                                const $panel = $btn.next(".king-addons-acc-panel");
+                                if ($panel.hasClass("king-addons-acc-panel-active") && $panel.is(":visible")) {
+                                    closePanel($btn);
+                                } else {
+                                    openPanel($btn);
+                                }
+                            };
 
                             // Check URL for "active_panel"
                             const activeTabParamPos = window.location.href.indexOf("active_panel=");
@@ -24,15 +104,7 @@
                             }
 
                             // Helper: toggles a single accordion panel
-                            const togglePanel = ($btn) => {
-                                $btn.toggleClass("king-addons-acc-active");
-                                const $panel = $btn.next();
-                                if (!$panel.hasClass("king-addons-acc-panel-active")) {
-                                    $panel.slideDown(interactionSpeed).addClass("king-addons-acc-panel-active");
-                                } else {
-                                    $panel.slideUp(interactionSpeed).removeClass("king-addons-acc-panel-active");
-                                }
-                            };
+                            // openPanel / closePanel are defined above.
 
                             // Accordion: click trigger
                             if (accordionTrigger === "click") {
@@ -46,9 +118,7 @@
                                         });
                                         $scope.find(".king-addons-acc-panel").each((i, panel) => {
                                             if (i !== currentIndex) {
-                                                $(panel)
-                                                    .removeClass("king-addons-acc-panel-active")
-                                                    .slideUp(interactionSpeed);
+                                                closePanel($(panel).prev(".king-addons-acc-button"));
                                             }
                                         });
 
@@ -71,19 +141,13 @@
                                 $accItems.on("mouseenter", function () {
                                     const currentIndex = $accItems.index(this);
                                     const $btn   = $(this).find(".king-addons-acc-button");
-                                    const $panel = $(this).find(".king-addons-acc-panel");
 
-                                    // Activate hovered item
-                                    $btn.addClass("king-addons-acc-active");
-                                    $panel.slideDown(interactionSpeed).addClass("king-addons-acc-panel-active");
+                                    openPanel($btn);
 
                                     // Deactivate others
                                     $accItems.each((i, item) => {
                                         if (i !== currentIndex) {
-                                            const $otherBtn   = $(item).find(".king-addons-acc-button");
-                                            const $otherPanel = $(item).find(".king-addons-acc-panel");
-                                            $otherBtn.removeClass("king-addons-acc-active");
-                                            $otherPanel.slideUp(interactionSpeed).removeClass("king-addons-acc-panel-active");
+                                            closePanel($(item).find(".king-addons-acc-button"));
                                         }
                                     });
                                 });
@@ -148,10 +212,8 @@
                                                 // Show and activate
                                                 $item.show();
                                                 const $btn   = $item.find(".king-addons-acc-button");
-                                                const $panel = $item.find(".king-addons-acc-panel");
                                                 if (!$btn.hasClass("king-addons-acc-active")) {
-                                                    $btn.addClass("king-addons-acc-active");
-                                                    $panel.addClass("king-addons-acc-panel-active").slideDown(interactionSpeed);
+                                                    openPanel($btn);
                                                 }
                                             }
                                         });
@@ -161,8 +223,7 @@
                                             const $item = $(el);
                                             if ($item.hasClass("king-addons-accordion-item-wrap")) {
                                                 $item.show();
-                                                $item.find(".king-addons-acc-panel").removeClass("king-addons-acc-panel-active").slideUp(interactionSpeed);
-                                                $item.find(".king-addons-acc-button").removeClass("king-addons-acc-active");
+                                                closePanel($item.find(".king-addons-acc-button"));
                                             }
                                         });
                                     }

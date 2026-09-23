@@ -2158,21 +2158,24 @@ $this->end_controls_section();
 
     public function render_media_overlay($settings)
     {
-        echo '<div class="king-addons-img-accordion-hover-bg ' . $this->get_animation_class($settings, 'overlay') . '"></div>';
+        echo '<div class="king-addons-img-accordion-hover-bg ' . esc_attr($this->get_animation_class($settings, 'overlay')) . '"></div>';
     }
 
     public function get_animation_class($data, $object)
     {
-        $class = '';
-        /** @noinspection DuplicatedCode */
-        if ('none' !== $data[$object . '_animation']) {
-            $class .= ' king-addons-' . $object . '-' . $data[$object . '_animation'];
-            $class .= ' king-addons-anim-size-' . $data[$object . '_animation_size'];
-            $class .= ' king-addons-animation-timing-' . $data[$object . '_animation_timing'];
-            if ('yes' === $data[$object . '_animation_tr']) {
-                $class .= ' king-addons-anim-transparency';
-            }
+        $animation = Grid_Ajax_Security::sanitize_animation($data[$object . '_animation'] ?? 'none');
+        if ('none' === $animation) {
+            return '';
         }
+
+        $class = ' king-addons-' . sanitize_html_class((string) $object) . '-' . $animation;
+        $class .= ' king-addons-anim-size-' . Grid_Ajax_Security::sanitize_animation_size($data[$object . '_animation_size'] ?? 'large');
+        $class .= ' king-addons-animation-timing-' . Grid_Ajax_Security::sanitize_animation_timing($data[$object . '_animation_timing'] ?? 'ease-default');
+
+        if ('yes' === Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_tr'] ?? '')) {
+            $class .= ' king-addons-anim-transparency';
+        }
+
         return $class;
     }
 

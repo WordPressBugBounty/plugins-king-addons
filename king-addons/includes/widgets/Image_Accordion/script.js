@@ -34,6 +34,54 @@
                                 lightboxSettings = lightboxAttr ? JSON.parse(lightboxAttr) : "",
                                 $accordionItems = $elem.find(".king-addons-image-accordion-item");
 
+                            // Content stays at the open-item size for the whole animation.
+                            // Clearing that size when the transition ends was an instant
+                            // resize: the text wrapped and the block jumped.
+                            const contentAxis = () =>
+                                $wrap.css("flex-direction") === "column" ? "height" : "width";
+
+                            const setOpenContentSize = () => {
+                                const axis = contentAxis();
+                                const margin = axis === "height" ? "margin-bottom" : "margin-right";
+                                const count = $accordionItems.length;
+                                let gaps = 0;
+
+                                $accordionItems.each(function (index) {
+                                    if (index < count - 1) {
+                                        gaps += parseFloat($(this).css(margin)) || 0;
+                                    }
+                                });
+
+                                const total =
+                                    ($wrap[axis === "height" ? "innerHeight" : "innerWidth"]() || 0) - gaps;
+                                const activeGrow = parseFloat(settings.activeItem.activeWidth) || 1;
+                                let inactiveGrow = 1;
+
+                                $accordionItems.each(function () {
+                                    if (!$(this).hasClass("king-addons-image-accordion-item-grow")) {
+                                        inactiveGrow = parseFloat(window.getComputedStyle(this).flexGrow) || 1;
+                                        return false;
+                                    }
+                                });
+
+                                const sum = activeGrow + inactiveGrow * Math.max(count - 1, 0);
+                                if (total <= 0 || sum <= 0) {
+                                    return;
+                                }
+
+                                $wrap[0].style.setProperty(
+                                    "--king-acc-open-size",
+                                    Math.round((total * activeGrow) / sum) + "px"
+                                );
+                            };
+
+                            setOpenContentSize();
+                            const resizeEvent = "resize.kingAddonsImageAccordion" + ($elem.data("id") || "item");
+                            $(window).off(resizeEvent).on(resizeEvent, setOpenContentSize);
+                            this.onDestroy = () => {
+                                $(window).off(resizeEvent);
+                            };
+
                             // Adjust row/column layout if necessary
                             if ($wrapContainer.hasClass("king-addons-acc-no-column")) {
                                 if (!$elem.hasClass("king-addons-image-accordion-row")) {
@@ -170,26 +218,30 @@
                             if (settings.activeItem.interaction === "hover") {
                                 mediaHoverLink();
 
-                                $accordionItems
-                                    .on("mouseenter", function () {
-                                        $accordionItems.removeClass(
-                                            "king-addons-image-accordion-item-grow"
-                                        );
-                                        $accordionItems
-                                            .find(".king-addons-animation-wrap")
-                                            .removeClass("king-addons-animation-wrap-active");
+                                $accordionItems.on("mouseenter", function () {
+                                    if ($(this).hasClass("king-addons-image-accordion-item-grow")) {
+                                        return;
+                                    }
+                                    $accordionItems.removeClass(
+                                        "king-addons-image-accordion-item-grow"
+                                    );
+                                    $accordionItems
+                                        .find(".king-addons-animation-wrap")
+                                        .removeClass("king-addons-animation-wrap-active");
 
-                                        $(this).addClass("king-addons-image-accordion-item-grow");
-                                        $(this)
-                                            .find(".king-addons-animation-wrap")
-                                            .addClass("king-addons-animation-wrap-active");
-                                    })
-                                    .on("mouseleave", function () {
-                                        $(this).removeClass("king-addons-image-accordion-item-grow");
-                                        $(this)
-                                            .find(".king-addons-animation-wrap")
-                                            .removeClass("king-addons-animation-wrap-active");
-                                    });
+                                    $(this).addClass("king-addons-image-accordion-item-grow");
+                                    $(this)
+                                        .find(".king-addons-animation-wrap")
+                                        .addClass("king-addons-animation-wrap-active");
+                                });
+                                $wrap.on("mouseleave", function () {
+                                    $accordionItems.removeClass(
+                                        "king-addons-image-accordion-item-grow"
+                                    );
+                                    $accordionItems
+                                        .find(".king-addons-animation-wrap")
+                                        .removeClass("king-addons-animation-wrap-active");
+                                });
 
                                 // Interaction type: "click"
                             } else if (settings.activeItem.interaction === "click") {

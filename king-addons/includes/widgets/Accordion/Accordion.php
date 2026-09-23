@@ -1333,13 +1333,13 @@ $this->end_controls_section();
             }
             echo '<' . tag_escape($accordion_title_tag) . ' class="king-addons-acc-title-text">' . esc_html($acc['accordion_title'] ?? '') . '</' . tag_escape($accordion_title_tag) . '></span>';
             $this->render_second_icon($settings, $acc);
-            echo '</button><div class="king-addons-acc-panel">';
+            echo '</button><div class="king-addons-acc-panel"><div class="king-addons-acc-panel-clip">';
             if ('editor' === $acc_content_type) {
                 echo '<div class="king-addons-acc-panel-content">' . wp_kses_post($acc['accordion_content'] ?? '') . '</div>';
             } else {
-                echo $this->king_addons_accordion_template($acc['accordion_content_template']);
+                echo '<div class="king-addons-acc-panel-content">' . $this->king_addons_accordion_template($acc['accordion_content_template']) . '</div>';
             }
-            echo '</div></div>';
+            echo '</div></div></div>';
         }
         echo '</div>';
     }
