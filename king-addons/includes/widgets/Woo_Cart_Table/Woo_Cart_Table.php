@@ -403,10 +403,13 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
     {
         $empty = WC()->cart->is_empty();
 
+        // Capture notices before cart HTML. Previously render_cart_html() printed
+        // them first via woocommerce_output_all_notices(), so ajax fragments
+        // returned an empty notices string and the coupon widget stayed silent.
+        $notices = function_exists('wc_print_notices') ? wc_print_notices(true) : '';
         $cart_html = $empty ? self::render_empty_cart_html() : self::render_cart_html();
         $totals_html = self::render_totals_html($empty);
         $cross_html = self::render_cross_sells_html($empty);
-        $notices = function_exists('wc_print_notices') ? wc_print_notices(true) : '';
 
         return [
             'cart_html' => $cart_html,
@@ -427,9 +430,23 @@ class Woo_Cart_Table extends Abstract_Cart_Widget
     private static function render_cart_html(): string
     {
         ob_start();
-        woocommerce_output_all_notices();
+        $had_totals = has_action('woocommerce_cart_collaterals', 'woocommerce_cart_totals');
+        $had_cross = has_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display');
+        if ($had_totals) {
+            remove_action('woocommerce_cart_collaterals', 'woocommerce_cart_totals', 10);
+        }
+        if ($had_cross) {
+            remove_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display', 10);
+        }
         wc_get_template('cart/cart.php');
-        return (string) ob_get_clean();
+        if ($had_totals) {
+            add_action('woocommerce_cart_collaterals', 'woocommerce_cart_totals', 10);
+        }
+        if ($had_cross) {
+            add_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display', 10);
+        }
+        $html = (string) ob_get_clean();
+        return (string) preg_replace('#<div class="cart-collaterals">\s*</div>#', '', $html);
     }
 
     /**

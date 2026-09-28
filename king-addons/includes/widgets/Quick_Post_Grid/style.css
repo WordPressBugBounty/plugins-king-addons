@@ -8,6 +8,12 @@
     gap: var(--kng-post-grid-gap);
 }
 
+@media (max-width: 767px) {
+    .king-addons-post-grid__grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
+    }
+}
+
 .king-addons-post-grid__card {
     display: flex;
     flex-direction: column;

@@ -445,6 +445,12 @@ class Image_Comparison extends Widget_Base
         $allowed_tags['img']['decoding'] = true; // Allow decoding attribute for img tag
         $allowed_tags['img']['loading'] = true; // Allow loading attribute for img tag. It is for the lazy loading possibility.
 
+        $initial_position = 50;
+        if (isset($settings['kng_image_comparison_box_max_width']['size']) && $settings['kng_image_comparison_box_max_width']['size'] !== '') {
+            $initial_position = (float) $settings['kng_image_comparison_box_max_width']['size'];
+        }
+        $initial_position = max(0, min(100, $initial_position));
+
         ?>
         <div class="king-addons-image-comparison king-addons-image-comparison-<?php echo esc_attr($element_ID); ?>">
             <div class="king-addons-image-comparison-container">
@@ -461,7 +467,7 @@ class Image_Comparison extends Widget_Base
                     ?>
                 </div>
             </div>
-            <input type="range" min="0" max="100" value="50"
+            <input type="range" min="0" max="100" value="<?php echo esc_attr((string) $initial_position); ?>"
                    aria-label="<?php echo esc_html__('Percentage of the before image shown.', 'king-addons'); ?>"
                    class="king-addons-image-comparison-slider king-addons-image-comparison-slider-<?php echo esc_attr($element_ID); ?>"
             />
@@ -478,6 +484,10 @@ class Image_Comparison extends Widget_Base
             const slider = document.querySelector(' . wp_json_encode($slider_selector) . ');
             if (!container || !slider) {
                 return;
+            }
+            const computed = parseFloat(getComputedStyle(container).getPropertyValue("--position"));
+            if (!Number.isNaN(computed)) {
+                slider.value = String(Math.min(100, Math.max(0, computed)));
             }
             slider.addEventListener("input", (event) => {
                 container.style.setProperty("--position", `${event.target.value}%`);

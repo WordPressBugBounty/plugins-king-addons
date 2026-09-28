@@ -768,6 +768,21 @@ class Woo_Shortcode_My_Account extends Widget_Base
         }
 
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        $endpoint_permalink_fix = static function ($url, $endpoint, $value, $permalink) {
+            if (!function_exists('wc_get_page_permalink') || !function_exists('wc_get_endpoint_url')) {
+                return $url;
+            }
+            $account = wc_get_page_permalink('myaccount');
+            if (!$account) {
+                return $url;
+            }
+            if (untrailingslashit((string) $permalink) === untrailingslashit($account)) {
+                return $url;
+            }
+            return wc_get_endpoint_url($endpoint, $value, $account);
+        };
+        add_filter('woocommerce_get_endpoint_url', $endpoint_permalink_fix, 20, 4);
         echo do_shortcode('[woocommerce_my_account]');
+        remove_filter('woocommerce_get_endpoint_url', $endpoint_permalink_fix, 20);
     }
 }

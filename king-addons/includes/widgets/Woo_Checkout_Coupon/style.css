@@ -2,6 +2,15 @@
     width: 100%;
 }
 
+.ka-woo-checkout-coupon .woocommerce-form-coupon-toggle {
+    cursor: pointer;
+}
+
+.ka-woo-checkout-coupon a.showcoupon {
+    position: relative;
+    z-index: 1;
+}
+
 
 
 

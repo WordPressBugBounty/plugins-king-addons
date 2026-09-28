@@ -108,7 +108,13 @@
                     if (response.data.count !== undefined) {
                         updateCounters(response.data.count);
                     }
-                } else if (response?.data?.message) {
+                    if (response.data.page_html) {
+                        $('.king-addons-wishlist-page').each(function () {
+                            const $next = $(response.data.page_html);
+                            $(this).replaceWith($next);
+                        });
+                    }
+                } else if (response.data && response.data.message) {
                     alert(response.data.message);
                 } else {
                     alert(settings.labels?.error || 'Error');

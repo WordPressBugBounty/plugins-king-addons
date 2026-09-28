@@ -1367,6 +1367,11 @@ body.ka-v3-dark .ka-img-opt-actions {
         grid-template-columns: 1fr;
     }
 
+    .ka-img-opt-stat-card.large-card {
+        grid-column: auto;
+        max-width: 100%;
+    }
+
     .ka-img-opt-results-summary {
         grid-template-columns: 1fr;
     }

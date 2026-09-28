@@ -25,18 +25,105 @@ class Conditions
      */
     public static function normalize($raw): array
     {
-        if (is_array($raw)) {
-            return $raw;
-        }
+        $data = [];
 
-        if (is_string($raw) && !empty($raw)) {
+        if (is_array($raw)) {
+            $data = $raw;
+        } elseif (is_string($raw) && $raw !== '') {
             $decoded = json_decode($raw, true);
             if (is_array($decoded)) {
-                return $decoded;
+                $data = $decoded;
+            } else {
+                $unserialized = maybe_unserialize($raw);
+                $data = is_array($unserialized) ? $unserialized : [];
             }
         }
 
+        if (isset($data['groups']) && is_array($data['groups'])) {
+            return $data;
+        }
+
         return ['groups' => []];
+    }
+
+    /**
+     * Default condition groups for a Theme Builder sub-location.
+     *
+     * Legacy templates stored "include all" without groups. New templates
+     * created from the Theme Builder modal get an explicit post_type rule.
+     * Filling the same default here keeps both at equal specificity so a
+     * later stub cannot hide a fully built Single template.
+     *
+     * @param string $sub_location Sub-location value.
+     *
+     * @return array<string,mixed>
+     */
+    public static function defaults_for_sub_location(string $sub_location): array
+    {
+        $groups = [];
+
+        switch ($sub_location) {
+            case 'single_post':
+                $groups[] = [
+                    'relation' => 'AND',
+                    'rules' => [
+                        [
+                            'type' => 'include',
+                            'target' => 'post_type',
+                            'operator' => 'in',
+                            'value' => ['post'],
+                        ],
+                    ],
+                ];
+                break;
+            case 'single_page':
+                $groups[] = [
+                    'relation' => 'AND',
+                    'rules' => [
+                        [
+                            'type' => 'include',
+                            'target' => 'post_type',
+                            'operator' => 'in',
+                            'value' => ['page'],
+                        ],
+                    ],
+                ];
+                break;
+            case 'search_results':
+                $groups[] = [
+                    'relation' => 'AND',
+                    'rules' => [
+                        [
+                            'type' => 'include',
+                            'target' => 'search',
+                            'operator' => 'in',
+                            'value' => ['search'],
+                        ],
+                    ],
+                ];
+                break;
+            case 'not_found':
+                $groups[] = [
+                    'relation' => 'AND',
+                    'rules' => [
+                        [
+                            'type' => 'include',
+                            'target' => '404',
+                            'operator' => 'in',
+                            'value' => ['404'],
+                        ],
+                    ],
+                ];
+                break;
+            default:
+                $groups[] = [
+                    'relation' => 'AND',
+                    'rules' => [],
+                ];
+                break;
+        }
+
+        return ['groups' => $groups];
     }
 
     /**

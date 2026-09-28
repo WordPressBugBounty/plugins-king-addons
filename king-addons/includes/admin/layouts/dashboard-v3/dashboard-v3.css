@@ -594,6 +594,12 @@ body.toplevel_page_king-addons.ka-v3-dark #wpbody-content {
     .ka-v3-trinity-slim-left {
         flex-direction: column;
     }
+
+    .ka-v3-segmented {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* ===== LARGE TRINITY BACKUP BANNER ===== */

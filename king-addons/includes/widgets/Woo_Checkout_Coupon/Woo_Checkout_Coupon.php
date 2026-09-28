@@ -70,6 +70,16 @@ class Woo_Checkout_Coupon extends Abstract_Checkout_Widget
     }
 
     /**
+     * Script dependencies.
+     *
+     * @return array<int, string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-checkout-coupon-script'];
+    }
+
+    /**
      * Register controls.
      *
      * @return void

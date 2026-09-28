@@ -1898,6 +1898,9 @@ final class Header_Footer_Builder
             .ka-hf-template { grid-template-columns: 1fr; gap: 12px; }
             .ka-hf-template-actions { justify-content: flex-start; flex-wrap: wrap; }
             .ka-hf-nav-tabs { flex-wrap: wrap; }
+            .ka-hf-section-header { flex-direction: column; align-items: stretch; }
+            .ka-hf-section-actions { flex-wrap: wrap; width: 100%; }
+            .ka-hf-filters { flex-wrap: wrap; border-radius: 16px; max-width: 100%; }
         }
         
         /* Navigation Tabs */

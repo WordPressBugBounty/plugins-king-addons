@@ -143,6 +143,9 @@ class Wishlist_Frontend
             'wishlist_id' => $result['wishlist_id'],
             'count' => $result['count'],
             'state' => !empty($result['success']) ? ($this->service->has_item($product_id, $variation_id, $wishlist_id) ? 'added' : 'default') : 'default',
+            'page_html' => $this->shortcode_page([
+                'wishlist_id' => $result['wishlist_id'] ?? '',
+            ]),
         ]);
     }
 

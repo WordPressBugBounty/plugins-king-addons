@@ -56,3 +56,29 @@
     font-size: 19px;
     line-height: 45px;
 }
+
+@media (max-width: 767px) {
+    .king-addons-countdown-wrap {
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 8px;
+    }
+
+    .king-addons-countdown-item {
+        overflow: visible;
+        flex-basis: calc(50% - 12px);
+        flex-grow: 1;
+        min-width: 120px;
+        box-sizing: border-box;
+    }
+
+    .elementor-widget-king-addons-countdown .king-addons-countdown-label {
+        display: block;
+        width: 100%;
+        white-space: nowrap;
+        overflow: visible;
+        font-size: 14px;
+        line-height: 1.3;
+        padding: 0 4px 8px;
+    }
+}

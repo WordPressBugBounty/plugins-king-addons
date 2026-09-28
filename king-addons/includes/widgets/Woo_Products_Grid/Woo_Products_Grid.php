@@ -730,6 +730,7 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
 
         $nonce = wp_create_nonce('ka_products_grid');
         $this->add_render_attribute('grid', 'data-query-id', $query_id);
+        $this->add_render_attribute('grid', 'data-page-arg', $page_arg);
         $this->add_render_attribute('grid', 'data-page', (int) $paged);
         $this->add_render_attribute('grid', 'data-max-pages', (int) $query->max_num_pages);
         $this->add_render_attribute('grid', 'data-ajax-url', admin_url('admin-ajax.php'));
@@ -1158,7 +1159,13 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
 
         $query = new \WP_Query($q_args);
         if (!$query->have_posts()) {
-            wp_send_json_success(['html' => '', 'max_pages' => 0]);
+            wp_send_json_success([
+                'html' => '',
+                'max_pages' => (int) $query->max_num_pages,
+                'found_posts' => (int) $query->found_posts,
+                'per_page' => $per_page,
+                'page' => max(1, $page),
+            ]);
         }
 
         ob_start();
@@ -1186,6 +1193,9 @@ class Woo_Products_Grid extends Abstract_Archive_Widget
         wp_send_json_success([
             'html' => ob_get_clean(),
             'max_pages' => (int) $query->max_num_pages,
+            'found_posts' => (int) $query->found_posts,
+            'per_page' => $per_page,
+            'page' => max(1, $page),
         ]);
     }
 

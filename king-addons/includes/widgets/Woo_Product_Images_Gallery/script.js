@@ -77,13 +77,13 @@
         lightbox.className = 'ka-woo-gallery__lightbox';
         lightbox.id = overlayId;
         lightbox.innerHTML = `
-            <button type="button" class="ka-woo-gallery__lightbox-close" aria-label="Close">&times;</button>
             <div class="ka-woo-gallery__lightbox-body">
                 <div class="ka-woo-gallery__lightbox-top">
                     <div class="ka-woo-gallery__lightbox-counter"></div>
                     <div class="ka-woo-gallery__lightbox-nav">
                         <button class="ka-woo-gallery__lb-prev" aria-label="Previous">&#10094;</button>
                         <button class="ka-woo-gallery__lb-next" aria-label="Next">&#10095;</button>
+                        <button type="button" class="ka-woo-gallery__lightbox-close" aria-label="Close">&times;</button>
                     </div>
                 </div>
                 <div class="ka-woo-gallery__lightbox-media">
@@ -216,14 +216,26 @@
         };
 
         if (lightboxEnabled) {
+            if (lbClose) {
+                lbClose.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closeLightbox();
+                });
+            }
             lightbox.addEventListener('click', (event) => {
-                const isBody = event.target.classList.contains('ka-woo-gallery__lightbox');
-                const isClose = event.target === lbClose;
-                if (isBody || isClose) {
+                const isBackdrop = event.target.classList.contains('ka-woo-gallery__lightbox');
+                const isClose = event.target.closest('.ka-woo-gallery__lightbox-close');
+                if (isBackdrop || isClose) {
                     closeLightbox();
                 }
             });
-            lightbox.querySelector('.ka-woo-gallery__lightbox-body')?.addEventListener('click', (e) => e.stopPropagation());
+            lightbox.querySelector('.ka-woo-gallery__lightbox-body')?.addEventListener('click', (e) => {
+                if (e.target.closest('.ka-woo-gallery__lightbox-close')) {
+                    return;
+                }
+                e.stopPropagation();
+            });
 
             if (lightboxThumbsEnabled && lightboxThumbs) {
                 slides.forEach((slide, idx) => {

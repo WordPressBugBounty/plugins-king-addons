@@ -44,6 +44,16 @@ class Woo_Shortcode_Cart extends Widget_Base
     }
 
     /**
+     * Script dependencies.
+     *
+     * @return array<int,string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-shortcode-cart-script'];
+    }
+
+    /**
      * Get widget title.
      *
      * @return string

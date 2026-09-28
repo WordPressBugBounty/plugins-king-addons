@@ -391,6 +391,15 @@ final class Core
                 require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_WooCommerce.php';
                 require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Module.php';
                 $this->wishlist_module = new Wishlist_Module();
+            } else {
+                // Extension off: still expire leftover guest cookies so public caches work.
+                require_once KING_ADDONS_PATH . 'includes/wishlist/Wishlist_Session.php';
+                add_action('send_headers', static function () {
+                    if (is_admin()) {
+                        return;
+                    }
+                    \King_Addons\Wishlist\Wishlist_Session::expire_if_present();
+                });
             }
 
             // Dynamic Posts Grid AJAX Helper - Initialize regardless of Elementor compatibility
@@ -1747,14 +1756,17 @@ final class Core
         $network = $args['network'];
 
         $get_whatsapp_url = function ($a) {
-            if ('yes' === $a['show_whatsapp_title'] && 'yes' === $a['show_whatsapp_excerpt']) {
-                return 'https://api.whatsapp.com/send?text=*' . $a['title'] . '*%0a' . $a['text'] . '%0a' . $a['url'];
-            } elseif ('yes' === $a['show_whatsapp_title']) {
-                return 'https://api.whatsapp.com/send?text=*' . $a['title'] . '*%0a' . $a['url'];
-            } elseif ('yes' === $a['show_whatsapp_excerpt']) {
-                return 'https://api.whatsapp.com/send?text=*' . $a['text'] . '%0a' . $a['url'];
+            $parts = [];
+            if ('yes' === $a['show_whatsapp_title'] && $a['title'] !== '') {
+                $parts[] = '*' . $a['title'] . '*';
             }
-            return 'https://api.whatsapp.com/send?text=' . $a['url'];
+            if ('yes' === $a['show_whatsapp_excerpt'] && $a['text'] !== '') {
+                $parts[] = $a['text'];
+            }
+            if ($a['url'] !== '') {
+                $parts[] = $a['url'];
+            }
+            return 'https://api.whatsapp.com/send?text=' . rawurlencode(implode("\n", $parts));
         };
 
         $networks_map = [
@@ -1848,7 +1860,14 @@ final class Core
         $network_title = $networks_map[$network]['title'];
         $icon_category = $networks_map[$network]['icon'];
 
-        $output = '<a href="' . esc_url($share_url) . '" class="king-addons-share-icon king-addons-share-' . esc_attr($network) . '" target="_blank">';
+        // esc_url() strips encoded newlines (%0A), which concatenates WhatsApp title and URL.
+        if ('whatsapp' === $network && str_starts_with($share_url, 'https://api.whatsapp.com/send?text=')) {
+            $href = esc_attr($share_url);
+        } else {
+            $href = esc_url($share_url);
+        }
+
+        $output = '<a href="' . $href . '" class="king-addons-share-icon king-addons-share-' . esc_attr($network) . '" target="_blank">';
 
         if ('yes' === $args['tooltip']) {
             $output .= '<span class="king-addons-share-tooltip king-addons-tooltip">' . esc_html($network_title) . '</span>';
@@ -2487,6 +2506,101 @@ final class Core
         }
 
         return (string) (0 + $value);
+    }
+
+    /**
+     * Swiper breakpoints use viewport width, so a desktop page with a ~600px
+     * content column still shows 3–5 cards and crushes the text. Print a helper
+     * that clamps slidesPerView to the carousel's own width.
+     */
+    public static function printFitSlidesHelper(): void
+    {
+        static $printed = false;
+        if ($printed) {
+            return;
+        }
+        $printed = true;
+        // Avoid && in this snippet: the_content encodes ampersands and would
+        // turn the helper into invalid JavaScript.
+        wp_print_inline_script_tag(<<<'JS'
+window.kingAddonsFitSlidesPerView = function (el, desired, minWidth, space) {
+    desired = parseFloat(desired) || 1;
+    minWidth = parseFloat(minWidth) || 240;
+    space = parseFloat(space) || 0;
+    if (!el) {
+        return Math.max(1, desired);
+    }
+    var width = el.clientWidth || 0;
+    if (width <= 0) {
+        return Math.max(1, desired);
+    }
+    var maxFit = Math.max(1, Math.floor((width + space) / (minWidth + space)));
+    return Math.min(desired, maxFit);
+};
+window.kingAddonsBindFitSlides = function (swiper, el, minWidth) {
+    if (!swiper) {
+        return;
+    }
+    if (!el) {
+        return;
+    }
+    if (typeof swiper.params === 'undefined') {
+        return;
+    }
+    minWidth = parseFloat(minWidth) || 240;
+    var apply = function () {
+        var passed = swiper.passedParams || {};
+        var bpKey = swiper.currentBreakpoint;
+        var fromBp = null;
+        if (bpKey) {
+            if (passed.breakpoints) {
+                fromBp = passed.breakpoints[bpKey] || null;
+            }
+        }
+        var desiredRaw = passed.slidesPerView;
+        if (fromBp) {
+            if (typeof fromBp.slidesPerView !== 'undefined') {
+                desiredRaw = fromBp.slidesPerView;
+            }
+        }
+        var desired = parseFloat(desiredRaw) || 1;
+        var spaceRaw = swiper.params.spaceBetween;
+        if (fromBp) {
+            if (typeof fromBp.spaceBetween !== 'undefined') {
+                spaceRaw = fromBp.spaceBetween;
+            }
+        }
+        var space = parseFloat(spaceRaw) || 0;
+        var next = window.kingAddonsFitSlidesPerView(el, desired, minWidth, space);
+        if (swiper.params.slidesPerView !== next) {
+            swiper.params.slidesPerView = next;
+            if (typeof swiper.update === 'function') {
+                swiper.update();
+            }
+        }
+    };
+    apply();
+    if (typeof swiper.on === 'function') {
+        swiper.on('breakpoint', apply);
+    }
+    if (window.ResizeObserver) {
+        new ResizeObserver(apply).observe(el);
+    } else {
+        window.addEventListener('resize', apply);
+    }
+};
+JS
+        );
+    }
+
+    /**
+     * Wrap an inline `new Swiper(...)` so slidesPerView is clamped to the container.
+     */
+    public static function wrapFitSwiper(string $selector, string $js_swiper, int $min_slide = 240): string
+    {
+        $sel = wp_json_encode($selector);
+        $min = (string) max(1, $min_slide);
+        return '(function(){var el=document.querySelector(' . $sel . ');if(!el){return;}if(typeof Swiper==="undefined"){return;}var sw=' . $js_swiper . ';if(typeof kingAddonsBindFitSlides==="function"){kingAddonsBindFitSlides(sw,el,' . $min . ');}})()';
     }
 
     public static function getAttachmentImageHTML(array $settings, string $size_key, int $attachment_id): string

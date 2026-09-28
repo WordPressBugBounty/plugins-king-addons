@@ -1215,6 +1215,9 @@ class Theme_Builder
             .ka-tb-title-icon svg { width: 30px; height: 30px; }
             .ka-tb-template { grid-template-columns: 1fr; gap: 12px; }
             .ka-tb-template-actions { justify-content: flex-start; flex-wrap: wrap; }
+            .ka-tb-section-header { flex-direction: column; align-items: stretch; }
+            .ka-tb-section-actions { flex-wrap: wrap; width: 100%; }
+            .ka-tb-filters { flex-wrap: wrap; border-radius: 16px; max-width: 100%; }
         }
         /* (Old table/modal styles removed; Theme Builder now mirrors Woo Builder UI) */
         </style>

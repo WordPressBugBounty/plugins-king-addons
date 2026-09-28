@@ -143,21 +143,45 @@
 (function () {
     'use strict';
 
-    const defaultPanels = ['#customer_details', '.woocommerce-checkout-payment', '.woocommerce-checkout-review-order'];
+    const defaultPanels = [
+        '.woocommerce-billing-fields',
+        '.woocommerce-shipping-fields',
+        '#payment',
+        '.woocommerce-checkout-review-order-table',
+    ];
 
     const resolvePanels = (container) => {
-        const customSelectors = Array.from(container.querySelectorAll('.ka-woo-checkout-step')).map((step) => step.dataset.target || '');
-        const mapped = customSelectors.some(Boolean) ? customSelectors : defaultPanels;
-        return mapped.map((selector, idx) => ({ selector, idx }));
+        const steps = Array.from(container.querySelectorAll('.ka-woo-checkout-step'));
+        return steps.map((step, idx) => ({
+            selector: (step.dataset.target || '').trim() || defaultPanels[idx] || '',
+            idx,
+        }));
+    };
+
+    const revealWithAncestors = (el) => {
+        if (!el) {
+            return;
+        }
+        el.classList.remove('ka-woo-hidden');
+        let parent = el.parentElement;
+        while (parent && parent !== document.body) {
+            parent.classList.remove('ka-woo-hidden');
+            parent = parent.parentElement;
+        }
     };
 
     const togglePanels = (stepsMap, activeIndex, scroll) => {
+        const activeSelector = stepsMap[activeIndex] ? stepsMap[activeIndex].selector : '';
+        const activeEls = activeSelector ? Array.from(document.querySelectorAll(activeSelector)) : [];
+
         stepsMap.forEach((item, idx) => {
             if (!item.selector) {
                 return;
             }
             document.querySelectorAll(item.selector).forEach((el) => {
-                if (idx === activeIndex) {
+                const isActive = idx === activeIndex;
+                const isAncestorOfActive = activeEls.some((active) => el.contains(active));
+                if (isActive || isAncestorOfActive) {
                     el.classList.remove('ka-woo-hidden');
                 } else {
                     el.classList.add('ka-woo-hidden');
@@ -165,9 +189,10 @@
             });
         });
 
+        activeEls.forEach(revealWithAncestors);
+
         if (scroll && scroll === 'yes') {
-            const targetSelector = stepsMap[activeIndex] ? stepsMap[activeIndex].selector : null;
-            const target = targetSelector ? document.querySelector(targetSelector) : null;
+            const target = activeEls[0] || null;
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -176,6 +201,10 @@
 
     const initSteps = () => {
         document.querySelectorAll('.ka-woo-checkout-steps--pro').forEach((container) => {
+            if (container.dataset.kaCheckoutStepsInit === '1') {
+                return;
+            }
+            container.dataset.kaCheckoutStepsInit = '1';
             const steps = Array.from(container.querySelectorAll('.ka-woo-checkout-step'));
             if (!steps.length) {
                 return;
@@ -213,10 +242,13 @@
                 return valid;
             };
 
-            const setActive = (idx) => {
-                current = idx;
-                steps.forEach((step, i) => step.classList.toggle('is-active', i === current));
-                togglePanels(stepsMap, current, scrollTop);
+            const applyCurrent = (scroll) => {
+                const map = resolvePanels(container);
+                steps.forEach((step, i) => {
+                    step.classList.toggle('is-active', i === current);
+                    step.classList.toggle('is-complete', i < current);
+                });
+                togglePanels(map, current, scroll);
                 if (enableNav && navPrev && navNext) {
                     navPrev.disabled = current === 0;
                     const isLast = current >= steps.length - 1;
@@ -231,6 +263,13 @@
                 }
                 steps.forEach((step) => step.classList.remove(errorClass));
             };
+
+            const setActive = (idx) => {
+                current = idx;
+                applyCurrent(scrollTop);
+            };
+
+            container.kaApplyCheckoutStep = () => applyCurrent('no');
 
             steps.forEach((step, idx) => {
                 step.addEventListener('click', () => setActive(idx));
@@ -406,6 +445,16 @@
         initSticky();
         initPayments();
     });
+
+    if (window.jQuery) {
+        window.jQuery(document.body).on('updated_checkout', function () {
+            document.querySelectorAll('.ka-woo-checkout-steps--pro').forEach((container) => {
+                if (typeof container.kaApplyCheckoutStep === 'function') {
+                    container.kaApplyCheckoutStep();
+                }
+            });
+        });
+    }
 })();
 
 

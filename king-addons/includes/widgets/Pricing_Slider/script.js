@@ -55,6 +55,28 @@
     // Execute once when script loads
     addBasicNotificationCSS();
 
+    /**
+     * Native range inputs cannot land on max when (max-min) is not a multiple
+     * of step (min=1, max=1000, step=10 stops at 991). Use a 1-unit step so
+     * the labeled maximum is a legal value. The visible min/max labels stay
+     * as configured in the widget.
+     */
+    function alignRangeToLabeledMax(input) {
+        if (!input) {
+            return;
+        }
+        var min = parseFloat(input.min);
+        var max = parseFloat(input.max);
+        var step = parseFloat(input.step);
+        if (isNaN(min) || isNaN(max) || isNaN(step) || step <= 0) {
+            return;
+        }
+        if (((max - min) % step) === 0) {
+            return;
+        }
+        input.step = '1';
+    }
+
     // --- Shared Helper Functions --- (Moved here)
 
     /**
@@ -303,6 +325,8 @@
          if (parseFloat(rangeInput.val()) !== defaultValue) {
              rangeInput.val(defaultValue); // Ensure input value matches calculated default
          }
+         alignRangeToLabeledMax(rangeInput.get(0));
+         defaultValue = parseFloat(rangeInput.val());
 
         /**
          * Updates the price display, button link (if applicable), and features for the single slider.
@@ -363,6 +387,7 @@
         // --- Event Listener ---
         // Ensure previous listeners are removed before adding new ones (important for editor)
         rangeInput.off('.pricingSlider').on('input.pricingSlider change.pricingSlider', function() {
+            alignRangeToLabeledMax(this);
             var value = parseFloat($(this).val());
             sharedUpdateSliderUI(sliderWrapper, value); // Update slider UI visuals
             updateDisplay(); // Update price, button, features based on new value
@@ -497,6 +522,8 @@
             if (parseFloat(rangeInput.val()) !== defaultValue) {
                  rangeInput.val(defaultValue); // Set initial value correctly
             }
+            alignRangeToLabeledMax(rangeInput.get(0));
+            defaultValue = parseFloat(rangeInput.val());
             sharedUpdateSliderUI(singleSliderWrapper, defaultValue); // Use shared function
         });
         // Update the combined display based on initial values
@@ -508,6 +535,7 @@
         // Add new delegated listener
         slidersContainer.on('input.pricingSlider change.pricingSlider', '.king-addons-pricing-slider__range', function() {
             var rangeInput = $(this); // The input that triggered the event
+            alignRangeToLabeledMax(this);
             var singleSliderWrapper = rangeInput.closest('.king-addons-single-slider');
             var value = parseFloat(rangeInput.val());
 

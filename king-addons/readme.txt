@@ -1,7 +1,7 @@
 === King Addons for Elementor - 100+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce Builder, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.86
+Stable tag: 51.1.87
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -293,6 +293,15 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 12. AI SEO tools for WordPress, including automatic AI-generated image alt text for better image accessibility and SEO.
 
 == Changelog ==
+
+= King Addons for Elementor version 51.1.87 - September 28, 2026 =
+* **Security:** Image Accordion and Advanced Image Gallery image effect values (`image_effects`, `image_effects_size`, `image_effects_direction`) are allowlisted and escaped before they are printed in the class attribute. The same allowlist now covers Posts Grid, WooCommerce Grid, and Timeline animation and image-effect classes, and Image Accordion vertical alignment. Page List titles, subtitles, and badge text are escaped.
+* **Fix:** Image Comparison clips the before image at full size instead of shrinking it with the handle, and the range input follows Slider Initial Position.
+* **Fix:** WooCommerce — variation choice fills price and Add to Cart; gallery Close dismisses the lightbox; Update cart no longer duplicates totals; coupon notices, checkout coupon, Checkout Steps, cross-sells, sale-only price, and shortcode mini-cart stay in sync. Shop sort, pagination, and Result Count follow the same page.
+* **Fix:** Wishlist lists refresh after AJAX add. Theme Builder Single Post outputs post content. My Account dashboard links no longer 404 on a custom page.
+* **Fix:** Product, post, and card grids, sliders, and carousels keep readable widths on mobile. Countdown labels, Share Buttons WhatsApp URLs, Pricing Slider max, and Data Table XLS/CSV export are corrected.
+* **Fix:** Admin screens no longer overflow at 360px. Templates Catalog tabs and top navigation wrap; Header & Footer, Theme Builder, Custom Code, Image Optimizer, Loop Builder, and the V3 header fit the viewport.
+* **Fix:** Wishlist no longer sets the `ka_wishlist_session` cookie on every visit. The cookie is created only when a guest actually adds an item, so public caches such as LiteSpeed can store pages for first-time visitors. Turning Wishlist off also expires leftover cookies.
 
 = King Addons for Elementor version 51.1.86 - September 23, 2026 =
 * **Security:** Media Grid and Image Accordion overlay animation values (`overlay_animation`, `overlay_animation_size`, `overlay_animation_timing`) are allowlisted and escaped before they are printed in the overlay `class` attribute.

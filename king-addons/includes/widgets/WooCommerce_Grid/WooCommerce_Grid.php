@@ -8809,36 +8809,39 @@ class WooCommerce_Grid extends Widget_Base
 
     public function get_animation_class($data, $object)
     {
-        $class = '';
-        if ('overlay' !== $object && 'yes' === $data[$object . '_animation_disable_mobile'] && wp_is_mobile()) {
-            return $class;
+        if (
+            'overlay' !== $object
+            && 'yes' === ($data[$object . '_animation_disable_mobile'] ?? '')
+            && wp_is_mobile()
+        ) {
+            return '';
         }
-        if ('none' !== $data[$object . '_animation']) {
-            $class .= ' king-addons-' . $object . '-' . $data[$object . '_animation'];
-            $class .= ' king-addons-anim-size-' . $data[$object . '_animation_size'];
-            $class .= ' king-addons-animation-timing-' . $data[$object . '_animation_timing'];
-            if ('yes' === $data[$object . '_animation_tr']) {
-                $class .= ' king-addons-anim-transparency';
-            }
+
+        $animation = Grid_Ajax_Security::sanitize_animation($data[$object . '_animation'] ?? 'none');
+        if ('none' === $animation) {
+            return '';
+        }
+
+        $class = ' king-addons-' . sanitize_html_class((string) $object) . '-' . $animation;
+        $class .= ' king-addons-anim-size-' . Grid_Ajax_Security::sanitize_animation_size($data[$object . '_animation_size'] ?? 'large');
+        $class .= ' king-addons-animation-timing-' . Grid_Ajax_Security::sanitize_animation_timing($data[$object . '_animation_timing'] ?? 'ease-default');
+        if ('yes' === Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_tr'] ?? '')) {
+            $class .= ' king-addons-anim-transparency';
         }
         return $class;
     }
 
     public function get_image_effect_class($settings)
     {
+        $effect = Grid_Ajax_Security::sanitize_image_effect($settings['image_effects'] ?? 'none');
         $class = '';
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-            if (in_array($settings['image_effects'], ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo'])) {
-                $settings['image_effects'] = 'none';
-            }
+        if ('none' !== $effect) {
+            $class .= ' king-addons-' . $effect;
         }
-        if ('none' !== $settings['image_effects']) {
-            $class .= ' king-addons-' . $settings['image_effects'];
-        }
-        if ('slide' !== $settings['image_effects']) {
-            $class .= ' king-addons-effect-size-' . $settings['image_effects_size'];
+        if ('slide' !== $effect) {
+            $class .= ' king-addons-effect-size-' . Grid_Ajax_Security::sanitize_image_effect_size($settings['image_effects_size'] ?? 'medium');
         } else {
-            $class .= ' king-addons-effect-dir-' . $settings['image_effects_direction'];
+            $class .= ' king-addons-effect-dir-' . Grid_Ajax_Security::sanitize_image_effect_direction($settings['image_effects_direction'] ?? 'bottom');
         }
         return $class;
     }
@@ -9345,9 +9348,6 @@ class WooCommerce_Grid extends Widget_Base
         global $product;
         if (is_null($product)) return;
         echo '<div class="' . esc_attr($class) . '"><div class="inner-block"><span>' . wp_kses_post($product->get_price_html()) . '</span>';
-        $sale_price_dates_to = ($date = get_post_meta($product->get_id(), '_sale_price_dates_to', true)) ? date_i18n('Y-m-d', $date) : '';
-        $sale_price_dates_to = apply_filters('king_addons_custom_sale_price_dates_to_filter', $sale_price_dates_to, $product);
-        echo $sale_price_dates_to;
         echo '</div></div>';
     }
 

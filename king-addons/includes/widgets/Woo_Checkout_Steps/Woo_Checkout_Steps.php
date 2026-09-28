@@ -246,13 +246,24 @@ class Woo_Checkout_Steps extends Widget_Base
 
         echo '<div class="ka-woo-checkout-steps-wrapper" data-enable-nav="' . ($show_nav ? 'true' : 'false') . '" data-auto-scroll="' . esc_attr($auto_scroll) . '">';
         echo '<ol class="ka-woo-checkout-steps ka-woo-checkout-steps--pro" role="list" data-scroll-top="' . esc_attr($scroll) . '" data-prev-text="' . esc_attr($prev_text) . '" data-next-text="' . esc_attr($next_text) . '">';
-        foreach ($steps as $index => $step) {
+        $fallback_targets = [
+            '.woocommerce-billing-fields',
+            '.woocommerce-shipping-fields',
+            '#payment',
+            '.woocommerce-checkout-review-order-table',
+        ];
+        $step_i = 0;
+        foreach ($steps as $step) {
             $label = $step['label'] ?? '';
-            $target = $step['target'] ?? '';
-            echo '<li class="ka-woo-checkout-step" data-step="' . esc_attr((string) ($index + 1)) . '" data-target="' . esc_attr($target) . '">';
-            echo '<span class="ka-woo-checkout-step__number">' . esc_html((string) ($index + 1)) . '</span>';
+            $target = trim((string) ($step['target'] ?? ''));
+            if ($target === '') {
+                $target = $fallback_targets[$step_i] ?? '';
+            }
+            echo '<li class="ka-woo-checkout-step" data-step="' . esc_attr((string) ($step_i + 1)) . '" data-target="' . esc_attr($target) . '">';
+            echo '<span class="ka-woo-checkout-step__number">' . esc_html((string) ($step_i + 1)) . '</span>';
             echo '<span class="ka-woo-checkout-step__label">' . esc_html($label) . '</span>';
             echo '</li>';
+            $step_i++;
         }
         echo '</ol>';
         if ($show_nav) {

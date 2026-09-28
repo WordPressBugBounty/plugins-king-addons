@@ -3494,6 +3494,9 @@ class Card_Carousel extends Widget_Base
 
         $js_swiper .= "})";
 
+        Core::printFitSlidesHelper();
+        $js_swiper = Core::wrapFitSwiper('.king-addons-card-carousel-items-' . $this_ID, $js_swiper, 240);
+
         $js_swiper_full = $js_swiper_check_if_DOM_already_loaded . ' ?' . $js_swiper . ' : ' . $js_swiper_check_if_DOM_not_already_loaded . $js_swiper . '; });';
 
         wp_print_inline_script_tag($js_swiper_full);

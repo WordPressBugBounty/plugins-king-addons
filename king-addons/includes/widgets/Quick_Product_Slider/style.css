@@ -254,6 +254,19 @@
     right: calc(-1 * var(--kng-quick-product-slider-nav-offset) - (var(--kng-quick-product-slider-nav-size) / 2));
 }
 
+@media (max-width: 767px) {
+    .king-addons-quick-product-slider .king-addons-quick-product-slider__arrow--prev,
+    .king-addons-quick-product-slider--nav-outside .king-addons-quick-product-slider__arrow--prev {
+        left: 8px;
+    }
+
+    .king-addons-quick-product-slider .king-addons-quick-product-slider__arrow--next,
+    .king-addons-quick-product-slider--nav-outside .king-addons-quick-product-slider__arrow--next {
+        left: auto;
+        right: 8px;
+    }
+}
+
 .king-addons-quick-product-slider__arrow:hover {
     background-color: #111827;
     color: #ffffff;

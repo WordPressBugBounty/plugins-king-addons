@@ -69,7 +69,7 @@
             payload.variation_id = variationId;
         }
 
-        const valid = variationId || !hasEmpty;
+        const valid = !hasEmpty && variationId > 0;
         return { valid, payload };
     };
 

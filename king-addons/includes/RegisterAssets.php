@@ -51,7 +51,11 @@ final class RegisterAssets
         foreach (ModulesMap::getModulesMapArray()['widgets'] as $widget_id => $widget_array) {
             foreach ($widget_array['js'] as $js) {
                 $script_handle = KING_ADDONS_ASSETS_UNIQUE_KEY . '-' . $widget_id . '-' . $js;
-                wp_register_script($script_handle, KING_ADDONS_URL . 'includes/widgets/' . $widget_array['php-class'] . '/' . $js . '.js', array('jquery'), KING_ADDONS_VERSION, true);
+                $script_deps = array('jquery');
+                if ('woo-product-variations' === $widget_id) {
+                    $script_deps[] = 'wc-add-to-cart-variation';
+                }
+                wp_register_script($script_handle, KING_ADDONS_URL . 'includes/widgets/' . $widget_array['php-class'] . '/' . $js . '.js', $script_deps, KING_ADDONS_VERSION, true);
                 
                 // Localize script specifically for pricing-slider
                 if ($widget_id === 'pricing-slider' && $js === 'script') {

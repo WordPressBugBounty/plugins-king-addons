@@ -68,6 +68,10 @@
     display: none;
 }
 
+.ka-woo-variations .woocommerce-variation.single_variation:not(:empty) {
+    height: auto;
+}
+
 
 
 

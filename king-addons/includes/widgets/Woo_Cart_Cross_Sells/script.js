@@ -11,6 +11,7 @@
     const products = container.querySelector('.products');
     if (!products) return;
 
+    const count = products.querySelectorAll('li.product').length;
     const cols = parseInt(container.dataset.cols || '4', 10);
     const colsTablet = parseInt(container.dataset.colsTablet || Math.max(2, Math.min(cols, 3)), 10);
     const colsMobile = parseInt(container.dataset.colsMobile || '1', 10);
@@ -19,6 +20,13 @@
     const loop = container.dataset.loop === '1';
     const autoplay = container.dataset.autoplay === '1';
     const autoplaySpeed = parseInt(container.dataset.autoplaySpeed || '4000', 10);
+    const slidesDesktop = Math.max(1, Math.min(cols, count));
+    const slidesTablet = Math.max(1, Math.min(colsTablet, count));
+    const slidesMobile = Math.max(1, Math.min(colsMobile, count));
+
+    if (count <= 1) {
+      return;
+    }
 
     if (typeof $.fn.slick === "function") {
       const $el = $(products);
@@ -26,16 +34,16 @@
         $el.slick('unslick');
       }
       $el.slick({
-        slidesToShow: cols,
+        slidesToShow: slidesDesktop,
         slidesToScroll: 1,
-        infinite: loop,
+        infinite: loop && count > slidesDesktop,
         dots: showDots,
         arrows: showArrows,
         autoplay,
         autoplaySpeed,
         responsive: [
-          { breakpoint: 1024, settings: { slidesToShow: colsTablet } },
-          { breakpoint: 768, settings: { slidesToShow: colsMobile } },
+          { breakpoint: 1024, settings: { slidesToShow: slidesTablet } },
+          { breakpoint: 768, settings: { slidesToShow: slidesMobile } },
         ],
       });
     }

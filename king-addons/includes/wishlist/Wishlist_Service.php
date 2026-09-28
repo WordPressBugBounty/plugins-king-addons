@@ -34,7 +34,9 @@ class Wishlist_Service
     {
         $this->session = new Wishlist_Session();
         $this->user_id = $user_id ?? get_current_user_id();
-        $this->session_key = $session_key ?: $this->session->get_session_key();
+        $this->session_key = ($session_key !== null && $session_key !== '')
+            ? $session_key
+            : $this->session->get_session_key(false);
         $this->active_wishlist_id = $this->resolve_active_wishlist_id();
     }
 
@@ -73,6 +75,8 @@ class Wishlist_Service
      */
     public function add_item(int $product_id, int $variation_id = 0, int $qty = 1, ?string $wishlist_id = null)
     {
+        $this->ensure_guest_session();
+
         $validation = $this->validate_product($product_id, $variation_id);
         if (is_wp_error($validation)) {
             return $validation;
@@ -194,6 +198,10 @@ class Wishlist_Service
      */
     public function get_items(?string $wishlist_id = null): array
     {
+        if ($this->is_anonymous_guest()) {
+            return [];
+        }
+
         $wishlist_id = $this->normalize_wishlist_id($wishlist_id);
         global $wpdb;
 
@@ -228,6 +236,10 @@ class Wishlist_Service
      */
     public function get_lists(): array
     {
+        if ($this->is_anonymous_guest()) {
+            return [];
+        }
+
         global $wpdb;
 
         $lists_table = Wishlist_DB::get_lists_table();
@@ -262,6 +274,8 @@ class Wishlist_Service
      */
     public function create_list(string $title, string $visibility = 'private')
     {
+        $this->ensure_guest_session();
+
         global $wpdb;
 
         if (empty($title)) {
@@ -478,6 +492,10 @@ class Wishlist_Service
      */
     public function get_count(?string $wishlist_id = null, bool $force_refresh = false): int
     {
+        if ($this->is_anonymous_guest()) {
+            return 0;
+        }
+
         $wishlist_id = $this->normalize_wishlist_id($wishlist_id);
         $cache_key = $this->get_cache_key($wishlist_id);
         $cache_enabled = Wishlist_Settings::get('cache_enabled', false);
@@ -614,6 +632,13 @@ class Wishlist_Service
      */
     public function ensure_default_list(string $wishlist_id): void
     {
+        if ($this->user_id <= 0) {
+            $this->ensure_guest_session();
+            if ($this->session_key === '') {
+                return;
+            }
+        }
+
         global $wpdb;
 
         $lists_table = Wishlist_DB::get_lists_table();
@@ -665,6 +690,10 @@ class Wishlist_Service
      */
     private function get_item_row(string $wishlist_id, int $product_id, int $variation_id): ?object
     {
+        if ($this->is_anonymous_guest()) {
+            return null;
+        }
+
         global $wpdb;
         $table = Wishlist_DB::get_items_table();
         $where = $this->get_scope_where($wishlist_id);
@@ -696,6 +725,30 @@ class Wishlist_Service
         }
 
         return true;
+    }
+
+    /**
+     * Whether this request is a guest with no session cookie yet.
+     *
+     * @return bool True when reads should stay empty and skip Set-Cookie.
+     */
+    private function is_anonymous_guest(): bool
+    {
+        return $this->user_id <= 0 && $this->session_key === '';
+    }
+
+    /**
+     * Mint a guest cookie only when a write actually needs identity.
+     *
+     * @return void
+     */
+    private function ensure_guest_session(): void
+    {
+        if ($this->user_id > 0 || $this->session_key !== '') {
+            return;
+        }
+
+        $this->session_key = $this->session->get_session_key(true);
     }
 
     /**

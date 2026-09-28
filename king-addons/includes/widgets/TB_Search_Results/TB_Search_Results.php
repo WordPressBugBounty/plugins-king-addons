@@ -389,6 +389,10 @@ class TB_Search_Results extends Widget_Base
             }
         }
 
+        if ($results_query instanceof \WP_Query) {
+            $results_query->rewind_posts();
+        }
+
         if (!$results_query instanceof \WP_Query || !$results_query->have_posts()) {
             if ($is_editor) {
                 Core::renderEditorHint(

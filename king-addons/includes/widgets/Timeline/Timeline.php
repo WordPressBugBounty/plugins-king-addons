@@ -5208,16 +5208,16 @@ $this->end_controls_section();
 
     public function get_animation_class($data, $object)
     {
-        $class = '';
-        $anim = $data[$object . '_animation'] ?? 'none';
+        $animation = Grid_Ajax_Security::sanitize_animation($data[$object . '_animation'] ?? 'none');
+        if ('none' === $animation) {
+            return '';
+        }
 
-        if ('none' !== $anim) {
-            $class .= ' king-addons-' . $object . '-' . $anim;
-            $class .= ' king-addons-anim-size-' . $data[$object . '_animation_size'];
-            $class .= ' king-addons-animation-timing-' . $data[$object . '_animation_timing'];
-            if ('yes' === $data[$object . '_animation_tr']) {
-                $class .= ' king-addons-anim-transparency';
-            }
+        $class = ' king-addons-' . sanitize_html_class((string) $object) . '-' . $animation;
+        $class .= ' king-addons-anim-size-' . Grid_Ajax_Security::sanitize_animation_size($data[$object . '_animation_size'] ?? 'large');
+        $class .= ' king-addons-animation-timing-' . Grid_Ajax_Security::sanitize_animation_timing($data[$object . '_animation_timing'] ?? 'ease-default');
+        if ('yes' === Grid_Ajax_Security::sanitize_yes_no_switcher($data[$object . '_animation_tr'] ?? '')) {
+            $class .= ' king-addons-anim-transparency';
         }
         return $class;
     }

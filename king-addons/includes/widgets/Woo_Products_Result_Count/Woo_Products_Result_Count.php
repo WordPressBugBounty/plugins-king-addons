@@ -44,6 +44,16 @@ class Woo_Products_Result_Count extends Abstract_Archive_Widget
         return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-products-result-count-style'];
     }
 
+    /**
+     * Script dependencies.
+     *
+     * @return array<int,string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-products-result-count-script'];
+    }
+
     protected function register_controls(): void
     {
         $this->start_controls_section(
@@ -122,9 +132,10 @@ class Woo_Products_Result_Count extends Abstract_Archive_Widget
         $stats = self::resolve_grid_stats($query_id);
 
         $format = $settings['custom_format'] ?? '';
+        $default_format = __('Showing {first}–{last} of {total} results', 'king-addons');
         if (!$can_pro || empty($format)) {
             if ($stats) {
-                echo '<div class="ka-woo-result-count">' . esc_html(self::format_woo_count($stats)) . '</div>';
+                self::print_count_html($query_id, $default_format, self::format_woo_count($stats), (string) ($stats['page_arg'] ?? ''));
                 return;
             }
             // woocommerce_result_count() prints nothing when the loop has no
@@ -145,7 +156,7 @@ class Woo_Products_Result_Count extends Abstract_Archive_Widget
 
             // WooCommerce's own markup, not user input - running it through
             // wp_kses_post() only stripped the aria-relevant it sets.
-            echo '<div class="ka-woo-result-count">' . $woo_output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo '<div class="ka-woo-result-count" data-query-id="' . esc_attr($query_id) . '" data-page-arg="" data-format="' . esc_attr($default_format) . '">' . $woo_output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             return;
         }
 
@@ -186,7 +197,21 @@ class Woo_Products_Result_Count extends Abstract_Archive_Widget
             $format
         );
 
-        echo '<div class="ka-woo-result-count">' . esc_html($output) . '</div>';
+        self::print_count_html($query_id, $format, $output, (string) ($stats['page_arg'] ?? ''));
+    }
+
+    /**
+     * Result-count wrapper used by AJAX-aware sorting/filter updates.
+     *
+     * @param string $query_id Shared Query ID.
+     * @param string $format   Placeholder format.
+     * @param string $text     Rendered count text.
+     *
+     * @return void
+     */
+    private static function print_count_html(string $query_id, string $format, string $text, string $page_arg = ''): void
+    {
+        echo '<div class="ka-woo-result-count" data-query-id="' . esc_attr($query_id) . '" data-page-arg="' . esc_attr($page_arg) . '" data-format="' . esc_attr($format) . '">' . esc_html($text) . '</div>';
     }
 
     /**

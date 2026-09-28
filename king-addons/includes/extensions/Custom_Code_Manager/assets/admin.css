@@ -2504,6 +2504,17 @@ body.toplevel_page_king-addons-custom-code #wpbody-content {
     .kng-cc-header-right {
         justify-content: center;
     }
+
+    .kng-cc-filters {
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .kng-cc-search input {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 @media (max-width: 600px) {

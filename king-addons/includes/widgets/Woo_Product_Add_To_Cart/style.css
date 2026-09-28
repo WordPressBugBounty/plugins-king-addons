@@ -37,6 +37,10 @@
     opacity: 0.8;
 }
 
+.ka-woo-product-atc__notice[hidden] {
+    display: none;
+}
+
 .ka-woo-product-atc__state {
     font-size: 13px;
     margin-top: 8px;

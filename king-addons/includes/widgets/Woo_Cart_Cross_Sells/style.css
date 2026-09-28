@@ -8,9 +8,35 @@
 }
 
 .ka-woo-cart-cross-sells ul.products {
-    display: grid;
+    display: grid !important;
     gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+.ka-woo-cart-cross-sells ul.products:has(> li:only-child) {
+    grid-template-columns: minmax(min(100%, 280px), 420px);
+}
+
+.ka-woo-cart-cross-sells ul.products:not(.slick-initialized) li.product {
+    width: auto !important;
+    max-width: none !important;
+    float: none !important;
+    margin: 0 !important;
+    overflow: visible;
+}
+
+.ka-woo-cart-cross-sells li.product .price,
+.ka-woo-cart-cross-sells li.product .star-rating {
+    display: block;
+    position: static;
+}
+
+.ka-woo-cart-cross-sells li.product a.button,
+.ka-woo-cart-cross-sells li.product .button {
+    display: inline-block;
+    position: static !important;
+    margin-top: 12px;
+    clear: both;
 }
 
 .ka-woo-cart-cross-sells .slick-slide {

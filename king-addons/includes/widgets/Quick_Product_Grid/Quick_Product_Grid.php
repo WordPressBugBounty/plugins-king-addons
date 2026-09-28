@@ -368,6 +368,8 @@ class Quick_Product_Grid extends Widget_Base
                 'max' => 6,
                 'step' => 1,
                 'default' => 3,
+                'tablet_default' => 2,
+                'mobile_default' => 1,
                 'selectors' => [
                     '{{WRAPPER}} .king-addons-quick-product-grid__grid' => 'grid-template-columns: repeat({{VALUE}}, minmax(0, 1fr));',
                 ],

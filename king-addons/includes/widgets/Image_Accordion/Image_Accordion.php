@@ -2138,7 +2138,7 @@ $this->end_controls_section();
             if ('over' === $location) {
                 foreach ($locations[$location] as $align => $elements) {
                     if ('middle' === $align) echo '<div class="king-addons-cv-container"><div class="king-addons-cv-outer"><div class="king-addons-cv-inner">';
-                    echo '<div class="king-addons-img-accordion-media-hover-' . $align . ' elementor-clearfix">';
+                    echo '<div class="king-addons-img-accordion-media-hover-' . esc_attr(sanitize_html_class((string) $align)) . ' elementor-clearfix">';
                     foreach ($elements as $data) {
                         $class = 'king-addons-img-accordion-item-' . $data['element_select'];
                         $class .= ' elementor-repeater-item-' . $data['_id'];
@@ -2184,7 +2184,7 @@ $this->end_controls_section();
         if (!empty($item['accordion_item_title'])) {
             $tags_whitelist = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p'];
             $element_title_tag = Core::validateHTMLTags($settings['element_title_tag'], 'h2', $tags_whitelist);
-            echo '<' . $element_title_tag . ' class="' . esc_attr($class) . '">';
+            echo '<' . esc_attr($element_title_tag) . ' class="' . esc_attr($class) . '">';
             echo '<div class="inner-block"><a class="king-addons-pointer-item">';
             echo esc_html($item['accordion_item_title']);
             echo '</a></div></' . $element_title_tag . '>';
@@ -2261,21 +2261,15 @@ $this->end_controls_section();
 
     public function get_image_effect_class($settings)
     {
-        $premium = king_addons_freemius()->can_use_premium_code__premium_only();
-        if (!$premium) {
-            if (in_array($settings['image_effects'], ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo'])) {
-                $settings['image_effects'] = 'none';
-            }
-        }
+        $effect = Grid_Ajax_Security::sanitize_image_effect($settings['image_effects'] ?? 'none');
         $class = '';
-        /** @noinspection DuplicatedCode */
-        if ('none' !== $settings['image_effects']) {
-            $class .= ' king-addons-' . $settings['image_effects'];
+        if ('none' !== $effect) {
+            $class .= ' king-addons-' . $effect;
         }
-        if ('slide' !== $settings['image_effects']) {
-            $class .= ' king-addons-effect-size-' . $settings['image_effects_size'];
+        if ('slide' !== $effect) {
+            $class .= ' king-addons-effect-size-' . Grid_Ajax_Security::sanitize_image_effect_size($settings['image_effects_size'] ?? 'medium');
         } else {
-            $class .= ' king-addons-effect-dir-' . $settings['image_effects_direction'];
+            $class .= ' king-addons-effect-dir-' . Grid_Ajax_Security::sanitize_image_effect_direction($settings['image_effects_direction'] ?? 'bottom');
         }
         return $class;
     }
@@ -2356,7 +2350,7 @@ $this->end_controls_section();
             }
             ?>
             <div data-src="<?php echo esc_url($this->item_bg_image_url); ?>"
-                 class="king-addons-image-accordion-item elementor-repeater-item-<?php echo esc_attr($item['_id']) . $this->get_image_effect_class($settings); ?>">
+                 class="king-addons-image-accordion-item elementor-repeater-item-<?php echo esc_attr($item['_id'] . $this->get_image_effect_class($settings)); ?>">
                 <div class="king-addons-accordion-background"
                      style="background-image:url(<?php echo esc_attr($this->item_bg_image_url); ?>);"></div>
                 <?php

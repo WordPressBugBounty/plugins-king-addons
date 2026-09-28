@@ -1512,9 +1512,33 @@ body.ka-v3-dark .ka-empty {
         grid-template-columns: 1fr;
     }
 
-    .ka-table {
-        display: block;
+    .ka-admin-wrap .ka-card-body {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+
+    .ka-table {
+        display: table;
+        width: max-content;
+        min-width: 100%;
+        max-width: none;
+    }
+
+    .ka-v3-segmented {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .ka-admin-header-actions {
+        width: 100%;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .ka-admin-wrap .ka-table .ka-table-actions {
+        white-space: normal;
     }
 }
 

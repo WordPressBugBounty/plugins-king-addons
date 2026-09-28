@@ -255,6 +255,33 @@
             body: buildFormData(grid, page),
         }).then((res) => res.json());
 
+    const syncRelatedWidgets = (grid, state) => {
+        const queryId = grid.dataset.queryId || '';
+        const pageArg = grid.dataset.pageArg || '';
+        const page = Math.max(1, parseInt(state.page, 10) || 1);
+
+        if (pageArg && window.history && window.history.replaceState) {
+            const url = new URL(window.location.href);
+            if (page <= 1) {
+                url.searchParams.delete(pageArg);
+            } else {
+                url.searchParams.set(pageArg, String(page));
+            }
+            window.history.replaceState({}, '', url);
+        }
+
+        document.dispatchEvent(new CustomEvent('kingaddons:grid:page', {
+            detail: {
+                queryId,
+                pageArg,
+                page,
+                maxPages: Math.max(1, parseInt(state.maxPages, 10) || 1),
+                foundPosts: Math.max(0, parseInt(state.foundPosts, 10) || 0),
+                perPage: Math.max(1, parseInt(state.perPage, 10) || 1),
+            },
+        }));
+    };
+
     const bindLightbox = (grid, rebind = false) => {
         if (!rebind && grid.dataset.lightboxBound === 'true') return;
         grid.dataset.lightboxBound = 'true';
@@ -382,6 +409,12 @@
                     if (replace) {
                         page = 1;
                         grid.dataset.page = '1';
+                        syncRelatedWidgets(grid, {
+                            page,
+                            maxPages,
+                            foundPosts: parseInt(res.data.found_posts, 10) || 0,
+                            perPage: parseInt(res.data.per_page || grid.dataset.perPage || '8', 10),
+                        });
                     } else {
                         page += 1;
                         grid.dataset.page = page;

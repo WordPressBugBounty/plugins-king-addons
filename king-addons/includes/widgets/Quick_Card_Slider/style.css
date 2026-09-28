@@ -363,6 +363,19 @@
     right: calc(-1 * var(--kng-card-slider-nav-offset) - (var(--kng-card-slider-nav-size) / 2));
 }
 
+@media (max-width: 767px) {
+    .king-addons-card-slider .king-addons-card-slider__arrow--prev,
+    .king-addons-card-slider--nav-outside .king-addons-card-slider__arrow--prev {
+        left: 8px;
+    }
+
+    .king-addons-card-slider .king-addons-card-slider__arrow--next,
+    .king-addons-card-slider--nav-outside .king-addons-card-slider__arrow--next {
+        left: auto;
+        right: 8px;
+    }
+}
+
 .king-addons-card-slider--nav-hide-tablet .king-addons-card-slider__navigation,
 .king-addons-card-slider--nav-hide-tablet .king-addons-card-slider__arrow {
     display: none;

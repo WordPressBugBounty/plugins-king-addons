@@ -77,7 +77,24 @@ class Woo_Product_Variations extends Abstract_Single_Widget
      */
     public function get_script_depends(): array
     {
-        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-product-variations-script'];
+        return [
+            'wc-add-to-cart-variation',
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-product-variations-script',
+        ];
+    }
+
+    /**
+     * Elementor strips <script type="text/template"> from widget HTML, so print
+     * WooCommerce variation templates in the footer for wp.template().
+     */
+    public static function print_variation_templates(): void
+    {
+        static $printed = false;
+        if ($printed || !function_exists('wc_get_template')) {
+            return;
+        }
+        $printed = true;
+        wc_get_template('single-product/add-to-cart/variation.php');
     }
 
     protected function register_controls(): void
@@ -330,6 +347,11 @@ class Woo_Product_Variations extends Abstract_Single_Widget
             'selected_attributes' => $product->get_default_attributes(),
         ]);
         echo '</div>';
+
+        wp_enqueue_script('wc-add-to-cart-variation');
+        if (!has_action('wp_footer', [self::class, 'print_variation_templates'])) {
+            add_action('wp_footer', [self::class, 'print_variation_templates'], 5);
+        }
     }
 }
 

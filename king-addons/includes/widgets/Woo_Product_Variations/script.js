@@ -1,7 +1,8 @@
 /**
  * Woo Product Variations widget behavior.
  *
- * Enhances variation selects with swatches.
+ * Enhances variation selects with swatches and keeps WooCommerce's
+ * variation resolver in sync when the form lives in a split builder widget.
  */
 (function ($) {
     "use strict";
@@ -11,12 +12,10 @@
     const initVariations = (wrap) => {
         if (!wrap || !wrap.dataset) return;
         if (wrap.dataset[INIT_FLAG] === "1") return;
-        wrap.dataset[INIT_FLAG] = "1";
 
         const form = wrap.querySelector('form.variations_form');
         if (!form) return;
-
-        if (wrap.dataset.swatches !== 'yes') return;
+        wrap.dataset[INIT_FLAG] = "1";
 
         let map = {};
         try {
@@ -44,6 +43,131 @@
             productVariations = raw && raw !== 'false' ? JSON.parse(raw) : [];
         } catch (e) {
             productVariations = [];
+        }
+
+        const priceRoots = () => document.querySelectorAll('.ka-woo-product-price');
+        priceRoots().forEach((el) => {
+            if (!el.dataset.kaOriginalPrice) {
+                el.dataset.kaOriginalPrice = el.innerHTML;
+            }
+        });
+
+        const setAtcNotice = (hide) => {
+            document.querySelectorAll('.ka-woo-product-atc__notice').forEach((el) => {
+                el.hidden = !!hide;
+            });
+        };
+
+        const applyVariationPrice = (variation) => {
+            priceRoots().forEach((el) => {
+                if (!variation || !variation.price_html) {
+                    if (el.dataset.kaOriginalPrice) {
+                        el.innerHTML = el.dataset.kaOriginalPrice;
+                    }
+                    return;
+                }
+                const discount = el.querySelector('.ka-woo-product-price__discount');
+                const discountHtml = discount ? discount.outerHTML : '';
+                el.innerHTML = variation.price_html + discountHtml;
+            });
+        };
+
+        const ensureWcVariationForm = () => {
+            if (!window.jQuery || typeof window.jQuery.fn.wc_variation_form !== 'function') {
+                return false;
+            }
+            const $form = window.jQuery(form);
+            if (!$form.data('wc_variation_form')) {
+                $form.wc_variation_form();
+            }
+            return true;
+        };
+
+        const findMatchedVariation = () => {
+            if (!Array.isArray(productVariations) || !productVariations.length) {
+                return null;
+            }
+            const selected = {};
+            let hasEmpty = false;
+            form.querySelectorAll('select[name^="attribute_"]').forEach((sel) => {
+                selected[sel.name] = sel.value;
+                if (!sel.value) {
+                    hasEmpty = true;
+                }
+            });
+            if (hasEmpty) {
+                return null;
+            }
+            return productVariations.find((variation) => {
+                const attrs = variation.attributes || {};
+                return Object.keys(attrs).every((key) => {
+                    const want = attrs[key];
+                    return !want || want === selected[key];
+                });
+            }) || null;
+        };
+
+        const applyFallbackVariation = () => {
+            if (window.jQuery && window.jQuery(form).data('wc_variation_form')) {
+                return;
+            }
+            const match = findMatchedVariation();
+            const varInput = form.querySelector('input.variation_id, input[name="variation_id"]');
+            const single = form.querySelector('.single_variation');
+            if (match) {
+                if (varInput) {
+                    varInput.value = String(match.variation_id || '');
+                }
+                if (single) {
+                    single.innerHTML = (match.price_html ? '<div class="woocommerce-variation-price">' + match.price_html + '</div>' : '')
+                        + (match.availability_html ? '<div class="woocommerce-variation-availability">' + match.availability_html + '</div>' : '');
+                }
+                applyVariationPrice(match);
+                setAtcNotice(true);
+            } else {
+                if (varInput) {
+                    varInput.value = '0';
+                }
+                if (single) {
+                    single.innerHTML = '';
+                }
+                applyVariationPrice(null);
+                setAtcNotice(false);
+            }
+        };
+
+        const wcReady = ensureWcVariationForm();
+        if (window.jQuery) {
+            const $form = window.jQuery(form);
+            $form.on('found_variation', function (event, variation) {
+                applyVariationPrice(variation);
+                setAtcNotice(!!(variation && variation.variation_id));
+            });
+            $form.on('reset_data hide_variation', function () {
+                applyVariationPrice(null);
+                setAtcNotice(false);
+            });
+            $form.on('woocommerce_update_variation_values woocommerce_variation_has_changed reset_data found_variation hide_variation', runAll);
+        }
+        if (!wcReady) {
+            form.addEventListener('change', applyFallbackVariation);
+            applyFallbackVariation();
+            if (window.jQuery) {
+                window.jQuery(function () {
+                    if (ensureWcVariationForm()) {
+                        const selected = form.querySelector('select[name^="attribute_"]');
+                        if (selected && selected.value) {
+                            window.jQuery(selected).trigger('change');
+                        }
+                    } else {
+                        applyFallbackVariation();
+                    }
+                });
+            }
+        }
+
+        if (wrap.dataset.swatches !== 'yes') {
+            return;
         }
 
         const attributeMatches = (variationAttr, selected) => {
@@ -130,8 +254,10 @@
                     select.value = opt.value;
                     select.dispatchEvent(new Event('change', { bubbles: true }));
                     if (window.jQuery) {
+                        window.jQuery(select).trigger('check_variations');
                         window.jQuery(select).trigger('change');
                     }
+                    applyFallbackVariation();
                     runAll();
                 });
 
@@ -171,16 +297,14 @@
 
         runAll();
 
-        // Sync with WooCommerce variation script events.
-        if (window.jQuery) {
-            const $form = window.jQuery(form);
-            $form.on('woocommerce_update_variation_values woocommerce_variation_has_changed reset_data found_variation hide_variation', runAll);
-            const resetBtn = form.querySelector('.reset_variations');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    setTimeout(runAll, 50);
-                });
-            }
+        const resetBtn = form.querySelector('.reset_variations');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                setTimeout(() => {
+                    runAll();
+                    applyFallbackVariation();
+                }, 50);
+            });
         }
     };
 
@@ -200,9 +324,3 @@
         );
     });
 })(jQuery);
-
-
-
-
-
-

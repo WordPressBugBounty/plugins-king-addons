@@ -30,7 +30,7 @@ class Grid_Ajax_Security
      */
     public static function get_allowed_image_effects(): array
     {
-        return ['none', 'pro-zi', 'pro-zo', 'grayscale-in', 'pro-go', 'blur-in', 'pro-bo', 'slide'];
+        return ['none', 'pro-zi', 'pro-zo', 'zoom-in', 'zoom-out', 'grayscale-in', 'grayscale-out', 'pro-go', 'blur-in', 'blur-out', 'pro-bo', 'slide'];
     }
 
     /**

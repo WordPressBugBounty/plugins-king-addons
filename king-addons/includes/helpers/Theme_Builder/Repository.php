@@ -73,6 +73,9 @@ class Repository
             $sub_location = get_post_meta($post_id, Meta_Keys::SUB_LOCATION, true) ?: '';
             $conditions_meta = get_post_meta($post_id, Meta_Keys::CONDITIONS, true);
             $conditions = Conditions::normalize($conditions_meta);
+            if (empty($conditions['groups'])) {
+                $conditions = Conditions::defaults_for_sub_location($sub_location);
+            }
             $priority = (int) get_post_meta($post_id, Meta_Keys::PRIORITY, true);
             $is_pro_only = (bool) get_post_meta($post_id, Meta_Keys::IS_PRO_ONLY, true);
             

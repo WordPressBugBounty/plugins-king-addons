@@ -54,13 +54,10 @@
     }
 
     if (data.notices) {
-      let container = document.querySelector('.woocommerce-notices-wrapper');
-      if (!container) {
-        container = document.createElement('div');
-        container.className = 'woocommerce-notices-wrapper';
-        document.body.prepend(container);
+      const container = document.querySelector('.woocommerce-notices-wrapper');
+      if (container) {
+        container.innerHTML = data.notices;
       }
-      container.innerHTML = data.notices;
     }
 
     document.body.dispatchEvent(new Event('wc_fragments_refreshed'));
@@ -94,14 +91,28 @@
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res && res.success && res.data) {
-          updateFragments(res.data);
-          setNotice(wrap, res.data.notices || '');
-        } else {
-          setNotice(wrap, '');
+        const data = res && res.data ? res.data : {};
+        if (data.cart_html || data.totals_html !== undefined || data.notices) {
+          updateFragments(data);
+        }
+        let html = data.notices || '';
+        if (!html && data.message) {
+          const safe = String(data.message).replace(/[&<>"']/g, (ch) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+          }[ch]));
+          html = '<div class="woocommerce-error" role="alert">' + safe + '</div>';
+        }
+        setNotice(wrap, html);
+        const noticeEl = wrap.querySelector('.ka-woo-cart-coupon__notice');
+        if (html && noticeEl && typeof noticeEl.scrollIntoView === 'function') {
+          noticeEl.scrollIntoView({ block: 'nearest' });
         }
       })
-      .catch(() => setNotice(wrap, ''))
+      .catch(() => setNotice(wrap, '<div class="woocommerce-error" role="alert">Could not apply coupon.</div>'))
       .finally(() => {
         [applyBtn, removeBtn].forEach((btn) => {
           if (btn) {

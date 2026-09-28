@@ -7269,19 +7269,15 @@ $this->end_controls_section();
 
     public function get_image_effect_class($s)
     {
+        $effect = Grid_Ajax_Security::sanitize_image_effect($s['image_effects'] ?? 'none');
         $class = '';
-        if (!king_addons_freemius()->can_use_premium_code__premium_only()) {
-            if (in_array($s['image_effects'], ['pro-zi', 'pro-zo', 'pro-go', 'pro-bo'])) {
-                $s['image_effects'] = 'none';
-            }
+        if ('none' !== $effect) {
+            $class .= ' king-addons-' . $effect;
         }
-        if ('none' !== $s['image_effects']) {
-            $class .= ' king-addons-' . $s['image_effects'];
-        }
-        if ('slide' !== $s['image_effects']) {
-            $class .= ' king-addons-effect-size-' . $s['image_effects_size'];
+        if ('slide' !== $effect) {
+            $class .= ' king-addons-effect-size-' . Grid_Ajax_Security::sanitize_image_effect_size($s['image_effects_size'] ?? 'medium');
         } else {
-            $class .= ' king-addons-effect-dir-' . $s['image_effects_direction'];
+            $class .= ' king-addons-effect-dir-' . Grid_Ajax_Security::sanitize_image_effect_direction($s['image_effects_direction'] ?? 'bottom');
         }
         return $class;
     }
@@ -8030,7 +8026,7 @@ $this->end_controls_section();
                 echo '<article class="' . esc_attr($post_class) . '">';
                 echo '<div class="king-addons-grid-item-inner">';
                 $this->get_elements_by_location('above', $s, get_the_ID());
-                echo '<div class="king-addons-grid-media-wrap' . $this->get_image_effect_class($s) . ' ">';
+                echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($s)) . ' ">';
                 $this->render_post_thumbnail($s);
                 echo '<div class="king-addons-grid-media-hover king-addons-animation-wrap">';
                 $this->render_media_overlay($s);

@@ -43,6 +43,16 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
         return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-products-pagination-style'];
     }
 
+    /**
+     * Script dependencies.
+     *
+     * @return array<int,string>
+     */
+    public function get_script_depends(): array
+    {
+        return [KING_ADDONS_ASSETS_UNIQUE_KEY . '-woo-products-pagination-script'];
+    }
+
     protected function register_controls(): void
     {
         $this->start_controls_section(
@@ -122,7 +132,7 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
             ]);
             $output = is_string($output) ? trim($output) : '';
             if ('' !== $output) {
-                echo '<div class="ka-woo-pagination">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo '<div class="ka-woo-pagination" data-query-id="' . esc_attr($query_id) . '" data-page-arg="' . esc_attr((string) $stats['page_arg']) . '">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 return;
             }
         }
@@ -144,7 +154,7 @@ class Woo_Products_Pagination extends Abstract_Archive_Widget
         }
 
         // WooCommerce's own markup, not user input.
-        echo '<div class="ka-woo-pagination">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo '<div class="ka-woo-pagination" data-query-id="' . esc_attr($query_id) . '" data-page-arg="">' . $output . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 

@@ -42,12 +42,17 @@
     return valid;
   };
 
-  const initSteps = (wrapper) => {
+    const initSteps = (wrapper) => {
     if (!wrapper || !wrapper.dataset) return;
     if (wrapper.dataset[INIT_FLAG] === "1") return;
-    wrapper.dataset[INIT_FLAG] = "1";
 
     const stepsList = wrapper.querySelector('.ka-woo-checkout-steps');
+    // Pro checkout steps are driven by Woo_Builder/script.js. Binding both
+    // handlers made Next skip a step and mixed panel labels.
+    if (stepsList && stepsList.classList.contains('ka-woo-checkout-steps--pro')) {
+      return;
+    }
+    wrapper.dataset[INIT_FLAG] = "1";
     const steps = [...wrapper.querySelectorAll('.ka-woo-checkout-step')];
     if (!steps.length || !stepsList) return;
 

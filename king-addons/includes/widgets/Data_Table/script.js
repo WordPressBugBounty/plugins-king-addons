@@ -273,42 +273,58 @@
 
                             const exportBtn = $scope.find('.king-addons-table-export-button-cont .king-addons-button');
 
-                            const htmlToCSV = (filename, $view) => {
+                            const csvEscape = (value) => {
+                                const text = String(value == null ? '' : value).replace(/\r?\n/g, ' ').trim();
+                                if (/[",]/.test(text)) {
+                                    return '"' + text.replace(/"/g, '""') + '"';
+                                }
+                                return text;
+                            };
+
+                            const tableRowsToCSV = ($view) => {
                                 const rows = $view.find(".king-addons-table-row");
                                 const data = [];
                                 rows.each((_, row) => {
                                     const cols = row.querySelectorAll(".king-addons-table-text");
-                                    const rowData = Array.from(cols).map(cell => cell.innerText);
+                                    const rowData = Array.from(cols).map(cell => csvEscape(cell.innerText));
                                     data.push(rowData.join(","));
                                 });
-                                downloadCSVFile(data.join("\n"), filename);
+                                return data.join("\r\n");
                             };
 
-                            const downloadCSVFile = (csv, filename) => {
-                                const csvFile = new Blob([csv], { type: "text/csv" });
+                            const triggerDownload = (blob, filename) => {
+                                const url = URL.createObjectURL(blob);
                                 const downloadLink = document.createElement("a");
                                 downloadLink.download = filename;
-                                downloadLink.href = window.URL.createObjectURL(csvFile);
-                                downloadLink.style.display = "none";
+                                downloadLink.href = url;
+                                downloadLink.rel = "noopener";
+                                downloadLink.style.position = "fixed";
+                                downloadLink.style.left = "-9999px";
                                 document.body.appendChild(downloadLink);
                                 downloadLink.click();
+                                setTimeout(() => {
+                                    URL.revokeObjectURL(url);
+                                    downloadLink.remove();
+                                }, 1500);
                             };
 
                             exportBtn.each(function () {
                                 const $btn = $(this);
                                 if ($btn.hasClass('king-addons-xls')) {
-                                    // XLS export
-                                    $btn.on('click', () => {
-                                        const $table = $scope.find('table');
-                                        TableToExcel.convert($table[0], {
-                                            name: 'export.xlsx',
-                                            sheet: { name: 'Sheet 1' },
-                                        });
+                                    $btn.on('click', (event) => {
+                                        event.preventDefault();
+                                        const table = $scope.find('table').get(0);
+                                        if (!table) {
+                                            return;
+                                        }
+                                        const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body>' + table.outerHTML + '</body></html>';
+                                        triggerDownload(new Blob(['\uFEFF' + html], { type: 'application/vnd.ms-excel' }), 'export.xls');
                                     });
                                 } else if ($btn.hasClass('king-addons-csv')) {
-                                    // CSV export
-                                    $btn.on('click', () => {
-                                        htmlToCSV("placeholder.csv", $scope.find('.king-addons-data-table'));
+                                    $btn.on('click', (event) => {
+                                        event.preventDefault();
+                                        const csv = tableRowsToCSV($scope.find('.king-addons-data-table'));
+                                        triggerDownload(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }), 'export.csv');
                                     });
                                 }
                             });

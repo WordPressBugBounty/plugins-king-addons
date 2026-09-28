@@ -866,20 +866,20 @@ $this->end_controls_section();
             }
 
             $link_content = !empty($icon) ? '<span class="king-addons-pl-page-list-item-icon">' . $icon . '</span>' : '';
-            $link_content .= '<div><a class="' . $pointer_item_class . '" href="' .
-                ($item['page_list_item_type'] === 'dynamic' ? get_the_permalink($item['query_page_selection']) : '#') .
-                '" target="' . $target . '">' .
-                ($item['page_list_item_type'] === 'dynamic' ? get_the_title($item['query_page_selection']) : $item['page_list_item_title']) .
+            $link_content .= '<div><a class="' . esc_attr($pointer_item_class) . '" href="' .
+                esc_url($item['page_list_item_type'] === 'dynamic' ? get_the_permalink($item['query_page_selection']) : '#') .
+                '" target="' . esc_attr($target) . '">' .
+                esc_html($item['page_list_item_type'] === 'dynamic' ? get_the_title($item['query_page_selection']) : ($item['page_list_item_title'] ?? '')) .
                 '</a>';
             if (!empty($item['page_list_item_sub_title'])) {
-                $link_content .= '<p>' . $item['page_list_item_sub_title'] . '</p>';
+                $link_content .= '<p>' . esc_html($item['page_list_item_sub_title']) . '</p>';
             }
             $link_content .= '</div>';
 
             echo '<li ' . $this->get_render_attribute_string('page_list_item' . $key) . '>';
             echo $link_content;
             if ($item['show_page_list_item_badge'] === 'yes') {
-                echo '<span class="king-addons-pl-page-list-item-badge">' . $item['page_list_item_badge_text'] . '</span>';
+                echo '<span class="king-addons-pl-page-list-item-badge">' . esc_html($item['page_list_item_badge_text']) . '</span>';
             }
             echo '</li>';
         }

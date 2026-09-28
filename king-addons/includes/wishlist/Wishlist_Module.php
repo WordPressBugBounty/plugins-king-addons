@@ -23,8 +23,23 @@ class Wishlist_Module
      */
     public function __construct()
     {
+        add_action('send_headers', [$this, 'maybe_expire_cookie']);
         add_action('init', [$this, 'boot']);
         add_action('wp_login', [$this, 'handle_login'], 10, 2);
+    }
+
+    /**
+     * Drop leftover guest cookies when wishlist is turned off in settings.
+     *
+     * @return void
+     */
+    public function maybe_expire_cookie(): void
+    {
+        if (Wishlist_Settings::is_enabled() || is_admin()) {
+            return;
+        }
+
+        Wishlist_Session::expire_if_present();
     }
 
     /**
@@ -60,8 +75,15 @@ class Wishlist_Module
      */
     public function handle_login(string $user_login, WP_User $user): void
     {
+        if (!Wishlist_Settings::is_enabled()) {
+            return;
+        }
+
         $session = new Wishlist_Session();
-        $session_key = $session->get_session_key();
+        $session_key = $session->get_session_key(false);
+        if ($session_key === '') {
+            return;
+        }
 
         $service = new Wishlist_Service($user->ID, $session_key);
         $service->merge_guest_items($user->ID, $session_key);
