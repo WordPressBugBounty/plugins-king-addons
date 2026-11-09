@@ -2143,7 +2143,8 @@ $this->end_controls_section();
         $html .= '<input type="range" id="' . esc_attr($field_id) . '" name="' . esc_attr($field_id) . '"';
         $html .= ' min="' . esc_attr($field['field_min']) . '" max="' . esc_attr($field['field_max']) . '" step="' . esc_attr($field['field_step']) . '"';
         $html .= ' value="' . esc_attr($field['field_default']) . '"';
-        $html .= ' class="king-pricing-calculator__range"' . $aria_desc . ' aria-valuetext="' . esc_attr($field['field_default']) . (!empty($field['field_unit']) ? ' ' . $field['field_unit'] : '') . '">';
+        $value_text = $field['field_default'] . (!empty($field['field_unit']) ? ' ' . $field['field_unit'] : '');
+        $html .= ' class="king-pricing-calculator__range"' . $aria_desc . ' aria-valuetext="' . esc_attr($value_text) . '">';
         
         $html .= '<div class="king-pricing-calculator__range-value-display" aria-hidden="true">';
         $html .= '<span class="king-pricing-calculator__range-value" id="' . esc_attr($value_id) . '">' . esc_html($field['field_default']) . '</span>';

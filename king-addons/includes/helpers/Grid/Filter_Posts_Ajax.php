@@ -41,7 +41,7 @@ class Filter_Posts_Ajax
         static $settings = null;
 
         if (null === $settings) {
-            $settings = Grid_Ajax_Security::get_posted_grid_settings();
+            $settings = Grid_Ajax_Security::get_posted_grid_settings('posts-grid');
             $_POST['grid_settings'] = $settings;
         }
 
@@ -220,6 +220,21 @@ class Filter_Posts_Ajax
             $args['offset'] = (int)$_POST['king_addons_offset'];
         }
 
+        // Public filtering must not expose internal post types or protected
+        // content through alternate query branches. Scheduled posts require
+        // the author's explicit, signed widget option.
+        $types = (array) ($args['post_type'] ?? 'post');
+        $types = array_values(array_filter($types, static function ($type) {
+            $object = get_post_type_object($type);
+            return $object && is_post_type_viewable($object);
+        }));
+        $args['post_type'] = $types;
+        if (!$types) {
+            $args['post__in'] = [0];
+        }
+        $args['post_status'] = ($settings['display_scheduled_posts'] ?? '') === 'yes'
+            && king_addons_freemius()->can_use_premium_code__premium_only() ? 'future' : 'publish';
+        $args['has_password'] = false;
         return $args;
     }
 

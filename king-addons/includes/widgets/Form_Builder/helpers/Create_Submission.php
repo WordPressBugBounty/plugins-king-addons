@@ -75,6 +75,9 @@ class Create_Submission
         ]);
 
         if ($post_id) {
+            $locker_context = isset($_POST['king_addons_locker_context']) && is_string($_POST['king_addons_locker_context'])
+                ? sanitize_text_field(wp_unslash($_POST['king_addons_locker_context'])) : '';
+            do_action('king_addons/form_builder/submitted', (int) $post_id, $sanitized_form_page_id, $sanitized_form_id, $locker_context);
             wp_send_json_success(array(
                 'action' => 'king_addons_form_builder_submissions',
                 'post_id' => $post_id,

@@ -4164,6 +4164,11 @@ class Dynamic_Posts_Grid extends Widget_Base
         $settings = $this->get_settings_for_display();
         $widget_id = $this->get_id();
 
+        // The same wrapper is used by the Pro renderer. Authenticate only the
+        // configuration chosen in Elementor, never a visitor's cpt_actions.
+        $this->add_render_attribute('wrapper', 'data-request-config',
+            Dynamic_Posts_Grid_Ajax::create_request_config($settings, $widget_id));
+
         if ($this->maybe_render_pro($settings)) {
             return;
         }
@@ -4175,6 +4180,7 @@ class Dynamic_Posts_Grid extends Widget_Base
             'orderby' => $settings['kng_dynamic_posts_orderby'],
             'order' => $settings['kng_dynamic_posts_order'],
             'post_status' => 'publish',
+            'has_password' => false,
         ];
 
         $posts_query = new \WP_Query($query_args);

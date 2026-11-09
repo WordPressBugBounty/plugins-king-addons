@@ -868,7 +868,7 @@
                 item.dataset.templateKey = template.template_key;
                 item.dataset.templatePlan = template.plan;
 
-                const thumbnailUrl = `https://thumbnails.kingaddons.com/${template.template_key}.png?v=4`;
+                const thumbnailUrl = `https://thumbnails.kingaddons.com/${template.template_key}.webp?v=4`;
                 
                 item.innerHTML = `
                     <img class="king-addons-template-item-image" 
@@ -1792,7 +1792,7 @@
                 item.dataset.sectionPlan = section.plan;
 
                 // Use the correct screenshot URL pattern with plan-based paths  
-                const screenshotUrl = `https://thumbnails.kingaddons.com/sections/${section.plan}/${section.section_key}.png?v=4`;
+                const screenshotUrl = `https://thumbnails.kingaddons.com/sections/${section.plan}/${section.section_key}.webp?v=4`;
                 
                 item.innerHTML = `
                     <img class="king-addons-section-item-image" 

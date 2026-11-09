@@ -362,7 +362,7 @@ final class Data_Table_Builder
             $header[] = $this->escape_csv_value($column['label'] ?? '');
         }
         if (!empty($header)) {
-            fputcsv($output, $header);
+            fputcsv($output, $header, ',', '"', '\\');
         }
 
         foreach ($rows as $row) {
@@ -371,7 +371,7 @@ final class Data_Table_Builder
                 $value = is_array($cell) ? (string) ($cell['value'] ?? '') : (string) $cell;
                 $line[] = $this->escape_csv_value($value);
             }
-            fputcsv($output, $line);
+            fputcsv($output, $line, ',', '"', '\\');
         }
 
         fclose($output);
@@ -401,7 +401,7 @@ final class Data_Table_Builder
         }
 
         $rows = [];
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $rows[] = $row;
         }
         fclose($handle);

@@ -82,6 +82,7 @@
                 getSettings() {
                     return {
                         widgetId: this.wrapper.data('widget-id'),
+                        requestConfig: this.wrapper.attr('data-request-config') || '',
                         postsPerPage: this.wrapper.data('posts-per-page'),
                         postTypes: this.wrapper.data('post-types'),
                         orderby: this.wrapper.data('orderby'),
@@ -448,7 +449,7 @@
                         search_query: this.currentSearch,
                         page: this.currentPage,
                         show_excerpt: this.settings.showExcerpt,
-                        cpt_actions: this.settings.cptActionsRaw
+                        request_config: this.settings.requestConfig
                     };
 
                     $.ajax({
@@ -491,7 +492,7 @@
                         search_query: this.currentSearch,
                         page: this.currentPage,
                         show_excerpt: this.settings.showExcerpt,
-                        cpt_actions: this.settings.cptActionsRaw
+                        request_config: this.settings.requestConfig
                     };
 
                     $.ajax({

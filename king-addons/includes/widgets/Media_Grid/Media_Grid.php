@@ -7150,17 +7150,48 @@ $this->end_controls_section();
             $item_classes[] = 'king-addons-grid-item-video';
         }
 
-        echo '<article class="' . esc_attr(implode(' ', $item_classes)) . '">';
-        echo '<div class="king-addons-grid-item-inner">';
-        $this->get_elements_by_location('above', $settings, $post_id);
-        echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '">';
-        $this->render_media_thumbnail($settings, $item['key'], $item_type, $item['image'] ?? [], $video_url);
-        echo '<div class="king-addons-grid-media-hover king-addons-animation-wrap">';
-        $this->render_media_overlay($settings, $post_id);
-        $this->get_elements_by_location('over', $settings, $post_id);
-        echo '</div></div>';
-        $this->get_elements_by_location('below', $settings, $post_id);
-        echo '</div></article>';
+        // Manual items bypass WP_Query::the_post(). Give template functions
+        // the attachment context instead of the page containing the gallery.
+        $context_keys = ['post', 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages'];
+        $saved_context = [];
+        foreach ($context_keys as $key) {
+            if (array_key_exists($key, $GLOBALS)) {
+                $saved_context[$key] = $GLOBALS[$key];
+            }
+        }
+        $attachment = $post_id ? get_post($post_id) : null;
+        try {
+            if ($attachment && 'attachment' === $attachment->post_type) {
+                $GLOBALS['post'] = $attachment;
+                setup_postdata($attachment);
+            }
+
+            echo '<article class="' . esc_attr(implode(' ', $item_classes)) . '">';
+            echo '<div class="king-addons-grid-item-inner">';
+            $this->get_elements_by_location('above', $settings, $post_id);
+            echo '<div class="king-addons-grid-media-wrap' . esc_attr($this->get_image_effect_class($settings)) . '">';
+            $this->render_media_thumbnail($settings, $item['key'], $item_type, $item['image'] ?? [], $video_url);
+            echo '<div class="king-addons-grid-media-hover king-addons-animation-wrap">';
+            $this->render_media_overlay($settings, $post_id);
+            $this->get_elements_by_location('over', $settings, $post_id);
+            echo '</div></div>';
+            $this->get_elements_by_location('below', $settings, $post_id);
+            echo '</div></article>';
+        } finally {
+            // Restore both WordPress and the_post hook context for subsequent
+            // widgets, including when this gallery is inside another loop.
+            if (($saved_context['post'] ?? null) instanceof \WP_Post) {
+                $GLOBALS['post'] = $saved_context['post'];
+                setup_postdata($saved_context['post']);
+            }
+            foreach ($context_keys as $key) {
+                if (array_key_exists($key, $saved_context)) {
+                    $GLOBALS[$key] = $saved_context[$key];
+                } else {
+                    unset($GLOBALS[$key]);
+                }
+            }
+        }
     }
 
     public function get_main_query_args()
@@ -7551,6 +7582,11 @@ $this->end_controls_section();
 
     public function get_elements($type, $settings, $class, $post_id)
     {
+        // URL-only images have no attachment metadata. Never fall back to the
+        // parent page's title, excerpt, author or date for those cards.
+        if ('separator' !== $type && (!$post_id || 'attachment' !== get_post_type($post_id))) {
+            return;
+        }
         if ('pro-lk' === $type || 'pro-shr' === $type) $type = 'title';
         switch ($type) {
             case 'title':

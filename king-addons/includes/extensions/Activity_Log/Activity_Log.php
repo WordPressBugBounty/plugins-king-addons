@@ -546,7 +546,7 @@ class Activity_Log
             'Object',
             'Source',
             'Message',
-        ]);
+        ], ',', '"', '\\');
 
         foreach ($logs as $log) {
             $object = trim($log->object_type . ' ' . $log->object_title);
@@ -562,7 +562,7 @@ class Activity_Log
                 $log->message,
             ];
             $row = array_map([$this, 'escape_csv_value'], $row);
-            fputcsv($output, $row);
+            fputcsv($output, $row, ',', '"', '\\');
         }
 
         fclose($output);

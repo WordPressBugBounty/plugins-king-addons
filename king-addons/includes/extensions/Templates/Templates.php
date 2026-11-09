@@ -596,7 +596,7 @@ final class Templates
                     data-template-key="<?php echo esc_attr($attr_key); ?>"
                     data-template-plan="<?php echo esc_attr($template['plan']); ?>">
                     <img class="kng-addons-template-thumbnail" loading="lazy"
-                        src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
+                        src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.webp?v=4"); ?>"
                         alt="<?php echo esc_attr($template['title']); ?>">
                     <h3><?php echo esc_html($template['title']); ?></h3>
                     <div class="template-plan template-plan-<?php echo esc_html($template['plan']); ?>"><?php echo esc_html($template['plan']); ?></div>
@@ -837,7 +837,11 @@ final class Templates
                 $this->replace_image_data($value, $old_url, $new_url, $old_id, $new_id);
             } elseif (is_string($value)) {
                 // Direct URL string replacement
-                if ($value === $old_url) {
+                // A shared URL can belong to several different source attachment IDs.
+                // Keep an unmatched media object's URL for its own ID replacement pass.
+                $is_unmatched_media_url = $key === 'url' && isset($array['id']) &&
+                    $array['id'] !== $old_id;
+                if ($value === $old_url && !$is_unmatched_media_url) {
                     $array[$key] = $new_url;
                 }
                 
@@ -1399,7 +1403,7 @@ final class Templates
                     data-template-key="<?php echo esc_attr($attr_key); ?>"
                     data-template-plan="<?php echo esc_attr($template['plan']); ?>">
                     <img class="kng-addons-template-thumbnail" loading="lazy"
-                        src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.png?v=4"); ?>"
+                        src="<?php echo esc_url("https://thumbnails.kingaddons.com/$attr_key.webp?v=4"); ?>"
                         alt="<?php echo esc_attr($template['title']); ?>">
                     <h3><?php echo esc_html($template['title']); ?></h3>
                     <div class="template-plan template-plan-<?php echo esc_html($template['plan']); ?>"><?php echo esc_html($template['plan']); ?></div>
@@ -1418,7 +1422,7 @@ final class Templates
                 $section_key = $section['section_key'];
                 $plan = $section['plan'];
                 $title = $section['title'];
-                $thumb_url = "https://thumbnails.kingaddons.com/sections/$plan/$section_key.png";
+                $thumb_url = "https://thumbnails.kingaddons.com/sections/$plan/$section_key.webp";
                 ?>
                 <div class="section-item"
                      data-section-key="<?php echo esc_attr($section_key); ?>"

@@ -1,0 +1,101 @@
+.ka-display-await-click { display: none !important; }
+.ka-display-reveal-trigger { margin-block: 12px; }
+.ka-display-reveal-trigger button { cursor: pointer; padding: 12px 20px; border: 0; border-radius: 4px; background: var(--e-global-color-primary, #6d42df); color: #fff; font: inherit; }
+.ka-display-report { padding: 12px; border: 1px solid var(--e-a-border-color, #ddd); border-radius: 4px; line-height: 1.55; overflow-wrap: anywhere; }
+.ka-display-report ul { margin: 10px 0; padding-inline-start: 16px; }
+.ka-display-report li { margin-bottom: 8px; }
+.elementor-control-cd_rules .elementor-repeater-fields:first-child .elementor-control-join { display: none; }
+/* Follow Elementor's native icon tabs without squeezing Content / Style / Advanced. */
+#elementor-panel .elementor-panel-navigation:has(> .elementor-tab-control-king-display-access) > .elementor-panel-navigation-tab {
+    flex: 1 1 0;
+    min-width: 0;
+}
+#elementor-panel .elementor-tab-control-king-display-access span::before { content: "\e901"; }
+
+/* Button controls normally reserve a right-hand input column; these are full-width actions. */
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) {
+    padding-block: 0;
+    margin-block-end: 8px;
+}
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) .elementor-control-field { display: block; }
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) .elementor-control-title { display: none; }
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) .elementor-control-input-wrapper { width: 100%; margin: 0; }
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 64px;
+    padding: 12px;
+    border: 1px solid var(--e-a-border-color, #d5d8dc);
+    border-radius: var(--e-a-border-radius, 3px);
+    background: var(--e-a-bg-default, #fff);
+    color: var(--e-a-color-txt, #515962);
+    box-shadow: none;
+    font-family: inherit;
+    text-align: start;
+    text-transform: none;
+    white-space: normal;
+    cursor: pointer;
+    transition: background-color .15s, border-color .15s;
+}
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) button:hover {
+    border-color: var(--e-a-color-txt-muted, #818a96);
+    background: var(--e-a-bg-hover, #f1f2f3);
+}
+#elementor-panel :is(.elementor-control-ka_display_preset_rules, .elementor-control-ka_display_preset_password, .elementor-control-ka_display_preset_locker) button:focus-visible { outline: 2px solid var(--e-a-color-txt-accent, #93003f); outline-offset: 2px; }
+#elementor-panel .ka-display-action-icon { flex: 0 0 20px; font-size: 18px; text-align: center; }
+#elementor-panel .ka-display-action-copy { display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; }
+#elementor-panel .ka-display-action-title { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; line-height: 1.4; }
+#elementor-panel .ka-display-action-hint { color: var(--e-a-color-txt-muted, #69727d); font-size: 11px; font-weight: 400; line-height: 1.4; }
+#elementor-panel .ka-display-action-arrow { flex-shrink: 0; color: var(--e-a-color-txt-muted, #69727d); font-size: 11px; }
+#elementor-panel .ka-display-action-pro { padding: 1px 4px; border: 1px solid var(--e-a-border-color, #d5d8dc); border-radius: 3px; font-size: 9px; font-weight: 500; }
+#elementor-panel .elementor-control-ka_display_help { padding-block-end: 12px; }
+#elementor-panel .ka-display-intro { color: var(--e-a-color-txt-muted, #69727d); font-size: 12px; line-height: 1.5; }
+#elementor-panel .elementor-control-ka_display_next { padding-block: 4px 16px; }
+#elementor-panel .ka-display-next { color: var(--e-a-color-txt-muted, #69727d); font-size: 11px; line-height: 1.5; }
+body:not(.ka-access-more-open) :is(.elementor-control-protected_content_invert, .elementor-control-protected_content_password_type, .elementor-control-protected_content_password_key, .elementor-control-protected_content_password_global_password, .elementor-control-protected_content_password_cookie_days, .elementor-control-protected_content_locker_method, .elementor-control-protected_content_locker_token, .elementor-control-protected_content_locker_form, .elementor-control-protected_content_locker_cookie_days) { display: none !important; }
+body.ka-access-password :is(.elementor-control-protected_content_fallback_heading, .elementor-control-protected_content_fallback_type, .elementor-control-protected_content_fallback_msg, .elementor-control-protected_content_fallback_template, .elementor-control-protected_content_fallback_form),
+body.ka-access-locker :is(.elementor-control-protected_content_fallback_heading, .elementor-control-protected_content_fallback_type, .elementor-control-protected_content_fallback_msg, .elementor-control-protected_content_fallback_template, .elementor-control-protected_content_fallback_form) { display: none !important; }
+
+.ka-access-edit-template { display: block; margin-top: 8px; }
+.ka-access-form-report { line-height: 1.55; margin-block: 8px; }
+
+/* Keep settings and diagnostics readable in Elementor's default 280px panel. */
+#elementor-panel :is(.elementor-control-ka_display_check_button, .elementor-control-ka_access_check) .elementor-control-field { display: block; }
+#elementor-panel :is(.elementor-control-ka_display_check_button, .elementor-control-ka_access_check) .elementor-control-title { display: none; }
+#elementor-panel :is(.elementor-control-ka_display_check_button, .elementor-control-ka_access_check) .elementor-control-input-wrapper { width: 100%; }
+#elementor-panel :is(.elementor-control-ka_display_check_button, .elementor-control-ka_access_check) button { width: 100%; min-height: 32px; }
+#elementor-panel .elementor-control-cd_rules .elementor-repeater-row-item-title { min-width: 0; width: auto; }
+#elementor-panel .elementor-control-cd_rules .elementor-repeater-row-tool { flex-shrink: 0; }
+#elementor-panel .ka-display-technical-field .king-addons-ai-buttons-wrapper { display: none; }
+#elementor-panel :is(.ka-display-report, .ka-access-form-report) {
+    padding: 12px;
+    border: 1px solid var(--e-a-border-color, #d5d8dc);
+    border-inline-start-width: 3px;
+    border-radius: var(--e-a-border-radius, 3px);
+    background: var(--e-a-bg-default, #fff);
+    color: var(--e-a-color-txt, #515962);
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+#elementor-panel :is(.ka-display-report, .ka-access-form-report)[data-state="pass"] { border-inline-start-color: var(--e-a-color-success, #008a55); }
+#elementor-panel :is(.ka-display-report, .ka-access-form-report)[data-state="warning"] { border-inline-start-color: var(--e-a-color-warning, #996800); }
+#elementor-panel .ka-display-report p { margin-block: 8px 0; }
+#elementor-panel .ka-display-report small { display: block; color: var(--e-a-color-txt-muted, #69727d); font-size: 11px; line-height: 1.5; }
+
+#elementor-panel .ka-display-pro-only { display: none; }
+#elementor-panel .ka-display-pro-only :disabled { cursor: not-allowed; }
+#elementor-panel .ka-display-upgrade {
+    padding: 14px;
+    border: 1px solid var(--e-a-border-color-accent, #e4b3ca);
+    border-radius: var(--e-a-border-radius, 3px);
+    background: var(--e-a-bg-default, #fff);
+    color: var(--e-a-color-txt, #515962);
+    line-height: 1.5;
+}
+#elementor-panel .ka-display-upgrade > strong { display: block; margin-top: 8px; font-size: 12px; }
+#elementor-panel .ka-display-upgrade p { margin-block: 8px 12px; font-size: 12px; }
+#elementor-panel .ka-display-upgrade > a { display: block; padding: 9px 8px; border-radius: 3px; background: var(--e-a-bg-accent, #f3bafd); color: var(--e-a-color-black, #0c0d0e); text-align: center; font-size: 12px; font-weight: 600; }
+#elementor-panel .ka-display-upgrade > small { display: block; margin-top: 10px; color: var(--e-a-color-txt-muted, #69727d); font-size: 11px; }

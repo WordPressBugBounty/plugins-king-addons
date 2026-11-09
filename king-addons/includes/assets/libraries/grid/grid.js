@@ -339,6 +339,7 @@
                                                     king_addons_filter: thisFilter,
                                                     king_addons_taxonomy: thisTaxonomy,
                                                     grid_settings: s.grid_settings,
+                                                    nonce: KingAddonsGridData.nonce,
                                                 },
                                                 success: (response) => {
                                                     // console.log('ISOTOPE GRID');
@@ -501,6 +502,7 @@
                                             king_addons_filter: thisFilter,
                                             king_addons_taxonomy: thisTaxonomy,
                                             grid_settings: settings.grid_settings,
+                                            nonce: KingAddonsGridData.nonce,
                                         },
                                         success: function (res) {
                                             // console.log("settings.grid_settings.query_offset = " + settings.grid_settings.query_offset);
@@ -515,6 +517,7 @@
                                                     king_addons_filter: thisFilter,
                                                     king_addons_taxonomy: thisTaxonomy,
                                                     grid_settings: settings.grid_settings,
+                                                    nonce: KingAddonsGridData.nonce,
                                                 },
                                                 success: function (resp) {
                                                     // setTimeout(() => {
@@ -527,7 +530,7 @@
                                                         $grid.html($(resp));
 
                                                         isotopeLayout(settings, $(resp));
-                                                        $grid.imagesLoaded().progress(() => {
+                                                        $grid.imagesLoaded().always(() => {
                                                             isotopeLayout(settings);
                                                             window.dispatchEvent(new Event("resize"));
                                                             window.dispatchEvent(new Event("scroll"));
@@ -605,6 +608,7 @@
                                             king_addons_filter: thisFilter,
                                             king_addons_taxonomy: thisTaxonomy,
                                             grid_settings: settings.grid_settings,
+                                            nonce: KingAddonsGridData.nonce,
                                         },
                                         success: function (responseCountAction) {
                                             $.ajax({
@@ -618,12 +622,13 @@
                                                     king_addons_filter: thisFilter,
                                                     king_addons_taxonomy: thisTaxonomy,
                                                     grid_settings: settings.grid_settings,
+                                                    nonce: KingAddonsGridData.nonce,
                                                 },
                                                 success: function (responseContentAction) {
                                                     const $items = $(responseContentAction);
                                                     $grid.infiniteScroll("appendItems", $items);
                                                     $grid.isotopekng("appended", $items);
-                                                    $items.imagesLoaded().progress(() => {
+                                                    $items.imagesLoaded().always(() => {
                                                         isotopeLayout(settings);
                                                         setTimeout(() => isotopeLayout(settings), 100);
                                                         setTimeout(() => $grid.addClass("grid-images-loaded"), 500);
@@ -715,7 +720,7 @@
 
                                     $grid.infiniteScroll("appendItems", $items);
                                     $grid.isotopekng("appended", $items);
-                                    $items.imagesLoaded().progress(() => {
+                                    $items.imagesLoaded().always(() => {
                                         isotopeLayout(s);
                                         setTimeout(() => {
                                             // isotopeLayout(s);
@@ -975,7 +980,8 @@
                                     let animationClass = "king-addons-added-to-cart-default",
                                         removeAnimationClass = "king-addons-added-to-cart-popup-hide";
                                     const popupImage = popupImageSrc
-                                        ? `<div class="king-addons-added-tc-popup-img"><img src="${popupImageSrc}" alt="" /></div>`
+                                        ? $("<div>", { class: "king-addons-added-tc-popup-img" })
+                                            .append($("<img>", { src: popupImageSrc, alt: "" }))
                                         : "";
                                     switch (popupAnimation) {
                                         case "slide-left":
@@ -999,13 +1005,19 @@
                                         $scope
                                             .find(".king-addons-grid")
                                             .append(
-                                                `<div id="king-addons-added-to-cart-${productId}" class="king-addons-added-to-cart-popup ${animationClass}">
-                          ${popupImage}
-                          <div class="king-addons-added-tc-title">
-                            <p>${popupText} ${KingAddonsGridData.addedToCartText}</p>
-                            <p><a href="${popupLink}">${KingAddonsGridData.viewCart}</a></p>
-                          </div>
-                        </div>`
+                                                $("<div>", {
+                                                    id: `king-addons-added-to-cart-${productId}`,
+                                                    class: `king-addons-added-to-cart-popup ${animationClass}`
+                                                }).append(
+                                                    popupImage,
+                                                    $("<div>", { class: "king-addons-added-tc-title" }).append(
+                                                        $("<p>").text(`${popupText} ${KingAddonsGridData.addedToCartText}`),
+                                                        $("<p>").append($("<a>", {
+                                                            href: popupLink,
+                                                            text: KingAddonsGridData.viewCart
+                                                        }))
+                                                    )
+                                                )
                                             );
                                         setTimeout(() => {
                                             $scope

@@ -8542,6 +8542,10 @@ $this->end_controls_section();
             $args['order'] = $settings['order_direction'];
         }
 
+        // Keep the initial page and AJAX pagination on the same public posts.
+        if (($settings['filters_experiment'] ?? '') === 'yes') {
+            $args['has_password'] = false;
+        }
         return $args;
     }
 
@@ -9101,12 +9105,16 @@ $this->end_controls_section();
                 'yes' === (Core::displaySettings($this)['tax1_custom_color_switcher'] ?? '') &&
                 'king-addons-grid-tax-style-1' === $settings['element_tax_style']
             ) {
-                $cfc_text = get_term_meta($term->term_id, Core::displaySettings($this)['tax1_custom_color_field_text'], true);
-                $cfc_bg = get_term_meta($term->term_id, Core::displaySettings($this)['tax1_custom_color_field_bg'], true);
-                $color_css = "color:$cfc_text; background-color:$cfc_bg; border-color:$cfc_bg;";
-                $custom_selector = '.elementor-element' . $this->get_unique_selector() .
-                    ' .king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . esc_attr($term->term_id);
-                echo '<style>' . $custom_selector . '{' . $color_css . '}</style>';
+                // Term metadata is not necessarily sanitized by its field provider.
+                // Validate colors before placing them in an HTML style element.
+                $cfc_text = Grid_Ajax_Security::sanitize_css_color(get_term_meta($term->term_id, Core::displaySettings($this)['tax1_custom_color_field_text'], true));
+                $cfc_bg = Grid_Ajax_Security::sanitize_css_color(get_term_meta($term->term_id, Core::displaySettings($this)['tax1_custom_color_field_bg'], true));
+                if ('' !== $cfc_text || '' !== $cfc_bg) {
+                    $color_css = "color:$cfc_text; background-color:$cfc_bg; border-color:$cfc_bg;";
+                    $custom_selector = '.elementor-element' . $this->get_unique_selector() .
+                        ' .king-addons-grid-tax-style-1 .inner-block a.king-addons-tax-id-' . absint($term->term_id);
+                    echo '<style>' . esc_html($custom_selector) . '{' . esc_html($color_css) . '}</style>';
+                }
             }
 
             echo '<a class="' . $pointer . ' king-addons-tax-id-' . esc_attr($term->term_id) . '" href="' . esc_url(get_term_link($term->term_id)) . '">';
@@ -9723,7 +9731,7 @@ $this->end_controls_section();
 
         if ('yes' === ($settings['filters_experiment'] ?? '')) {
             // Potentially store entire $settings if needed
-            $layout_settings['grid_settings'] = $settings;
+            $layout_settings['grid_settings'] = Grid_Ajax_Security::authorize_grid_settings($settings, 'posts-grid');
         }
 
         $this->add_render_attribute('grid-settings', [

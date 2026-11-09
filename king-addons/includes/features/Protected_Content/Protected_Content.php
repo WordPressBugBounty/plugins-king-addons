@@ -37,11 +37,21 @@ class Protected_Content
      */
     private static ?array $roles_cache = null;
 
+    /** Locker currently rendering its configured form shortcode. */
+    private ?array $locker_render_context = null;
+
     /**
      * Constructor.
      */
     public function __construct()
     {
+        require_once KING_ADDONS_PATH . 'includes/helpers/Conditional_Content_Cache.php';
+        require_once KING_ADDONS_PATH . 'includes/helpers/Display_Access.php';
+        require_once KING_ADDONS_PATH . 'includes/helpers/Display_Output_Guard.php';
+        require_once KING_ADDONS_PATH . 'includes/helpers/Display_Access_Token.php';
+        Display_Access::register('pc');
+        Conditional_Content_Cache::register('protected_content_enable');
+
         // Styles and scripts.
         add_action('elementor/preview/enqueue_styles', [$this, 'enqueue_styles'], 1);
         add_action('elementor/frontend/after_enqueue_styles', [$this, 'enqueue_styles'], 1);
@@ -53,6 +63,10 @@ class Protected_Content
         add_action('elementor/element/container/section_layout/after_section_end', [$this, 'register_controls'], 10, 2);
         add_action('elementor/element/column/section_advanced/after_section_end', [$this, 'register_controls'], 10, 2);
 
+        foreach (['widget', 'container', 'section', 'column'] as $kind) {
+            add_filter('elementor/frontend/' . $kind . '/should_render', [$this, 'has_visible_output'], 15, 2);
+        }
+
         // Runtime check.
         add_action('elementor/frontend/widget/before_render', [$this, 'before_render_element']);
         add_action('elementor/frontend/section/before_render', [$this, 'before_render_element']);
@@ -60,7 +74,10 @@ class Protected_Content
         add_action('elementor/frontend/column/before_render', [$this, 'before_render_element']);
 
         // Locker helper.
-        add_action('king_addons_locker_unlock', [$this, 'set_locker_cookie']);
+        add_action('king_addons_locker_unlock', [$this, 'set_locker_cookie'], 10, 2);
+        add_action('king_addons/form_builder/submitted', [$this, 'after_king_form'], 10, 4);
+        add_filter('wpcf7_form_hidden_fields', [$this, 'cf7_form_fields']);
+        add_action('wpcf7_mail_sent', [$this, 'after_cf7_form']);
 
         // Password AJAX handler.
         add_action('wp_ajax_king_addons_verify_password', [$this, 'ajax_verify_password']);
@@ -112,11 +129,13 @@ class Protected_Content
             return;
         }
 
+        wp_enqueue_script('king-display-inline', KING_ADDONS_URL . 'includes/features/Protected_Content/inline-content.js', ['jquery'], Display_Access::asset_version('includes/features/Protected_Content/inline-content.js'), true);
+
         wp_enqueue_script(
             KING_ADDONS_ASSETS_UNIQUE_KEY . '-protected-content-password',
             KING_ADDONS_URL . 'includes/features/Protected_Content/password-form.js',
-            ['jquery'],
-            KING_ADDONS_VERSION,
+            ['jquery', 'king-display-inline'],
+            Display_Access::asset_version('includes/features/Protected_Content/password-form.js'),
             true
         );
 
@@ -145,11 +164,12 @@ class Protected_Content
      */
     public function register_controls(Element_Base $element, $args): void
     {
+        Display_Access::intro($element);
         $element->start_controls_section(
             'king_addons_protected_content_section',
             [
-                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Protection', 'king-addons'),
-                'tab' => Controls_Manager::TAB_ADVANCED,
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Content access', 'king-addons'),
+                'tab' => Display_Access::TAB,
             ]
         );
 
@@ -186,6 +206,9 @@ class Protected_Content
                 ],
             ]
         );
+
+        $element->add_control('ka_access_more', ['label' => esc_html__('More options', 'king-addons'), 'type' => Controls_Manager::SWITCHER, 'description' => esc_html__('Optional settings. Saved values still apply.', 'king-addons'), 'condition' => ['protected_content_enable' => 'yes']]);
+        $element->add_control('protected_content_shared_hint', ['type' => Controls_Manager::RAW_HTML, 'raw' => '<p>' . esc_html__('This block uses a shared password. Open More options to edit its key and password.', 'king-addons') . '</p>', 'condition' => ['protected_content_enable' => 'yes', 'protected_content_mode' => 'password', 'protected_content_password_type' => 'global']]);
 
         // =============================================
         // FALLBACK SETTINGS
@@ -398,6 +421,14 @@ class Protected_Content
             ]
         );
 
+        $element->add_control('protected_content_password_roles', [
+            'label' => esc_html__('Let these roles skip the password', 'king-addons'),
+            'type' => Controls_Manager::SELECT2, 'multiple' => true,
+            'options' => $this->get_wp_roles_for_control(),
+            'description' => esc_html__('Optional. Everyone else can still enter the password.', 'king-addons'),
+            'condition' => ['protected_content_enable' => 'yes', 'protected_content_mode' => 'password'],
+        ]);
+
         $element->add_control(
             'protected_content_password_cookie_days',
             [
@@ -414,6 +445,10 @@ class Protected_Content
         );
 
         // =============================================
+        // Password form appearance follows the access settings.
+        $element->add_control('protected_content_password_intro', ['label' => esc_html__('Message above the password form', 'king-addons'), 'type' => Controls_Manager::TEXTAREA, 'rows' => 2, 'condition' => ['protected_content_enable' => 'yes', 'protected_content_mode' => 'password']]);
+        $element->add_control('protected_content_password_button', ['label' => esc_html__('Button text', 'king-addons'), 'type' => Controls_Manager::TEXT, 'default' => esc_html__('Unlock', 'king-addons'), 'condition' => ['protected_content_enable' => 'yes', 'protected_content_mode' => 'password']]);
+
         // CONDITIONS MODE
         // =============================================
 
@@ -666,7 +701,7 @@ class Protected_Content
             'protected_content_locker_token',
             [
                 'label' => esc_html__('Locker Token', 'king-addons'),
-                'description' => esc_html__('Unique identifier for this locked content', 'king-addons'),
+                'description' => esc_html__('Optional shared identifier. Leave blank to create a separate locker for this element.', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
                 'placeholder' => 'newsletter-unlock',
                 'condition' => [
@@ -680,7 +715,7 @@ class Protected_Content
             'protected_content_locker_form',
             [
                 'label' => esc_html__('Form Shortcode', 'king-addons'),
-                'description' => esc_html__('Form to display for unlocking content', 'king-addons'),
+                'description' => esc_html__('Used when no form template is selected. King Addons forms require the Submissions action.', 'king-addons'),
                 'type' => Controls_Manager::TEXT,
                 'placeholder' => '[contact-form-7 id="123"]',
                 'condition' => [
@@ -706,6 +741,29 @@ class Protected_Content
             ]
         );
 
+        $element->add_control(
+            'protected_content_locker_template',
+            [
+                'label' => esc_html__('Choose a form template', 'king-addons'),
+                'type' => Controls_Manager::SELECT2,
+                'options' => [0 => esc_html__('None — use shortcode', 'king-addons')] + $this->get_elementor_templates(),
+                'default' => '0',
+                'label_block' => true,
+                'description' => esc_html__('Use Form Builder with Submissions enabled. For a shortcode, clear this template and open More options.', 'king-addons'),
+                'condition' => [
+                    'protected_content_enable' => 'yes',
+                    'protected_content_mode' => 'locker',
+                    'protected_content_locker_method' => 'form_submit',
+                ],
+            ]
+        );
+
+        $element->add_control('ka_access_check', ['type' => Controls_Manager::BUTTON, 'text' => esc_html__('Check form setup', 'king-addons'), 'event' => 'king:display:checkForm', 'condition' => ['protected_content_enable' => 'yes', 'protected_content_mode' => 'locker', 'protected_content_locker_method' => 'form_submit']]);
+        $element->add_control('ka_access_form_report', ['type' => Controls_Manager::RAW_HTML, 'raw' => '<div class="ka-access-form-report" data-state="idle">' . esc_html__('Check the selected form before publishing.', 'king-addons') . '</div>', 'condition' => ['protected_content_enable' => 'yes', 'protected_content_mode' => 'locker', 'protected_content_locker_method' => 'form_submit']]);
+
+        Display_Access::upgrade_control($element, 'pc');
+        Display_Access::editor_field_layout($element, 'king_addons_protected_content_section');
+        Display_Access::plan_controls($element, 'king_addons_protected_content_section');
         $element->end_controls_section();
     }
 
@@ -718,7 +776,18 @@ class Protected_Content
      */
     public function before_render_element(Element_Base $element): void
     {
-        $settings = $element->get_settings_for_display();
+        if ($this->locker_render_context && $element->get_name() === 'king-addons-form-builder') {
+            $element->add_render_attribute('_wrapper', 'data-king-locker-context', $this->form_context(
+                'king', (int) get_the_ID(), $element->get_id()
+            ));
+        }
+        $settings = Display_Access_Plan::runtime_settings($element->get_settings_for_display(), 'pc');
+        $settings = $this->normalize_locker_settings($settings, $element->get_id());
+
+        if (!$this->is_editor_or_preview() && $settings['_ka_plan_blocked']) {
+            $this->suppress_element_render($element);
+            return;
+        }
 
         if (empty($settings['protected_content_enable']) || 'yes' !== $settings['protected_content_enable']) {
             return;
@@ -749,6 +818,14 @@ class Protected_Content
         $mode = $settings['protected_content_mode'] ?? 'role';
         if ('password' === $mode && $this->can_use_pro()) {
             $this->render_password_form($settings, $element);
+            $this->suppress_element_render($element);
+            return;
+        }
+
+        if ('locker' === $mode && $this->can_use_pro()
+            && ($settings['protected_content_locker_method'] ?? 'form_submit') === 'form_submit'
+            && (!empty($settings['protected_content_locker_form']) || !empty($settings['protected_content_locker_template']))) {
+            $this->render_locker_form($settings, $element);
             $this->suppress_element_render($element);
             return;
         }
@@ -790,6 +867,18 @@ class Protected_Content
         }
     }
 
+    public function has_visible_output(bool $render, Element_Base $element): bool
+    {
+        if (!$render || $this->is_editor_or_preview()) { return $render; }
+        $s = $this->normalize_locker_settings(Display_Access_Plan::runtime_settings($element->get_settings_for_display(), 'pc'), $element->get_id());
+        if ($s['_ka_plan_blocked']) { return false; }
+        if (($s['protected_content_enable'] ?? '') !== 'yes') { return true; }
+        $access = $this->evaluate_access($s, $element);
+        if (($s['protected_content_invert'] ?? '') === 'yes') { $access = !$access; }
+        return $access || in_array($s['protected_content_mode'] ?? '', ['password', 'locker'], true)
+            || ($s['protected_content_fallback_type'] ?? 'none') !== 'none';
+    }
+
     /**
      * Evaluate access.
      *
@@ -807,6 +896,8 @@ class Protected_Content
                 return $this->check_role_access($settings);
 
             case 'password':
+                if (!empty($settings['protected_content_password_roles']) && is_user_logged_in()
+                    && array_intersect((array)$settings['protected_content_password_roles'], wp_get_current_user()->roles)) { return true; }
                 return $this->check_password_access($settings, $element);
 
             case 'conditions':
@@ -866,20 +957,19 @@ class Protected_Content
         }
 
         $scope = $settings['protected_content_password_type'] ?? 'element';
-
-        if ('element' === $scope) {
-            $cookie_name = 'king_protect_' . $element->get_id();
-            return !empty($_COOKIE[$cookie_name]) && '1' === $_COOKIE[$cookie_name];
-        }
-
-        // Global scope.
         $key = $settings['protected_content_password_key'] ?? '';
-        if (empty($key)) {
-            return false;
-        }
+        if ($scope === 'global' && empty($key)) { return false; }
+        $cookie_name = $scope === 'global' ? 'king_protect_global_' . sanitize_key($key) : 'king_protect_' . $element->get_id();
+        $context = $this->password_context($settings, $element->get_id(), $this->get_current_elementor_document_id());
+        return Display_Access_Token::valid($_COOKIE[$cookie_name] ?? null, $context);
+    }
 
-        $cookie_name = 'king_protect_global_' . sanitize_key($key);
-        return !empty($_COOKIE[$cookie_name]) && '1' === $_COOKIE[$cookie_name];
+    private function password_context(array $settings, string $element_id, int $document): string
+    {
+        if (($settings['protected_content_password_type'] ?? 'element') === 'global') {
+            return wp_json_encode(['password-global', sanitize_key($settings['protected_content_password_key'] ?? ''), $settings['protected_content_password_global_password'] ?? '']);
+        }
+        return wp_json_encode(['password-element', $document, $element_id, $settings['protected_content_password'] ?? '']);
     }
 
     /**
@@ -969,7 +1059,8 @@ class Protected_Content
                 }
 
                 // Customer bought products.
-                if (!empty($settings['protected_content_cond_woo_customer_bought_ids']) && is_user_logged_in()) {
+                if (!empty($settings['protected_content_cond_woo_customer_bought_ids'])) {
+                    if (!is_user_logged_in()) { return false; }
                     $ids = $this->sanitize_ids($settings['protected_content_cond_woo_customer_bought_ids']);
                     if (!empty($ids)) {
                         $user = wp_get_current_user();
@@ -1005,7 +1096,126 @@ class Protected_Content
         }
 
         $cookie_name = 'king_locker_' . sanitize_key($token);
-        return !empty($_COOKIE[$cookie_name]) && '1' === $_COOKIE[$cookie_name];
+        return Display_Access_Token::valid($_COOKIE[$cookie_name] ?? null, 'locker|' . $token);
+    }
+
+    private function render_locker_form(array $settings, Element_Base $element): void
+    {
+        wp_enqueue_script(
+            KING_ADDONS_ASSETS_UNIQUE_KEY . '-protected-content-locker',
+            KING_ADDONS_URL . 'includes/features/Protected_Content/locker-form.js',
+            ['jquery', 'king-display-inline'], Display_Access::asset_version('includes/features/Protected_Content/locker-form.js'), true
+        );
+        $previous = $this->locker_render_context;
+        $this->locker_render_context = [
+            'document' => $this->get_current_elementor_document_id(),
+            'element' => $element->get_id(),
+            'revision' => $this->locker_revision($settings),
+        ];
+        echo '<div class="king-addons-protected-fallback king-addons-protected-locker" data-ka-document="' . esc_attr($this->locker_render_context['document']) . '" data-ka-element="' . esc_attr($element->get_id()) . '">';
+        try {
+            if (!empty($settings['protected_content_locker_template'])) {
+                echo Plugin::$instance->frontend->get_builder_content_for_display((int) $settings['protected_content_locker_template']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered template HTML.
+            } else {
+                echo do_shortcode($settings['protected_content_locker_form']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered form HTML.
+            }
+        } finally {
+            $this->locker_render_context = $previous;
+            echo '</div>';
+        }
+    }
+
+    private function normalize_locker_settings(array $settings, string $element_id, int $document = 0): array
+    {
+        if (($settings['protected_content_mode'] ?? '') === 'locker' && empty($settings['protected_content_locker_token'])) {
+            $document = $document ?: $this->get_current_elementor_document_id();
+            $settings['protected_content_locker_token'] = 'element-' . $document . '-' . $element_id;
+        }
+        return $settings;
+    }
+
+    private function locker_revision(array $settings): string
+    {
+        return hash('sha256', wp_json_encode([
+            $settings['protected_content_locker_form'] ?? '',
+            $settings['protected_content_locker_token'] ?? '',
+            $settings['protected_content_locker_method'] ?? 'form_submit',
+            (int) ($settings['protected_content_locker_template'] ?? 0),
+        ]));
+    }
+
+    /** Bind a rendered form to the author's configured locker. */
+    private function form_context(string $provider, int $form_document, string $form_element): string
+    {
+        $data = array_merge($this->locker_render_context ?? [], [
+            'provider' => $provider, 'form_document' => $form_document, 'form_element' => $form_element,
+        ]);
+        $payload = base64_encode(wp_json_encode($data));
+        return $payload . '.' . hash_hmac('sha256', $payload, wp_salt('nonce'));
+    }
+
+    public function after_king_form(int $submission_id, int $form_document, string $form_element, string $context): void
+    {
+        if ($submission_id > 0 && '' !== $context) {
+            $this->complete_locker_form($context, 'king', $form_document, $form_element);
+        }
+    }
+
+    public function cf7_form_fields(array $fields): array
+    {
+        if ($this->locker_render_context) {
+            $form = class_exists('WPCF7_ContactForm') ? \WPCF7_ContactForm::get_current()
+                : (function_exists('wpcf7_get_current_contact_form') ? wpcf7_get_current_contact_form() : null);
+            if ($form) {
+                $fields['king_addons_locker_context'] = $this->form_context('cf7', 0, (string) $form->id());
+            }
+        }
+        return $fields;
+    }
+
+    public function after_cf7_form($form): void
+    {
+        $context = isset($_POST['king_addons_locker_context']) && is_string($_POST['king_addons_locker_context'])
+            ? sanitize_text_field(wp_unslash($_POST['king_addons_locker_context'])) : '';
+        if (is_object($form) && method_exists($form, 'id') && '' !== $context) {
+            $this->complete_locker_form($context, 'cf7', 0, (string) $form->id());
+        }
+    }
+
+    /** Runs only after the form provider has accepted a submission. */
+    private function complete_locker_form(string $context, string $provider, int $form_document, string $form_element): void
+    {
+        if (!$this->can_use_pro() || strlen($context) > 16384) {
+            return;
+        }
+        $parts = explode('.', $context);
+        if (count($parts) !== 2 || !hash_equals(hash_hmac('sha256', $parts[0], wp_salt('nonce')), $parts[1])) {
+            return;
+        }
+        $json = base64_decode($parts[0], true);
+        $data = false !== $json ? json_decode($json, true) : null;
+        if (!is_array($data) || ($data['provider'] ?? '') !== $provider
+            || (int) ($data['form_document'] ?? -1) !== $form_document
+            || ($data['form_element'] ?? '') !== $form_element) {
+            return;
+        }
+        $document_id = absint($data['document'] ?? 0);
+        $post = get_post($document_id);
+        if (!$post || $post->post_status !== 'publish' || '' !== $post->post_password) {
+            return;
+        }
+        $elements = json_decode((string) get_post_meta($document_id, '_elementor_data', true), true);
+        $settings = is_array($elements) ? $this->find_element_settings($elements, (string) ($data['element'] ?? '')) : null;
+        if ($settings) { $settings = $this->normalize_locker_settings($settings, (string) ($data['element'] ?? ''), $document_id); }
+        if (!$settings || ($settings['protected_content_enable'] ?? '') !== 'yes'
+            || ($settings['protected_content_mode'] ?? '') !== 'locker'
+            || ($settings['protected_content_locker_method'] ?? 'form_submit') !== 'form_submit'
+            || !hash_equals($this->locker_revision($settings), (string) ($data['revision'] ?? ''))
+            || empty($settings['protected_content_locker_token'])) {
+            return;
+        }
+        $days = max(1, min(365, (int) ($settings['protected_content_locker_cookie_days'] ?? 7)));
+        $this->set_locker_cookie($settings['protected_content_locker_token'], $days);
     }
 
     /**
@@ -1020,7 +1230,12 @@ class Protected_Content
     {
         $cookie_name = 'king_locker_' . sanitize_key($token);
         $expiry = time() + ($days * DAY_IN_SECONDS);
-        setcookie($cookie_name, '1', $expiry, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true);
+        setcookie($cookie_name, Display_Access_Token::issue('locker|' . $token, $expiry), $expiry, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true);
+        if ($days > 0) {
+            $_COOKIE[$cookie_name] = Display_Access_Token::issue('locker|' . $token, $expiry);
+        } else {
+            unset($_COOKIE[$cookie_name]);
+        }
     }
 
     /**
@@ -1045,10 +1260,6 @@ class Protected_Content
         $scope = isset($_POST['scope']) ? sanitize_text_field(wp_unslash($_POST['scope'])) : 'element';
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         $global_key = isset($_POST['global_key']) ? sanitize_text_field(wp_unslash($_POST['global_key'])) : '';
-        $days = isset($_POST['days']) ? absint($_POST['days']) : 7;
-
-        $days = max(1, min(365, $days));
-
         if (empty($password) || empty($post_id) || empty($element_id)) {
             wp_send_json_error(['message' => esc_html__('Invalid request', 'king-addons')]);
         }
@@ -1112,6 +1323,8 @@ class Protected_Content
             wp_send_json_error(['message' => esc_html__('Incorrect password', 'king-addons')]);
         }
 
+        $days = max(1, min(365, (int) ($settings['protected_content_password_cookie_days'] ?? 7)));
+
         // Set cookie.
         $expiry = time() + ($days * DAY_IN_SECONDS);
         if ('global' === $scope && !empty($global_key)) {
@@ -1120,7 +1333,7 @@ class Protected_Content
             $cookie_name = 'king_protect_' . $element_id;
         }
 
-        setcookie($cookie_name, '1', $expiry, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true);
+        setcookie($cookie_name, Display_Access_Token::issue($this->password_context($settings, $element_id, $post_id), $expiry), $expiry, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true);
 
         wp_send_json_success(['message' => esc_html__('Access granted', 'king-addons')]);
     }
@@ -1172,7 +1385,8 @@ class Protected_Content
         $scope = $settings['protected_content_password_type'] ?? 'element';
         $global_key = $settings['protected_content_password_key'] ?? '';
         $days = (int) ($settings['protected_content_password_cookie_days'] ?? 7);
-        $message = $settings['protected_content_fallback_msg'] ?? esc_html__('This content is password protected.', 'king-addons');
+        $original = $element->get_data('settings');
+        $message = !empty($settings['protected_content_password_intro']) ? $settings['protected_content_password_intro'] : ($original['protected_content_fallback_msg'] ?? esc_html__('This content is password protected.', 'king-addons'));
 
         $document_post_id = $this->get_current_elementor_document_id();
         if ($document_post_id <= 0) {
@@ -1196,7 +1410,7 @@ class Protected_Content
                            placeholder="<?php esc_attr_e('Enter password', 'king-addons'); ?>" 
                            required />
                     <button type="submit" class="king-addons-password-submit">
-                        <span class="king-addons-password-submit-text"><?php esc_html_e('Unlock', 'king-addons'); ?></span>
+                        <span class="king-addons-password-submit-text"><?php echo esc_html($settings['protected_content_password_button'] ?? __('Unlock', 'king-addons')); ?></span>
                         <span class="king-addons-password-submit-loading" style="display:none;">⏳</span>
                     </button>
                 </div>
@@ -1244,14 +1458,7 @@ class Protected_Content
      */
     private function suppress_element_render(Element_Base $element): void
     {
-        // Try modern Elementor method first.
-        if (method_exists($element, 'set_should_render')) {
-            $element->set_should_render(false);
-            return;
-        }
-
-        // Fallback: hide with CSS.
-        $element->add_render_attribute('_wrapper', 'class', 'king-addons-protected-hidden');
+        Display_Output_Guard::suppress($element);
     }
 
     /**
@@ -1512,11 +1719,7 @@ class Protected_Content
      */
     private function can_use_pro(): bool
     {
-        if (!function_exists('king_addons_freemius')) {
-            return false;
-        }
-
-        return king_addons_freemius()->can_use_premium_code__premium_only();
+        return Display_Access_Plan::has_pro();
     }
 
     /**
@@ -1528,11 +1731,7 @@ class Protected_Content
      */
     private function get_pro_label(string $label): string
     {
-        if ($this->can_use_pro()) {
-            return $label;
-        }
-
-        return sprintf('%s <i class="eicon-pro-icon"></i>', $label);
+        return Display_Access_Plan::pro_label($label);
     }
 }
 

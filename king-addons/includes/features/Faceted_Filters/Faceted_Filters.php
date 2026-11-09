@@ -395,24 +395,40 @@ class Faceted_Filters
     {
         check_ajax_referer(self::AJAX_ACTION, 'nonce');
 
-        $payload = isset($_POST['payload']) ? wp_unslash((string) $_POST['payload']) : '';
+        $payload = isset($_POST['payload']) && is_string($_POST['payload']) ? wp_unslash($_POST['payload']) : '';
         $data = json_decode($payload, true);
 
         if (!is_array($data)) {
             wp_send_json_error(['message' => esc_html__('Invalid payload.', 'king-addons')]);
         }
 
-        if (empty($data['query_id']) || empty($data['widget_id']) || empty($data['post_id'])) {
+        if (empty($data['query_id']) || !is_string($data['query_id'])
+            || empty($data['widget_id']) || !is_string($data['widget_id'])
+            || empty($data['post_id']) || !is_scalar($data['post_id'])) {
             wp_send_json_error(['message' => esc_html__('Required data is missing.', 'king-addons')]);
         }
 
-        $this->ajax_post_id = (int) $data['post_id'];
+        $this->ajax_post_id = absint($data['post_id']);
+        $document_post = get_post($this->ajax_post_id);
+        $public_document = $document_post && 'publish' === $document_post->post_status && '' === $document_post->post_password;
+        if (!$document_post || (!$public_document && !current_user_can('edit_post', $this->ajax_post_id))) {
+            wp_send_json_error(['message' => esc_html__('This filter configuration is not available.', 'king-addons')], 403);
+        }
+        $query_id = sanitize_title($data['query_id']);
+        $widget_data = $this->get_widget_data($this->ajax_post_id, $data['widget_id']);
+        $widget_settings = $widget_data['settings'] ?? [];
+        // A public nonce must not permit rendering arbitrary saved widgets or
+        // grids whose author has not enabled this particular filter query.
+        if (!$widget_data || !in_array($widget_data['widgetType'] ?? '', $this->supported_widgets, true)
+            || ($widget_settings['ka_filters_enable'] ?? '') !== 'yes'
+            || '' === $query_id || sanitize_title((string) ($widget_settings['ka_filters_query_id'] ?? '')) !== $query_id) {
+            wp_send_json_error(['message' => esc_html__('This filter configuration is not available.', 'king-addons')], 403);
+        }
         $archive = is_array($data['archive'] ?? null) ? $data['archive'] : [];
         $this->ajax_archive = [
             'taxonomy' => isset($archive['taxonomy']) ? sanitize_key((string) $archive['taxonomy']) : '',
             'term_id' => isset($archive['term_id']) ? (int) $archive['term_id'] : 0,
         ];
-        $query_id = sanitize_title((string) $data['query_id']);
         $variable_price = $this->sanitize_variable_price_mode($data['variable_price'] ?? '');
         if ('' === $variable_price) {
             $variable_price = $this->collect_variable_price_mode($this->ajax_post_id, $query_id);
@@ -426,12 +442,6 @@ class Faceted_Filters
             if (!empty($cached)) {
                 wp_send_json_success($cached);
             }
-        }
-
-        $widget_data = $this->get_widget_data((int) $data['post_id'], (string) $data['widget_id']);
-
-        if (null === $widget_data) {
-            wp_send_json_error(['message' => esc_html__('Widget not found.', 'king-addons')]);
         }
 
         $filter_state = [
@@ -449,7 +459,13 @@ class Faceted_Filters
 
         $meta = $this->prepare_query_meta($query_args, $query_id);
         $counts = $this->build_counts($query_builder, $grid_settings, $query_args);
-        $html = $this->render_widget($widget_data, $query_args);
+        $documents = Plugin::$instance->documents;
+        $documents->switch_to_document($documents->get($this->ajax_post_id));
+        try {
+            $html = $this->render_widget($widget_data, $query_args);
+        } finally {
+            $documents->restore_document();
+        }
 
         $response = [
             'html' => $html,

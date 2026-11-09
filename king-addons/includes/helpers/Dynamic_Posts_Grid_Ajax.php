@@ -72,162 +72,100 @@ class Dynamic_Posts_Grid_Ajax
     }
 
     /**
-     * Handle filter AJAX request.
+     * Create a server-authenticated allowlist from the rendered widget settings.
+     * A public nonce is CSRF protection, not permission to choose meta keys.
+     *
+     * @param array  $settings Elementor settings resolved on the server.
+     * @param string $widget_id Widget identifier.
+     * @return string Signed request configuration.
      */
+    public static function create_request_config(array $settings, string $widget_id): string
+    {
+        $is_cpt = ($settings['kng_dynamic_posts_widget_mode'] ?? 'default') === 'custom_cpt';
+        $types = $is_cpt
+            ? ($settings['kng_dynamic_posts_custom_post_types'] ?? [])
+            : ($settings['kng_dynamic_posts_post_types'] ?? ['post']);
+        $types = is_array($types) ? array_values(array_filter($types, 'is_string')) : [];
+        $actions = [];
+        if ($is_cpt) {
+            foreach ($types as $type) {
+                $actions[$type] = [
+                    'url_field' => $settings['kng_dynamic_posts_cpt_' . $type . '_url_field'] ?? '',
+                    'action_type' => $settings['kng_dynamic_posts_cpt_' . $type . '_action_type'] ?? 'new_tab',
+                    'cta_text' => $settings['kng_dynamic_posts_cpt_' . $type . '_cta_text'] ?? ($settings['kng_dynamic_posts_cpt_default_cta'] ?? 'VIEW'),
+                ];
+            }
+        }
+        return Grid_Ajax_Security::sign_settings([
+            'widget_id' => $widget_id,
+            'post_types' => $types,
+            'posts_per_page' => max(1, min(100, (int) ($settings['kng_dynamic_posts_per_page'] ?? 12))),
+            'orderby' => $settings['kng_dynamic_posts_orderby'] ?? 'date',
+            'order' => $settings['kng_dynamic_posts_order'] ?? 'DESC',
+            'filter_taxonomy' => $is_cpt ? 'post_type' : ($settings['kng_dynamic_posts_filter_taxonomy'] ?? 'category'),
+            'enable_filters' => ($settings['kng_dynamic_posts_enable_filters'] ?? 'yes') === 'yes',
+            'enable_search' => ($settings['kng_dynamic_posts_enable_search'] ?? 'yes') === 'yes',
+            'show_excerpt' => ($settings['kng_dynamic_posts_show_excerpt'] ?? 'yes') === 'yes',
+            'is_cpt_mode' => $is_cpt,
+            'cpt_actions' => $actions,
+        ], 'dynamic-posts-grid');
+    }
+
+    /** Handle an authorized widget filter request. */
     public function handle_filter_request(): void
     {
-        try {
-            // Verify nonce
-            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'king_addons_dynamic_posts_grid_nonce')) {
-                wp_send_json_error(['message' => esc_html__('Security check failed.', 'king-addons')]);
-            }
+        $this->handle_request(false);
+    }
 
-        // Get and sanitize POST data
-        $widget_id = sanitize_text_field($_POST['widget_id'] ?? '');
-        $posts_per_page = absint($_POST['posts_per_page'] ?? 12);
-        // Handle post_types - it comes as JSON string from JavaScript or as array
-        $post_types_raw = $_POST['post_types'] ?? '["post"]';
-
-        // Debug: log the type and value of post_types_raw
-        // error_log('DEBUG: post_types_raw type: ' . gettype($post_types_raw) . ', value: ' . print_r($post_types_raw, true));
-
-        // Check if it's already an array (PRO version) or needs decoding (Free version)
-        if (is_array($post_types_raw)) {
-            $post_types = $this->sanitize_array($post_types_raw);
-        } else {
-            // Ensure it's a string before decoding
-            if (!is_string($post_types_raw)) {
-                // error_log('DEBUG: post_types_raw is not a string, converting to: ' . json_encode($post_types_raw));
-                $post_types_raw = json_encode($post_types_raw);
-            }
-            $post_types_decoded = json_decode($post_types_raw, true);
-            $post_types = is_array($post_types_decoded) ? $this->sanitize_array($post_types_decoded) : ['post'];
-        }
-        $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
-        $order = sanitize_text_field($_POST['order'] ?? 'DESC');
-        $filter_taxonomy = sanitize_text_field($_POST['filter_taxonomy'] ?? 'category');
-        $filter_term = sanitize_text_field($_POST['filter_term'] ?? '*');
-        $search_query = sanitize_text_field($_POST['search_query'] ?? '');
-        $page = absint($_POST['page'] ?? 1);
-        $cpt_actions_raw = wp_unslash($_POST['cpt_actions'] ?? '');
-        $cpt_actions = $this->sanitize_cpt_actions($cpt_actions_raw);
-        $show_excerpt = ($_POST['show_excerpt'] ?? '1') === '1';
-
-        // Build query arguments
-        $query_args = $this->build_query_args([
-            'posts_per_page' => $posts_per_page,
-            'post_types' => $post_types,
-            'orderby' => $orderby,
-            'order' => $order,
-            'filter_taxonomy' => $filter_taxonomy,
-            'filter_term' => $filter_term,
-            'search_query' => $search_query,
-            'page' => $page,
-        ]);
-
-        // Execute query
-        $posts_query = new \WP_Query($query_args);
-
-        // Generate posts HTML (use CPT classing when filtering by post_type)
-        $is_cpt_mode = ($filter_taxonomy === 'post_type');
-        $posts_html = $this->generate_posts_html($posts_query, $show_excerpt, $is_cpt_mode, $cpt_actions);
-
-        // Prepare response data
-        $response_data = [
-            'posts_html' => $posts_html,
-            'current_page' => $page,
-            'max_pages' => $posts_query->max_num_pages,
-            'total_posts' => $posts_query->found_posts,
-            'current_count' => $posts_query->post_count,
-        ];
-
-        wp_send_json_success($response_data);
-        } catch (Exception $e) {
-            // error_log('Dynamic Posts Grid Filter AJAX Error: ' . $e->getMessage());
-            // error_log('Stack trace: ' . $e->getTraceAsString());
-            wp_send_json_error(['message' => esc_html__('An error occurred while filtering posts.', 'king-addons')]);
-        }
+    /** Handle an authorized widget pagination request. */
+    public function handle_load_more_request(): void
+    {
+        $this->handle_request(true);
     }
 
     /**
-     * Handle load more AJAX request.
+     * Both public endpoints use only authenticated widget settings. Visitors
+     * may change the search, filter term and page, never the meta-field map,
+     * query source, taxonomy, or rendering options.
+     *
+     * @param bool $load_more Whether to return an accumulated count.
+     * @return void
      */
-    public function handle_load_more_request(): void
+    private function handle_request(bool $load_more): void
     {
-        try {
-            // Verify nonce
-            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'king_addons_dynamic_posts_grid_nonce')) {
-                wp_send_json_error(['message' => esc_html__('Security check failed.', 'king-addons')]);
-            }
-
-        // Get and sanitize POST data
-        $widget_id = sanitize_text_field($_POST['widget_id'] ?? '');
-        $posts_per_page = absint($_POST['posts_per_page'] ?? 12);
-        // Handle post_types - it comes as JSON string from JavaScript or as array
-        $post_types_raw = $_POST['post_types'] ?? '["post"]';
-
-        // Debug: log the type and value of post_types_raw
-        // error_log('DEBUG: post_types_raw type: ' . gettype($post_types_raw) . ', value: ' . print_r($post_types_raw, true));
-
-        // Check if it's already an array (PRO version) or needs decoding (Free version)
-        if (is_array($post_types_raw)) {
-            $post_types = $this->sanitize_array($post_types_raw);
-        } else {
-            // Ensure it's a string before decoding
-            if (!is_string($post_types_raw)) {
-                // error_log('DEBUG: post_types_raw is not a string, converting to: ' . json_encode($post_types_raw));
-                $post_types_raw = json_encode($post_types_raw);
-            }
-            $post_types_decoded = json_decode($post_types_raw, true);
-            $post_types = is_array($post_types_decoded) ? $this->sanitize_array($post_types_decoded) : ['post'];
+        $nonce = self::request_string('nonce');
+        if (!wp_verify_nonce($nonce, 'king_addons_dynamic_posts_grid_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Security check failed.', 'king-addons')], 403);
         }
-        $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
-        $order = sanitize_text_field($_POST['order'] ?? 'DESC');
-        $filter_taxonomy = sanitize_text_field($_POST['filter_taxonomy'] ?? 'category');
-        $filter_term = sanitize_text_field($_POST['filter_term'] ?? '*');
-        $search_query = sanitize_text_field($_POST['search_query'] ?? '');
-        $page = absint($_POST['page'] ?? 1);
-        $cpt_actions_raw = wp_unslash($_POST['cpt_actions'] ?? '');
-        $cpt_actions = $this->sanitize_cpt_actions($cpt_actions_raw);
-        $show_excerpt = ($_POST['show_excerpt'] ?? '1') === '1';
-
-        // Build query arguments for load more (accumulative)
-        $query_args = $this->build_query_args([
-            'posts_per_page' => $posts_per_page,
-            'post_types' => $post_types,
-            'orderby' => $orderby,
-            'order' => $order,
-            'filter_taxonomy' => $filter_taxonomy,
-            'filter_term' => $filter_term,
-            'search_query' => $search_query,
-            'page' => $page,
-        ]);
-
-        // Execute query
-        $posts_query = new \WP_Query($query_args);
-
-        // Generate posts HTML (use CPT classing when filtering by post_type)
-        $is_cpt_mode = ($filter_taxonomy === 'post_type');
-        $posts_html = $this->generate_posts_html($posts_query, $show_excerpt, $is_cpt_mode, $cpt_actions);
-
-        // Calculate total shown posts (previous pages + current page)
-        $total_shown = (($page - 1) * $posts_per_page) + $posts_query->post_count;
-
-        // Prepare response data
-        $response_data = [
-            'posts_html' => $posts_html,
+        $config = Grid_Ajax_Security::verify_settings(self::request_string('request_config'), 'dynamic-posts-grid');
+        if (null === $config || ($config['widget_id'] ?? '') !== self::request_string('widget_id')) {
+            wp_send_json_error(['message' => esc_html__('Invalid grid configuration. Please reload the page.', 'king-addons')], 403);
+        }
+        $page = max(1, min(10000, absint(self::request_string('page', '1'))));
+        $config['page'] = $page;
+        $config['filter_term'] = !empty($config['enable_filters'])
+            ? sanitize_text_field(self::request_string('filter_term', '*')) : '*';
+        $config['search_query'] = !empty($config['enable_search'])
+            ? sanitize_text_field(self::request_string('search_query')) : '';
+        $query = new \WP_Query($this->build_query_args($config));
+        $actions = $this->sanitize_cpt_actions(wp_json_encode($config['cpt_actions'] ?? []));
+        $html = $this->generate_posts_html($query, !empty($config['show_excerpt']), !empty($config['is_cpt_mode']), $actions);
+        wp_send_json_success([
+            'posts_html' => $html,
             'current_page' => $page,
-            'max_pages' => $posts_query->max_num_pages,
-            'total_posts' => $posts_query->found_posts,
-            'current_count' => $total_shown,
-        ];
+            'max_pages' => $query->max_num_pages,
+            'total_posts' => $query->found_posts,
+            'current_count' => $load_more ? (($page - 1) * $config['posts_per_page']) + $query->post_count : $query->post_count,
+        ]);
+    }
 
-        wp_send_json_success($response_data);
-        } catch (Exception $e) {
-            // error_log('Dynamic Posts Grid AJAX Error: ' . $e->getMessage());
-            // error_log('Stack trace: ' . $e->getTraceAsString());
-            wp_send_json_error(['message' => esc_html__('An error occurred while loading posts.', 'king-addons')]);
-        }
+    /** Read a scalar POST value; reject array-shaped input without PHP errors. */
+    private static function request_string(string $key, string $default = ''): string
+    {
+        // The caller reads the nonce through this scalar reader, then verifies
+        // it in handle_request() before using any other request parameters.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        return isset($_POST[$key]) && is_string($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : $default;
     }
 
     /**
@@ -239,14 +177,23 @@ class Dynamic_Posts_Grid_Ajax
     private function build_query_args(array $params): array
     {
         $query_args = [
-            'post_type' => $params['post_types'],
+            'post_type' => array_values(array_filter($params['post_types'], static function ($type) {
+                $object = get_post_type_object($type);
+                return $object && is_post_type_viewable($object);
+            })),
             'posts_per_page' => $params['posts_per_page'],
             'paged' => $params['page'],
             'orderby' => $params['orderby'],
             'order' => $params['order'],
             'post_status' => 'publish',
+            'has_password' => false,
             'ignore_sticky_posts' => true,
         ];
+
+        // An empty post_type means all types to WP_Query; fail closed instead.
+        if (!$query_args['post_type']) {
+            $query_args['post__in'] = [0];
+        }
 
         // Add search query
         if (!empty($params['search_query'])) {
@@ -255,13 +202,21 @@ class Dynamic_Posts_Grid_Ajax
 
         // Add taxonomy filter
         if (!empty($params['filter_term']) && $params['filter_term'] !== '*') {
-            $query_args['tax_query'] = [
-                [
-                    'taxonomy' => $params['filter_taxonomy'],
-                    'field' => 'slug',
-                    'terms' => $params['filter_term'],
-                ]
-            ];
+            if ($params['filter_taxonomy'] === 'post_type') {
+                if (in_array($params['filter_term'], $query_args['post_type'], true)) {
+                    $query_args['post_type'] = [$params['filter_term']];
+                } else {
+                    $query_args['post__in'] = [0];
+                }
+            } elseif (taxonomy_exists($params['filter_taxonomy'])) {
+                $query_args['tax_query'] = [
+                    [
+                        'taxonomy' => $params['filter_taxonomy'],
+                        'field' => 'slug',
+                        'terms' => $params['filter_term'],
+                    ],
+                ];
+            }
         }
 
         // Handle random order
@@ -311,7 +266,7 @@ class Dynamic_Posts_Grid_Ajax
                 <!-- Post Type Header -->
                 <div class="king-addons-dpg-header">
                     <div class="king-addons-dpg-icon">
-                        <?php echo $post_icon; ?>
+                        <?php echo wp_kses_post($post_icon); ?>
                     </div>
                     <div class="king-addons-dpg-label">
                         <?php echo esc_html($post_type_display); ?>
@@ -346,12 +301,12 @@ class Dynamic_Posts_Grid_Ajax
                         ?>
                         <?php 
                         // Security fix: Block dangerous protocols like javascript:, data:, vbscript:
-                        $is_safe_url = !preg_match('/^(javascript|data|vbscript):/i', $meta_url);
+                        $is_safe_url = is_string($meta_url) && (bool) esc_url($meta_url, ['http', 'https']);
                         ?>
                         <?php if (!empty($meta_url) && !empty($action_type) && $is_safe_url) : ?>
                             <button class="king-addons-dpg-button king-addons-dpg-action-btn" 
                                     data-action="<?php echo esc_attr($action_type); ?>" 
-                                    data-url="<?php echo esc_url($meta_url); ?>"
+                                    data-url="<?php echo esc_url($meta_url, ['http', 'https']); ?>"
                                     data-title="<?php echo esc_attr(get_the_title()); ?>">
                                 <?php echo esc_html(strtoupper($cta_override ?: 'VIEW')); ?>
                             </button>
@@ -540,12 +495,12 @@ class Dynamic_Posts_Grid_Ajax
         $sanitized = [];
         foreach ($decoded as $pt => $conf) {
             $pt_key = sanitize_key($pt);
-            if (!$pt_key) {
+            if (!$pt_key || !is_array($conf)) {
                 continue;
             }
             $sanitized[$pt_key] = [
                 'url_field' => isset($conf['url_field']) ? sanitize_key($conf['url_field']) : '',
-                'action_type' => isset($conf['action_type']) ? sanitize_text_field($conf['action_type']) : '',
+                'action_type' => in_array($conf['action_type'] ?? '', ['new_tab', 'lightbox_image', 'lightbox_video'], true) ? $conf['action_type'] : '',
                 'cta_text' => isset($conf['cta_text']) ? sanitize_text_field($conf['cta_text']) : '',
             ];
         }

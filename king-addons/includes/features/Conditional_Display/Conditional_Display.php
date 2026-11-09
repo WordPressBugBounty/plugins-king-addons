@@ -44,6 +44,12 @@ class Conditional_Display
      */
     public function __construct()
     {
+        require_once KING_ADDONS_PATH . 'includes/helpers/Conditional_Content_Cache.php';
+        require_once KING_ADDONS_PATH . 'includes/helpers/Display_Access.php';
+        require_once KING_ADDONS_PATH . 'includes/helpers/Display_Output_Guard.php';
+        Display_Access::register('cd');
+        Conditional_Content_Cache::register('cd_enable');
+
         // Editor assets.
         add_action('elementor/preview/enqueue_scripts', [$this, 'enqueue_preview_script'], 1);
         add_action('elementor/preview/enqueue_styles', [$this, 'enqueue_styles'], 1);
@@ -109,11 +115,12 @@ class Conditional_Display
      */
     public function register_controls(Element_Base $element, $args): void
     {
+        Display_Access::intro($element);
         $element->start_controls_section(
             'king_addons_cd_section',
             [
-                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Conditional Display', 'king-addons'),
-                'tab' => Controls_Manager::TAB_ADVANCED,
+                'label' => KING_ADDONS_ELEMENTOR_ICON . esc_html__('Visibility rules', 'king-addons'),
+                'tab' => Display_Access::TAB,
             ]
         );
 
@@ -129,6 +136,8 @@ class Conditional_Display
                 'default' => '',
             ]
         );
+
+        Display_Access::rule_setup_control($element);
 
         // Conditions relation (AND/OR).
         $element->add_control(
@@ -169,7 +178,7 @@ class Conditional_Display
                 'options' => [
                     'hide' => esc_html__('Hide element', 'king-addons'),
                     'message' => esc_html__('Show message', 'king-addons'),
-                    'template' => sprintf(__('Render template %s', 'king-addons'), '<i class="eicon-pro-icon"></i>'),
+                    'template' => Display_Access_Plan::pro_label(__('Render template', 'king-addons')),
                 ],
                 'default' => 'hide',
                 'condition' => [
@@ -298,6 +307,8 @@ class Conditional_Display
                 ],
             ]
         );
+
+        Display_Access::upgrade_control($element, 'cd', ['cd_enable' => 'yes', 'cd_rules_mode!' => 'rules'], '_classic');
 
         // Browser condition (Pro).
         $element->add_control(
@@ -671,6 +682,14 @@ class Conditional_Display
             ]
         );
 
+        foreach ($element->get_controls() as $key => $control) {
+            if (strpos($key, 'cd_cond_') === 0 || strpos($key, 'cd_heading_') === 0 || $key === 'cd_relation') {
+                $element->update_control($key, ['condition' => array_merge($control['condition'] ?? [], ['cd_rules_mode!' => 'rules'])]);
+            }
+        }
+        Display_Access::rules_controls($element);
+        Display_Access::editor_field_layout($element, 'king_addons_cd_section');
+        Display_Access::plan_controls($element, 'king_addons_cd_section');
         $element->end_controls_section();
     }
 
@@ -787,7 +806,17 @@ class Conditional_Display
             return false;
         }
 
-        $settings = $element->get_settings_for_display();
+        $settings = Display_Access_Plan::runtime_settings($element->get_settings_for_display(), 'cd');
+
+        if (!$this->is_editor_or_preview() && $settings['_ka_plan_blocked']) { return false; }
+
+        if (!$this->is_editor_or_preview() && ($settings['cd_hide_empty'] ?? '') === 'yes') {
+            $children = $element->get_children();
+            if ($children && !array_filter($children, static function ($child) {
+                $type = $child->get_type();
+                return apply_filters('elementor/frontend/' . $type . '/should_render', true, $child);
+            })) { return false; }
+        }
 
         if (empty($settings['cd_enable']) || 'yes' !== $settings['cd_enable']) {
             return true;
@@ -829,7 +858,12 @@ class Conditional_Display
      */
     public function before_render_element(Element_Base $element): void
     {
-        $settings = $element->get_settings_for_display();
+        $settings = Display_Access_Plan::runtime_settings($element->get_settings_for_display(), 'cd');
+
+        if (!$this->is_editor_or_preview() && $settings['_ka_plan_blocked']) {
+            $this->suppress_element_render($element);
+            return;
+        }
 
         if (empty($settings['cd_enable']) || 'yes' !== $settings['cd_enable']) {
             return;
@@ -841,7 +875,9 @@ class Conditional_Display
             $element->add_render_attribute('_wrapper', 'class', 'king-addons-cd-preview');
             
             // Add data attributes for condition info.
-            $active_conditions = $this->get_active_conditions_list($settings);
+            $active_conditions = ($settings['cd_rules_mode'] ?? 'legacy') === 'rules'
+                ? array_map(static fn($row) => ($row['pass'] ? '✓ ' : '× ') . $row['label'] . ': ' . $row['detail'], Display_Rules::evaluate($settings['cd_rules'] ?? [])['checks'])
+                : $this->get_active_conditions_list($settings);
             if (!empty($active_conditions)) {
                 $element->add_render_attribute('_wrapper', 'data-king-cd-conditions', esc_attr(implode(', ', $active_conditions)));
             }
@@ -856,6 +892,13 @@ class Conditional_Display
 
         // If conditions pass, do nothing.
         if ($result) {
+            if (($settings['cd_reveal'] ?? '') === 'yes') {
+                wp_enqueue_style('king-display-access', KING_ADDONS_URL . 'includes/helpers/display-access.css', [], Display_Access::asset_version('includes/helpers/display-access.css'));
+                wp_enqueue_script('king-display-reveal', KING_ADDONS_URL . 'includes/helpers/display-reveal.js', ['jquery'], Display_Access::asset_version('includes/helpers/display-reveal.js'), true);
+                $element->add_render_attribute('_wrapper', 'data-ka-display-reveal', $element->get_id());
+                $element->add_render_attribute('_wrapper', 'class', 'ka-display-await-click');
+                echo '<div class="ka-display-reveal-trigger"><button type="button">' . esc_html($settings['cd_reveal_label'] ?? __('Show content', 'king-addons')) . '</button></div>';
+            }
             return;
         }
 
@@ -929,6 +972,10 @@ class Conditional_Display
      */
     private function evaluate_conditions(array $settings): bool
     {
+        if (($settings['cd_rules_mode'] ?? 'legacy') === 'rules') {
+            if (!$this->can_use_pro()) { return true; }
+            return Display_Rules::evaluate($settings['cd_rules'] ?? [])['pass'];
+        }
         $relation = $settings['cd_relation'] ?? 'all';
 
         $results = [];
@@ -1094,7 +1141,7 @@ class Conditional_Display
         }
 
         if (!$this->can_use_pro()) {
-            return true; // Pro feature not available, skip condition.
+            return null; // Pro feature not available, skip condition.
         }
 
         if (empty($settings['cd_cond_browser_types']) || !is_array($settings['cd_cond_browser_types'])) {
@@ -1150,6 +1197,7 @@ class Conditional_Display
      */
     private function check_date_time(array $settings): ?bool
     {
+        if (!$this->can_use_pro()) { return null; }
         if (empty($settings['cd_cond_date_enable']) || 'yes' !== $settings['cd_cond_date_enable']) {
             return null;
         }
@@ -1192,6 +1240,7 @@ class Conditional_Display
      */
     private function check_time_of_day(array $settings): ?bool
     {
+        if (!$this->can_use_pro()) { return null; }
         if (empty($settings['cd_cond_time_enable']) || 'yes' !== $settings['cd_cond_time_enable']) {
             return null;
         }
@@ -1203,6 +1252,10 @@ class Conditional_Display
 
         if (empty($time_from) && empty($time_to)) {
             return null;
+        }
+
+        if ('' !== $time_from && '' !== $time_to && $time_from > $time_to) {
+            return $current_time >= $time_from || $current_time <= $time_to;
         }
 
         if (!empty($time_from) && $current_time < $time_from) {
@@ -1225,6 +1278,7 @@ class Conditional_Display
      */
     private function check_url(array $settings): ?bool
     {
+        if (!$this->can_use_pro()) { return null; }
         if (empty($settings['cd_cond_url_enable']) || 'yes' !== $settings['cd_cond_url_enable']) {
             return null;
         }
@@ -1273,7 +1327,7 @@ class Conditional_Display
         }
 
         if (!$this->can_use_pro()) {
-            return true;
+            return null;
         }
 
         if (empty($_SERVER['HTTP_REFERER'])) {
@@ -1303,7 +1357,7 @@ class Conditional_Display
         }
 
         if (!$this->can_use_pro()) {
-            return true;
+            return null;
         }
 
         if (!class_exists('WooCommerce') || !function_exists('WC')) {
@@ -1344,7 +1398,8 @@ class Conditional_Display
         }
 
         // Check previously bought products.
-        if (!empty($settings['cd_cond_woo_bought_products']) && is_user_logged_in()) {
+        if (!empty($settings['cd_cond_woo_bought_products'])) {
+            if (!is_user_logged_in()) { return false; }
             $ids = $this->sanitize_ids($settings['cd_cond_woo_bought_products']);
             if (!empty($ids)) {
                 $user = wp_get_current_user();
@@ -1379,7 +1434,7 @@ class Conditional_Display
         }
 
         if (!$this->can_use_pro()) {
-            return true;
+            return null;
         }
 
         if (empty($settings['cd_cond_cookie_name'])) {
@@ -1414,7 +1469,7 @@ class Conditional_Display
         }
 
         if (!$this->can_use_pro()) {
-            return true;
+            return null;
         }
 
         if (empty($settings['cd_cond_lang_codes']) || !is_array($settings['cd_cond_lang_codes'])) {
@@ -1484,9 +1539,7 @@ class Conditional_Display
      */
     private function suppress_element_render(Element_Base $element): void
     {
-        // Add hidden class for CSS hiding as fallback.
-        $element->add_render_attribute('_wrapper', 'class', 'king-addons-cd-hidden');
-        $element->add_render_attribute('_wrapper', 'style', 'display:none !important;');
+        Display_Output_Guard::suppress($element);
     }
 
     /**
@@ -1522,11 +1575,7 @@ class Conditional_Display
      */
     private function can_use_pro(): bool
     {
-        if (!function_exists('king_addons_freemius')) {
-            return false;
-        }
-
-        return king_addons_freemius()->can_use_premium_code__premium_only();
+        return Display_Access_Plan::has_pro();
     }
 }
 

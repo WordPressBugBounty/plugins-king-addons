@@ -60,10 +60,15 @@
                     global_key: globalKey,
                     days: days
                 },
-                success: function (response) {
+                success: async function (response) {
                     if (response.success) {
-                        // Reload page to show unlocked content.
-                        window.location.reload();
+                        try {
+                            await window.kingDisplayInline.refresh($form.closest('.king-addons-protected-password-form'), postId, elementId);
+                        } catch (error) {
+                            $error.text(error.message || errorOccurredText).show();
+                            $input.prop('disabled', false);
+                            $submitText.show(); $submitLoading.hide();
+                        }
                     } else {
                         $error.text(response.data.message || incorrectPasswordText).show();
                         $input.prop('disabled', false).val('').focus();

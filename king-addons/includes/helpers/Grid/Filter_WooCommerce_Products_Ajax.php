@@ -70,7 +70,7 @@ class Filter_WooCommerce_Products_Ajax
         static $settings = null;
 
         if (null === $settings) {
-            $settings = Grid_Ajax_Security::get_posted_grid_settings();
+            $settings = Grid_Ajax_Security::get_posted_grid_settings('woocommerce-grid');
             $_POST['grid_settings'] = $settings;
         }
 
@@ -342,6 +342,8 @@ class Filter_WooCommerce_Products_Ajax
             $args['offset'] = (int) wp_unslash($_POST['king_addons_offset']);
         }
 
+        $args['post_status'] = 'publish';
+        $args['has_password'] = false;
         return $args;
     }
 

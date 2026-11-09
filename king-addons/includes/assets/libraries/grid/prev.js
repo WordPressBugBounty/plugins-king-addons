@@ -834,7 +834,8 @@
                                     let animationClass = "king-addons-added-to-cart-default",
                                         removeAnimationClass = "king-addons-added-to-cart-popup-hide";
                                     const popupImage = popupImageSrc
-                                        ? `<div class="king-addons-added-tc-popup-img"><img src="${popupImageSrc}" alt="" /></div>`
+                                        ? $("<div>", { class: "king-addons-added-tc-popup-img" })
+                                            .append($("<img>", { src: popupImageSrc, alt: "" }))
                                         : "";
                                     switch (popupAnimation) {
                                         case "slide-left":
@@ -858,13 +859,19 @@
                                         $scope
                                             .find(".king-addons-grid")
                                             .append(
-                                                `<div id="king-addons-added-to-cart-${productId}" class="king-addons-added-to-cart-popup ${animationClass}">
-                          ${popupImage}
-                          <div class="king-addons-added-tc-title">
-                            <p>${popupText} ${KingAddonsGridData.addedToCartText}</p>
-                            <p><a href="${popupLink}">${KingAddonsGridData.viewCart}</a></p>
-                          </div>
-                        </div>`
+                                                $("<div>", {
+                                                    id: `king-addons-added-to-cart-${productId}`,
+                                                    class: `king-addons-added-to-cart-popup ${animationClass}`
+                                                }).append(
+                                                    popupImage,
+                                                    $("<div>", { class: "king-addons-added-tc-title" }).append(
+                                                        $("<p>").text(`${popupText} ${KingAddonsGridData.addedToCartText}`),
+                                                        $("<p>").append($("<a>", {
+                                                            href: popupLink,
+                                                            text: KingAddonsGridData.viewCart
+                                                        }))
+                                                    )
+                                                )
                                             );
                                         setTimeout(() => {
                                             $scope

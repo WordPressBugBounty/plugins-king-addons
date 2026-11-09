@@ -1,7 +1,7 @@
 === King Addons for Elementor - 100+ Elementor Widgets, 4 000+ Elementor Templates, WooCommerce Builder, Mega Menu, Popup Builder ===
 Contributors: kingaddons, alxrlov, olgadev
 Tags: elementor, elementor addons, elementor templates, elementor widgets, widgets for elementor
-Stable tag: 51.1.87
+Stable tag: 51.1.90
 Tested up to: 7.1
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -294,6 +294,30 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= King Addons for Elementor version 51.1.90 - November 9, 2026 =
+* **Improvement:** Conditional Display and Protected Content now share consistent Free/Pro availability. Free covers login, roles and devices; Pro adds scheduling, targeting, advanced rules, passwords and form unlocks. Saved Pro settings remain intact when Pro is inactive.
+* **New:** Advanced Pro rules can combine ACF/post fields with browser, referral, cookie, language and WooCommerce checks in AND/OR groups, with contextual upgrade prompts in Free.
+* **Fix:** Content Locker now offers an explicit no-template option for shortcode forms; clearing the template no longer selects another saved template.
+* **Improvement:** Display settings now use readable full-width fields, clearer rule setup and password options, and consistent preview panels that reset when settings change.
+* **Fix:** Refined the Display & Access editor panel with a compact icon tab, evenly sized navigation tabs, and aligned quick-setup actions.
+* **New:** Display & Access adds one Elementor tab with task-based setup, guided AND/OR rules, ACF and post fields, yearly date windows, rule explanations, and form setup checks. Existing condition settings remain compatible.
+* **Improvement:** Conditional Display can hide empty parent containers and reveal matching blocks on click. Protected Content supports role-or-password access and opens password/form content in place with nested Elementor widgets initialized.
+* **Fix:** Conditional Display and Protected Content now refresh conditional elements with Elementor element caching enabled, while keeping static sibling caches active. Time-of-day conditions support intervals across midnight; unavailable Pro conditions are ignored correctly in Free OR groups.
+* **Fix:** Content Locker renders its configured form and opens content after a successful submission. Added a King Addons form-template picker and form completion hooks; configured remember durations are respected.
+* **Security:** Fixed unauthorized post-meta disclosure in Dynamic Posts Grid filtering and Load More. AJAX requests now use authenticated server-rendered widget configuration, preventing visitors from substituting custom-field names or post types.
+* **Security:** Posts Grid and WooCommerce Grid AJAX handlers also verify their widget configuration before reading custom fields. Public grid responses exclude internal post types, private/draft posts, and password-protected posts.
+* **Security:** Shop Filters can no longer render widgets from private, draft, or password-protected Elementor documents to anonymous visitors. Requests are limited to grids with Shop Filters enabled and the matching Query ID.
+* **Fix:** Posts Grid and WooCommerce Grid AJAX filtering, counts, and Load More now include their required nonce. Shared grid request data is also available when a WooCommerce Grid is used on its own.
+* **Fix:** Posts Grid AJAX preserves the author-configured scheduled-posts mode. Grid filtering and Load More complete even when the returned cards have no images.
+* **Fix:** Advanced Image Gallery manual selections now use each attachment's caption and title instead of text from the containing page. Covers both Add Images (Legacy) and Add Images & Videos; URL-only items no longer inherit page descriptions.
+
+= King Addons for Elementor version 51.1.89 - October 13, 2026 =
+* **Fix:** CSV imports, delimiter detection, and exports no longer produce PHP 8.4 deprecation notices. Explicit escape parameters preserve the existing CSV behavior in Data Table, Data Table Builder, Wishlist Analytics, Activity Log, and Smart Links.
+
+= King Addons for Elementor version 51.1.88 - October 7, 2026 =
+* **Improvement:** Templates Catalog page and section previews now use optimized 560px WebP thumbnails instead of PNG, including the admin catalog, collections, and Elementor editor catalog.
+* **Fix:** Templates Catalog import now preserves the correct image attachment IDs when multiple source attachments share the same image URL. Imported templates no longer display unrelated existing Media Library images.
+
 = King Addons for Elementor version 51.1.87 - September 28, 2026 =
 * **Security:** Image Accordion and Advanced Image Gallery image effect values (`image_effects`, `image_effects_size`, `image_effects_direction`) are allowlisted and escaped before they are printed in the class attribute. The same allowlist now covers Posts Grid, WooCommerce Grid, and Timeline animation and image-effect classes, and Image Accordion vertical alignment. Page List titles, subtitles, and badge text are escaped.
 * **Fix:** Image Comparison clips the before image at full size instead of shrinking it with the handle, and the range input follows Slider Initial Position.
@@ -528,7 +552,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * **Improved:** Premium version – further performance and security improvements.
 * **Fix:** Popup close button display issue resolved.
 * **Fix:** Rare issue with activation of premium version.
-* **Coming soon:** Many new widgets for WooCommerce, grid widgets for content organization, and new design features.  
+* **Coming soon:** Many new widgets for WooCommerce, grid widgets for content organization, and new design features.
 * **Coming soon:** WooCommerce layout builder.
 * **Coming soon:** New 50+ premium templates.
 * **Coming soon:** Visability manager for widgets.

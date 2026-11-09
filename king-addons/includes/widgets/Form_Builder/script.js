@@ -560,6 +560,11 @@
                                 form_page_id: $scope.find('form').attr('page_id')
                             };
 
+                            const lockerContext = $scope.attr('data-king-locker-context');
+                            if (lockerContext) {
+                                data.king_addons_locker_context = lockerContext;
+                            }
+
                             return $.ajax({
                                 type: 'POST',
                                 url: KingAddonsFormBuilderData.ajaxurl,

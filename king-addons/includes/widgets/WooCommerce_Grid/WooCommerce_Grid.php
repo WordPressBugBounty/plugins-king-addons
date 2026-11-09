@@ -8704,6 +8704,10 @@ class WooCommerce_Grid extends Widget_Base
         if (isset($_GET['psearch'])) {
             $args['s'] = $_GET['psearch'];
         }
+        // Keep the initial page and AJAX pagination on the same public posts.
+        if (($settings['filters_experiment'] ?? '') === 'yes') {
+            $args['has_password'] = false;
+        }
         return $args;
     }
 
@@ -9187,12 +9191,12 @@ class WooCommerce_Grid extends Widget_Base
         $fade_out_in = $this->get_settings_for_display()['popup_notification_fade_out_in'] ?? '';
         $animation_duration = $this->get_settings_for_display()['popup_notification_animation_duration'] ?? '';
         $wishlist_attrs = [
-            'data-wishlist-url="' . (get_option('king_addons_wishlist_page') ?: '') . '"',
-            'data-atw-popup="' . $settings['element_show_added_to_wishlist_popup'] . '"',
-            'data-atw-animation="' . $popup_animation . '"',
-            'data-atw-fade-out-in="' . $fade_out_in . '"',
-            'data-atw-animation-time="' . $animation_duration . '"',
-            'data-open-in-new-tab="' . $settings['element_open_links_in_new_tab'] . '"'
+            'data-wishlist-url="' . esc_attr((string) (get_option('king_addons_wishlist_page') ?: '')) . '"',
+            'data-atw-popup="' . esc_attr($settings['element_show_added_to_wishlist_popup']) . '"',
+            'data-atw-animation="' . esc_attr($popup_animation) . '"',
+            'data-atw-fade-out-in="' . esc_attr($fade_out_in) . '"',
+            'data-atw-animation-time="' . esc_attr($animation_duration) . '"',
+            'data-open-in-new-tab="' . esc_attr($settings['element_open_links_in_new_tab']) . '"'
         ];
         $button_add_title = '';
         $button_remove_title = '';
@@ -9206,8 +9210,8 @@ class WooCommerce_Grid extends Widget_Base
             $add_content .= ' <span>' . esc_html($settings['add_to_wishlist_text']) . '</span>';
             $remove_content .= ' <span>' . esc_html($settings['remove_from_wishlist_text']) . '</span>';
         } else {
-            $button_add_title = 'title="' . esc_html($settings['add_to_wishlist_text']) . '"';
-            $button_remove_title = 'title="' . esc_html($settings['remove_from_wishlist_text']) . '"';
+            $button_add_title = 'title="' . esc_attr($settings['add_to_wishlist_text']) . '"';
+            $button_remove_title = 'title="' . esc_attr($settings['remove_from_wishlist_text']) . '"';
         }
         echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
         $rm_hidden = !in_array($product->get_id(), $wishlist) ? 'king-addons-button-hidden' : '';
@@ -9240,12 +9244,12 @@ class WooCommerce_Grid extends Widget_Base
         $fade_out_in = $this->get_settings_for_display()['popup_notification_fade_out_in'] ?? '';
         $animation_duration = $this->get_settings_for_display()['popup_notification_animation_duration'] ?? '';
         $compare_attrs = [
-            'data-compare-url="' . (get_option('king_addons_compare_page') ?: '') . '"',
-            'data-atcompare-popup="' . $settings['element_show_added_to_compare_popup'] . '"',
-            'data-atcompare-animation="' . $popup_animation . '"',
-            'data-atcompare-fade-out-in="' . $fade_out_in . '"',
-            'data-atcompare-animation-time="' . $animation_duration . '"',
-            'data-open-in-new-tab="' . $settings['element_open_links_in_new_tab'] . '"'
+            'data-compare-url="' . esc_attr((string) (get_option('king_addons_compare_page') ?: '')) . '"',
+            'data-atcompare-popup="' . esc_attr($settings['element_show_added_to_compare_popup']) . '"',
+            'data-atcompare-animation="' . esc_attr($popup_animation) . '"',
+            'data-atcompare-fade-out-in="' . esc_attr($fade_out_in) . '"',
+            'data-atcompare-animation-time="' . esc_attr($animation_duration) . '"',
+            'data-open-in-new-tab="' . esc_attr($settings['element_open_links_in_new_tab']) . '"'
         ];
         $add_content = '';
         $remove_content = '';
@@ -9259,8 +9263,8 @@ class WooCommerce_Grid extends Widget_Base
             $add_content .= ' <span>' . esc_html($settings['add_to_compare_text']) . '</span>';
             $remove_content .= ' <span>' . esc_html($settings['remove_from_compare_text']) . '</span>';
         } else {
-            $button_add_title = 'title="' . esc_html($settings['add_to_compare_text']) . '"';
-            $button_remove_title = 'title="' . esc_html($settings['remove_from_compare_text']) . '"';
+            $button_add_title = 'title="' . esc_attr($settings['add_to_compare_text']) . '"';
+            $button_remove_title = 'title="' . esc_attr($settings['remove_from_compare_text']) . '"';
         }
         echo '<div class="' . esc_attr($class) . '"><div class="inner-block">';
         $rm_hidden = !in_array($product->get_id(), $compare) ? 'king-addons-button-hidden' : '';
@@ -9811,7 +9815,7 @@ class WooCommerce_Grid extends Widget_Base
             $layout_settings['media_distance'] = $settings['layout_list_media_distance']['size'];
         }
         if ('yes' === $settings['filters_experiment']) {
-            $layout_settings['grid_settings'] = $settings;
+            $layout_settings['grid_settings'] = Grid_Ajax_Security::authorize_grid_settings($settings, 'woocommerce-grid');
         }
         $this->add_render_attribute('grid-settings', ['data-settings' => wp_json_encode($layout_settings)]);
     }

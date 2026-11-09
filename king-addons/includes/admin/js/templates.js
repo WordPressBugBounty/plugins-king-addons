@@ -569,7 +569,7 @@ jQuery(document).ready(function ($) {
 
         sections.forEach(function(section) {
             // Use the correct screenshot URL pattern with plan-based paths
-            var screenshotUrl = `https://thumbnails.kingaddons.com/sections/${section.plan}/${section.section_key}.png?v=4`;
+            var screenshotUrl = `https://thumbnails.kingaddons.com/sections/${section.plan}/${section.section_key}.webp?v=4`;
             
             sectionsHtml += `
                 <div class="section-item" 
@@ -1064,7 +1064,7 @@ jQuery(document).ready(function ($) {
             `;
 
             collection.templates.forEach(function(template) {
-                var thumbUrl = `https://thumbnails.kingaddons.com/${template.key}.png?v=4`;
+                var thumbUrl = `https://thumbnails.kingaddons.com/${template.key}.webp?v=4`;
                 html += `
                     <div class="collection-row-item template-item" 
                          data-template-key="${template.key}" 

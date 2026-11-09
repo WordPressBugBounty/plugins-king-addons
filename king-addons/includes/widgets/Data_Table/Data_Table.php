@@ -1756,7 +1756,7 @@ class Data_Table extends Widget_Base
 
         // Optional CSV header row
         if ('yes' === $settings['display_header']) {
-            $csv_header = fgetcsv($handle, 0, $delimiter);
+            $csv_header = fgetcsv($handle, 0, $delimiter, '"', '\\');
             echo '<thead><tr class="king-addons-table-head-row king-addons-table-row">';
             foreach ((array)$csv_header as $header_cell) {
                 echo '<th class="king-addons-table-th king-addons-table-text">'
@@ -1771,7 +1771,7 @@ class Data_Table extends Widget_Base
 
         // CSV body rows
         $row_count = 0;
-        while ($row = fgetcsv($handle, 0, $delimiter)) {
+        while ($row = fgetcsv($handle, 0, $delimiter, '"', '\\')) {
             $row_count++;
             $odd_even_class = ($row_count % 2 === 0) ? 'king-addons-even' : 'king-addons-odd';
             echo '<tr class="king-addons-table-row ' . esc_attr($odd_even_class) . '">';
@@ -1805,7 +1805,7 @@ class Data_Table extends Widget_Base
         fclose($handle);
 
         foreach ($delimiters as $delimiter) {
-            $count = count(str_getcsv($first_line, $delimiter));
+            $count = count(str_getcsv($first_line, $delimiter, '"', '\\'));
             if ($count > $max_count) {
                 $max_count = $count;
                 $best_delimiter = $delimiter;

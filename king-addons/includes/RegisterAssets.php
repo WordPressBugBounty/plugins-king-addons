@@ -173,14 +173,17 @@ final class RegisterAssets
             }
         }
 
-        wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-grid', 'KingAddonsGridData', [
+        $grid_data = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('king_addons_grid_nonce'),
             'viewCart' => esc_html__('View Cart', 'king-addons'),
             'addedToCartText' => esc_html__('was added to cart', 'king-addons'),
             'comparePageURL' => get_permalink(get_option('king_addons_compare_page')),
             'wishlistPageURL' => get_permalink(get_option('king_addons_wishlist_page')),
-        ]);
+        ];
+        foreach (['grid', 'woocommerce', 'media'] as $grid_script) {
+            wp_localize_script(KING_ADDONS_ASSETS_UNIQUE_KEY . '-grid-' . $grid_script, 'KingAddonsGridData', $grid_data);
+        }
 
     }
 /**

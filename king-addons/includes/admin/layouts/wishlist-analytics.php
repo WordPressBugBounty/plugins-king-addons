@@ -54,7 +54,7 @@ if ($is_pro && isset($_GET['action']) && 'export_csv' === $_GET['action']) {
         esc_html__('Conversion Rate', 'king-addons'),
         esc_html__('Price', 'king-addons'),
         esc_html__('Stock Status', 'king-addons'),
-    ]);
+    ], ',', '"', '\\');
 
     foreach ($stats as $row) {
         $product = function_exists('wc_get_product') ? wc_get_product($row['product_id']) : null;
@@ -68,7 +68,7 @@ if ($is_pro && isset($_GET['action']) && 'export_csv' === $_GET['action']) {
             $conv_rate . '%',
             $product ? $product->get_price() : '',
             $product ? ($product->is_in_stock() ? 'In Stock' : 'Out of Stock') : '',
-        ]);
+        ], ',', '"', '\\');
     }
 
     fclose($output);

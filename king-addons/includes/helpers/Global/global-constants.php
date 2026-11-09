@@ -58,8 +58,8 @@ const KING_ADDONS_EXT_AI_SEO_TOOLS = true;
 
 
 /** FEATURES - Enable/Disable (NEW: disabled by default for QA rollout) */
-const KING_ADDONS_FEAT_CONDITIONAL_DISPLAY = false;
-const KING_ADDONS_FEAT_PROTECTED_CONTENT = false;
+const KING_ADDONS_FEAT_CONDITIONAL_DISPLAY = true;
+const KING_ADDONS_FEAT_PROTECTED_CONTENT = true;
 const KING_ADDONS_FEAT_ANIMATED_GRADIENT_MESH_BACKGROUND = false; // Need fixes
 
 // Features - Others

@@ -9,10 +9,94 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Sanitizes untrusted grid settings received through AJAX handlers.
+ * Authorizes server-rendered grid settings and sanitizes AJAX output settings.
  */
 class Grid_Ajax_Security
 {
+    /**
+     * Authorize exactly the configuration rendered by the server, not settings
+     * supplied by a visitor with a public nonce. Purpose prevents token reuse
+     * between different grid handlers. Tokens remain usable in cached pages.
+     *
+     * @param array  $settings Server-side widget settings.
+     * @param string $purpose Handler scope.
+     * @return string Signed settings envelope.
+     */
+    public static function sign_settings(array $settings, string $purpose): string
+    {
+        $document = \Elementor\Plugin::$instance->documents->get_current();
+        $document_id = $document ? $document->get_main_id() : 0;
+        $envelope = [
+            'settings' => $settings,
+            'document_id' => $document_id,
+            'revision' => self::document_revision($document_id),
+        ];
+        $json = wp_json_encode($envelope);
+        if (false === $json) {
+            return '';
+        }
+        $payload = base64_encode($json);
+        return $payload . '.' . hash_hmac('sha256', $purpose . ':' . $payload, wp_salt('auth'));
+    }
+
+    /**
+     * Verify an envelope before decoding or using any field in it.
+     *
+     * @param mixed  $token Signed envelope from the request.
+     * @param string $purpose Expected handler scope.
+     * @return array|null Verified server settings, or null on failure.
+     */
+    public static function verify_settings($token, string $purpose): ?array
+    {
+        if (!is_string($token) || strlen($token) > 1048576) {
+            return null;
+        }
+        $parts = explode('.', $token);
+        if (count($parts) !== 2) {
+            return null;
+        }
+        $expected = hash_hmac('sha256', $purpose . ':' . $parts[0], wp_salt('auth'));
+        if (!hash_equals($expected, $parts[1])) {
+            return null;
+        }
+        $json = base64_decode($parts[0], true);
+        $envelope = false !== $json ? json_decode($json, true) : null;
+        if (!is_array($envelope) || !is_array($envelope['settings'] ?? null)) {
+            return null;
+        }
+        $document_id = absint($envelope['document_id'] ?? 0);
+        $document = get_post($document_id);
+        // A cached token must stop authorizing fields after their document is
+        // edited, unpublished or password-protected. Preview tokens are not
+        // authorization to read private documents as another visitor.
+        $public_document = $document && 'publish' === $document->post_status && '' === $document->post_password;
+        if (!$document || (!$public_document && !current_user_can('edit_post', $document_id))
+            || !hash_equals(self::document_revision($document_id), (string) ($envelope['revision'] ?? ''))) {
+            return null;
+        }
+        return $envelope['settings'];
+    }
+
+    /** Fingerprint saved Elementor data so changes revoke old configurations. */
+    private static function document_revision(int $document_id): string
+    {
+        return hash('sha256', (string) get_post_meta($document_id, '_elementor_data', true));
+    }
+
+    /**
+     * Add an opaque, authenticated copy for AJAX; JS keeps the ordinary settings
+     * for layout, but the handler ignores those untrusted copies.
+     *
+     * @param array  $settings Server-side widget settings.
+     * @param string $purpose Handler scope.
+     * @return array Settings with their authorization envelope.
+     */
+    public static function authorize_grid_settings(array $settings, string $purpose): array
+    {
+        $settings['_ka_grid_context'] = self::sign_settings($settings, $purpose);
+        return $settings;
+    }
+
     /**
      * Returns allowed animation size values.
      *
@@ -198,17 +282,23 @@ class Grid_Ajax_Security
     /**
      * Returns sanitized grid settings from the current AJAX request.
      *
+     * @param string $purpose Expected handler scope.
      * @return array<string, mixed> Sanitized settings array.
      */
-    public static function get_posted_grid_settings(): array
+    public static function get_posted_grid_settings(string $purpose): array
     {
-        $settings = isset($_POST['grid_settings']) ? wp_unslash($_POST['grid_settings']) : [];
-
-        if (!is_array($settings)) {
-            return [];
+        $nonce = isset($_POST['nonce']) && is_string($_POST['nonce'])
+            ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'king_addons_grid_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Invalid nonce.', 'king-addons')], 400);
         }
-
-        return self::sanitize_grid_settings($settings);
+        $token = isset($_POST['grid_settings']['_ka_grid_context']) && is_string($_POST['grid_settings']['_ka_grid_context'])
+            ? sanitize_text_field(wp_unslash($_POST['grid_settings']['_ka_grid_context'])) : '';
+        $verified = self::verify_settings($token, $purpose);
+        if (null === $verified) {
+            wp_send_json_error(['message' => esc_html__('Invalid grid configuration. Please reload the page.', 'king-addons')], 403);
+        }
+        return self::sanitize_grid_settings($verified);
     }
 
     /**

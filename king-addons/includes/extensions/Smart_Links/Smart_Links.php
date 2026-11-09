@@ -490,7 +490,7 @@ class Smart_Links
             $this->redirect_with_message('import-export', 'error_import');
         }
 
-        $header = fgetcsv($handle);
+        $header = fgetcsv($handle, 0, ',', '"', '\\');
         if (!$header) {
             fclose($handle);
             $this->redirect_with_message('import-export', 'error_import');
@@ -501,7 +501,7 @@ class Smart_Links
         $settings = Smart_Links_Settings::get_settings();
         $imported = 0;
 
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $destination = $row[$map['destination_url'] ?? -1] ?? '';
             $destination = $service->sanitize_destination_url((string) $destination);
             if ($destination === '') {
@@ -574,7 +574,7 @@ class Smart_Links
             'created',
             'clicks',
             'unique_clicks',
-        ]);
+        ], ',', '"', '\\');
 
         $service = new Smart_Links_Service();
 
@@ -594,7 +594,7 @@ class Smart_Links
                 $post->post_date,
                 (int) get_post_meta($post->ID, self::META_CLICKS, true),
                 (int) get_post_meta($post->ID, self::META_UNIQUE_CLICKS, true),
-            ]);
+            ], ',', '"', '\\');
         }
 
         fclose($output);
